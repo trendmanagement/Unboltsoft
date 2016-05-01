@@ -34,7 +34,7 @@ namespace ICE_Import
         [FieldConverter(typeof(UInt64Converter))]
         public ulong ProductID;
 
-        [FieldConverter(typeof(DateTimeConverter), "MMMdd")]
+        [FieldConverter(typeof(DateTimeConverter), "MMMyy")]
         public DateTime StripName;
 
         [FieldConverter(typeof(CharConverter))]
