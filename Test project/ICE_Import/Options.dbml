@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="TestDatabase" Class="OptionsDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\TestDatabase.mdf;Integrated Security=True" SettingsObjectName="ICE_Import.Properties.Settings" SettingsPropertyName="TestDatabaseConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.tbloptions" Member="tbloptions">
+    <Type Name="tbloption">
+      <Column Name="idoption" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="optionname" Type="System.String" DbType="VarChar(45) NOT NULL" CanBeNull="false" />
+      <Column Name="optionmanth" Type="System.Char" DbType="Char(1) NOT NULL" CanBeNull="false" />
+      <Column Name="optionmanthint" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="optionyear" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="strikeprice" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="callorput" Type="System.Char" DbType="Char(1) NOT NULL" CanBeNull="false" />
+      <Column Name="idinstrument" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="expirationdate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="idcontract" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="cqgsymbol" Type="System.String" DbType="VarChar(45) NOT NULL" CanBeNull="false" />
+      <Association Name="tbloption_tbloptiondata" Member="tbloptiondatas" ThisKey="idoption" OtherKey="idoption" Type="tbloptiondata" />
+      <Association Name="tbloption_tbldailycontractsettlement" Member="tbldailycontractsettlements" ThisKey="idcontract" OtherKey="idcontract" Type="tbldailycontractsettlement" />
+      <Association Name="tblcontract_tbloption" Member="tblcontract" ThisKey="idinstrument" OtherKey="idinstrument" Type="tblcontract" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbloptiondata" Member="tbloptiondatas">
+    <Type Name="tbloptiondata">
+      <Column Name="idoptiondata" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="idoption" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="datetime" Type="System.DateTime" DbType="DateTime2 NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="price" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="impliedvol" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="timetoexpinyear" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Association Name="tbloption_tbloptiondata" Member="tbloption" ThisKey="idoption" OtherKey="idoption" Type="tbloption" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbldailycontractsettlements" Member="tbldailycontractsettlements">
+    <Type Name="tbldailycontractsettlement">
+      <Column Name="iddailycontractsettlements" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="idcontract" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="settlement" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="volume" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="openinterest" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Association Name="tbloption_tbldailycontractsettlement" Member="tbloption" ThisKey="idcontract" OtherKey="idcontract" Type="tbloption" IsForeignKey="true" />
+      <Association Name="tblcontract_tbldailycontractsettlement" Member="tblcontract" ThisKey="idcontract" OtherKey="idcontract" Type="tblcontract" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tblcontracts" Member="tblcontracts">
+    <Type Name="tblcontract">
+      <Column Name="idcontract" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="contractname" Type="System.String" DbType="VarChar(45) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="month" Type="System.Char" DbType="Char(1) NOT NULL" CanBeNull="false" />
+      <Column Name="monthint" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
+      <Column Name="year" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="idinstrument" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="expirationdate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="cqgsymbol" Type="System.String" DbType="VarChar(45) NOT NULL" CanBeNull="false" />
+      <Association Name="tblcontract_tbloption" Member="tbloptions" ThisKey="idinstrument" OtherKey="idinstrument" Type="tbloption" />
+      <Association Name="tblcontract_tbldailycontractsettlement" Member="tbldailycontractsettlements" ThisKey="idcontract" OtherKey="idcontract" Type="tbldailycontractsettlement" />
+    </Type>
+  </Table>
+</Database>
