@@ -41,19 +41,19 @@ namespace ICE_Import
         public char Type;
 
         [FieldConverter(typeof(DecimalConverter))]
-        public decimal? FirstPrice;
+        public float? FirstPrice;
 
         [FieldConverter(typeof(DecimalConverter))]
-        public decimal? HighPrice;
+        public float? HighPrice;
 
         [FieldConverter(typeof(DecimalConverter))]
-        public decimal? LowPrice;
+        public float? LowPrice;
 
         [FieldConverter(typeof(DecimalConverter))]
-        public decimal? SettlementPrice;
+        public float? SettlementPrice;
 
         [FieldConverter(typeof(DecimalConverter))]
-        public decimal? SettlementPriceChange;
+        public float? SettlementPriceChange;
 
         [FieldConverter(typeof(UInt64Converter))]
         public ulong? Volume;
@@ -93,7 +93,7 @@ namespace ICE_Import
 
         [FieldOptional]
         [FieldConverter(typeof(DecimalConverter))]
-        public decimal? ClosePrice;
+        public float? ClosePrice;
 
         [FieldOptional]
         [FieldConverter(typeof(Int64Converter))]

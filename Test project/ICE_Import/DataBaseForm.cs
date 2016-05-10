@@ -208,7 +208,7 @@ namespace ICE_Import
                     // TODO: load data EOD_Futures_578 to db like EOD_Options_578 entity
                     break;
                 case EntityNames.EOD_Options_578:
-                    richTextBoxLog.Text += "Loading statrting" + "\n";
+                    richTextBoxLog.Text += "Loading statrted" + "\n";
                     await GetDataEOD_Options_578(cts.Token);
                     OptionsDataContext context = new OptionsDataContext();
                     BindingSource bindingSourceBaners = new BindingSource();
