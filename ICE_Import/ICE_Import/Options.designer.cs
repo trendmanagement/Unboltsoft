@@ -117,9 +117,9 @@ namespace ICE_Import
 		
 		private string _optionname;
 		
-		private char _optionmanth;
+		private char _optionmonth;
 		
-		private int _optionmanthint;
+		private int _optionmonthint;
 		
 		private int _optionyear;
 		
@@ -149,10 +149,10 @@ namespace ICE_Import
     partial void OnidoptionChanged();
     partial void OnoptionnameChanging(string value);
     partial void OnoptionnameChanged();
-    partial void OnoptionmanthChanging(char value);
-    partial void OnoptionmanthChanged();
-    partial void OnoptionmanthintChanging(int value);
-    partial void OnoptionmanthintChanged();
+    partial void OnoptionmonthChanging(char value);
+    partial void OnoptionmonthChanged();
+    partial void OnoptionmonthintChanging(int value);
+    partial void OnoptionmonthintChanged();
     partial void OnoptionyearChanging(int value);
     partial void OnoptionyearChanged();
     partial void OnstrikepriceChanging(double value);
@@ -217,42 +217,42 @@ namespace ICE_Import
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmanth", DbType="Char(1) NOT NULL")]
-		public char optionmanth
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="optionmonth", Storage="_optionmonth", DbType="Char(1) NOT NULL")]
+		public char optionmonth
 		{
 			get
 			{
-				return this._optionmanth;
+				return this._optionmonth;
 			}
 			set
 			{
-				if ((this._optionmanth != value))
+				if ((this._optionmonth != value))
 				{
-					this.OnoptionmanthChanging(value);
+					this.OnoptionmonthChanging(value);
 					this.SendPropertyChanging();
-					this._optionmanth = value;
-					this.SendPropertyChanged("optionmanth");
-					this.OnoptionmanthChanged();
+					this._optionmonth = value;
+					this.SendPropertyChanged("optionmonth");
+					this.OnoptionmonthChanged();
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmanthint", DbType="Int NOT NULL")]
-		public int optionmanthint
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Name="optionmonthint", Storage="_optionmonthint", DbType="Int NOT NULL")]
+		public int optionmonthint
 		{
 			get
 			{
-				return this._optionmanthint;
+				return this._optionmonthint;
 			}
 			set
 			{
-				if ((this._optionmanthint != value))
+				if ((this._optionmonthint != value))
 				{
-					this.OnoptionmanthintChanging(value);
+					this.OnoptionmonthintChanging(value);
 					this.SendPropertyChanging();
-					this._optionmanthint = value;
-					this.SendPropertyChanged("optionmanthint");
-					this.OnoptionmanthintChanged();
+					this._optionmonthint = value;
+					this.SendPropertyChanged("optionmonthint");
+					this.OnoptionmonthintChanged();
 				}
 			}
 		}

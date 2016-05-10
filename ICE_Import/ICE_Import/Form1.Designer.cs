@@ -36,6 +36,7 @@
             this.progressBar_Parsing = new System.Windows.Forms.ProgressBar();
             this.backgroundWorker_Parsing = new System.ComponentModel.BackgroundWorker();
             this.button_Cancel = new System.Windows.Forms.Button();
+            this.buttonDB = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button_InputFiles
@@ -111,11 +112,22 @@
             this.button_Cancel.UseVisualStyleBackColor = true;
             this.button_Cancel.Click += new System.EventHandler(this.button_Cancel_Click);
             // 
+            // buttonDB
+            // 
+            this.buttonDB.Location = new System.Drawing.Point(12, 226);
+            this.buttonDB.Name = "buttonDB";
+            this.buttonDB.Size = new System.Drawing.Size(139, 23);
+            this.buttonDB.TabIndex = 7;
+            this.buttonDB.Text = "Open DataBase window";
+            this.buttonDB.UseVisualStyleBackColor = true;
+            this.buttonDB.Click += new System.EventHandler(this.buttonDB_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 261);
+            this.Controls.Add(this.buttonDB);
             this.Controls.Add(this.button_Cancel);
             this.Controls.Add(this.progressBar_Parsing);
             this.Controls.Add(this.comboBox_Symbol);
@@ -143,6 +155,7 @@
         private System.Windows.Forms.ProgressBar progressBar_Parsing;
         private System.Windows.Forms.Button button_Cancel;
         private System.ComponentModel.BackgroundWorker backgroundWorker_Parsing;
+        private System.Windows.Forms.Button buttonDB;
     }
 }
 

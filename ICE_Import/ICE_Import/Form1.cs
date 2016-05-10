@@ -61,5 +61,20 @@ namespace ICE_Import
         {
             progressBar_Parsing.Width = Width - 40;
         }
+
+        private void buttonDB_Click(object sender, EventArgs e)
+        {
+            if(StaticData.dbf == null)
+            {
+                StaticData.dbf = new DataBaseForm();
+                StaticData.dbf.Show();
+            }
+            else if (StaticData.dbf.Visible == false)
+            {
+                StaticData.dbf = new DataBaseForm();
+                StaticData.dbf.Show();
+            }
+
+        }
     }
 }
