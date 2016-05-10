@@ -24,19 +24,17 @@ namespace ICE_Import
             e.Result = worker.CancellationPending;
         }
 
-        private void Parse<T>(BackgroundWorker worker)
-            where T : class
+        private void Parse<T>(BackgroundWorker worker) where T : class
         {
             worker.ReportProgress(0);
 
             var engine = new FileHelperEngine<T>();
+            T[] records = null;
 
             for (int i = 0; i < FilePaths.Length; i++)
             {
-                T[] records = engine.ReadFile(FilePaths[i]);
-
+                records = engine.ReadFile(FilePaths[i]);
                 // TODO: Push the records to the database
-
                 worker.ReportProgress(i + 1);
 
                 if (worker.CancellationPending)
@@ -44,6 +42,8 @@ namespace ICE_Import
                     return;
                 }
             }
+
+        StaticData.records = records;
         }
 
         private void backgroundWorker_Parsing_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -78,6 +78,8 @@ namespace ICE_Import
             label_ParsedFile.Text = string.Empty;
             progressBar_Parsing.Value = 0;
             EnableDisable(false);
+
+            if (StaticData.records != null) StaticData.OnParseComplete();
         }
     }
 }
