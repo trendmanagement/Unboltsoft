@@ -157,7 +157,7 @@ namespace ICE_Import
             OnCreated();
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_idoption", DbType = "BigInt NOT NULL", IsPrimaryKey = true)]
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_idoption", DbType = "BigInt NOT NULL", IsPrimaryKey = true, IsDbGenerated = true)]
         public long idoption
         {
             get
