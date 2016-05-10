@@ -107,7 +107,7 @@ namespace ICE_Import
 
             try
             {
-                var context = new RemoteEntitiesDataContext("constr");
+                var context = new LocalEntitiesDataContext();
                 //OptionsDataContext context = new OptionsDataContext();
                 buttonLoad.Enabled = false;
                 buttonCancel.Enabled = true;
@@ -122,7 +122,7 @@ namespace ICE_Import
                     {
                         await Task.Run(() =>
                         {
-                            tbloption tableOption = new tbloption
+                            option tableOption = new option
                             {
                                 idoption = long.Parse(count.ToString() + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString()),
                                 optionname = option.ProductName,
@@ -136,7 +136,7 @@ namespace ICE_Import
                                 idcontract = 1,
                                 cqgsymbol = "somesymbol"
                             };
-                            context.tbloptions.InsertOnSubmit(tableOption);
+                            context.options.InsertOnSubmit(tableOption);
                             context.SubmitChanges();
                             count++;
                         }, ct);
@@ -204,11 +204,11 @@ namespace ICE_Import
                 case EntityNames.EOD_Options_578:
                     richTextBoxLog.Text += "Loading statrted" + "\n";
                     await GetDataEOD_Options_578(cts.Token);
-                    RemoteEntitiesDataContext context = new RemoteEntitiesDataContext("constr");
-                    //OptionsDataContext context = new OptionsDataContext();
+                    //RemoteEntitiesDataContext context = new RemoteEntitiesDataContext("constr");
+                    LocalEntitiesDataContext context = new LocalEntitiesDataContext();
                     BindingSource bindingSourceBaners = new BindingSource();
                     // TODO: query for each table
-                    bindingSourceBaners.DataSource = (from item in context.tbloptions
+                    bindingSourceBaners.DataSource = (from item in context.options
                                                       select item
                                                       ).ToList();
                     dataGridViewOption.DataSource = bindingSourceBaners;
