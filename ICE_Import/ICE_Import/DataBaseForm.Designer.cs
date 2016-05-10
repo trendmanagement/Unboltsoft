@@ -42,6 +42,7 @@
             this.checkBoxCheckDB = new System.Windows.Forms.CheckBox();
             this.progressBarLoad = new System.Windows.Forms.ProgressBar();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.buttonFill = new System.Windows.Forms.Button();
             this.tabControlOption.SuspendLayout();
             this.tabPageOption.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOption)).BeginInit();
@@ -195,11 +196,22 @@
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
+            // buttonFill
+            // 
+            this.buttonFill.Location = new System.Drawing.Point(577, 251);
+            this.buttonFill.Name = "buttonFill";
+            this.buttonFill.Size = new System.Drawing.Size(75, 23);
+            this.buttonFill.TabIndex = 6;
+            this.buttonFill.Text = "Fill grid";
+            this.buttonFill.UseVisualStyleBackColor = true;
+            this.buttonFill.Click += new System.EventHandler(this.buttonFill_Click);
+            // 
             // DataBaseForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 386);
+            this.Controls.Add(this.buttonFill);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.progressBarLoad);
             this.Controls.Add(this.checkBoxCheckDB);
@@ -239,5 +251,6 @@
         private System.Windows.Forms.CheckBox checkBoxCheckDB;
         private System.Windows.Forms.ProgressBar progressBarLoad;
         private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.Button buttonFill;
     }
 }
