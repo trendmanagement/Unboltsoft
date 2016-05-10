@@ -77,6 +77,11 @@
       <DependentUpon>DataBaseForm.cs</DependentUpon>
     </Compile>
     <Compile Include="EntityNames.cs" />
+    <Compile Include="LocalEntities.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LocalEntities.dbml</DependentUpon>
+    </Compile>
     <Compile Include="RemoteEntities.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -91,11 +96,6 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Options.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Options.dbml</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="DataBaseForm.resx">
@@ -105,11 +105,16 @@
       <DependentUpon>Form1.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="LocalEntities.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>LocalEntities.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="RemoteEntities.dbml.layout">
       <DependentUpon>RemoteEntities.dbml</DependentUpon>
     </None>
-    <None Include="Options.dbml.layout">
-      <DependentUpon>Options.dbml</DependentUpon>
+    <None Include="LocalEntities.dbml.layout">
+      <DependentUpon>LocalEntities.dbml</DependentUpon>
     </None>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -120,11 +125,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="Options.dbml">
-      <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>Options.designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

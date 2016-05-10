@@ -14,6 +14,7 @@ namespace ICE_Import
     public partial class DataBaseForm : Form
     {
         CancellationTokenSource cts;
+        CancellationTokenSource ctsFill;
 
         public DataBaseForm()
         {
@@ -57,6 +58,13 @@ namespace ICE_Import
                 X = buttonCancel.Location.X,
                 Y = tabControlOption.Height + 5
             };
+            buttonFill.Location = new Point()
+            {
+                X = buttonFill.Location.X,
+                Y = tabControlOption.Height + 5
+            };
+
+
 
         }
 
@@ -65,15 +73,6 @@ namespace ICE_Import
             buttonCancel.Enabled = false;
 
             DataBaseForm_Resize(sender, e);
-
-            //TODO: Fill all datagrid tabs
-
-            OptionsDataContext context = new OptionsDataContext();
-            BindingSource bindingSourceBaners = new BindingSource();
-            bindingSourceBaners.DataSource = (from item in context.tbloptions
-                                              select item
-                                              ).ToList();
-            dataGridViewOption.DataSource = bindingSourceBaners;
 
             if (StaticData.records == null)
             {
@@ -108,7 +107,8 @@ namespace ICE_Import
 
             try
             {
-                OptionsDataContext context = new OptionsDataContext();
+                var context = new RemoteEntitiesDataContext("constr");
+                //OptionsDataContext context = new OptionsDataContext();
                 buttonLoad.Enabled = false;
                 buttonCancel.Enabled = true;
 
@@ -204,7 +204,8 @@ namespace ICE_Import
                 case EntityNames.EOD_Options_578:
                     richTextBoxLog.Text += "Loading statrted" + "\n";
                     await GetDataEOD_Options_578(cts.Token);
-                    OptionsDataContext context = new OptionsDataContext();
+                    RemoteEntitiesDataContext context = new RemoteEntitiesDataContext("constr");
+                    //OptionsDataContext context = new OptionsDataContext();
                     BindingSource bindingSourceBaners = new BindingSource();
                     // TODO: query for each table
                     bindingSourceBaners.DataSource = (from item in context.tbloptions
@@ -219,16 +220,14 @@ namespace ICE_Import
 
         private void checkBoxCheckDB_CheckedChanged(object sender, EventArgs e)
         {
-            //
-            //TODO: Check context data type from lockal or remote db
-            //Now wee just have lockal OptionsDataContext entity
-            //
-
-            if (checkBoxCheckDB.Checked == true)
+            if (checkBoxCheckDB.Checked)
             {
-                MessageBox.Show("Wee don't have remote DataBase yet");
+                //MessageBox.Show("Local DataBase");
             }
-            checkBoxCheckDB.Checked = true;
+            else
+            {
+                //MessageBox.Show("Remote DataBase");
+            }
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -237,6 +236,189 @@ namespace ICE_Import
             {
                 cts.Cancel();
             }
+        }
+
+        private async void buttonFill_Click(object sender, EventArgs e)
+        {
+            ctsFill = new CancellationTokenSource();
+            string conStr = "Server=tcp:h9ggwlagd1.database.windows.net,1433; Database=TMLDB_Copy; User ID=dataupdate@h9ggwlagd1; Password=6dcEpZKSFRNYk^AN; Encrypt=True; TrustServerCertificate=False; Connection Timeout=30;";
+
+            RemoteEntitiesDataContext remoteContext = new RemoteEntitiesDataContext(conStr);
+            LocalEntitiesDataContext localContext = new LocalEntitiesDataContext();
+
+            BindingSource bsOption = new BindingSource();
+            BindingSource bsOptionData = new BindingSource();
+            BindingSource bsContract = new BindingSource();
+            BindingSource bsDailyContractSettlement = new BindingSource();
+
+            if (!checkBoxCheckDB.Checked)
+            {
+                try
+                {
+                    richTextBoxLog.Text += "Fill " + remoteContext.tbloptions.Where( item => item.optionyear == 2006  && item.idinstrument == 35).Count().ToString() + " entities started from option table" + "\n";
+                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    richTextBoxLog.ScrollToCaret();
+
+                    List<tbloption> listOption = new List<tbloption>();
+
+                    try
+                    {
+                        await Task.Run(() =>
+                        {
+                            listOption = (from item in remoteContext.tbloptions
+                                                            where item.optionyear == 2016
+                                                            where item.idinstrument == 35
+                                                            select item
+                                                  ).ToList();
+                        }, ctsFill.Token);
+                        //foreach (tbloption tb in listOption)
+                        //{
+                        //    richTextBoxLog.Text += tb + "\n";
+                        //    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                        //    richTextBoxLog.ScrollToCaret();
+                        //}
+                    }
+                    catch (Exception ex)
+                    {
+                        richTextBoxLog.Text += ex.Message + "\n";
+                        richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                        richTextBoxLog.ScrollToCaret();
+                    }
+                    finally
+                    {
+                        bsOption.DataSource = listOption;
+                    }
+                    //richTextBoxLog.Text += "Fill " + remoteContext.tbloptiondatas.Count().ToString() + " entities started from optiondata table" + "\n";
+                    //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    //richTextBoxLog.ScrollToCaret();
+
+                    //await Task.Run(() =>
+                    //{
+                    //    bsOptionData.DataSource = (from item in remoteContext.tbloptiondatas
+                    //                               select item
+                    //                              ).ToList();
+                    //}, ctsFill.Token);
+
+                    //richTextBoxLog.Text += "Fill " + remoteContext.tblcontracts.Count().ToString() + " entities started from contract table" + "\n";
+                    //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    //richTextBoxLog.ScrollToCaret();
+
+                    //await Task.Run(() =>
+                    //{
+                    //    bsContract.DataSource = (from item in remoteContext.tblcontracts
+                    //                             select item
+                    //                            ).ToList();
+                    //}, ctsFill.Token);
+
+                    //richTextBoxLog.Text += "Fill " + remoteContext.tbldailycontractsettlements.Count().ToString() + " entities started from dailycontractsettlements table" + "\n";
+                    //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    //richTextBoxLog.ScrollToCaret();
+
+                    //await Task.Run(() =>
+                    //{
+                    //    bsDailyContractSettlement.DataSource = (from item in remoteContext.tbldailycontractsettlements
+                    //                                            select item
+                    //                                            ).ToList();
+                    //}, ctsFill.Token);
+
+                }
+                catch (OperationCanceledException cancel)
+                {
+                    richTextBoxLog.Text += cancel.Message + "\n";
+                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    richTextBoxLog.ScrollToCaret();
+                }
+                catch (Exception ex)
+                {
+                    richTextBoxLog.Text += "ERROR" + "\n";
+                    richTextBoxLog.Text += ex.Message + "\n";
+                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    richTextBoxLog.ScrollToCaret();
+                }
+                finally
+                {
+                    int count = dataGridViewOption.RowCount;
+                    richTextBoxLog.Text += "Filled: " + count.ToString() + " entities" + "\n";
+                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    richTextBoxLog.ScrollToCaret();
+                }
+            }
+            else
+            {
+                try
+                {
+                    richTextBoxLog.Text += "Fill " + localContext.options.Count().ToString() + " entities started from option table" + "\n";
+                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    richTextBoxLog.ScrollToCaret();
+
+                    await Task.Run(() =>
+                    {
+                        bsOption.DataSource = (from item in localContext.options
+                                               select item
+                                              ).ToList();
+                    }, ctsFill.Token);
+
+                    richTextBoxLog.Text += "Fill " + localContext.optiondatas.Count().ToString() + " entities started from optiondata table" + "\n";
+                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    richTextBoxLog.ScrollToCaret();
+
+                    await Task.Run(() =>
+                    {
+                        bsOptionData.DataSource = (from item in localContext.optiondatas
+                                                   select item
+                                                  ).ToList();
+                    }, ctsFill.Token);
+
+                    richTextBoxLog.Text += "Fill " + localContext.contracts.Count().ToString() + " entities started from contract table" + "\n";
+                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    richTextBoxLog.ScrollToCaret();
+
+                    await Task.Run(() =>
+                    {
+                        bsContract.DataSource = (from item in localContext.contracts
+                                                 select item
+                                                ).ToList();
+                    }, ctsFill.Token);
+
+                    richTextBoxLog.Text += "Fill " + localContext.dailycontractsettlements.Count().ToString() + " entities started from dailycontractsettlements table" + "\n";
+                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    richTextBoxLog.ScrollToCaret();
+
+                    await Task.Run(() =>
+                    {
+                        bsDailyContractSettlement.DataSource = (from item in localContext.dailycontractsettlements
+                                                                select item
+                                                                ).ToList();
+                    }, ctsFill.Token);
+
+                }
+                catch (OperationCanceledException cancel)
+                {
+                    richTextBoxLog.Text += cancel.Message + "\n";
+                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    richTextBoxLog.ScrollToCaret();
+                }
+                catch (Exception ex)
+                {
+                    richTextBoxLog.Text += "ERROR" + "\n";
+                    richTextBoxLog.Text += ex.Message + "\n";
+                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    richTextBoxLog.ScrollToCaret();
+                }
+                finally
+                {
+                    int count = localContext.dailycontractsettlements.Count() + localContext.options.Count() + localContext.optiondatas.Count() + localContext.contracts.Count();
+                    richTextBoxLog.Text += "Filled: " + count.ToString() + " entities" + "\n";
+                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                    richTextBoxLog.ScrollToCaret();
+                }
+
+            }
+
+            dataGridViewOption.DataSource = bsOption;
+            dataGridViewOptionData.DataSource = bsOptionData;
+            dataGridViewContract.DataSource = bsContract;
+            dataGridViewDailyContract.DataSource = bsDailyContractSettlement;
         }
     }
 }
