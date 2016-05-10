@@ -22,8 +22,8 @@ namespace ICE_Import
         [FieldConverter(typeof(CharConverter))]
         public char OptionType;
 
-        [FieldConverter(typeof(DecimalConverter))]
-        public decimal? StrikePrice;
+        [FieldConverter(typeof(FloatConverter))]
+        public float? StrikePrice;
 
         [FieldConverter(typeof(StringConverter))]
         public string OptionMarketID;
@@ -40,19 +40,19 @@ namespace ICE_Import
         [FieldConverter(typeof(CharConverter))]
         public char Type;
 
-        [FieldConverter(typeof(DecimalConverter))]
+        [FieldConverter(typeof(FloatConverter))]
         public float? FirstPrice;
 
-        [FieldConverter(typeof(DecimalConverter))]
+        [FieldConverter(typeof(FloatConverter))]
         public float? HighPrice;
 
-        [FieldConverter(typeof(DecimalConverter))]
+        [FieldConverter(typeof(FloatConverter))]
         public float? LowPrice;
 
-        [FieldConverter(typeof(DecimalConverter))]
+        [FieldConverter(typeof(FloatConverter))]
         public float? SettlementPrice;
 
-        [FieldConverter(typeof(DecimalConverter))]
+        [FieldConverter(typeof(FloatConverter))]
         public float? SettlementPriceChange;
 
         [FieldConverter(typeof(UInt64Converter))]
@@ -67,17 +67,17 @@ namespace ICE_Import
         [FieldConverter(typeof(UInt64Converter))]
         public ulong? BlockVolume;
 
-        [FieldConverter(typeof(DecimalConverter))]
-        public decimal? WeightedAveragePrice;
+        [FieldConverter(typeof(FloatConverter))]
+        public float? WeightedAveragePrice;
 
         [FieldConverter(typeof(UInt64Converter))]
         public ulong? OpenInterest;
 
-        [FieldConverter(typeof(DecimalConverter))]
-        public decimal? ImpliedVolatility;
+        [FieldConverter(typeof(FloatConverter))]
+        public float? ImpliedVolatility;
 
-        [FieldConverter(typeof(DecimalConverter))]
-        public decimal? Delta;
+        [FieldConverter(typeof(FloatConverter))]
+        public float? Delta;
 
         [FieldConverter(typeof(StringConverter))]
         public string RelativePeriod;
@@ -92,7 +92,7 @@ namespace ICE_Import
         public string HubName;
 
         [FieldOptional]
-        [FieldConverter(typeof(DecimalConverter))]
+        [FieldConverter(typeof(FloatConverter))]
         public float? ClosePrice;
 
         [FieldOptional]

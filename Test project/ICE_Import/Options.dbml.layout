@@ -26,28 +26,28 @@
         <elementListCompartment Id="bfe9855d-04f5-4991-989a-3b9684a74c9e" absoluteBounds="0.76500000059604645, 2.7100000008940697, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <associationConnector edgePoints="[(4.5 : 4.79970540292561); (4.5 : 6.10659912135452); (6.25 : 6.10659912135452)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(4.5 : 4.79970540292561); (4.5 : 6.10659912135452); (6.25 : 6.10659912135452)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/OptionsDataContext/tbloption/tbloption_tbloptiondata" />
       <nodes>
         <classShapeMoniker Id="a8323392-5497-4bc7-be04-ab95f0a00a10" />
         <classShapeMoniker Id="8c5a2e42-c996-4b59-8cb8-1406f10adfb6" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(5.5 : 3.35659912135452); (5.79166666666667 : 3.35659912135452 : JumpStart); (5.95833333333333 : 3.35659912135452 : JumpEnd); (6.25 : 3.35659912135452)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(5.5 : 3.35659912135452); (6.25 : 3.35659912135452)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/OptionsDataContext/tbloption/tbloption_tbldailycontractsettlement" />
       <nodes>
         <classShapeMoniker Id="a8323392-5497-4bc7-be04-ab95f0a00a10" />
         <classShapeMoniker Id="84e8ad53-e9f0-45b5-9336-ba34821157e5" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(1.75 : 4.59780110605061); (1.75 : 5.04970540292561); (4.41666666666667 : 5.04970540292561 : JumpStart); (4.58333333333333 : 5.04970540292561 : JumpEnd); (5.875 : 5.04970540292561); (5.875 : 2.83454756067726); (6.25 : 2.83454756067726)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(1.75 : 4.59780110605061); (1.75 : 5.04970540292561); (4.41666666666667 : 5.04970540292561 : JumpStart); (4.58333333333333 : 5.04970540292561 : JumpEnd); (5.875 : 5.04970540292561); (5.875 : 2.83454756067726); (6.25 : 2.83454756067726)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/OptionsDataContext/tblcontract/tblcontract_tbldailycontractsettlement" />
       <nodes>
         <classShapeMoniker Id="1d157a76-0650-4474-93ae-92c8f6aeea86" />
         <classShapeMoniker Id="84e8ad53-e9f0-45b5-9336-ba34821157e5" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(2.75 : 3.42390055302531); (3.5 : 3.42390055302531)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+    <associationConnector edgePoints="[(2.75 : 3.42390055302531); (3.5 : 3.42390055302531)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/OptionsDataContext/tblcontract/tblcontract_tbloption" />
       <nodes>
         <classShapeMoniker Id="1d157a76-0650-4474-93ae-92c8f6aeea86" />

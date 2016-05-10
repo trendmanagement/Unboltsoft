@@ -66,12 +66,7 @@ namespace ICE_Import
 
             DataBaseForm_Resize(sender, e);
 
-            // TODO: This line of code loads data into the 'testDatabaseDataSet3.tbldailycontractsettlements' table. You can move, or remove it, as needed.
-            this.tbldailycontractsettlementsTableAdapter.Fill(this.testDatabaseDataSet3.tbldailycontractsettlements);
-            // TODO: This line of code loads data into the 'testDatabaseDataSet2.tblcontracts' table. You can move, or remove it, as needed.
-            this.tblcontractsTableAdapter.Fill(this.testDatabaseDataSet2.tblcontracts);
-            // TODO: This line of code loads data into the 'testDatabaseDataSet1.tbloptiondata' table. You can move, or remove it, as needed.
-            this.tbloptiondataTableAdapter.Fill(this.testDatabaseDataSet1.tbloptiondata);
+            //TODO: Fill all datagrid tabs
 
             OptionsDataContext context = new OptionsDataContext();
             BindingSource bindingSourceBaners = new BindingSource();
@@ -79,7 +74,6 @@ namespace ICE_Import
                                               select item
                                               ).ToList();
             dataGridViewOption.DataSource = bindingSourceBaners;
-            this.tbloptionsTableAdapter.Fill(this.testDatabaseDataSet.tbloptions);
 
             if (StaticData.records == null)
             {
@@ -87,7 +81,7 @@ namespace ICE_Import
             }
             else
             {
-                richTextBoxLog.Text += "Count entities: " + StaticData.records.Length.ToString() + "\n";
+                richTextBoxLog.Text += "Entities count: " + StaticData.records.Length.ToString() + "\n";
                 richTextBoxLog.Text += "Type of entity: " + StaticData.records.GetType().Name.Trim('[', ']') + "\n";
                 buttonLoad.Enabled = true;
             }
@@ -97,7 +91,7 @@ namespace ICE_Import
         {
             if (buttonLoad.Enabled != true)
             {
-                richTextBoxLog.Text += "Count entities: " + StaticData.records.Length.ToString() + "\n";
+                richTextBoxLog.Text += "Entities count: " + StaticData.records.Length.ToString() + "\n";
                 richTextBoxLog.Text += "Type of entity: " + StaticData.records.GetType().Name.Trim('[', ']') + "\n";
                 buttonLoad.Enabled = true;
             }
@@ -132,8 +126,8 @@ namespace ICE_Import
                             {
                                 idoption = long.Parse(count.ToString() + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString()),
                                 optionname = option.ProductName,
-                                optionmanth = option.Date.Month.ToString().ToCharArray()[0],
-                                optionmanthint = option.Date.Month,
+                                optionmonth = option.Date.Month.ToString().ToCharArray()[0],
+                                optionmonthint = option.Date.Month,
                                 optionyear = option.Date.Year,
                                 strikeprice = (double)option.StrikePrice,
                                 callorput = 'c',

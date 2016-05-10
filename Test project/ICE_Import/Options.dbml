@@ -4,8 +4,8 @@
     <Type Name="tbloption">
       <Column Name="idoption" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="optionname" Type="System.String" DbType="VarChar(45) NOT NULL" CanBeNull="false" />
-      <Column Name="optionmanth" Type="System.Char" DbType="Char(1) NOT NULL" CanBeNull="false" />
-      <Column Name="optionmanthint" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="optionmanth" Member="optionmonth" Storage="_optionmanth" Type="System.Char" DbType="Char(1) NOT NULL" CanBeNull="false" />
+      <Column Name="optionmanthint" Member="optionmonthint" Storage="_optionmanthint" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="optionyear" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="strikeprice" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="callorput" Type="System.Char" DbType="Char(1) NOT NULL" CanBeNull="false" />
