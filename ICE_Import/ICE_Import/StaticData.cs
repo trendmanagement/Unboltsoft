@@ -11,7 +11,8 @@ namespace ICE_Import
         public delegate void ParseEventHandler();
         public static event ParseEventHandler ParseComplete;
         public static DataBaseForm dbf;
-        public static object[] records;
+        public static object[] optionRecords;
+        public static object[] futureRecords;
 
         public static void OnParseComplete()
         {

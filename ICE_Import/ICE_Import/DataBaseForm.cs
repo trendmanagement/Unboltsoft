@@ -72,14 +72,14 @@ namespace ICE_Import
 
             DataBaseForm_Resize(sender, e);
 
-            if (StaticData.records == null)
+            if (StaticData.optionRecords == null || StaticData.futureRecords == null)
             {
                 buttonLoad.Enabled = false;
             }
             else
             {
-                richTextBoxLog.Text += "Entities count: " + StaticData.records.Length.ToString() + "\n";
-                richTextBoxLog.Text += "Type of entity: " + StaticData.records.GetType().Name.Trim('[', ']') + "\n";
+                richTextBoxLog.Text += StaticData.futureRecords.GetType().Name.Trim('[', ']') + " entities count: " + StaticData.futureRecords.Length.ToString()  + " ready to push to DB" + "\n";
+                richTextBoxLog.Text += StaticData.optionRecords.GetType().Name.Trim('[', ']') + " entities count: " + StaticData.optionRecords.Length.ToString() + " ready to push to DB" + "\n";
                 buttonLoad.Enabled = true;
             }
         }
@@ -88,8 +88,8 @@ namespace ICE_Import
         {
             if (buttonLoad.Enabled != true)
             {
-                richTextBoxLog.Text += "Entities count: " + StaticData.records.Length.ToString() + "\n";
-                richTextBoxLog.Text += "Type of entity: " + StaticData.records.GetType().Name.Trim('[', ']') + "\n";
+                richTextBoxLog.Text += "Entities count: " + StaticData.optionRecords.Length.ToString() + "\n";
+                richTextBoxLog.Text += "Type of entity: " + StaticData.optionRecords.GetType().Name.Trim('[', ']') + "\n";
                 buttonLoad.Enabled = true;
             }
         }
@@ -98,10 +98,10 @@ namespace ICE_Import
         {
             int count = 0;
             int number;
-            int persent = (int.TryParse((StaticData.records.Length / 100).ToString(), out number)) ? number : 0;
+            int persent = (int.TryParse((StaticData.optionRecords.Length / 100).ToString(), out number)) ? number : 0;
             int currentPersent = 0;
             progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = StaticData.records.Length;
+            progressBarLoad.Maximum = StaticData.optionRecords.Length;
 
             try
             {
@@ -110,7 +110,7 @@ namespace ICE_Import
                 buttonLoad.Enabled = false;
                 buttonCancel.Enabled = true;
 
-                foreach (EOD_Options_578 option in StaticData.records)
+                foreach (EOD_Options_578 option in StaticData.optionRecords)
                 {
                     if (ct.IsCancellationRequested)
                     {
@@ -179,9 +179,9 @@ namespace ICE_Import
                 buttonLoad.Enabled = true;
                 buttonCancel.Enabled = false;
                 richTextBoxLog.Text += "Was loaded to DataBase " + count.ToString() + " entities" + "\n";
-                if (StaticData.records.Length > count)
+                if (StaticData.optionRecords.Length > count)
                 {
-                    richTextBoxLog.Text += "Was NOT loaded " + (StaticData.records.Length - count).ToString() + " entities from " + StaticData.records.Length.ToString() + " to DataBase" + "\n";
+                    richTextBoxLog.Text += "Was NOT loaded " + (StaticData.optionRecords.Length - count).ToString() + " entities from " + StaticData.optionRecords.Length.ToString() + " to DataBase" + "\n";
                 }
                 richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
                 richTextBoxLog.ScrollToCaret();
@@ -192,10 +192,10 @@ namespace ICE_Import
         {
             int count = 0;
             int number;
-            int persent = (int.TryParse((StaticData.records.Length / 100).ToString(), out number)) ? number : 0;
+            int persent = (int.TryParse((StaticData.optionRecords.Length / 100).ToString(), out number)) ? number : 0;
             int currentPersent = 0;
             progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = StaticData.records.Length;
+            progressBarLoad.Maximum = StaticData.optionRecords.Length;
 
             try
             {
@@ -203,7 +203,7 @@ namespace ICE_Import
                 buttonLoad.Enabled = false;
                 buttonCancel.Enabled = true;
 
-                foreach (EOD_Options_578 option in StaticData.records)
+                foreach (EOD_Options_578 option in StaticData.optionRecords)
                 {
                     if (ct.IsCancellationRequested)
                     {
@@ -272,9 +272,301 @@ namespace ICE_Import
                 buttonLoad.Enabled = true;
                 buttonCancel.Enabled = false;
                 richTextBoxLog.Text += "Was loaded to DataBase " + count.ToString() + " entities" + "\n";
-                if (StaticData.records.Length > count)
+                if (StaticData.optionRecords.Length > count)
                 {
-                    richTextBoxLog.Text += "Was NOT loaded " + (StaticData.records.Length - count).ToString() + " entities from " + StaticData.records.Length.ToString() + " to DataBase" + "\n";
+                    richTextBoxLog.Text += "Was NOT loaded " + (StaticData.optionRecords.Length - count).ToString() + " entities from " + StaticData.optionRecords.Length.ToString() + " to DataBase" + "\n";
+                }
+                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                richTextBoxLog.ScrollToCaret();
+            }
+        }
+
+        private async Task SetLocalDataEOD_Futures_578(CancellationToken ct)
+        {
+            int count = 0;
+            int globalCount = 0;
+            int number;
+            int persent = (int.TryParse((StaticData.futureRecords.Length / 100).ToString(), out number)) ? number : 0;
+            int currentPersent = 0;
+            progressBarLoad.Minimum = 0;
+            progressBarLoad.Maximum = StaticData.futureRecords.Length;
+            Utilities utilites = new Utilities();
+            List<string> stripName = new List<string>();
+            bool newFuture = true;
+
+            try
+            {
+                LocalEntitiesDataContext context = new LocalEntitiesDataContext();
+                buttonLoad.Enabled = false;
+                buttonCancel.Enabled = true;
+
+                EOD_Futures_578 fu = (EOD_Futures_578)StaticData.futureRecords[0];
+                string futuresName = fu.ProductName.Trim(" Future".ToArray());
+                await Task.Run(() =>
+                {
+
+                foreach (EOD_Futures_578 future in StaticData.futureRecords)
+                {
+                    if (ct.IsCancellationRequested)
+                    {
+                        break;
+                    }
+                    try
+                    {
+                        foreach(string item in stripName)
+                        {
+                            if(item == future.StripName.ToString())
+                            {
+                                newFuture = false;
+                                break;
+                            }
+                            else
+                            {
+                                newFuture = true;
+                            }
+                        }
+                        if(newFuture)
+                        {
+                                //TODO: Create query to get idinstrument by description from tblinstruments
+                                //idinstrument for description = Cocoa is 36
+                                int idinstrument = 36;
+
+                                char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+                                string contractName = utilites.generateCQGSymbolFromSpan('F', "CCE", monthchar, future.StripName.Year);
+
+                                contract tableFuture = new contract
+                                {
+                                    //idcontract must generete by DB
+
+                                    //TODO: Create query to get cqgsymbol by description from tblinstruments
+                                    //cqgsymbol for description = Cocoa is CCE
+                                    contractname = contractName,
+                                    month = monthchar,
+                                    monthint = (short)future.StripName.Month,
+                                    year = (long)future.StripName.Year,
+                                    idinstrument = idinstrument,
+                                    expirationdate = future.Date,
+                                    cqgsymbol = contractName
+                                };
+
+                                //dailycontractsettlement tableDCS = new dailycontractsettlement
+                                //{
+                                //    //idcontract must generete by DB
+                                //    idcontract = tableFuture.idcontract,
+                                //    date = future.Date,
+                                //    settlement = (double)future.SettlementPrice,
+                                //    volume = (future.Volume != null) ? (long)future.Volume : 0,
+                                //    openinterest = (future.OpenInterest != null) ? (long)future.OpenInterest : 0
+                                //};
+                                context.contracts.InsertOnSubmit(tableFuture);
+                                //context.dailycontractsettlements.InsertOnSubmit(tableDCS);
+                                context.SubmitChanges();
+                                count++;
+                                stripName.Add(future.StripName.ToString());
+                        }
+                    }
+                    catch (OperationCanceledException cancel)
+                    {
+                            MessageBox.Show(cancel.Message);
+                        //richTextBoxLog.Text += cancel.Message + "\n";
+                        //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                        //richTextBoxLog.ScrollToCaret();
+                    }
+                    catch (Exception ex)
+                    {
+                        //richTextBoxLog.Text += "ERROR" + "\n";
+                        //richTextBoxLog.Text += ex.Message + "\n";
+                        //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                        //richTextBoxLog.ScrollToCaret();
+                    }
+                    finally
+                    {
+                        globalCount++;
+
+                        //progressBarLoad.Value = (ct.IsCancellationRequested) ? 0 : globalCount;
+
+                        //TODO: 
+                        if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                        {
+                            currentPersent += 10;
+                            //richTextBoxLog.Text += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                            //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                            //richTextBoxLog.ScrollToCaret();
+                        }
+                    }
+                }
+                }, ct);
+
+                await Task.Run(() =>
+                {
+
+                    foreach (EOD_Futures_578 future in StaticData.futureRecords)
+                    {
+                        if (ct.IsCancellationRequested)
+                        {
+                            break;
+                        }
+                        try
+                        {
+                            char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+
+                            int idcontract = (int)context.contracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0].idcontract;
+
+                            dailycontractsettlement tableDCS = new dailycontractsettlement
+                            {
+                                //idcontract must generete by DB
+                                idcontract = idcontract,
+                                date = future.Date,
+                                settlement = (double)future.SettlementPrice,
+                                volume = (future.Volume != null) ? (long)future.Volume : 0,
+                                openinterest = (future.OpenInterest != null) ? (long)future.OpenInterest : 0
+                            };
+
+                            context.dailycontractsettlements.InsertOnSubmit(tableDCS);
+                            context.SubmitChanges();
+                            count++;
+                        }
+                        catch (OperationCanceledException cancel)
+                        {
+                            MessageBox.Show(cancel.Message);
+                            //richTextBoxLog.Text += cancel.Message + "\n";
+                            //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                            //richTextBoxLog.ScrollToCaret();
+                        }
+                        catch (Exception ex)
+                        {
+                            //richTextBoxLog.Text += "ERROR" + "\n";
+                            //richTextBoxLog.Text += ex.Message + "\n";
+                            //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                            //richTextBoxLog.ScrollToCaret();
+                        }
+                        finally
+                        {
+                            globalCount++;
+
+                            //progressBarLoad.Value = (ct.IsCancellationRequested) ? 0 : globalCount;
+
+                            //TODO: 
+                            if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                            {
+                                currentPersent += 10;
+                                //richTextBoxLog.Text += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                                //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                                //richTextBoxLog.ScrollToCaret();
+                            }
+                        }
+                    }
+                }, ct);
+
+            }
+            catch (Exception ex)
+            {
+                richTextBoxLog.Text += "ERROR" + "\n";
+                richTextBoxLog.Text += ex.Message + "\n";
+                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                richTextBoxLog.ScrollToCaret();
+            }
+            finally
+            {
+                buttonLoad.Enabled = true;
+                buttonCancel.Enabled = false;
+                richTextBoxLog.Text += "Was loaded to DataBase " + count.ToString() + " entities" + "\n";
+                if (StaticData.futureRecords.Length > count)
+                {
+                    richTextBoxLog.Text += "Was NOT loaded " + (StaticData.futureRecords.Length - count).ToString() + " entities from " + StaticData.futureRecords.Length.ToString() + " to DataBase" + "\n";
+                }
+                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                richTextBoxLog.ScrollToCaret();
+            }
+        }
+
+        private async Task SetRemoteDataEOD_Futures_578(CancellationToken ct)
+        {
+            int count = 0;
+            int number;
+            int persent = (int.TryParse((StaticData.optionRecords.Length / 100).ToString(), out number)) ? number : 0;
+            int currentPersent = 0;
+            progressBarLoad.Minimum = 0;
+            progressBarLoad.Maximum = StaticData.optionRecords.Length;
+
+            try
+            {
+                var context = new RemoteEntitiesDataContext(conStr);
+                buttonLoad.Enabled = false;
+                buttonCancel.Enabled = true;
+
+                foreach (EOD_Options_578 option in StaticData.optionRecords)
+                {
+                    if (ct.IsCancellationRequested)
+                    {
+                        break;
+                    }
+                    try
+                    {
+                        await Task.Run(() =>
+                        {
+                            tbloption tableOption = new tbloption
+                            {
+                                idoption = long.Parse(count.ToString() + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString()),
+                                optionname = option.ProductName,
+                                optionmonth = option.Date.Month.ToString().ToCharArray()[0],
+                                optionmonthint = option.Date.Month,
+                                optionyear = option.Date.Year,
+                                strikeprice = (double)option.StrikePrice,
+                                callorput = 'c',
+                                idinstrument = 1,
+                                expirationdate = DateTime.Now,
+                                idcontract = 1,
+                                cqgsymbol = "somesymbol"
+                            };
+                            context.tbloptions.InsertOnSubmit(tableOption);
+                            context.SubmitChanges();
+                            count++;
+                        }, ct);
+
+                    }
+                    catch (OperationCanceledException cancel)
+                    {
+                        richTextBoxLog.Text += cancel.Message + "\n";
+                        richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                        richTextBoxLog.ScrollToCaret();
+                    }
+                    catch (Exception ex)
+                    {
+                        richTextBoxLog.Text += "ERROR" + "\n";
+                        richTextBoxLog.Text += ex.Message + "\n";
+                        richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                        richTextBoxLog.ScrollToCaret();
+                    }
+                    finally
+                    {
+                        progressBarLoad.Value = (ct.IsCancellationRequested) ? 0 : count;
+
+                        if (count % (10 * persent) == 0)
+                        {
+                            currentPersent += 10;
+                            richTextBoxLog.Text += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                            richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                            richTextBoxLog.ScrollToCaret();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                richTextBoxLog.Text += "ERROR" + "\n";
+                richTextBoxLog.Text += ex.Message + "\n";
+                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                richTextBoxLog.ScrollToCaret();
+            }
+            finally
+            {
+                buttonLoad.Enabled = true;
+                buttonCancel.Enabled = false;
+                richTextBoxLog.Text += "Was loaded to DataBase " + count.ToString() + " entities" + "\n";
+                if (StaticData.optionRecords.Length > count)
+                {
+                    richTextBoxLog.Text += "Was NOT loaded " + (StaticData.optionRecords.Length - count).ToString() + " entities from " + StaticData.optionRecords.Length.ToString() + " to DataBase" + "\n";
                 }
                 richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
                 richTextBoxLog.ScrollToCaret();
@@ -284,7 +576,7 @@ namespace ICE_Import
         private async void buttonLoad_Click(object sender, EventArgs e)
         {
             cts = new CancellationTokenSource();
-            string input = StaticData.records.GetType().Name.Trim('[', ']');
+            string input = StaticData.optionRecords.GetType().Name.Trim('[', ']');
             EntityNames name = new EntityNames();
             Enum.TryParse(input, out name);
             switch (name)
@@ -294,16 +586,10 @@ namespace ICE_Import
                     break;
                 case EntityNames.EOD_Options_578:
                     richTextBoxLog.Text += "Loading statrted" + "\n";
-                    if (checkBoxCheckDB.Checked) await SetLocalDataEOD_Options_578(cts.Token);
-                    else await SetRemoteDataEOD_Options_578(cts.Token);
-                    //RemoteEntitiesDataContext context = new RemoteEntitiesDataContext("constr");
+                    if (checkBoxCheckDB.Checked) await SetLocalDataEOD_Futures_578(cts.Token);
+                    else await SetRemoteDataEOD_Futures_578(cts.Token);
                     LocalEntitiesDataContext context = new LocalEntitiesDataContext();
-                    BindingSource bindingSourceBaners = new BindingSource();
-                    // TODO: query for each table
-                    bindingSourceBaners.DataSource = (from item in context.options
-                                                      select item
-                                                      ).ToList();
-                    dataGridViewOption.DataSource = bindingSourceBaners;
+                    buttonFill_Click(sender, e);
                     break;
                 default:
                     break;

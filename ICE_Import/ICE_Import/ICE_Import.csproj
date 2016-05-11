@@ -66,9 +66,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackgroundWorker.cs">
+    <Compile Include="FuturesBgWorker.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="MonthCodes.cs" />
+    <Compile Include="OptionsBgWorker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConversionAndFormatting.cs" />
     <Compile Include="Converters.cs" />
     <Compile Include="DataBaseForm.cs">
       <SubType>Form</SubType>
@@ -82,6 +87,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LocalEntities.dbml</DependentUpon>
     </Compile>
+    <Compile Include="OptionCalcs.cs" />
     <Compile Include="RemoteEntities.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -98,6 +104,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities.cs" />
     <EmbeddedResource Include="DataBaseForm.resx">
       <DependentUpon>DataBaseForm.cs</DependentUpon>
     </EmbeddedResource>
