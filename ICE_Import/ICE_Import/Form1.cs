@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace ICE_Import
@@ -17,22 +18,11 @@ namespace ICE_Import
 
         private void button_InputOption_Click(object sender, EventArgs e)
         {
-            using (var dialog = new OpenFileDialog())
-            {
-                dialog.Filter = "Data file|*.csv";
-                dialog.Title = "Select data file(s)";
-                dialog.Multiselect = true;
-                DialogResult result = dialog.ShowDialog();
-                if (result == DialogResult.Cancel)
-                {
-                    return;
-                }
-                OptionFilePaths = dialog.FileNames;
-            }
-
-            label_InputOption.Text = (OptionFilePaths.Length == 1) ? OptionFilePaths[0] : "(multiple files)";
-            progressBar_ParsingOption.Maximum = OptionFilePaths.Length;
-            button_ParseOption.Enabled = true;
+            OptionFilePaths = SelectFiles(
+                "Options",
+                label_InputOption,
+                progressBar_ParsingOption,
+                button_ParseOption);
         }
 
         private void button_ParseOptions_Click(object sender, EventArgs e)
@@ -85,21 +75,11 @@ namespace ICE_Import
 
         private void button_InputFuture_Click(object sender, EventArgs e)
         {
-            using (var dialog = new OpenFileDialog())
-            {
-                dialog.Filter = "Data file|*.csv";
-                dialog.Title = "Select data file(s)";
-                dialog.Multiselect = true;
-                DialogResult result = dialog.ShowDialog();
-                if (result == DialogResult.Cancel)
-                {
-                    return;
-                }
-                FutureFilePaths = dialog.FileNames;
-            }
-            label_InputFuture.Text = (FutureFilePaths.Length == 1) ? FutureFilePaths[0] : "(multiple files)";
-            progressBar_ParsingFuture.Maximum = FutureFilePaths.Length;
-            button_ParseFuture.Enabled = true;
+            FutureFilePaths = SelectFiles(
+                "Futures",
+                label_InputFuture,
+                progressBar_ParsingFuture,
+                button_ParseFuture);
         }
 
         private void button_ParseFuture_Click(object sender, EventArgs e)
@@ -113,6 +93,49 @@ namespace ICE_Import
             Cursor = Cursors.WaitCursor;
             button_CancelFuture.Enabled = false;
             backgroundWorker_ParsingFutures.CancelAsync();
+        }
+
+        private string[] SelectFiles(
+            string expSymbType,
+            Label label,
+            ProgressBar progressBar,
+            Button button)
+        {
+            label.Text = "(not selected)";
+            button.Enabled = false;
+
+            string[] filePaths;
+
+            using (var dialog = new OpenFileDialog())
+            {
+                dialog.Filter = "Data file|*.csv";
+                dialog.Title = "Select data file(s)";
+                dialog.Multiselect = true;
+                DialogResult result = dialog.ShowDialog();
+                if (result == DialogResult.Cancel)
+                {
+                    return null;
+                }
+                filePaths = dialog.FileNames;
+            }
+
+            // Check file names
+            foreach (string filePath in filePaths)
+            {
+                string fileName = Path.GetFileName(filePath);
+                if (!fileName.Contains(expSymbType))
+                {
+                    string msg = string.Format("The file name \"{0}\" does not contain \"{1}\".", fileName, expSymbType);
+                    MessageBox.Show(msg, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return null;
+                }
+            }
+
+            label.Text = (filePaths.Length == 1) ? filePaths[0] : "(multiple files)";
+            progressBar.Maximum = filePaths.Length;
+            button.Enabled = true;
+
+            return filePaths;
         }
     }
 }

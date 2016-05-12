@@ -121,8 +121,8 @@ namespace ICE_Import
             int count = 0;
             int globalCount = 0;
             int number;
-            int persent = (int.TryParse((StaticData.futureRecords.Length / 100).ToString(), out number)) ? number : 0;
-            int currentPersent = 0;
+            int percent = (int.TryParse((StaticData.futureRecords.Length / 100).ToString(), out number)) ? number : 0;
+            int currentPercent = 0;
             progressBarLoad.Minimum = 0;
             progressBarLoad.Maximum = StaticData.futureRecords.Length;
             Utilities utilites = new Utilities();
@@ -204,10 +204,10 @@ namespace ICE_Import
                             globalCount++;
 
                             //TODO: 
-                            if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                            if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
                             {
-                                currentPersent += 10;
-                                log += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                                currentPercent += 10;
+                                log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entities" + "\n";
                             }
                             Invoke(new Action(() => ValuesFromTask(log, globalCount)));
                             log = "";
@@ -257,10 +257,10 @@ namespace ICE_Import
                         {
                             globalCount++;
                             //TODO: 
-                            if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                            if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
                             {
-                                currentPersent += 10;
-                                log += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                                currentPercent += 10;
+                                log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entities" + "\n";
                             }
                             Invoke(new Action(() => ValuesFromTask(log, globalCount)));
                             log = "";
@@ -347,10 +347,10 @@ namespace ICE_Import
                         {
                             globalCount++;
                             //TODO: 
-                            if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                            if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
                             {
-                                currentPersent += 10;
-                                log += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                                currentPercent += 10;
+                                log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entities" + "\n";
                             }
                             Invoke(new Action(() => ValuesFromTask(log, globalCount)));
                             log = "";
@@ -383,8 +383,8 @@ namespace ICE_Import
             int count = 0;
             int globalCount = 0;
             int number;
-            int persent = (int.TryParse((StaticData.futureRecords.Length / 100).ToString(), out number)) ? number : 0;
-            int currentPersent = 0;
+            int percent = (int.TryParse((StaticData.futureRecords.Length / 100).ToString(), out number)) ? number : 0;
+            int currentPercent = 0;
             progressBarLoad.Minimum = 0;
             progressBarLoad.Maximum = StaticData.futureRecords.Length;
             Utilities utilites = new Utilities();
@@ -463,10 +463,10 @@ namespace ICE_Import
                             globalCount++;
 
                             //TODO: 
-                            if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                            if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
                             {
-                                currentPersent += 10;
-                                log += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                                currentPercent += 10;
+                                log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entities" + "\n";
                             }
                             Invoke(new Action(() => ValuesFromTask(log, globalCount)));
                             log = "";
@@ -518,10 +518,10 @@ namespace ICE_Import
                             globalCount++;
 
                             //TODO: 
-                            if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                            if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
                             {
-                                currentPersent += 10;
-                                log += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                                currentPercent += 10;
+                                log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entities" + "\n";
                             }
                             Invoke(new Action(() => ValuesFromTask(log, globalCount)));
                             log = "";
@@ -609,10 +609,10 @@ namespace ICE_Import
                             globalCount++;
 
                             //TODO: 
-                            if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                            if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
                             {
-                                currentPersent += 10;
-                                log += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                                currentPercent += 10;
+                                log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entities" + "\n";
                             }
                             Invoke(new Action(() => ValuesFromTask(log, globalCount)));
                             log = "";
@@ -810,7 +810,7 @@ namespace ICE_Import
                 finally
                 {
                     int count = localContext.dailycontractsettlements.Count() + localContext.options.Count() + localContext.optiondatas.Count() + localContext.contracts.Count();
-                    SetLogMessage("Pulled: " + count.ToString() + " entities from lockal DB");
+                    SetLogMessage("Pulled: " + count.ToString() + " entities from local DB");
                 }
 
             }

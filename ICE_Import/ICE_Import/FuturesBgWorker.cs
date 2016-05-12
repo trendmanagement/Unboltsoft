@@ -42,7 +42,7 @@ namespace ICE_Import
             int fileIdx = e.ProgressPercentage;
             if (fileIdx < FutureFilePaths.Length)
             {
-                label_ParsedOption.Text = FutureFilePaths[fileIdx];
+                label_ParsedFuture.Text = FutureFilePaths[fileIdx];
             }
             progressBar_ParsingFuture.Value = fileIdx;
         }
@@ -64,7 +64,7 @@ namespace ICE_Import
                 MessageBox.Show(msg, Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
-            label_ParsedOption.Text = string.Empty;
+            label_ParsedFuture.Text = string.Empty;
             progressBar_ParsingFuture.Value = 0;
             EnableDisableFuture(false);
 
