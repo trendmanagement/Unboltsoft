@@ -31,7 +31,6 @@ namespace ICE_Import
         //    v = 0.12, volatility is 12% per annum
         //    c = 0.0291
 
-
         public static double calculateOptionVolatility(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice)
         {
             double tempV = 0.5;
@@ -81,8 +80,7 @@ namespace ICE_Import
             return tempV;
         }
 
-        public static double calculateOptionVolatilityNR(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice,
-            double tickSize)
+        public static double calculateOptionVolatilityNR(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice, double tickSize)
         {
             return calculateOptionVolatilityNRCalc(callPutFlag, S, X, T, r, currentOptionPrice,
                 tickSize);
@@ -94,8 +92,7 @@ namespace ICE_Import
                 0.0001);
         }
 
-        public static double calculateOptionVolatilityNRCalc(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice,
-            double epsilon)
+        public static double calculateOptionVolatilityNRCalc(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice, double epsilon)
         {
             double vi = 0, ci, vegai, prevVi = 0;
             double b = 0; //for futures b = 0;
@@ -201,10 +198,7 @@ namespace ICE_Import
             {
                 throw (ex);
             }
-
-            return 0;
         }
-
 
         // The cumulative normal distribution function 
         public static double CND(double X)
@@ -233,10 +227,7 @@ namespace ICE_Import
             {
                 throw (ex);
             }
-
-            return 0;
         }
-
 
         public static double ND(double X)
         {
@@ -248,8 +239,6 @@ namespace ICE_Import
             {
                 throw (ex);
             }
-
-            return 0;
         }
 
         // Vega for the generalized Black and Scholes formula
@@ -269,8 +258,6 @@ namespace ICE_Import
             {
                 throw (ex);
             }
-
-            return 0;
         }
 
         // Gamma for the generalized Black and Scholes formula
@@ -330,8 +317,6 @@ namespace ICE_Import
                 return Math.Exp((b - r) * T) * (CND(d1) - 1);
             }
         }
-
-        
 
     }
 }

@@ -13,6 +13,9 @@ namespace ICE_Import
 {
     public partial class DataBaseForm : Form
     {
+        public delegate void SetLogMessageDelegate(string message);
+        public event SetLogMessageDelegate SetLogMessage;
+
         CancellationTokenSource cts;
         CancellationTokenSource ctsFill;
         string conStr = "Server=tcp:h9ggwlagd1.database.windows.net,1433; Database=TMLDB_Copy; User ID=dataupdate@h9ggwlagd1; Password=6dcEpZKSFRNYk^AN; Encrypt=True; TrustServerCertificate=False; Connection Timeout=30;";
@@ -22,6 +25,25 @@ namespace ICE_Import
             InitializeComponent();
             this.Resize += DataBaseForm_Resize;
             StaticData.ParseComplete += StaticData_ParseComplete;
+            this.SetLogMessage += DataBaseForm_SetLogMessage;
+        }
+
+        private void DataBaseForm_SetLogMessage(string message)
+        {
+            richTextBoxLog.Text += message + "\n";
+            richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+            richTextBoxLog.ScrollToCaret();
+        }
+
+        private void ValuesFromTask(string message, int count)
+        {
+            if(message != "")
+            {
+                richTextBoxLog.Text += message + "\n";
+                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                richTextBoxLog.ScrollToCaret();
+            }
+            progressBarLoad.Value = count;
         }
 
         private void DataBaseForm_Resize(object sender, EventArgs e)
@@ -38,9 +60,9 @@ namespace ICE_Import
             };
             richTextBoxLog.Width = tabControlOption.Width - 15;
             richTextBoxLog.Height = 90;
-            buttonLoad.Location = new Point()
+            buttonPush.Location = new Point()
             {
-                X = buttonLoad.Location.X,
+                X = buttonPush.Location.X,
                 Y = tabControlOption.Height + 5
             };
             checkBoxCheckDB.Location = new Point()
@@ -59,9 +81,9 @@ namespace ICE_Import
                 X = buttonCancel.Location.X,
                 Y = tabControlOption.Height + 5
             };
-            buttonFill.Location = new Point()
+            buttonPull.Location = new Point()
             {
-                X = buttonFill.Location.X,
+                X = buttonPull.Location.X,
                 Y = tabControlOption.Height + 5
             };
         }
@@ -74,214 +96,27 @@ namespace ICE_Import
 
             if (StaticData.optionRecords == null || StaticData.futureRecords == null)
             {
-                buttonLoad.Enabled = false;
+                buttonPush.Enabled = false;
             }
             else
             {
-                richTextBoxLog.Text += StaticData.futureRecords.GetType().Name.Trim('[', ']') + " entities count: " + StaticData.futureRecords.Length.ToString()  + " ready to push to DB" + "\n";
-                richTextBoxLog.Text += StaticData.optionRecords.GetType().Name.Trim('[', ']') + " entities count: " + StaticData.optionRecords.Length.ToString() + " ready to push to DB" + "\n";
-                buttonLoad.Enabled = true;
+                SetLogMessage(StaticData.futureRecords.GetType().Name.Trim('[', ']') + " entities count: " + StaticData.futureRecords.Length.ToString()  + " ready to push to DB");
+                SetLogMessage(StaticData.optionRecords.GetType().Name.Trim('[', ']') + " entities count: " + StaticData.optionRecords.Length.ToString() + " ready to push to DB");
+                buttonPush.Enabled = true;
             }
         }
 
         private void StaticData_ParseComplete()
         {
-            if (buttonLoad.Enabled != true)
+            if (buttonPush.Enabled != true)
             {
-                richTextBoxLog.Text += "Entities count: " + StaticData.optionRecords.Length.ToString() + "\n";
-                richTextBoxLog.Text += "Type of entity: " + StaticData.optionRecords.GetType().Name.Trim('[', ']') + "\n";
-                buttonLoad.Enabled = true;
+                SetLogMessage("Entities count: " + StaticData.optionRecords.Length.ToString());
+                SetLogMessage("Type of entity: " + StaticData.optionRecords.GetType().Name.Trim('[', ']'));
+                buttonPush.Enabled = true;
             }
         }
 
-        private async Task SetLocalDataEOD_Options_578(CancellationToken ct)
-        {
-            int count = 0;
-            int number;
-            int persent = (int.TryParse((StaticData.optionRecords.Length / 100).ToString(), out number)) ? number : 0;
-            int currentPersent = 0;
-            progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = StaticData.optionRecords.Length;
-
-            try
-            {
-                var context = new LocalEntitiesDataContext();
-                //OptionsDataContext context = new OptionsDataContext();
-                buttonLoad.Enabled = false;
-                buttonCancel.Enabled = true;
-
-                foreach (EOD_Options_578 option in StaticData.optionRecords)
-                {
-                    if (ct.IsCancellationRequested)
-                    {
-                        break;
-                    }
-                    try
-                    {
-                        await Task.Run(() =>
-                        {
-                            option tableOption = new option
-                            {
-                                idoption = long.Parse(count.ToString() + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString()),
-                                optionname = option.ProductName,
-                                optionmonth = option.Date.Month.ToString().ToCharArray()[0],
-                                optionmonthint = option.Date.Month,
-                                optionyear = option.Date.Year,
-                                strikeprice = (double)option.StrikePrice,
-                                callorput = 'c',
-                                idinstrument = 1,
-                                expirationdate = DateTime.Now,
-                                idcontract = 1,
-                                cqgsymbol = "somesymbol"
-                            };
-                            context.options.InsertOnSubmit(tableOption);
-                            context.SubmitChanges();
-                            count++;
-                        }, ct);
-                        
-                    }
-                    catch (OperationCanceledException cancel)
-                    {
-                        richTextBoxLog.Text += cancel.Message + "\n";
-                        richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                        richTextBoxLog.ScrollToCaret();
-                    }
-                    catch (Exception ex)
-                    {
-                        richTextBoxLog.Text += "ERROR" + "\n";
-                        richTextBoxLog.Text += ex.Message + "\n";
-                        richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                        richTextBoxLog.ScrollToCaret();
-                    }
-                    finally
-                    {
-                        progressBarLoad.Value = (ct.IsCancellationRequested)? 0 : count;
-
-                        if (count % (10 * persent) == 0)
-                        {
-                            currentPersent += 10;
-                            richTextBoxLog.Text += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
-                            richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                            richTextBoxLog.ScrollToCaret();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                richTextBoxLog.Text += "ERROR" + "\n";
-                richTextBoxLog.Text += ex.Message + "\n";
-                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                richTextBoxLog.ScrollToCaret();
-            }
-            finally
-            {
-                buttonLoad.Enabled = true;
-                buttonCancel.Enabled = false;
-                richTextBoxLog.Text += "Was loaded to DataBase " + count.ToString() + " entities" + "\n";
-                if (StaticData.optionRecords.Length > count)
-                {
-                    richTextBoxLog.Text += "Was NOT loaded " + (StaticData.optionRecords.Length - count).ToString() + " entities from " + StaticData.optionRecords.Length.ToString() + " to DataBase" + "\n";
-                }
-                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                richTextBoxLog.ScrollToCaret();
-            }
-        }
-
-        private async Task SetRemoteDataEOD_Options_578(CancellationToken ct)
-        {
-            int count = 0;
-            int number;
-            int persent = (int.TryParse((StaticData.optionRecords.Length / 100).ToString(), out number)) ? number : 0;
-            int currentPersent = 0;
-            progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = StaticData.optionRecords.Length;
-
-            try
-            {
-                var context = new RemoteEntitiesDataContext(conStr);
-                buttonLoad.Enabled = false;
-                buttonCancel.Enabled = true;
-
-                foreach (EOD_Options_578 option in StaticData.optionRecords)
-                {
-                    if (ct.IsCancellationRequested)
-                    {
-                        break;
-                    }
-                    try
-                    {
-                        await Task.Run(() =>
-                        {
-                            tbloption tableOption = new tbloption
-                            {
-                                idoption = long.Parse(count.ToString() + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString()),
-                                optionname = option.ProductName,
-                                optionmonth = option.Date.Month.ToString().ToCharArray()[0],
-                                optionmonthint = option.Date.Month,
-                                optionyear = option.Date.Year,
-                                strikeprice = (double)option.StrikePrice,
-                                callorput = 'c',
-                                idinstrument = 1,
-                                expirationdate = DateTime.Now,
-                                idcontract = 1,
-                                cqgsymbol = "somesymbol"
-                            };
-                            context.tbloptions.InsertOnSubmit(tableOption);
-                            context.SubmitChanges();
-                            count++;
-                        }, ct);
-
-                    }
-                    catch (OperationCanceledException cancel)
-                    {
-                        richTextBoxLog.Text += cancel.Message + "\n";
-                        richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                        richTextBoxLog.ScrollToCaret();
-                    }
-                    catch (Exception ex)
-                    {
-                        richTextBoxLog.Text += "ERROR" + "\n";
-                        richTextBoxLog.Text += ex.Message + "\n";
-                        richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                        richTextBoxLog.ScrollToCaret();
-                    }
-                    finally
-                    {
-                        progressBarLoad.Value = (ct.IsCancellationRequested) ? 0 : count;
-
-                        if (count % (10 * persent) == 0)
-                        {
-                            currentPersent += 10;
-                            richTextBoxLog.Text += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
-                            richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                            richTextBoxLog.ScrollToCaret();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                richTextBoxLog.Text += "ERROR" + "\n";
-                richTextBoxLog.Text += ex.Message + "\n";
-                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                richTextBoxLog.ScrollToCaret();
-            }
-            finally
-            {
-                buttonLoad.Enabled = true;
-                buttonCancel.Enabled = false;
-                richTextBoxLog.Text += "Was loaded to DataBase " + count.ToString() + " entities" + "\n";
-                if (StaticData.optionRecords.Length > count)
-                {
-                    richTextBoxLog.Text += "Was NOT loaded " + (StaticData.optionRecords.Length - count).ToString() + " entities from " + StaticData.optionRecords.Length.ToString() + " to DataBase" + "\n";
-                }
-                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                richTextBoxLog.ScrollToCaret();
-            }
-        }
-
-        private async Task SetLocalDataEOD_Futures_578(CancellationToken ct)
+        private async Task PushDataToLocalDB(CancellationToken ct)
         {
             int count = 0;
             int globalCount = 0;
@@ -297,109 +132,92 @@ namespace ICE_Import
             try
             {
                 LocalEntitiesDataContext context = new LocalEntitiesDataContext();
-                buttonLoad.Enabled = false;
+                buttonPush.Enabled = false;
                 buttonCancel.Enabled = true;
 
                 EOD_Futures_578 fu = (EOD_Futures_578)StaticData.futureRecords[0];
                 string futuresName = fu.ProductName.Trim(" Future".ToArray());
+
                 await Task.Run(() =>
                 {
-
-                foreach (EOD_Futures_578 future in StaticData.futureRecords)
-                {
-                    if (ct.IsCancellationRequested)
+                    string log = "";
+                    foreach (EOD_Futures_578 future in StaticData.futureRecords)
                     {
-                        break;
-                    }
-                    try
-                    {
-                        foreach(string item in stripName)
+                        if (ct.IsCancellationRequested)
                         {
-                            if(item == future.StripName.ToString())
-                            {
-                                newFuture = false;
-                                break;
-                            }
-                            else
-                            {
-                                newFuture = true;
-                            }
+                            break;
                         }
-                        if(newFuture)
+                        try
                         {
-                                //TODO: Create query to get idinstrument by description from tblinstruments
-                                //idinstrument for description = Cocoa is 36
-                                int idinstrument = 36;
-
-                                char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
-                                string contractName = utilites.generateCQGSymbolFromSpan('F', "CCE", monthchar, future.StripName.Year);
-
-                                contract tableFuture = new contract
+                            foreach(string item in stripName)
+                            {
+                                if(item == future.StripName.ToString())
                                 {
-                                    //idcontract must generete by DB
+                                    newFuture = false;
+                                    break;
+                                }
+                                else
+                                {
+                                    newFuture = true;
+                                }
+                            }
+                            if(newFuture)
+                            {
+                                    //TODO: Create query to get idinstrument by description from tblinstruments
+                                    //idinstrument for description = Cocoa is 36
+                                    int idinstrument = 36;
 
-                                    //TODO: Create query to get cqgsymbol by description from tblinstruments
-                                    //cqgsymbol for description = Cocoa is CCE
-                                    contractname = contractName,
-                                    month = monthchar,
-                                    monthint = (short)future.StripName.Month,
-                                    year = (long)future.StripName.Year,
-                                    idinstrument = idinstrument,
-                                    expirationdate = future.Date,
-                                    cqgsymbol = contractName
-                                };
+                                    char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+                                    string contractName = utilites.generateCQGSymbolFromSpan('F', "CCE", monthchar, future.StripName.Year);
 
-                                //dailycontractsettlement tableDCS = new dailycontractsettlement
-                                //{
-                                //    //idcontract must generete by DB
-                                //    idcontract = tableFuture.idcontract,
-                                //    date = future.Date,
-                                //    settlement = (double)future.SettlementPrice,
-                                //    volume = (future.Volume != null) ? (long)future.Volume : 0,
-                                //    openinterest = (future.OpenInterest != null) ? (long)future.OpenInterest : 0
-                                //};
-                                context.contracts.InsertOnSubmit(tableFuture);
-                                //context.dailycontractsettlements.InsertOnSubmit(tableDCS);
-                                context.SubmitChanges();
-                                count++;
-                                stripName.Add(future.StripName.ToString());
+                                    contract tableFuture = new contract
+                                    {
+                                        //idcontract must generete by DB
+
+                                        //TODO: Create query to get cqgsymbol by description from tblinstruments
+                                        //cqgsymbol for description = Cocoa is CCE
+                                        contractname = contractName,
+                                        month = monthchar,
+                                        monthint = (short)future.StripName.Month,
+                                        year = (long)future.StripName.Year,
+                                        idinstrument = idinstrument,
+                                        expirationdate = future.Date,
+                                        cqgsymbol = contractName
+                                    };
+                                    context.contracts.InsertOnSubmit(tableFuture);
+                                    context.SubmitChanges();
+                                    count++;
+                                    stripName.Add(future.StripName.ToString());
+                            }
                         }
-                    }
-                    catch (OperationCanceledException cancel)
-                    {
-                            MessageBox.Show(cancel.Message);
-                        //richTextBoxLog.Text += cancel.Message + "\n";
-                        //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                        //richTextBoxLog.ScrollToCaret();
-                    }
-                    catch (Exception ex)
-                    {
-                        //richTextBoxLog.Text += "ERROR" + "\n";
-                        //richTextBoxLog.Text += ex.Message + "\n";
-                        //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                        //richTextBoxLog.ScrollToCaret();
-                    }
-                    finally
-                    {
-                        globalCount++;
-
-                        //progressBarLoad.Value = (ct.IsCancellationRequested) ? 0 : globalCount;
-
-                        //TODO: 
-                        if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                        catch (OperationCanceledException cancel)
                         {
-                            currentPersent += 10;
-                            //richTextBoxLog.Text += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
-                            //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                            //richTextBoxLog.ScrollToCaret();
+                            log += cancel.Message + "\n";
+                        }
+                        catch (Exception ex)
+                        {
+                            log += "ERROR" + "\n";
+                            log += ex.Message + "\n";
+                        }
+                        finally
+                        {
+                            globalCount++;
+
+                            //TODO: 
+                            if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                            {
+                                currentPersent += 10;
+                                log += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                            }
+                            Invoke(new Action(() => ValuesFromTask(log, globalCount)));
+                            log = "";
                         }
                     }
-                }
                 }, ct);
 
                 await Task.Run(() =>
                 {
-
+                    string log = "";
                     foreach (EOD_Futures_578 future in StaticData.futureRecords)
                     {
                         if (ct.IsCancellationRequested)
@@ -417,7 +235,7 @@ namespace ICE_Import
                                 //idcontract must generete by DB
                                 idcontract = idcontract,
                                 date = future.Date,
-                                settlement = (double)future.SettlementPrice,
+                                settlement = (future.SettlementPrice != null)? (double)future.SettlementPrice : 0,
                                 volume = (future.Volume != null) ? (long)future.Volume : 0,
                                 openinterest = (future.OpenInterest != null) ? (long)future.OpenInterest : 0
                             };
@@ -428,32 +246,114 @@ namespace ICE_Import
                         }
                         catch (OperationCanceledException cancel)
                         {
-                            MessageBox.Show(cancel.Message);
-                            //richTextBoxLog.Text += cancel.Message + "\n";
-                            //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                            //richTextBoxLog.ScrollToCaret();
+                            log += cancel.Message + "\n";
                         }
                         catch (Exception ex)
                         {
-                            //richTextBoxLog.Text += "ERROR" + "\n";
-                            //richTextBoxLog.Text += ex.Message + "\n";
-                            //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                            //richTextBoxLog.ScrollToCaret();
+                            log += "ERROR" + "\n";
+                            log += ex.Message + "\n";
                         }
                         finally
                         {
                             globalCount++;
-
-                            //progressBarLoad.Value = (ct.IsCancellationRequested) ? 0 : globalCount;
-
                             //TODO: 
                             if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
                             {
                                 currentPersent += 10;
-                                //richTextBoxLog.Text += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
-                                //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                                //richTextBoxLog.ScrollToCaret();
+                                log += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
                             }
+                            Invoke(new Action(() => ValuesFromTask(log, globalCount)));
+                            log = "";
+                        }
+                    }
+                }, ct);
+
+                await Task.Run(() =>
+                {
+                    string log = "";
+                    foreach (EOD_Options_578 option in StaticData.optionRecords)
+                    {
+                        if (ct.IsCancellationRequested)
+                        {
+                            break;
+                        }
+                        try
+                        {
+                            //TODO: Create query to get idinstrument by description from tblinstruments
+                            //idinstrument for description = Cocoa is 36
+                            int idinstrument = 36;
+
+                            char monthchar = Convert.ToChar(((MonthCodes)option.StripName.Month).ToString());
+
+                            int idcontract = (int)context.contracts.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToArray()[0].idcontract;
+                            //TODO: Create query to get idinstrument by description from tblinstruments
+                            //idinstrument for description = Cocoa is 36
+                            string optionName = utilites.generateOptionCQGSymbolFromSpan(option.OptionType, "CCE", monthchar, option.StripName.Year, (option.StrikePrice != null)? (double)option.StrikePrice : 0, 0, 0, idinstrument);
+
+                            option tableOption = new option
+                            {
+                                //idoption must generete by DB
+                                optionname = optionName,
+                                optionmonth = monthchar,
+                                optionmonthint = option.StripName.Month,
+                                optionyear = option.StripName.Year,
+                                strikeprice = (option.StrikePrice != null)? (double)option.StrikePrice : 0,
+                                callorput = option.OptionType,
+                                idinstrument = idinstrument,
+                                expirationdate = DateTime.Now,
+                                idcontract = idcontract,
+                                cqgsymbol = optionName
+                            };
+
+                            // callPutFlag                      - tableOption.callorput
+                            // S - stock price                  - 1.56
+                            // X - strike price of option       - option.SettlementPrice
+                            // T - time to expiration in years  - 0.5
+                            // r - risk-free interest rate      - option.OpenInterest
+                            // currentOptionPrice               - tableOption.strikeprice
+
+                            double impliedvol = OptionCalcs.calculateOptionVolatility(tableOption.callorput, 
+                                                                                      1.56, 
+                                                                                      (option.SettlementPrice!= null)? (double)option.SettlementPrice : 0, 
+                                                                                      0.5, 
+                                                                                      (option.OpenInterest != null)? (double)option.OpenInterest : 0, 
+                                                                                      tableOption.strikeprice);
+
+                            optiondata tableOptionData = new optiondata
+                            {
+                                //idoptiondata must generete by DB
+                                idoption = tableOption.idoption,
+                                datetime = option.Date,
+                                price = 1,
+                                impliedvol = impliedvol,
+                                timetoexpinyear = (option.StrikePrice != null)? (double)option.StrikePrice : 0
+                            };
+
+                            context.optiondatas.InsertOnSubmit(tableOptionData);
+                            context.options.InsertOnSubmit(tableOption);
+                            context.SubmitChanges();
+                            count++;
+                        }
+                        catch (OperationCanceledException cancel)
+                        {
+                            log += cancel.Message + "\n";
+                        }
+                        catch (Exception ex)
+                        {
+                            log += "ERROR" + "\n";
+                            log += ex.Message + "\n";
+                        }
+                        finally
+                        {
+                            globalCount++;
+                            //TODO: 
+                            if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                            {
+                                currentPersent += 10;
+                                log += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                            }
+                            Invoke(new Action(() => ValuesFromTask(log, globalCount)));
+                            log = "";
                         }
                     }
                 }, ct);
@@ -461,119 +361,283 @@ namespace ICE_Import
             }
             catch (Exception ex)
             {
-                richTextBoxLog.Text += "ERROR" + "\n";
-                richTextBoxLog.Text += ex.Message + "\n";
-                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                richTextBoxLog.ScrollToCaret();
+                SetLogMessage("ERROR");
+                SetLogMessage(ex.Message);
             }
             finally
             {
-                buttonLoad.Enabled = true;
+                buttonPush.Enabled = true;
                 buttonCancel.Enabled = false;
-                richTextBoxLog.Text += "Was loaded to DataBase " + count.ToString() + " entities" + "\n";
+
+                Invoke(new Action(() => DataBaseForm_SetLogMessage("Was loaded to DataBase " + count.ToString() + " entities")));
+                SetLogMessage("Was loaded to DataBase " + count.ToString() + " entities");
                 if (StaticData.futureRecords.Length > count)
                 {
-                    richTextBoxLog.Text += "Was NOT loaded " + (StaticData.futureRecords.Length - count).ToString() + " entities from " + StaticData.futureRecords.Length.ToString() + " to DataBase" + "\n";
+                    SetLogMessage("Was NOT loaded " + (StaticData.futureRecords.Length - count).ToString() + " entities from " + StaticData.futureRecords.Length.ToString() + " to DB");
                 }
-                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                richTextBoxLog.ScrollToCaret();
             }
         }
 
-        private async Task SetRemoteDataEOD_Futures_578(CancellationToken ct)
+        private async Task PushDataToRemoteDB(CancellationToken ct)
         {
             int count = 0;
+            int globalCount = 0;
             int number;
-            int persent = (int.TryParse((StaticData.optionRecords.Length / 100).ToString(), out number)) ? number : 0;
+            int persent = (int.TryParse((StaticData.futureRecords.Length / 100).ToString(), out number)) ? number : 0;
             int currentPersent = 0;
             progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = StaticData.optionRecords.Length;
+            progressBarLoad.Maximum = StaticData.futureRecords.Length;
+            Utilities utilites = new Utilities();
+            List<string> stripName = new List<string>();
+            bool newFuture = true;
 
             try
             {
                 var context = new RemoteEntitiesDataContext(conStr);
-                buttonLoad.Enabled = false;
+                buttonPush.Enabled = false;
                 buttonCancel.Enabled = true;
 
-                foreach (EOD_Options_578 option in StaticData.optionRecords)
+                await Task.Run(() =>
                 {
-                    if (ct.IsCancellationRequested)
+                    string log = "";
+                    foreach (EOD_Futures_578 future in StaticData.futureRecords)
                     {
-                        break;
-                    }
-                    try
-                    {
-                        await Task.Run(() =>
+                        if (ct.IsCancellationRequested)
                         {
+                            break;
+                        }
+                        try
+                        {
+                            foreach (string item in stripName)
+                            {
+                                if (item == future.StripName.ToString())
+                                {
+                                    newFuture = false;
+                                    break;
+                                }
+                                else
+                                {
+                                    newFuture = true;
+                                }
+                            }
+                            if (newFuture)
+                            {
+                                //TODO: Create query to get idinstrument by description from tblinstruments
+                                //idinstrument for description = Cocoa is 36
+                                int idinstrument = 36;
+
+                                char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+                                string contractName = utilites.generateCQGSymbolFromSpan('F', "CCE", monthchar, future.StripName.Year);
+
+                                tblcontract tableFuture = new tblcontract
+                                {
+                                    //idcontract must generete by DB
+
+                                    //TODO: Create query to get cqgsymbol by description from tblinstruments
+                                    //cqgsymbol for description = Cocoa is CCE
+                                    contractname = contractName,
+                                    month = monthchar,
+                                    monthint = (short)future.StripName.Month,
+                                    year = (long)future.StripName.Year,
+                                    idinstrument = idinstrument,
+                                    expirationdate = future.Date,
+                                    cqgsymbol = contractName
+                                };
+                                context.tblcontracts.InsertOnSubmit(tableFuture);
+                                context.SubmitChanges();
+                                count++;
+                                stripName.Add(future.StripName.ToString());
+                            }
+                        }
+                        catch (OperationCanceledException cancel)
+                        {
+                            log += cancel.Message + "\n";
+                        }
+                        catch (Exception ex)
+                        {
+                            log += "ERROR" + "\n";
+                            log += ex.Message + "\n";
+                        }
+                        finally
+                        {
+                            globalCount++;
+
+                            //TODO: 
+                            if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                            {
+                                currentPersent += 10;
+                                log += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                            }
+                            Invoke(new Action(() => ValuesFromTask(log, globalCount)));
+                            log = "";
+                        }
+                    }
+
+                }, ct);
+
+                await Task.Run(() =>
+                {
+                    string log = "";
+                    foreach (EOD_Futures_578 future in StaticData.futureRecords)
+                    {
+                        if (ct.IsCancellationRequested)
+                        {
+                            break;
+                        }
+                        try
+                        {
+                            char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+
+                            int idcontract = (int)context.tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0].idcontract;
+
+                            tbldailycontractsettlement tableDCS = new tbldailycontractsettlement
+                            {
+                                //idcontract must generete by DB
+                                idcontract = idcontract,
+                                date = future.Date,
+                                settlement = (future.SettlementPrice != null) ? (double)future.SettlementPrice : 0,
+                                volume = (future.Volume != null) ? (long)future.Volume : 0,
+                                openinterest = (future.OpenInterest != null) ? (long)future.OpenInterest : 0
+                            };
+
+                            context.tbldailycontractsettlements.InsertOnSubmit(tableDCS);
+                            context.SubmitChanges();
+                            count++;
+                        }
+                        catch (OperationCanceledException cancel)
+                        {
+                            log += cancel.Message + "\n";
+                        }
+                        catch (Exception ex)
+                        {
+                            log += "ERROR" + "\n";
+                            log += ex.Message + "\n";
+                        }
+                        finally
+                        {
+                            globalCount++;
+
+                            //TODO: 
+                            if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                            {
+                                currentPersent += 10;
+                                log += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                            }
+                            Invoke(new Action(() => ValuesFromTask(log, globalCount)));
+                            log = "";
+                        }
+                    }
+                }, ct);
+
+                await Task.Run(() =>
+                {
+                    string log = "";
+                    foreach (EOD_Options_578 option in StaticData.optionRecords)
+                    {
+                        if (ct.IsCancellationRequested)
+                        {
+                            break;
+                        }
+                        try
+                        {
+                            //TODO: Create query to get idinstrument by description from tblinstruments
+                            //idinstrument for description = Cocoa is 36
+                            int idinstrument = 36;
+
+                            char monthchar = Convert.ToChar(((MonthCodes)option.StripName.Month).ToString());
+
+                            int idcontract = (int)context.tblcontracts.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToArray()[0].idcontract;
+                            //TODO: Create query to get idinstrument by description from tblinstruments
+                            //idinstrument for description = Cocoa is 36
+                            string optionName = utilites.generateOptionCQGSymbolFromSpan(option.OptionType, "CCE", monthchar, option.StripName.Year, (option.StrikePrice != null) ? (double)option.StrikePrice : 0, 0, 0, idinstrument);
+
                             tbloption tableOption = new tbloption
                             {
-                                idoption = long.Parse(count.ToString() + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + DateTime.Now.Second.ToString()),
-                                optionname = option.ProductName,
-                                optionmonth = option.Date.Month.ToString().ToCharArray()[0],
-                                optionmonthint = option.Date.Month,
-                                optionyear = option.Date.Year,
-                                strikeprice = (double)option.StrikePrice,
-                                callorput = 'c',
-                                idinstrument = 1,
+                                //idoption must generete by DB
+                                optionname = optionName,
+                                optionmonth = monthchar,
+                                optionmonthint = option.StripName.Month,
+                                optionyear = option.StripName.Year,
+                                strikeprice = (option.StrikePrice != null) ? (double)option.StrikePrice : 0,
+                                callorput = option.OptionType,
+                                idinstrument = idinstrument,
                                 expirationdate = DateTime.Now,
-                                idcontract = 1,
-                                cqgsymbol = "somesymbol"
+                                idcontract = idcontract,
+                                cqgsymbol = optionName
                             };
+
+                            // callPutFlag                      - tableOption.callorput
+                            // S - stock price                  - 1.56
+                            // X - strike price of option       - option.SettlementPrice
+                            // T - time to expiration in years  - 0.5
+                            // r - risk-free interest rate      - option.OpenInterest
+                            // currentOptionPrice               - tableOption.strikeprice
+
+                            double impliedvol = OptionCalcs.calculateOptionVolatility(tableOption.callorput,
+                                                                                    1.56,
+                                                                                    (option.SettlementPrice != null) ? (double)option.SettlementPrice : 0,
+                                                                                    0.5,
+                                                                                    (option.OpenInterest != null) ? (double)option.OpenInterest : 0,
+                                                                                    tableOption.strikeprice);
+
+                            tbloptiondata tableOptionData = new tbloptiondata
+                            {
+                                //idoptiondata must generete by DB
+                                idoption = tableOption.idoption,
+                                datetime = option.Date,
+                                price = 1,
+                                impliedvol = impliedvol,
+                                timetoexpinyear = (option.StrikePrice != null) ? (double)option.StrikePrice : 0
+                            };
+
+                            context.tbloptiondatas.InsertOnSubmit(tableOptionData);
                             context.tbloptions.InsertOnSubmit(tableOption);
                             context.SubmitChanges();
                             count++;
-                        }, ct);
-
-                    }
-                    catch (OperationCanceledException cancel)
-                    {
-                        richTextBoxLog.Text += cancel.Message + "\n";
-                        richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                        richTextBoxLog.ScrollToCaret();
-                    }
-                    catch (Exception ex)
-                    {
-                        richTextBoxLog.Text += "ERROR" + "\n";
-                        richTextBoxLog.Text += ex.Message + "\n";
-                        richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                        richTextBoxLog.ScrollToCaret();
-                    }
-                    finally
-                    {
-                        progressBarLoad.Value = (ct.IsCancellationRequested) ? 0 : count;
-
-                        if (count % (10 * persent) == 0)
+                        }
+                        catch (OperationCanceledException cancel)
                         {
-                            currentPersent += 10;
-                            richTextBoxLog.Text += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
-                            richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                            richTextBoxLog.ScrollToCaret();
+                            log += cancel.Message + "\n";
+                        }
+                        catch (Exception ex)
+                        {
+                            log += "ERROR" + "\n";
+                            log += ex.Message + "\n";
+                        }
+                        finally
+                        {
+                            globalCount++;
+
+                            //TODO: 
+                            if (count % (10 * persent) > 0 && count % (10 * persent) < 0.5)
+                            {
+                                currentPersent += 10;
+                                log += "Current progress: " + currentPersent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                            }
+                            Invoke(new Action(() => ValuesFromTask(log, globalCount)));
+                            log = "";
                         }
                     }
-                }
+                }, ct);
             }
             catch (Exception ex)
             {
-                richTextBoxLog.Text += "ERROR" + "\n";
-                richTextBoxLog.Text += ex.Message + "\n";
-                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                richTextBoxLog.ScrollToCaret();
+                SetLogMessage("ERROR");
+                SetLogMessage(ex.Message);
             }
             finally
             {
-                buttonLoad.Enabled = true;
+                buttonPush.Enabled = true;
                 buttonCancel.Enabled = false;
-                richTextBoxLog.Text += "Was loaded to DataBase " + count.ToString() + " entities" + "\n";
+                SetLogMessage("Was loaded to DataBase " + count.ToString() + " entities");
                 if (StaticData.optionRecords.Length > count)
                 {
-                    richTextBoxLog.Text += "Was NOT loaded " + (StaticData.optionRecords.Length - count).ToString() + " entities from " + StaticData.optionRecords.Length.ToString() + " to DataBase" + "\n";
+                    SetLogMessage("Was NOT loaded " + (StaticData.optionRecords.Length - count).ToString() + " entities from " + StaticData.optionRecords.Length.ToString() + " to DataBase");
                 }
-                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                richTextBoxLog.ScrollToCaret();
             }
         }
 
-        private async void buttonLoad_Click(object sender, EventArgs e)
+        private async void buttonPush_Click(object sender, EventArgs e)
         {
             cts = new CancellationTokenSource();
             string input = StaticData.optionRecords.GetType().Name.Trim('[', ']');
@@ -585,11 +649,10 @@ namespace ICE_Import
                     // TODO: load data EOD_Futures_578 to db like EOD_Options_578 entity
                     break;
                 case EntityNames.EOD_Options_578:
-                    richTextBoxLog.Text += "Loading statrted" + "\n";
-                    if (checkBoxCheckDB.Checked) await SetLocalDataEOD_Futures_578(cts.Token);
-                    else await SetRemoteDataEOD_Futures_578(cts.Token);
-                    LocalEntitiesDataContext context = new LocalEntitiesDataContext();
-                    buttonFill_Click(sender, e);
+                    richTextBoxLog.Text += "Pushing statrted" + "\n";
+                    if (checkBoxCheckDB.Checked) await PushDataToLocalDB(cts.Token);
+                    else await PushDataToRemoteDB(cts.Token);
+                    buttonPull_Click(sender, e);
                     break;
                 default:
                     break;
@@ -600,11 +663,11 @@ namespace ICE_Import
         {
             if (checkBoxCheckDB.Checked)
             {
-                //MessageBox.Show("Local DataBase");
+               SetLogMessage("You selected local DB");
             }
             else
             {
-                //MessageBox.Show("Remote DataBase");
+                SetLogMessage("You selected remote DB");
             }
         }
 
@@ -616,7 +679,7 @@ namespace ICE_Import
             }
         }
 
-        private async void buttonFill_Click(object sender, EventArgs e)
+        private async void buttonPull_Click(object sender, EventArgs e)
         {
             ctsFill = new CancellationTokenSource();
 
@@ -633,93 +696,76 @@ namespace ICE_Import
                 List<tbloption> listOption = new List<tbloption>();
                 try
                 {
-                    int count = remoteContext.tbloptions.Where(item => item.cqgsymbol == "somesymbol").Count();
-                    richTextBoxLog.Text += "Fill " + count.ToString() + " entities started from option table" + "\n";
-                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    richTextBoxLog.ScrollToCaret();
+                    int count = 100;
+
+                    SetLogMessage("Pulling " + count + " entities started from contract table");
+
+                    await Task.Run(() =>
+                    {
+                        bsContract.DataSource = (from item in remoteContext.tblcontracts
+                                                 select item
+                                                ).Take(count).ToList();
+                    }, ctsFill.Token);
+
+                    SetLogMessage("Pulling " + count + " entities started from dailycontractsettlements table");
+
+                    await Task.Run(() =>
+                    {
+                        bsDailyContractSettlement.DataSource = (from item in remoteContext.tbldailycontractsettlements
+                                                                select item
+                                                                ).Take(count).ToList();
+                    }, ctsFill.Token);
+
+                    //int count = remoteContext.tbloptions.Where(item => item.cqgsymbol == "somesymbol").Count();
+                    SetLogMessage("Pulling " + count.ToString() + " entities started from option table");
                     try
                     {
                         await Task.Run(() =>
                         {
                             listOption = (from item in remoteContext.tbloptions
-                                                            where item.cqgsymbol == "somesymbol"
+                                                            //where item.cqgsymbol == "somesymbol"
                                                             select item
-                                                  ).ToList();
+                                                  ).Take(count).ToList();
                         }, ctsFill.Token);
                     }
                     catch (Exception ex)
                     {
-                        richTextBoxLog.Text += ex.Message + "\n";
-                        richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                        richTextBoxLog.ScrollToCaret();
+                        SetLogMessage(ex.Message);
                     }
                     finally
                     {
                         bsOption.DataSource = listOption;
                     }
-                    //richTextBoxLog.Text += "Fill " + remoteContext.tbloptiondatas.Count().ToString() + " entities started from optiondata table" + "\n";
-                    //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    //richTextBoxLog.ScrollToCaret();
 
-                    //await Task.Run(() =>
-                    //{
-                    //    bsOptionData.DataSource = (from item in remoteContext.tbloptiondatas
-                    //                               select item
-                    //                              ).ToList();
-                    //}, ctsFill.Token);
-
-                    //richTextBoxLog.Text += "Fill " + remoteContext.tblcontracts.Count().ToString() + " entities started from contract table" + "\n";
-                    //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    //richTextBoxLog.ScrollToCaret();
-
-                    //await Task.Run(() =>
-                    //{
-                    //    bsContract.DataSource = (from item in remoteContext.tblcontracts
-                    //                             select item
-                    //                            ).ToList();
-                    //}, ctsFill.Token);
-
-                    //richTextBoxLog.Text += "Fill " + remoteContext.tbldailycontractsettlements.Count().ToString() + " entities started from dailycontractsettlements table" + "\n";
-                    //richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    //richTextBoxLog.ScrollToCaret();
-
-                    //await Task.Run(() =>
-                    //{
-                    //    bsDailyContractSettlement.DataSource = (from item in remoteContext.tbldailycontractsettlements
-                    //                                            select item
-                    //                                            ).ToList();
-                    //}, ctsFill.Token);
+                    SetLogMessage("Pulling " + count + " entities started from optiondata table");
+                    await Task.Run(() =>
+                    {
+                        bsOptionData.DataSource = (from item in remoteContext.tbloptiondatas
+                                                   select item
+                                                  ).Take(count).ToList();
+                    }, ctsFill.Token);
 
                 }
                 catch (OperationCanceledException cancel)
                 {
-                    richTextBoxLog.Text += cancel.Message + "\n";
-                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    richTextBoxLog.ScrollToCaret();
+                    SetLogMessage(cancel.Message);
                 }
                 catch (Exception ex)
                 {
-                    richTextBoxLog.Text += "ERROR" + "\n";
-                    richTextBoxLog.Text += ex.Message + "\n";
-                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    richTextBoxLog.ScrollToCaret();
+                    SetLogMessage("ERROR");
+                    SetLogMessage(ex.Message);
                 }
                 finally
                 {
-                    int count = listOption.Count;
-                    richTextBoxLog.Text += "Filled: " + count.ToString() + " entities" + "\n";
-                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    richTextBoxLog.ScrollToCaret();
+                    int count = 4 * 100;
+                    SetLogMessage("Pulled: " + count.ToString() + " entities from remote DB");
                 }
             }
             else
             {
                 try
                 {
-                    richTextBoxLog.Text += "Fill " + localContext.options.Count().ToString() + " entities started from option table" + "\n";
-                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    richTextBoxLog.ScrollToCaret();
-
+                    SetLogMessage("Pulling " + localContext.options.Count().ToString() + " entities started from option table");
                     await Task.Run(() =>
                     {
                         bsOption.DataSource = (from item in localContext.options
@@ -727,10 +773,7 @@ namespace ICE_Import
                                               ).ToList();
                     }, ctsFill.Token);
 
-                    richTextBoxLog.Text += "Fill " + localContext.optiondatas.Count().ToString() + " entities started from optiondata table" + "\n";
-                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    richTextBoxLog.ScrollToCaret();
-
+                    SetLogMessage("Pulling " + localContext.optiondatas.Count().ToString() + " entities started from optiondata table");
                     await Task.Run(() =>
                     {
                         bsOptionData.DataSource = (from item in localContext.optiondatas
@@ -738,10 +781,7 @@ namespace ICE_Import
                                                   ).ToList();
                     }, ctsFill.Token);
 
-                    richTextBoxLog.Text += "Fill " + localContext.contracts.Count().ToString() + " entities started from contract table" + "\n";
-                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    richTextBoxLog.ScrollToCaret();
-
+                    SetLogMessage("Pulling " + localContext.contracts.Count().ToString() + " entities started from contract table");
                     await Task.Run(() =>
                     {
                         bsContract.DataSource = (from item in localContext.contracts
@@ -749,10 +789,7 @@ namespace ICE_Import
                                                 ).ToList();
                     }, ctsFill.Token);
 
-                    richTextBoxLog.Text += "Fill " + localContext.dailycontractsettlements.Count().ToString() + " entities started from dailycontractsettlements table" + "\n";
-                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    richTextBoxLog.ScrollToCaret();
-
+                    SetLogMessage("Pulling " + localContext.dailycontractsettlements.Count().ToString() + " entities started from dailycontractsettlements table");
                     await Task.Run(() =>
                     {
                         bsDailyContractSettlement.DataSource = (from item in localContext.dailycontractsettlements
@@ -763,23 +800,17 @@ namespace ICE_Import
                 }
                 catch (OperationCanceledException cancel)
                 {
-                    richTextBoxLog.Text += cancel.Message + "\n";
-                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    richTextBoxLog.ScrollToCaret();
+                    SetLogMessage(cancel.Message);
                 }
                 catch (Exception ex)
                 {
-                    richTextBoxLog.Text += "ERROR" + "\n";
-                    richTextBoxLog.Text += ex.Message + "\n";
-                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    richTextBoxLog.ScrollToCaret();
+                    SetLogMessage("ERROR");
+                    SetLogMessage(ex.Message);
                 }
                 finally
                 {
                     int count = localContext.dailycontractsettlements.Count() + localContext.options.Count() + localContext.optiondatas.Count() + localContext.contracts.Count();
-                    richTextBoxLog.Text += "Filled: " + count.ToString() + " entities" + "\n";
-                    richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                    richTextBoxLog.ScrollToCaret();
+                    SetLogMessage("Pulled: " + count.ToString() + " entities from lockal DB");
                 }
 
             }
@@ -789,5 +820,6 @@ namespace ICE_Import
             dataGridViewContract.DataSource = bsContract;
             dataGridViewDailyContract.DataSource = bsDailyContractSettlement;
         }
+
     }
 }
