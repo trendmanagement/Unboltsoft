@@ -28,13 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button_InputOption = new System.Windows.Forms.Button();
-            this.label_InputOption = new System.Windows.Forms.Label();
-            this.button_ParseOption = new System.Windows.Forms.Button();
-            this.label_ParsedOption = new System.Windows.Forms.Label();
-            this.progressBar_ParsingOption = new System.Windows.Forms.ProgressBar();
             this.backgroundWorker_ParsingOptions = new System.ComponentModel.BackgroundWorker();
-            this.button_CancelOption = new System.Windows.Forms.Button();
             this.buttonDB = new System.Windows.Forms.Button();
             this.button_CancelFuture = new System.Windows.Forms.Button();
             this.progressBar_ParsingFuture = new System.Windows.Forms.ProgressBar();
@@ -43,52 +37,13 @@
             this.label_InputFuture = new System.Windows.Forms.Label();
             this.button_InputFuture = new System.Windows.Forms.Button();
             this.backgroundWorker_ParsingFutures = new System.ComponentModel.BackgroundWorker();
+            this.button_CancelOption = new System.Windows.Forms.Button();
+            this.progressBar_ParsingOption = new System.Windows.Forms.ProgressBar();
+            this.label_ParsedOption = new System.Windows.Forms.Label();
+            this.button_ParseOption = new System.Windows.Forms.Button();
+            this.label_InputOption = new System.Windows.Forms.Label();
+            this.button_InputOption = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // button_InputOption
-            // 
-            this.button_InputOption.Location = new System.Drawing.Point(12, 12);
-            this.button_InputOption.Name = "button_InputOption";
-            this.button_InputOption.Size = new System.Drawing.Size(105, 23);
-            this.button_InputOption.TabIndex = 0;
-            this.button_InputOption.Text = "Input Option File(s)";
-            this.button_InputOption.UseVisualStyleBackColor = true;
-            this.button_InputOption.Click += new System.EventHandler(this.button_InputOption_Click);
-            // 
-            // label_InputOption
-            // 
-            this.label_InputOption.AutoSize = true;
-            this.label_InputOption.Location = new System.Drawing.Point(134, 17);
-            this.label_InputOption.Name = "label_InputOption";
-            this.label_InputOption.Size = new System.Drawing.Size(71, 13);
-            this.label_InputOption.TabIndex = 1;
-            this.label_InputOption.Text = "(not selected)";
-            // 
-            // button_ParseOption
-            // 
-            this.button_ParseOption.Enabled = false;
-            this.button_ParseOption.Location = new System.Drawing.Point(12, 41);
-            this.button_ParseOption.Name = "button_ParseOption";
-            this.button_ParseOption.Size = new System.Drawing.Size(51, 23);
-            this.button_ParseOption.TabIndex = 3;
-            this.button_ParseOption.Text = "Parse";
-            this.button_ParseOption.UseVisualStyleBackColor = true;
-            this.button_ParseOption.Click += new System.EventHandler(this.button_ParseOptions_Click);
-            // 
-            // label_ParsedOption
-            // 
-            this.label_ParsedOption.AutoSize = true;
-            this.label_ParsedOption.Location = new System.Drawing.Point(133, 46);
-            this.label_ParsedOption.Name = "label_ParsedOption";
-            this.label_ParsedOption.Size = new System.Drawing.Size(0, 13);
-            this.label_ParsedOption.TabIndex = 4;
-            // 
-            // progressBar_ParsingOption
-            // 
-            this.progressBar_ParsingOption.Location = new System.Drawing.Point(12, 70);
-            this.progressBar_ParsingOption.Name = "progressBar_ParsingOption";
-            this.progressBar_ParsingOption.Size = new System.Drawing.Size(560, 23);
-            this.progressBar_ParsingOption.TabIndex = 5;
             // 
             // backgroundWorker_ParsingOptions
             // 
@@ -97,17 +52,6 @@
             this.backgroundWorker_ParsingOptions.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_ParsingOptions_DoWork);
             this.backgroundWorker_ParsingOptions.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ParsingOptions_ProgressChanged);
             this.backgroundWorker_ParsingOptions.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_ParsingOptions_RunWorkerCompleted);
-            // 
-            // button_CancelOption
-            // 
-            this.button_CancelOption.Enabled = false;
-            this.button_CancelOption.Location = new System.Drawing.Point(69, 41);
-            this.button_CancelOption.Name = "button_CancelOption";
-            this.button_CancelOption.Size = new System.Drawing.Size(58, 23);
-            this.button_CancelOption.TabIndex = 6;
-            this.button_CancelOption.Text = "Cancel";
-            this.button_CancelOption.UseVisualStyleBackColor = true;
-            this.button_CancelOption.Click += new System.EventHandler(this.button_CancelOption_Click);
             // 
             // buttonDB
             // 
@@ -122,7 +66,7 @@
             // button_CancelFuture
             // 
             this.button_CancelFuture.Enabled = false;
-            this.button_CancelFuture.Location = new System.Drawing.Point(69, 128);
+            this.button_CancelFuture.Location = new System.Drawing.Point(69, 34);
             this.button_CancelFuture.Name = "button_CancelFuture";
             this.button_CancelFuture.Size = new System.Drawing.Size(58, 23);
             this.button_CancelFuture.TabIndex = 13;
@@ -132,7 +76,7 @@
             // 
             // progressBar_ParsingFuture
             // 
-            this.progressBar_ParsingFuture.Location = new System.Drawing.Point(12, 157);
+            this.progressBar_ParsingFuture.Location = new System.Drawing.Point(12, 63);
             this.progressBar_ParsingFuture.Name = "progressBar_ParsingFuture";
             this.progressBar_ParsingFuture.Size = new System.Drawing.Size(560, 23);
             this.progressBar_ParsingFuture.TabIndex = 12;
@@ -140,7 +84,7 @@
             // label_ParsedFuture
             // 
             this.label_ParsedFuture.AutoSize = true;
-            this.label_ParsedFuture.Location = new System.Drawing.Point(134, 133);
+            this.label_ParsedFuture.Location = new System.Drawing.Point(134, 39);
             this.label_ParsedFuture.Name = "label_ParsedFuture";
             this.label_ParsedFuture.Size = new System.Drawing.Size(0, 13);
             this.label_ParsedFuture.TabIndex = 11;
@@ -148,7 +92,7 @@
             // button_ParseFuture
             // 
             this.button_ParseFuture.Enabled = false;
-            this.button_ParseFuture.Location = new System.Drawing.Point(12, 128);
+            this.button_ParseFuture.Location = new System.Drawing.Point(12, 34);
             this.button_ParseFuture.Name = "button_ParseFuture";
             this.button_ParseFuture.Size = new System.Drawing.Size(51, 23);
             this.button_ParseFuture.TabIndex = 10;
@@ -159,7 +103,7 @@
             // label_InputFuture
             // 
             this.label_InputFuture.AutoSize = true;
-            this.label_InputFuture.Location = new System.Drawing.Point(134, 104);
+            this.label_InputFuture.Location = new System.Drawing.Point(134, 10);
             this.label_InputFuture.Name = "label_InputFuture";
             this.label_InputFuture.Size = new System.Drawing.Size(71, 13);
             this.label_InputFuture.TabIndex = 9;
@@ -167,7 +111,7 @@
             // 
             // button_InputFuture
             // 
-            this.button_InputFuture.Location = new System.Drawing.Point(12, 99);
+            this.button_InputFuture.Location = new System.Drawing.Point(12, 5);
             this.button_InputFuture.Name = "button_InputFuture";
             this.button_InputFuture.Size = new System.Drawing.Size(105, 23);
             this.button_InputFuture.TabIndex = 8;
@@ -183,11 +127,73 @@
             this.backgroundWorker_ParsingFutures.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ParsingFutures_ProgressChanged);
             this.backgroundWorker_ParsingFutures.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_ParsingFutures_RunWorkerCompleted);
             // 
+            // button_CancelOption
+            // 
+            this.button_CancelOption.Enabled = false;
+            this.button_CancelOption.Location = new System.Drawing.Point(69, 127);
+            this.button_CancelOption.Name = "button_CancelOption";
+            this.button_CancelOption.Size = new System.Drawing.Size(58, 23);
+            this.button_CancelOption.TabIndex = 19;
+            this.button_CancelOption.Text = "Cancel";
+            this.button_CancelOption.UseVisualStyleBackColor = true;
+            this.button_CancelOption.Click += new System.EventHandler(this.button_CancelOption_Click);
+            // 
+            // progressBar_ParsingOption
+            // 
+            this.progressBar_ParsingOption.Location = new System.Drawing.Point(12, 156);
+            this.progressBar_ParsingOption.Name = "progressBar_ParsingOption";
+            this.progressBar_ParsingOption.Size = new System.Drawing.Size(560, 23);
+            this.progressBar_ParsingOption.TabIndex = 18;
+            // 
+            // label_ParsedOption
+            // 
+            this.label_ParsedOption.AutoSize = true;
+            this.label_ParsedOption.Location = new System.Drawing.Point(133, 132);
+            this.label_ParsedOption.Name = "label_ParsedOption";
+            this.label_ParsedOption.Size = new System.Drawing.Size(0, 13);
+            this.label_ParsedOption.TabIndex = 17;
+            // 
+            // button_ParseOption
+            // 
+            this.button_ParseOption.Enabled = false;
+            this.button_ParseOption.Location = new System.Drawing.Point(12, 127);
+            this.button_ParseOption.Name = "button_ParseOption";
+            this.button_ParseOption.Size = new System.Drawing.Size(51, 23);
+            this.button_ParseOption.TabIndex = 16;
+            this.button_ParseOption.Text = "Parse";
+            this.button_ParseOption.UseVisualStyleBackColor = true;
+            this.button_ParseOption.Click += new System.EventHandler(this.button_ParseOptions_Click);
+            // 
+            // label_InputOption
+            // 
+            this.label_InputOption.AutoSize = true;
+            this.label_InputOption.Location = new System.Drawing.Point(134, 103);
+            this.label_InputOption.Name = "label_InputOption";
+            this.label_InputOption.Size = new System.Drawing.Size(71, 13);
+            this.label_InputOption.TabIndex = 15;
+            this.label_InputOption.Text = "(not selected)";
+            // 
+            // button_InputOption
+            // 
+            this.button_InputOption.Location = new System.Drawing.Point(12, 98);
+            this.button_InputOption.Name = "button_InputOption";
+            this.button_InputOption.Size = new System.Drawing.Size(105, 23);
+            this.button_InputOption.TabIndex = 14;
+            this.button_InputOption.Text = "Input Option File(s)";
+            this.button_InputOption.UseVisualStyleBackColor = true;
+            this.button_InputOption.Click += new System.EventHandler(this.button_InputOption_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 261);
+            this.Controls.Add(this.button_CancelOption);
+            this.Controls.Add(this.progressBar_ParsingOption);
+            this.Controls.Add(this.label_ParsedOption);
+            this.Controls.Add(this.button_ParseOption);
+            this.Controls.Add(this.label_InputOption);
+            this.Controls.Add(this.button_InputOption);
             this.Controls.Add(this.button_CancelFuture);
             this.Controls.Add(this.progressBar_ParsingFuture);
             this.Controls.Add(this.label_ParsedFuture);
@@ -195,16 +201,11 @@
             this.Controls.Add(this.label_InputFuture);
             this.Controls.Add(this.button_InputFuture);
             this.Controls.Add(this.buttonDB);
-            this.Controls.Add(this.button_CancelOption);
-            this.Controls.Add(this.progressBar_ParsingOption);
-            this.Controls.Add(this.label_ParsedOption);
-            this.Controls.Add(this.button_ParseOption);
-            this.Controls.Add(this.label_InputOption);
-            this.Controls.Add(this.button_InputOption);
             this.MinimumSize = new System.Drawing.Size(600, 300);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ICE Import";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -212,13 +213,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Button button_InputOption;
-        private System.Windows.Forms.Label label_InputOption;
-        private System.Windows.Forms.Button button_ParseOption;
-        private System.Windows.Forms.Label label_ParsedOption;
-        private System.Windows.Forms.ProgressBar progressBar_ParsingOption;
-        private System.Windows.Forms.Button button_CancelOption;
         private System.ComponentModel.BackgroundWorker backgroundWorker_ParsingOptions;
         private System.Windows.Forms.Button buttonDB;
         private System.Windows.Forms.Button button_CancelFuture;
@@ -228,6 +222,12 @@
         private System.Windows.Forms.Label label_InputFuture;
         private System.Windows.Forms.Button button_InputFuture;
         private System.ComponentModel.BackgroundWorker backgroundWorker_ParsingFutures;
+        private System.Windows.Forms.Button button_CancelOption;
+        private System.Windows.Forms.ProgressBar progressBar_ParsingOption;
+        private System.Windows.Forms.Label label_ParsedOption;
+        private System.Windows.Forms.Button button_ParseOption;
+        private System.Windows.Forms.Label label_InputOption;
+        private System.Windows.Forms.Button button_InputOption;
     }
 }
 

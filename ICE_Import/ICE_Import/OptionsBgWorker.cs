@@ -10,12 +10,12 @@ namespace ICE_Import
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
-            ParseOptions<EOD_Options_578>(worker);
+            Parse<EOD_Options_578>(worker);
 
             e.Result = worker.CancellationPending;
         }
 
-        private void ParseOptions<T>(BackgroundWorker worker) where T : class
+        private void Parse<T>(BackgroundWorker worker) where T : class
         {
             worker.ReportProgress(0);
 

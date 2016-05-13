@@ -77,41 +77,16 @@ namespace ICE_Import
         }
     }
 
-    class DecimalConverter : TrimmingConverter
+    class FloatConverter : TrimmingConverter
     {
         NumberFormatInfo provider = new NumberFormatInfo();
 
         public override object Parse(string from)
         {
-            provider.NumberDecimalSeparator = ",";
             provider.NumberGroupSeparator = ".";
-
             try
             {
-                return Convert.ToDecimal(from, provider);
-            }
-            catch (Exception)
-            {
-                // FormatException, OverflowException
-                ThrowConvertException(from, "Failed to convert to Decimal.");
-                return null;
-            }
-        }
-    }
-
-    class FloatConverter : TrimmingConverter
-    {
-        //NumberFormatInfo provider = new NumberFormatInfo();
-
-        public override object Parse(string from)
-        {
-            //provider.NumberDecimalSeparator = ",";
-            //provider.NumberGroupSeparator = ".";
-
-            try
-            {
-                // with provider return Convert.ToSingle(from, provider);
-                return Convert.ToSingle(from); 
+                return Convert.ToSingle(from, provider); 
             }
             catch (Exception)
             {

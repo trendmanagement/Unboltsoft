@@ -32,7 +32,7 @@
             this.buttonPush = new System.Windows.Forms.Button();
             this.checkBoxCheckDB = new System.Windows.Forms.CheckBox();
             this.progressBarLoad = new System.Windows.Forms.ProgressBar();
-            this.buttonCancel = new System.Windows.Forms.Button();
+            this.buttonCancelPush = new System.Windows.Forms.Button();
             this.buttonPull = new System.Windows.Forms.Button();
             this.tabPageDailyContract = new System.Windows.Forms.TabPage();
             this.dataGridViewDailyContract = new System.Windows.Forms.DataGridView();
@@ -41,8 +41,10 @@
             this.tabPageOptionData = new System.Windows.Forms.TabPage();
             this.dataGridViewOptionData = new System.Windows.Forms.DataGridView();
             this.tabPageOption = new System.Windows.Forms.TabPage();
-            this.tabControlOption = new System.Windows.Forms.TabControl();
             this.dataGridViewOption = new System.Windows.Forms.DataGridView();
+            this.tabControlOption = new System.Windows.Forms.TabControl();
+            this.buttonCancelPull = new System.Windows.Forms.Button();
+            this.buttonBack = new System.Windows.Forms.Button();
             this.tabPageDailyContract.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDailyContract)).BeginInit();
             this.tabPageContract.SuspendLayout();
@@ -50,8 +52,8 @@
             this.tabPageOptionData.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOptionData)).BeginInit();
             this.tabPageOption.SuspendLayout();
-            this.tabControlOption.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOption)).BeginInit();
+            this.tabControlOption.SuspendLayout();
             this.SuspendLayout();
             // 
             // richTextBoxLog
@@ -66,9 +68,9 @@
             // 
             // buttonPush
             // 
-            this.buttonPush.Location = new System.Drawing.Point(6, 253);
+            this.buttonPush.Location = new System.Drawing.Point(60, 253);
             this.buttonPush.Name = "buttonPush";
-            this.buttonPush.Size = new System.Drawing.Size(109, 23);
+            this.buttonPush.Size = new System.Drawing.Size(95, 23);
             this.buttonPush.TabIndex = 2;
             this.buttonPush.Text = "Push data to DB";
             this.buttonPush.UseVisualStyleBackColor = true;
@@ -79,7 +81,7 @@
             this.checkBoxCheckDB.AutoSize = true;
             this.checkBoxCheckDB.Checked = true;
             this.checkBoxCheckDB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxCheckDB.Location = new System.Drawing.Point(209, 255);
+            this.checkBoxCheckDB.Location = new System.Drawing.Point(249, 255);
             this.checkBoxCheckDB.Name = "checkBoxCheckDB";
             this.checkBoxCheckDB.Size = new System.Drawing.Size(102, 17);
             this.checkBoxCheckDB.TabIndex = 3;
@@ -94,19 +96,19 @@
             this.progressBarLoad.Size = new System.Drawing.Size(648, 10);
             this.progressBarLoad.TabIndex = 4;
             // 
-            // buttonCancel
+            // buttonCancelPush
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(121, 252);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(82, 23);
-            this.buttonCancel.TabIndex = 5;
-            this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancelPush.Location = new System.Drawing.Point(161, 253);
+            this.buttonCancelPush.Name = "buttonCancelPush";
+            this.buttonCancelPush.Size = new System.Drawing.Size(82, 23);
+            this.buttonCancelPush.TabIndex = 5;
+            this.buttonCancelPush.Text = "Cancel push";
+            this.buttonCancelPush.UseVisualStyleBackColor = true;
+            this.buttonCancelPush.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // buttonPull
             // 
-            this.buttonPull.Location = new System.Drawing.Point(550, 251);
+            this.buttonPull.Location = new System.Drawing.Point(550, 253);
             this.buttonPull.Name = "buttonPull";
             this.buttonPull.Size = new System.Drawing.Size(102, 23);
             this.buttonPull.TabIndex = 6;
@@ -185,8 +187,17 @@
             this.tabPageOption.Text = "tbloption";
             this.tabPageOption.UseVisualStyleBackColor = true;
             // 
+            // dataGridViewOption
+            // 
+            this.dataGridViewOption.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewOption.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridViewOption.Location = new System.Drawing.Point(3, 3);
+            this.dataGridViewOption.Name = "dataGridViewOption";
+            this.dataGridViewOption.Size = new System.Drawing.Size(648, 219);
+            this.dataGridViewOption.TabIndex = 0;
+            // 
             // tabControlOption
-            //
+            // 
             this.tabControlOption.Controls.Add(this.tabPageContract);
             this.tabControlOption.Controls.Add(this.tabPageDailyContract);
             this.tabControlOption.Controls.Add(this.tabPageOption);
@@ -197,22 +208,35 @@
             this.tabControlOption.Size = new System.Drawing.Size(662, 251);
             this.tabControlOption.TabIndex = 0;
             // 
-            // dataGridViewOption
+            // buttonCancelPull
             // 
-            this.dataGridViewOption.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewOption.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridViewOption.Location = new System.Drawing.Point(3, 3);
-            this.dataGridViewOption.Name = "dataGridViewOption";
-            this.dataGridViewOption.Size = new System.Drawing.Size(648, 219);
-            this.dataGridViewOption.TabIndex = 0;
+            this.buttonCancelPull.Location = new System.Drawing.Point(462, 253);
+            this.buttonCancelPull.Name = "buttonCancelPull";
+            this.buttonCancelPull.Size = new System.Drawing.Size(82, 23);
+            this.buttonCancelPull.TabIndex = 7;
+            this.buttonCancelPull.Text = "Cancel pull";
+            this.buttonCancelPull.UseVisualStyleBackColor = true;
+            this.buttonCancelPull.Click += new System.EventHandler(this.buttonCancelPull_Click);
+            // 
+            // buttonBack
+            // 
+            this.buttonBack.Location = new System.Drawing.Point(6, 253);
+            this.buttonBack.Name = "buttonBack";
+            this.buttonBack.Size = new System.Drawing.Size(48, 23);
+            this.buttonBack.TabIndex = 8;
+            this.buttonBack.Text = "Back";
+            this.buttonBack.UseVisualStyleBackColor = true;
+            this.buttonBack.Click += new System.EventHandler(this.buttonBack_Click);
             // 
             // DataBaseForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 386);
+            this.Controls.Add(this.buttonBack);
+            this.Controls.Add(this.buttonCancelPull);
             this.Controls.Add(this.buttonPull);
-            this.Controls.Add(this.buttonCancel);
+            this.Controls.Add(this.buttonCancelPush);
             this.Controls.Add(this.progressBarLoad);
             this.Controls.Add(this.checkBoxCheckDB);
             this.Controls.Add(this.buttonPush);
@@ -229,8 +253,8 @@
             this.tabPageOptionData.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOptionData)).EndInit();
             this.tabPageOption.ResumeLayout(false);
-            this.tabControlOption.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOption)).EndInit();
+            this.tabControlOption.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -241,7 +265,7 @@
         private System.Windows.Forms.Button buttonPush;
         private System.Windows.Forms.CheckBox checkBoxCheckDB;
         private System.Windows.Forms.ProgressBar progressBarLoad;
-        private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.Button buttonCancelPush;
         private System.Windows.Forms.Button buttonPull;
         private System.Windows.Forms.TabPage tabPageDailyContract;
         private System.Windows.Forms.DataGridView dataGridViewDailyContract;
@@ -252,5 +276,7 @@
         private System.Windows.Forms.TabPage tabPageOption;
         private System.Windows.Forms.DataGridView dataGridViewOption;
         private System.Windows.Forms.TabControl tabControlOption;
+        private System.Windows.Forms.Button buttonCancelPull;
+        private System.Windows.Forms.Button buttonBack;
     }
 }

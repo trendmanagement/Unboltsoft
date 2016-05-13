@@ -60,17 +60,16 @@ namespace ICE_Import
 
         private void buttonDB_Click(object sender, EventArgs e)
         {
-            if(StaticData.dbf == null)
+            if(Program.dbf == null)
             {
-                StaticData.dbf = new DataBaseForm();
-                StaticData.dbf.Show();
+                Program.dbf = new DataBaseForm();
+                Program.dbf.Show();
             }
-            else if (StaticData.dbf.Visible == false)
+            else if (Program.dbf.Visible == false)
             {
-                StaticData.dbf = new DataBaseForm();
-                StaticData.dbf.Show();
+                Program.dbf = new DataBaseForm();
+                Program.dbf.Show();
             }
-
         }
 
         private void button_InputFuture_Click(object sender, EventArgs e)
@@ -136,6 +135,11 @@ namespace ICE_Import
             button.Enabled = true;
 
             return filePaths;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            if (Program.dbf.Visible) Program.dbf.Visible = false;
         }
     }
 }

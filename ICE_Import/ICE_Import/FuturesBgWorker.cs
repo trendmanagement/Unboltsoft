@@ -10,31 +10,9 @@ namespace ICE_Import
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
-            ParseFutures<EOD_Futures_578>(worker);
+            Parse<EOD_Futures_578>(worker);
 
             e.Result = worker.CancellationPending;
-        }
-
-        private void ParseFutures<T>(BackgroundWorker worker) where T : class
-        {
-            worker.ReportProgress(0);
-
-            var engine = new FileHelperEngine<T>();
-            T[] records = null;
-
-            for (int i = 0; i < FutureFilePaths.Length; i++)
-            {
-                records = engine.ReadFile(FutureFilePaths[i]);
-
-                worker.ReportProgress(i + 1);
-
-                if (worker.CancellationPending)
-                {
-                    return;
-                }
-            }
-
-        StaticData.futureRecords = records;
         }
 
         private void backgroundWorker_ParsingFutures_ProgressChanged(object sender, ProgressChangedEventArgs e)
