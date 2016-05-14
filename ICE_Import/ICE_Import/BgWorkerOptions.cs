@@ -1,40 +1,17 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
-using FileHelpers;
 
 namespace ICE_Import
 {
-    public partial class Form1 : Form
+    public partial class FormCSV : Form
     {
         private void backgroundWorker_ParsingOptions_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
-            Parse<EOD_Options_578>(worker);
+            ParsedData.OptionRecords = Parse<EOD_Options_578>(worker, OptionFilePaths);
 
             e.Result = worker.CancellationPending;
-        }
-
-        private void Parse<T>(BackgroundWorker worker) where T : class
-        {
-            worker.ReportProgress(0);
-
-            var engine = new FileHelperEngine<T>();
-            T[] records = null;
-
-            for (int i = 0; i < OptionFilePaths.Length; i++)
-            {
-                records = engine.ReadFile(OptionFilePaths[i]);
-
-                worker.ReportProgress(i + 1);
-
-                if (worker.CancellationPending)
-                {
-                    return;
-                }
-            }
-
-        StaticData.optionRecords = records;
         }
 
         private void backgroundWorker_ParsingOptions_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -68,7 +45,10 @@ namespace ICE_Import
             progressBar_ParsingOption.Value = 0;
             EnableDisableOption(false);
 
-            if (StaticData.optionRecords != null && StaticData.futureRecords != null) StaticData.OnParseComplete();
+            if (ParsedData.IsReady)
+            {
+                ParsedData.OnParseComplete();
+            }
         }
     }
 }

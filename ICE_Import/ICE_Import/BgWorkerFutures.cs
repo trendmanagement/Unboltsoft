@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel;
 using System.Windows.Forms;
-using FileHelpers;
 
 namespace ICE_Import
 {
-    public partial class Form1 : Form
+    public partial class FormCSV : Form
     {
         private void backgroundWorker_ParsingFutures_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
-            Parse<EOD_Futures_578>(worker);
+            ParsedData.FutureRecords = Parse<EOD_Futures_578>(worker, FutureFilePaths);
 
             e.Result = worker.CancellationPending;
         }
@@ -46,7 +45,10 @@ namespace ICE_Import
             progressBar_ParsingFuture.Value = 0;
             EnableDisableFuture(false);
 
-            if (StaticData.optionRecords != null && StaticData.futureRecords != null) StaticData.OnParseComplete();
+            if (ParsedData.IsReady)
+            {
+                ParsedData.OnParseComplete();
+            }
         }
     }
 }

@@ -8,8 +8,8 @@ namespace ICE_Import
 {
     static class Program
     {
-        public static Form1 f1 = new Form1();
-        public static DataBaseForm dbf = new DataBaseForm();
+        public static FormCSV csvf = new FormCSV();
+        public static FormDB dbf = new FormDB();
 
         /// <summary>
         /// The main entry point for the application.
@@ -19,7 +19,7 @@ namespace ICE_Import
         {
             Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(f1);
+            Application.Run(csvf);
         }
     }
 }

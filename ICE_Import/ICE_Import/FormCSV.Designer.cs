@@ -1,6 +1,6 @@
 ﻿namespace ICE_Import
 {
-    partial class Form1
+    partial class FormCSV
     {
         /// <summary>
         /// Required designer variable.
@@ -57,16 +57,16 @@
             // 
             this.buttonDB.Location = new System.Drawing.Point(12, 226);
             this.buttonDB.Name = "buttonDB";
-            this.buttonDB.Size = new System.Drawing.Size(139, 23);
+            this.buttonDB.Size = new System.Drawing.Size(115, 23);
             this.buttonDB.TabIndex = 7;
-            this.buttonDB.Text = "Open DataBase window";
+            this.buttonDB.Text = "Open DB Form";
             this.buttonDB.UseVisualStyleBackColor = true;
             this.buttonDB.Click += new System.EventHandler(this.buttonDB_Click);
             // 
             // button_CancelFuture
             // 
             this.button_CancelFuture.Enabled = false;
-            this.button_CancelFuture.Location = new System.Drawing.Point(69, 34);
+            this.button_CancelFuture.Location = new System.Drawing.Point(69, 41);
             this.button_CancelFuture.Name = "button_CancelFuture";
             this.button_CancelFuture.Size = new System.Drawing.Size(58, 23);
             this.button_CancelFuture.TabIndex = 13;
@@ -76,7 +76,7 @@
             // 
             // progressBar_ParsingFuture
             // 
-            this.progressBar_ParsingFuture.Location = new System.Drawing.Point(12, 63);
+            this.progressBar_ParsingFuture.Location = new System.Drawing.Point(12, 70);
             this.progressBar_ParsingFuture.Name = "progressBar_ParsingFuture";
             this.progressBar_ParsingFuture.Size = new System.Drawing.Size(560, 23);
             this.progressBar_ParsingFuture.TabIndex = 12;
@@ -84,7 +84,7 @@
             // label_ParsedFuture
             // 
             this.label_ParsedFuture.AutoSize = true;
-            this.label_ParsedFuture.Location = new System.Drawing.Point(134, 39);
+            this.label_ParsedFuture.Location = new System.Drawing.Point(134, 46);
             this.label_ParsedFuture.Name = "label_ParsedFuture";
             this.label_ParsedFuture.Size = new System.Drawing.Size(0, 13);
             this.label_ParsedFuture.TabIndex = 11;
@@ -92,7 +92,7 @@
             // button_ParseFuture
             // 
             this.button_ParseFuture.Enabled = false;
-            this.button_ParseFuture.Location = new System.Drawing.Point(12, 34);
+            this.button_ParseFuture.Location = new System.Drawing.Point(12, 41);
             this.button_ParseFuture.Name = "button_ParseFuture";
             this.button_ParseFuture.Size = new System.Drawing.Size(51, 23);
             this.button_ParseFuture.TabIndex = 10;
@@ -103,7 +103,7 @@
             // label_InputFuture
             // 
             this.label_InputFuture.AutoSize = true;
-            this.label_InputFuture.Location = new System.Drawing.Point(134, 10);
+            this.label_InputFuture.Location = new System.Drawing.Point(134, 17);
             this.label_InputFuture.Name = "label_InputFuture";
             this.label_InputFuture.Size = new System.Drawing.Size(71, 13);
             this.label_InputFuture.TabIndex = 9;
@@ -111,9 +111,9 @@
             // 
             // button_InputFuture
             // 
-            this.button_InputFuture.Location = new System.Drawing.Point(12, 5);
+            this.button_InputFuture.Location = new System.Drawing.Point(12, 12);
             this.button_InputFuture.Name = "button_InputFuture";
-            this.button_InputFuture.Size = new System.Drawing.Size(105, 23);
+            this.button_InputFuture.Size = new System.Drawing.Size(115, 23);
             this.button_InputFuture.TabIndex = 8;
             this.button_InputFuture.Text = "Input Future File(s)";
             this.button_InputFuture.UseVisualStyleBackColor = true;
@@ -130,7 +130,7 @@
             // button_CancelOption
             // 
             this.button_CancelOption.Enabled = false;
-            this.button_CancelOption.Location = new System.Drawing.Point(69, 127);
+            this.button_CancelOption.Location = new System.Drawing.Point(69, 134);
             this.button_CancelOption.Name = "button_CancelOption";
             this.button_CancelOption.Size = new System.Drawing.Size(58, 23);
             this.button_CancelOption.TabIndex = 19;
@@ -140,7 +140,7 @@
             // 
             // progressBar_ParsingOption
             // 
-            this.progressBar_ParsingOption.Location = new System.Drawing.Point(12, 156);
+            this.progressBar_ParsingOption.Location = new System.Drawing.Point(12, 163);
             this.progressBar_ParsingOption.Name = "progressBar_ParsingOption";
             this.progressBar_ParsingOption.Size = new System.Drawing.Size(560, 23);
             this.progressBar_ParsingOption.TabIndex = 18;
@@ -148,7 +148,7 @@
             // label_ParsedOption
             // 
             this.label_ParsedOption.AutoSize = true;
-            this.label_ParsedOption.Location = new System.Drawing.Point(133, 132);
+            this.label_ParsedOption.Location = new System.Drawing.Point(133, 139);
             this.label_ParsedOption.Name = "label_ParsedOption";
             this.label_ParsedOption.Size = new System.Drawing.Size(0, 13);
             this.label_ParsedOption.TabIndex = 17;
@@ -156,7 +156,7 @@
             // button_ParseOption
             // 
             this.button_ParseOption.Enabled = false;
-            this.button_ParseOption.Location = new System.Drawing.Point(12, 127);
+            this.button_ParseOption.Location = new System.Drawing.Point(12, 134);
             this.button_ParseOption.Name = "button_ParseOption";
             this.button_ParseOption.Size = new System.Drawing.Size(51, 23);
             this.button_ParseOption.TabIndex = 16;
@@ -167,7 +167,7 @@
             // label_InputOption
             // 
             this.label_InputOption.AutoSize = true;
-            this.label_InputOption.Location = new System.Drawing.Point(134, 103);
+            this.label_InputOption.Location = new System.Drawing.Point(134, 110);
             this.label_InputOption.Name = "label_InputOption";
             this.label_InputOption.Size = new System.Drawing.Size(71, 13);
             this.label_InputOption.TabIndex = 15;
@@ -175,15 +175,15 @@
             // 
             // button_InputOption
             // 
-            this.button_InputOption.Location = new System.Drawing.Point(12, 98);
+            this.button_InputOption.Location = new System.Drawing.Point(12, 105);
             this.button_InputOption.Name = "button_InputOption";
-            this.button_InputOption.Size = new System.Drawing.Size(105, 23);
+            this.button_InputOption.Size = new System.Drawing.Size(115, 23);
             this.button_InputOption.TabIndex = 14;
             this.button_InputOption.Text = "Input Option File(s)";
             this.button_InputOption.UseVisualStyleBackColor = true;
             this.button_InputOption.Click += new System.EventHandler(this.button_InputOption_Click);
             // 
-            // Form1
+            // FormCSV
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -202,11 +202,10 @@
             this.Controls.Add(this.button_InputFuture);
             this.Controls.Add(this.buttonDB);
             this.MinimumSize = new System.Drawing.Size(600, 300);
-            this.Name = "Form1";
+            this.Name = "FormCSV";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ICE Import";
-            this.Load += new System.EventHandler(this.Form1_Load);
-            this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
+            this.Text = "ICE Import (CSV Form)";
+            this.SizeChanged += new System.EventHandler(this.FormCSV_SizeChanged);
             this.ResumeLayout(false);
             this.PerformLayout();
 

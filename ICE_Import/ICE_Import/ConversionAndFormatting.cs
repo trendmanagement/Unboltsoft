@@ -160,7 +160,7 @@ namespace ICE_Import
 
             // a hack for Eurodollar
             //if ( tickDisplay < 1 )
-            //	fractPart = (nTicks % nTicksInUnit) * tickDisplay - decPart;
+            //    fractPart = (nTicks % nTicksInUnit) * tickDisplay - decPart;
 
 
             return intPart + decPart + incrementFix;

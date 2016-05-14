@@ -1,0 +1,30 @@
+﻿namespace ICE_Import
+{
+    internal static class ParsedData
+    {
+        public delegate void ParseEventHandler();
+        public static event ParseEventHandler ParseComplete;
+        public static EOD_Futures_578[] FutureRecords;
+        public static EOD_Options_578[] OptionRecords;
+
+        public static bool IsReady
+        {
+            get
+            {
+                return OptionRecords != null && FutureRecords != null;
+            }
+        }
+
+        public static void OnParseComplete()
+        {
+            if (Program.dbf == null)
+            {
+                Program.dbf = new FormDB();
+            }
+            Program.dbf.Show();
+
+            // Raise event
+            ParseComplete();
+        }
+    }
+}

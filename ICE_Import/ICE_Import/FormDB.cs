@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace ICE_Import
 {
-    public partial class DataBaseForm : Form
+    public partial class FormDB : Form
     {
         public delegate void SetLogMessageDelegate(string message);
         public event SetLogMessageDelegate SetLogMessage;
@@ -20,21 +20,21 @@ namespace ICE_Import
 
         string conStr = "Server=tcp:h9ggwlagd1.database.windows.net,1433; Database=TMLDB_Copy; User ID=dataupdate@h9ggwlagd1; Password=6dcEpZKSFRNYk^AN; Encrypt=True; TrustServerCertificate=False; Connection Timeout=30;";
 
-        public DataBaseForm()
+        public FormDB()
         {
             InitializeComponent();
-            this.Resize += DataBaseForm_Resize;
-            StaticData.ParseComplete += StaticData_ParseComplete;
-            this.SetLogMessage += DataBaseForm_SetLogMessage;
-            this.FormClosed += DataBaseForm_FormClosed;
+            this.Resize += FormDB_Resize;
+            ParsedData.ParseComplete += ParsedData_ParseComplete;
+            this.SetLogMessage += FormDB_SetLogMessage;
+            this.FormClosed += FormDB_FormClosed;
         }
 
-        private void DataBaseForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void FormDB_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Program.f1.Close();
+            Program.csvf.Close();
         }
 
-        private void DataBaseForm_SetLogMessage(string message)
+        private void FormDB_SetLogMessage(string message)
         {
             richTextBoxLog.Text += message + "\n";
             richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
@@ -52,7 +52,7 @@ namespace ICE_Import
             progressBarLoad.Value = count;
         }
 
-        private void DataBaseForm_Resize(object sender, EventArgs e)
+        private void FormDB_Resize(object sender, EventArgs e)
         {
             tabControlOption.Size = new Size()
             {
@@ -104,33 +104,33 @@ namespace ICE_Import
             };
         }
 
-        private void DataBaseForm_Load(object sender, EventArgs e)
+        private void FormDB_Load(object sender, EventArgs e)
         {
-            if (Program.f1.Visible) Program.f1.Visible = false;
+            if (Program.csvf.Visible) Program.csvf.Visible = false;
 
             buttonCancelPush.Enabled = false;
             buttonCancelPull.Enabled = false;
 
-            DataBaseForm_Resize(sender, e);
+            FormDB_Resize(sender, e);
 
-            if (StaticData.optionRecords == null || StaticData.futureRecords == null)
+            if (!ParsedData.IsReady)
             {
                 buttonPush.Enabled = false;
             }
             else
             {
-                SetLogMessage(StaticData.futureRecords.GetType().Name.Trim('[', ']') + " entities count: " + StaticData.futureRecords.Length.ToString()  + " ready to push to DB");
-                SetLogMessage(StaticData.optionRecords.GetType().Name.Trim('[', ']') + " entities count: " + StaticData.optionRecords.Length.ToString() + " ready to push to DB");
+                SetLogMessage(ParsedData.FutureRecords.GetType().Name.Trim('[', ']') + " entities count: " + ParsedData.FutureRecords.Length.ToString()  + " ready to push to DB");
+                SetLogMessage(ParsedData.OptionRecords.GetType().Name.Trim('[', ']') + " entities count: " + ParsedData.OptionRecords.Length.ToString() + " ready to push to DB");
                 buttonPush.Enabled = true;
             }
         }
 
-        private void StaticData_ParseComplete()
+        private void ParsedData_ParseComplete()
         {
             if (buttonPush.Enabled != true)
             {
-                SetLogMessage("Entities count: " + StaticData.optionRecords.Length.ToString());
-                SetLogMessage("Type of entity: " + StaticData.optionRecords.GetType().Name.Trim('[', ']'));
+                SetLogMessage("Entities count: " + ParsedData.OptionRecords.Length.ToString());
+                SetLogMessage("Type of entity: " + ParsedData.OptionRecords.GetType().Name.Trim('[', ']'));
                 buttonPush.Enabled = true;
             }
         }
@@ -140,10 +140,10 @@ namespace ICE_Import
             int count= 0;
             int globalCount = 0;
             int number;
-            int percent = (int.TryParse((StaticData.futureRecords.Length / 100).ToString(), out number)) ? number : 0;
+            int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
             //int currentPercent = 0;
             progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = StaticData.futureRecords.Length + StaticData.futureRecords.Length + StaticData.optionRecords.Length;
+            progressBarLoad.Maximum = ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length;
             Utilities utilites = new Utilities();
             List<string> stripName = new List<string>();
             bool newFuture = true;
@@ -155,13 +155,13 @@ namespace ICE_Import
                 buttonPull.Enabled = false;
                 buttonCancelPush.Enabled = true;
 
-                EOD_Futures_578 fu = (EOD_Futures_578)StaticData.futureRecords[0];
+                EOD_Futures_578 fu = ParsedData.FutureRecords[0];
                 string futuresName = fu.ProductName.Trim(" Future".ToArray());
 
                 await Task.Run(() =>
                 {
                     string log = String.Empty;
-                    foreach (EOD_Futures_578 future in StaticData.futureRecords)
+                    foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
                     {
                         if (ct.IsCancellationRequested)
                         {
@@ -212,7 +212,7 @@ namespace ICE_Import
                         }
                         catch (OperationCanceledException cancel)
                         {
-                            log += "Cansel message from LOCAL pushing CONTRACT table \n";
+                            log += "Cancel message from LOCAL pushing CONTRACT table \n";
                             log += cancel.Message + "\n";
                         }
                         catch (Exception ex)
@@ -223,7 +223,7 @@ namespace ICE_Import
                         finally
                         {
                             globalCount++;
-                            if (globalCount == StaticData.futureRecords.Length) log += "Pushed " + count.ToString() + " entities to LOCAL CONTRACT table";
+                            if (globalCount == ParsedData.FutureRecords.Length) log += "Pushed " + count.ToString() + " entities to LOCAL CONTRACT table";
                             //TODO: Fix this
                             //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
                             //{
@@ -240,7 +240,7 @@ namespace ICE_Import
                 await Task.Run(() =>
                 {
                     string log = String.Empty;
-                    foreach (EOD_Futures_578 future in StaticData.futureRecords)
+                    foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
                     {
                         if (ct.IsCancellationRequested)
                         {
@@ -268,7 +268,7 @@ namespace ICE_Import
                         }
                         catch (OperationCanceledException cancel)
                         {
-                            log += "Cansel message from LOCAL pushing DAILYCONTRACTSETTLEMENT table \n";
+                            log += "Cancel message from LOCAL pushing DAILYCONTRACTSETTLEMENT table \n";
                             log += cancel.Message + "\n";
                         }
                         catch (Exception ex)
@@ -279,7 +279,7 @@ namespace ICE_Import
                         finally
                         {
                             globalCount++;
-                            if (globalCount == StaticData.futureRecords.Length + StaticData.futureRecords.Length) log += "Pushed " + count.ToString() + " entities to LOCAL DAILYCONTRACTSETTLEMENT table";
+                            if (globalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length) log += "Pushed " + count.ToString() + " entities to LOCAL DAILYCONTRACTSETTLEMENT table";
                             //TODO: Fix this
                             //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
                             //{
@@ -296,7 +296,7 @@ namespace ICE_Import
                 await Task.Run(() =>
                 {
                     string log = String.Empty;
-                    foreach (EOD_Options_578 option in StaticData.optionRecords)
+                    foreach (EOD_Options_578 option in ParsedData.OptionRecords)
                     {
                         if (ct.IsCancellationRequested)
                         {
@@ -317,7 +317,7 @@ namespace ICE_Import
                             }
                             catch(Exception ex)
                             {
-                                int erc = globalCount - StaticData.futureRecords.Length + StaticData.futureRecords.Length;
+                                int erc = globalCount - ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length;
                                 log += "ERROR message from LOCAL pushing OPTIONS and OPTIONSDATA tables \n" + "Can't find idcontract for entity N: " + erc.ToString() + "\n";
                                 log += ex.Message + "\n";
                                 continue;
@@ -372,7 +372,7 @@ namespace ICE_Import
                         }
                         catch (OperationCanceledException cancel)
                         {
-                            log += "Cansel message from LOCAL pushing OPTIONS and OPTIONSDATA tables \n";
+                            log += "Cancel message from LOCAL pushing OPTIONS and OPTIONSDATA tables \n";
                             log += cancel.Message + "\n";
                         }
                         catch (Exception ex)
@@ -383,7 +383,7 @@ namespace ICE_Import
                         finally
                         {
                             globalCount++;
-                            if (globalCount == StaticData.futureRecords.Length + StaticData.futureRecords.Length + StaticData.optionRecords.Length) log += "Pushed " + count.ToString() + " entities to LOCAL OPTIONS and OPTIONSDATA tables";
+                            if (globalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length) log += "Pushed " + count.ToString() + " entities to LOCAL OPTIONS and OPTIONSDATA tables";
                             //TODO: Fix this
                             //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
                             //{
@@ -408,11 +408,11 @@ namespace ICE_Import
                 buttonPull.Enabled = true;
                 buttonCancelPush.Enabled = false;
 
-                //Invoke(new Action(() => DataBaseForm_SetLogMessage("Was loaded to DataBase " + count.ToString() + " entities")));
+                //Invoke(new Action(() => FormDB_SetLogMessage("Was loaded to DataBase " + count.ToString() + " entities")));
                 SetLogMessage("Pushed to DataBase " + count.ToString() + " entities");
-                if (StaticData.futureRecords.Length > count)
+                if (ParsedData.FutureRecords.Length > count)
                 {
-                    SetLogMessage("Was NOT pushed " + (StaticData.futureRecords.Length - count).ToString() + " entities from " + StaticData.futureRecords.Length.ToString() + " to DB");
+                    SetLogMessage("Was NOT pushed " + (ParsedData.FutureRecords.Length - count).ToString() + " entities from " + ParsedData.FutureRecords.Length.ToString() + " to DB");
                 }
             }
         }
@@ -422,10 +422,10 @@ namespace ICE_Import
             int count = 0;
             int globalCount = 0;
             int number;
-            int percent = (int.TryParse((StaticData.futureRecords.Length / 100).ToString(), out number)) ? number : 0;
+            int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
             int currentPercent = 0;
             progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = StaticData.futureRecords.Length;
+            progressBarLoad.Maximum = ParsedData.FutureRecords.Length;
             Utilities utilites = new Utilities();
             List<string> stripName = new List<string>();
             bool newFuture = true;
@@ -440,7 +440,7 @@ namespace ICE_Import
                 await Task.Run(() =>
                 {
                     string log = String.Empty;
-                    foreach (EOD_Futures_578 future in StaticData.futureRecords)
+                    foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
                     {
                         if (ct.IsCancellationRequested)
                         {
@@ -491,7 +491,7 @@ namespace ICE_Import
                         }
                         catch (OperationCanceledException cancel)
                         {
-                            log += "Cansel message from REMOTE pushing TBLCONTRACT table \n";
+                            log += "Cancel message from REMOTE pushing TBLCONTRACT table \n";
                             log += cancel.Message + "\n";
                         }
                         catch (Exception ex)
@@ -502,7 +502,7 @@ namespace ICE_Import
                         finally
                         {
                             globalCount++;
-                            if (globalCount == StaticData.futureRecords.Length) log += "Pushed " + count.ToString() + " entities to REMOTE TBLCONTRACT table";
+                            if (globalCount == ParsedData.FutureRecords.Length) log += "Pushed " + count.ToString() + " entities to REMOTE TBLCONTRACT table";
                             //TODO: Fix this
                             //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
                             //{
@@ -520,7 +520,7 @@ namespace ICE_Import
                 await Task.Run(() =>
                 {
                     string log = "";
-                    foreach (EOD_Futures_578 future in StaticData.futureRecords)
+                    foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
                     {
                         if (ct.IsCancellationRequested)
                         {
@@ -548,7 +548,7 @@ namespace ICE_Import
                         }
                         catch (OperationCanceledException cancel)
                         {
-                            log += "Cansel message from REMOTE pushing TBLDAILYCONTRACTSETTLEMENT table \n";
+                            log += "Cancel message from REMOTE pushing TBLDAILYCONTRACTSETTLEMENT table \n";
                             log += cancel.Message + "\n";
                         }
                         catch (Exception ex)
@@ -559,7 +559,7 @@ namespace ICE_Import
                         finally
                         {
                             globalCount++;
-                            if (globalCount == StaticData.futureRecords.Length + StaticData.futureRecords.Length) log += "Pushed " + count.ToString() + " entities to REMOTE TBLDAILYCONTRACTSETTLEMENT table";
+                            if (globalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length) log += "Pushed " + count.ToString() + " entities to REMOTE TBLDAILYCONTRACTSETTLEMENT table";
                             //TODO: Fix this
                             //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
                             //{
@@ -576,7 +576,7 @@ namespace ICE_Import
                 await Task.Run(() =>
                 {
                     string log = "";
-                    foreach (EOD_Options_578 option in StaticData.optionRecords)
+                    foreach (EOD_Options_578 option in ParsedData.OptionRecords)
                     {
                         if (ct.IsCancellationRequested)
                         {
@@ -597,7 +597,7 @@ namespace ICE_Import
                             }
                             catch (Exception ex)
                             {
-                                int erc = globalCount - StaticData.futureRecords.Length + StaticData.futureRecords.Length;
+                                int erc = globalCount - ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length;
                                 log += "ERROR message from LOCAL pushing OPTIONS and OPTIONSDATA tables \n" + "Can't find idcontract for entity N: " + erc.ToString() + "\n";
                                 log += ex.Message + "\n";
                                 continue;
@@ -646,14 +646,14 @@ namespace ICE_Import
                                 timetoexpinyear = (option.StrikePrice != null) ? (double)option.StrikePrice : 0
                             };
 
-                            context.tbloptiondatas.InsertOnSubmit(tableOptionData);
+                            context.tbloptiondata.InsertOnSubmit(tableOptionData);
                             context.tbloptions.InsertOnSubmit(tableOption);
                             context.SubmitChanges();
                             count++;
                         }
                         catch (OperationCanceledException cancel)
                         {
-                            log += "Cansel message from REMOTE pushing TBLOPTIONS and TBLOPTIONSDATA tables \n";
+                            log += "Cancel message from REMOTE pushing TBLOPTIONS and TBLOPTIONSDATA tables \n";
                             log += cancel.Message + "\n";
                         }
                         catch (Exception ex)
@@ -664,7 +664,7 @@ namespace ICE_Import
                         finally
                         {
                             globalCount++;
-                            if (globalCount == StaticData.futureRecords.Length + StaticData.futureRecords.Length + StaticData.optionRecords.Length) log += "Pushed " + count.ToString() + " entities to REMOTE TBLOPTIONS and TBLOPTIONSDATA tables";
+                            if (globalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length) log += "Pushed " + count.ToString() + " entities to REMOTE TBLOPTIONS and TBLOPTIONSDATA tables";
                             //TODO: Fix this
                             //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
                             //{
@@ -688,9 +688,9 @@ namespace ICE_Import
                 buttonPull.Enabled = true;
                 buttonCancelPush.Enabled = false;
                 SetLogMessage("Was loaded to DataBase " + count.ToString() + " entities");
-                if (StaticData.optionRecords.Length > count)
+                if (ParsedData.OptionRecords.Length > count)
                 {
-                    SetLogMessage("Was NOT loaded " + (StaticData.optionRecords.Length - count).ToString() + " entities from " + StaticData.optionRecords.Length.ToString() + " to DataBase");
+                    SetLogMessage("Was NOT loaded " + (ParsedData.OptionRecords.Length - count).ToString() + " entities from " + ParsedData.OptionRecords.Length.ToString() + " to DataBase");
                 }
             }
         }
@@ -698,7 +698,7 @@ namespace ICE_Import
         private async void buttonPush_Click(object sender, EventArgs e)
         {
             cts = new CancellationTokenSource();
-            string input = StaticData.optionRecords.GetType().Name.Trim('[', ']');
+            string input = ParsedData.OptionRecords.GetType().Name.Trim('[', ']');
             EntityNames name = new EntityNames();
             Enum.TryParse(input, out name);
             switch (name)
@@ -707,7 +707,7 @@ namespace ICE_Import
                     // TODO: load data EOD_Futures_578 to db like EOD_Options_578 entity
                     break;
                 case EntityNames.EOD_Options_578:
-                    richTextBoxLog.Text += "Pushing statrted" + "\n";
+                    richTextBoxLog.Text += "Pushing started" + "\n";
                     if (checkBoxCheckDB.Checked) await PushDataToLocalDB(cts.Token);
                     else await PushDataToRemoteDB(cts.Token);
                     buttonPull_Click(sender, e);
@@ -802,7 +802,7 @@ namespace ICE_Import
                     SetLogMessage("Pulling " + count + " entities started from optiondata table");
                     await Task.Run(() =>
                     {
-                        bsOptionData.DataSource = (from item in remoteContext.tbloptiondatas
+                        bsOptionData.DataSource = (from item in remoteContext.tbloptiondata
                                                    select item
                                                   ).Take(count).ToList();
                     }, cts.Token);
@@ -883,7 +883,10 @@ namespace ICE_Import
             dataGridViewDailyContract.DataSource = bsDailyContractSettlement;
             buttonCancelPull.Enabled = false;
             buttonPull.Enabled = true;
-            if (StaticData.optionRecords != null || StaticData.futureRecords != null) buttonPush.Enabled = true; 
+            if (ParsedData.IsReady)
+            {
+                buttonPush.Enabled = true;
+            }
         }
 
         private void buttonCancelPull_Click(object sender, EventArgs e)
@@ -896,8 +899,8 @@ namespace ICE_Import
 
         private void buttonBack_Click(object sender, EventArgs e)
         {
-            Program.f1.Visible = true;
-            Program.dbf.Visible = false;
+            Hide();
+            Program.csvf.Show();
         }
     }
 }

@@ -1,17 +1,19 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
+using FileHelpers;
 
 namespace ICE_Import
 {
-    public partial class Form1 : Form
+    public partial class FormCSV : Form
     {
         string[] OptionFilePaths;
         string[] FutureFilePaths;
 
         string[] Symbols = { "EOD_Futures_578", "EOD_Options_578" };
 
-        public Form1()
+        public FormCSV()
         {
             InitializeComponent();
         }
@@ -52,7 +54,7 @@ namespace ICE_Import
             button_CancelFuture.Enabled = start;
         }
 
-        private void Form1_SizeChanged(object sender, EventArgs e)
+        private void FormCSV_SizeChanged(object sender, EventArgs e)
         {
             progressBar_ParsingOption.Width = Width - 40;
             progressBar_ParsingFuture.Width = Width - 40;
@@ -60,16 +62,12 @@ namespace ICE_Import
 
         private void buttonDB_Click(object sender, EventArgs e)
         {
-            if(Program.dbf == null)
+            Hide();
+            if (Program.dbf == null)
             {
-                Program.dbf = new DataBaseForm();
-                Program.dbf.Show();
+                Program.dbf = new FormDB();
             }
-            else if (Program.dbf.Visible == false)
-            {
-                Program.dbf = new DataBaseForm();
-                Program.dbf.Show();
-            }
+            Program.dbf.Show();
         }
 
         private void button_InputFuture_Click(object sender, EventArgs e)
@@ -137,9 +135,27 @@ namespace ICE_Import
             return filePaths;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private T[] Parse<T>(BackgroundWorker worker, string[] filePaths) where T : class
         {
-            if (Program.dbf.Visible) Program.dbf.Visible = false;
+            worker.ReportProgress(0);
+
+            var engine = new FileHelperEngine<T>();
+            T[] records = null;
+
+            for (int i = 0; i < filePaths.Length; i++)
+            {
+                records = engine.ReadFile(filePaths[i]);
+
+                worker.ReportProgress(i + 1);
+
+                if (worker.CancellationPending)
+                {
+                    return null;
+                }
+            }
+
+            return records;
         }
+
     }
 }

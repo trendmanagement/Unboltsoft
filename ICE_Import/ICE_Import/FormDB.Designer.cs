@@ -1,6 +1,6 @@
 ﻿namespace ICE_Import
 {
-    partial class DataBaseForm
+    partial class FormDB
     {
         /// <summary>
         /// Required designer variable.
@@ -60,9 +60,9 @@
             // 
             this.richTextBoxLog.BackColor = System.Drawing.SystemColors.InfoText;
             this.richTextBoxLog.ForeColor = System.Drawing.SystemColors.Info;
-            this.richTextBoxLog.Location = new System.Drawing.Point(3, 294);
+            this.richTextBoxLog.Location = new System.Drawing.Point(6, 294);
             this.richTextBoxLog.Name = "richTextBoxLog";
-            this.richTextBoxLog.Size = new System.Drawing.Size(654, 90);
+            this.richTextBoxLog.Size = new System.Drawing.Size(646, 80);
             this.richTextBoxLog.TabIndex = 1;
             this.richTextBoxLog.Text = "";
             // 
@@ -72,7 +72,7 @@
             this.buttonPush.Name = "buttonPush";
             this.buttonPush.Size = new System.Drawing.Size(95, 23);
             this.buttonPush.TabIndex = 2;
-            this.buttonPush.Text = "Push data to DB";
+            this.buttonPush.Text = "Push to DB";
             this.buttonPush.UseVisualStyleBackColor = true;
             this.buttonPush.Click += new System.EventHandler(this.buttonPush_Click);
             // 
@@ -83,9 +83,9 @@
             this.checkBoxCheckDB.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxCheckDB.Location = new System.Drawing.Point(249, 255);
             this.checkBoxCheckDB.Name = "checkBoxCheckDB";
-            this.checkBoxCheckDB.Size = new System.Drawing.Size(102, 17);
+            this.checkBoxCheckDB.Size = new System.Drawing.Size(70, 17);
             this.checkBoxCheckDB.TabIndex = 3;
-            this.checkBoxCheckDB.Text = "Local DataBase";
+            this.checkBoxCheckDB.Text = "Local DB";
             this.checkBoxCheckDB.UseVisualStyleBackColor = true;
             this.checkBoxCheckDB.CheckedChanged += new System.EventHandler(this.checkBoxCheckDB_CheckedChanged);
             // 
@@ -93,7 +93,7 @@
             // 
             this.progressBarLoad.Location = new System.Drawing.Point(6, 280);
             this.progressBarLoad.Name = "progressBarLoad";
-            this.progressBarLoad.Size = new System.Drawing.Size(648, 10);
+            this.progressBarLoad.Size = new System.Drawing.Size(646, 10);
             this.progressBarLoad.TabIndex = 4;
             // 
             // buttonCancelPush
@@ -102,7 +102,7 @@
             this.buttonCancelPush.Name = "buttonCancelPush";
             this.buttonCancelPush.Size = new System.Drawing.Size(82, 23);
             this.buttonCancelPush.TabIndex = 5;
-            this.buttonCancelPush.Text = "Cancel push";
+            this.buttonCancelPush.Text = "Cancel Push";
             this.buttonCancelPush.UseVisualStyleBackColor = true;
             this.buttonCancelPush.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
@@ -112,7 +112,7 @@
             this.buttonPull.Name = "buttonPull";
             this.buttonPull.Size = new System.Drawing.Size(102, 23);
             this.buttonPull.TabIndex = 6;
-            this.buttonPull.Text = "Pull data from DB";
+            this.buttonPull.Text = "Pull from DB";
             this.buttonPull.UseVisualStyleBackColor = true;
             this.buttonPull.Click += new System.EventHandler(this.buttonPull_Click);
             // 
@@ -214,7 +214,7 @@
             this.buttonCancelPull.Name = "buttonCancelPull";
             this.buttonCancelPull.Size = new System.Drawing.Size(82, 23);
             this.buttonCancelPull.TabIndex = 7;
-            this.buttonCancelPull.Text = "Cancel pull";
+            this.buttonCancelPull.Text = "Cancel Pull";
             this.buttonCancelPull.UseVisualStyleBackColor = true;
             this.buttonCancelPull.Click += new System.EventHandler(this.buttonCancelPull_Click);
             // 
@@ -228,7 +228,7 @@
             this.buttonBack.UseVisualStyleBackColor = true;
             this.buttonBack.Click += new System.EventHandler(this.buttonBack_Click);
             // 
-            // DataBaseForm
+            // FormDB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -243,9 +243,9 @@
             this.Controls.Add(this.richTextBoxLog);
             this.Controls.Add(this.tabControlOption);
             this.MinimumSize = new System.Drawing.Size(680, 425);
-            this.Name = "DataBaseForm";
-            this.Text = "DataBaseForm";
-            this.Load += new System.EventHandler(this.DataBaseForm_Load);
+            this.Name = "FormDB";
+            this.Text = "ICE Import (DB Form)";
+            this.Load += new System.EventHandler(this.FormDB_Load);
             this.tabPageDailyContract.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDailyContract)).EndInit();
             this.tabPageContract.ResumeLayout(false);
