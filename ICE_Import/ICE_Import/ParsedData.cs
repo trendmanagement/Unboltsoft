@@ -17,6 +17,7 @@
 
         public static void OnParseComplete()
         {
+            Program.csvf.Hide();
             if (Program.dbf == null)
             {
                 Program.dbf = new FormDB();

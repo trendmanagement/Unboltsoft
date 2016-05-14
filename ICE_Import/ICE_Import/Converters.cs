@@ -83,7 +83,7 @@ namespace ICE_Import
 
         public override object Parse(string from)
         {
-            provider.NumberGroupSeparator = ".";
+            provider.NumberDecimalSeparator = ".";
             try
             {
                 return Convert.ToSingle(from, provider); 

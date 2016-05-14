@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.backgroundWorker_ParsingOptions = new System.ComponentModel.BackgroundWorker();
-            this.buttonDB = new System.Windows.Forms.Button();
+            this.buttonToDB = new System.Windows.Forms.Button();
             this.button_CancelFuture = new System.Windows.Forms.Button();
             this.progressBar_ParsingFuture = new System.Windows.Forms.ProgressBar();
             this.label_ParsedFuture = new System.Windows.Forms.Label();
@@ -53,15 +53,15 @@
             this.backgroundWorker_ParsingOptions.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ParsingOptions_ProgressChanged);
             this.backgroundWorker_ParsingOptions.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker_ParsingOptions_RunWorkerCompleted);
             // 
-            // buttonDB
+            // buttonToDB
             // 
-            this.buttonDB.Location = new System.Drawing.Point(12, 226);
-            this.buttonDB.Name = "buttonDB";
-            this.buttonDB.Size = new System.Drawing.Size(115, 23);
-            this.buttonDB.TabIndex = 7;
-            this.buttonDB.Text = "Open DB Form";
-            this.buttonDB.UseVisualStyleBackColor = true;
-            this.buttonDB.Click += new System.EventHandler(this.buttonDB_Click);
+            this.buttonToDB.Location = new System.Drawing.Point(12, 226);
+            this.buttonToDB.Name = "buttonToDB";
+            this.buttonToDB.Size = new System.Drawing.Size(115, 23);
+            this.buttonToDB.TabIndex = 7;
+            this.buttonToDB.Text = "To DB Form";
+            this.buttonToDB.UseVisualStyleBackColor = true;
+            this.buttonToDB.Click += new System.EventHandler(this.buttonDB_Click);
             // 
             // button_CancelFuture
             // 
@@ -200,7 +200,7 @@
             this.Controls.Add(this.button_ParseFuture);
             this.Controls.Add(this.label_InputFuture);
             this.Controls.Add(this.button_InputFuture);
-            this.Controls.Add(this.buttonDB);
+            this.Controls.Add(this.buttonToDB);
             this.MinimumSize = new System.Drawing.Size(600, 300);
             this.Name = "FormCSV";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -213,7 +213,7 @@
 
         #endregion
         private System.ComponentModel.BackgroundWorker backgroundWorker_ParsingOptions;
-        private System.Windows.Forms.Button buttonDB;
+        private System.Windows.Forms.Button buttonToDB;
         private System.Windows.Forms.Button button_CancelFuture;
         private System.Windows.Forms.ProgressBar progressBar_ParsingFuture;
         private System.Windows.Forms.Label label_ParsedFuture;

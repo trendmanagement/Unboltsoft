@@ -30,9 +30,9 @@
         {
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.buttonPush = new System.Windows.Forms.Button();
-            this.checkBoxCheckDB = new System.Windows.Forms.CheckBox();
+            this.checkBoxLocalDB = new System.Windows.Forms.CheckBox();
             this.progressBarLoad = new System.Windows.Forms.ProgressBar();
-            this.buttonCancelPush = new System.Windows.Forms.Button();
+            this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonPull = new System.Windows.Forms.Button();
             this.tabPageDailyContract = new System.Windows.Forms.TabPage();
             this.dataGridViewDailyContract = new System.Windows.Forms.DataGridView();
@@ -43,8 +43,7 @@
             this.tabPageOption = new System.Windows.Forms.TabPage();
             this.dataGridViewOption = new System.Windows.Forms.DataGridView();
             this.tabControlOption = new System.Windows.Forms.TabControl();
-            this.buttonCancelPull = new System.Windows.Forms.Button();
-            this.buttonBack = new System.Windows.Forms.Button();
+            this.buttonToCSV = new System.Windows.Forms.Button();
             this.tabPageDailyContract.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDailyContract)).BeginInit();
             this.tabPageContract.SuspendLayout();
@@ -68,7 +67,7 @@
             // 
             // buttonPush
             // 
-            this.buttonPush.Location = new System.Drawing.Point(60, 253);
+            this.buttonPush.Location = new System.Drawing.Point(12, 253);
             this.buttonPush.Name = "buttonPush";
             this.buttonPush.Size = new System.Drawing.Size(95, 23);
             this.buttonPush.TabIndex = 2;
@@ -76,18 +75,18 @@
             this.buttonPush.UseVisualStyleBackColor = true;
             this.buttonPush.Click += new System.EventHandler(this.buttonPush_Click);
             // 
-            // checkBoxCheckDB
+            // checkBoxLocalDB
             // 
-            this.checkBoxCheckDB.AutoSize = true;
-            this.checkBoxCheckDB.Checked = true;
-            this.checkBoxCheckDB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxCheckDB.Location = new System.Drawing.Point(249, 255);
-            this.checkBoxCheckDB.Name = "checkBoxCheckDB";
-            this.checkBoxCheckDB.Size = new System.Drawing.Size(70, 17);
-            this.checkBoxCheckDB.TabIndex = 3;
-            this.checkBoxCheckDB.Text = "Local DB";
-            this.checkBoxCheckDB.UseVisualStyleBackColor = true;
-            this.checkBoxCheckDB.CheckedChanged += new System.EventHandler(this.checkBoxCheckDB_CheckedChanged);
+            this.checkBoxLocalDB.AutoSize = true;
+            this.checkBoxLocalDB.Checked = true;
+            this.checkBoxLocalDB.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxLocalDB.Location = new System.Drawing.Point(309, 257);
+            this.checkBoxLocalDB.Name = "checkBoxLocalDB";
+            this.checkBoxLocalDB.Size = new System.Drawing.Size(70, 17);
+            this.checkBoxLocalDB.TabIndex = 3;
+            this.checkBoxLocalDB.Text = "Local DB";
+            this.checkBoxLocalDB.UseVisualStyleBackColor = true;
+            this.checkBoxLocalDB.CheckedChanged += new System.EventHandler(this.checkBoxLocalDB_CheckedChanged);
             // 
             // progressBarLoad
             // 
@@ -96,19 +95,19 @@
             this.progressBarLoad.Size = new System.Drawing.Size(646, 10);
             this.progressBarLoad.TabIndex = 4;
             // 
-            // buttonCancelPush
+            // buttonCancel
             // 
-            this.buttonCancelPush.Location = new System.Drawing.Point(161, 253);
-            this.buttonCancelPush.Name = "buttonCancelPush";
-            this.buttonCancelPush.Size = new System.Drawing.Size(82, 23);
-            this.buttonCancelPush.TabIndex = 5;
-            this.buttonCancelPush.Text = "Cancel Push";
-            this.buttonCancelPush.UseVisualStyleBackColor = true;
-            this.buttonCancelPush.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Location = new System.Drawing.Point(221, 253);
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size(82, 23);
+            this.buttonCancel.TabIndex = 5;
+            this.buttonCancel.Text = "Cancel";
+            this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // buttonPull
             // 
-            this.buttonPull.Location = new System.Drawing.Point(550, 253);
+            this.buttonPull.Location = new System.Drawing.Point(113, 253);
             this.buttonPull.Name = "buttonPull";
             this.buttonPull.Size = new System.Drawing.Size(102, 23);
             this.buttonPull.TabIndex = 6;
@@ -144,7 +143,7 @@
             this.tabPageContract.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageContract.Size = new System.Drawing.Size(654, 225);
             this.tabPageContract.TabIndex = 0;
-            this.tabPageContract.Text = "tblcontract";
+            this.tabPageContract.Text = "tblcontracts";
             this.tabPageContract.UseVisualStyleBackColor = true;
             // 
             // dataGridViewContract
@@ -208,37 +207,26 @@
             this.tabControlOption.Size = new System.Drawing.Size(662, 251);
             this.tabControlOption.TabIndex = 0;
             // 
-            // buttonCancelPull
+            // buttonToCSV
             // 
-            this.buttonCancelPull.Location = new System.Drawing.Point(462, 253);
-            this.buttonCancelPull.Name = "buttonCancelPull";
-            this.buttonCancelPull.Size = new System.Drawing.Size(82, 23);
-            this.buttonCancelPull.TabIndex = 7;
-            this.buttonCancelPull.Text = "Cancel Pull";
-            this.buttonCancelPull.UseVisualStyleBackColor = true;
-            this.buttonCancelPull.Click += new System.EventHandler(this.buttonCancelPull_Click);
-            // 
-            // buttonBack
-            // 
-            this.buttonBack.Location = new System.Drawing.Point(6, 253);
-            this.buttonBack.Name = "buttonBack";
-            this.buttonBack.Size = new System.Drawing.Size(48, 23);
-            this.buttonBack.TabIndex = 8;
-            this.buttonBack.Text = "Back";
-            this.buttonBack.UseVisualStyleBackColor = true;
-            this.buttonBack.Click += new System.EventHandler(this.buttonBack_Click);
+            this.buttonToCSV.Location = new System.Drawing.Point(570, 253);
+            this.buttonToCSV.Name = "buttonToCSV";
+            this.buttonToCSV.Size = new System.Drawing.Size(82, 23);
+            this.buttonToCSV.TabIndex = 8;
+            this.buttonToCSV.Text = "To CSV Form";
+            this.buttonToCSV.UseVisualStyleBackColor = true;
+            this.buttonToCSV.Click += new System.EventHandler(this.buttonToCSV_Click);
             // 
             // FormDB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 386);
-            this.Controls.Add(this.buttonBack);
-            this.Controls.Add(this.buttonCancelPull);
+            this.Controls.Add(this.buttonToCSV);
             this.Controls.Add(this.buttonPull);
-            this.Controls.Add(this.buttonCancelPush);
+            this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.progressBarLoad);
-            this.Controls.Add(this.checkBoxCheckDB);
+            this.Controls.Add(this.checkBoxLocalDB);
             this.Controls.Add(this.buttonPush);
             this.Controls.Add(this.richTextBoxLog);
             this.Controls.Add(this.tabControlOption);
@@ -263,9 +251,9 @@
         #endregion
         private System.Windows.Forms.RichTextBox richTextBoxLog;
         private System.Windows.Forms.Button buttonPush;
-        private System.Windows.Forms.CheckBox checkBoxCheckDB;
+        private System.Windows.Forms.CheckBox checkBoxLocalDB;
         private System.Windows.Forms.ProgressBar progressBarLoad;
-        private System.Windows.Forms.Button buttonCancelPush;
+        private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonPull;
         private System.Windows.Forms.TabPage tabPageDailyContract;
         private System.Windows.Forms.DataGridView dataGridViewDailyContract;
@@ -276,7 +264,6 @@
         private System.Windows.Forms.TabPage tabPageOption;
         private System.Windows.Forms.DataGridView dataGridViewOption;
         private System.Windows.Forms.TabControl tabControlOption;
-        private System.Windows.Forms.Button buttonCancelPull;
-        private System.Windows.Forms.Button buttonBack;
+        private System.Windows.Forms.Button buttonToCSV;
     }
 }
