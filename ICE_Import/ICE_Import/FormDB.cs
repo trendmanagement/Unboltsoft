@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ICE_Import
@@ -26,7 +29,7 @@ namespace ICE_Import
                              Connection Timeout=30;";
         bool isLocal;
         string locRem;
-        DataClasses1DataContext context;
+        OFDataContext context;
 
         public FormDB()
         {
@@ -69,13 +72,7 @@ namespace ICE_Import
                 Width = this.Width - 15,
                 Height = this.Height - 175
             };
-            richTextBoxLog.Location = new Point()
-            {
-                X = 7,
-                Y = tabControlOption.Height + 7 + 15 + 25
-            };
-            richTextBoxLog.Width = tabControlOption.Width - 15;
-            richTextBoxLog.Height = 90;
+
             buttonPush.Location = new Point()
             {
                 X = buttonPush.Location.X,
@@ -164,12 +161,12 @@ namespace ICE_Import
             if (isLocal)
             {
                 locRem = "LOCAL";
-                context = new DataClasses1DataContext(locConStr);
+                context = new OFDataContext(locConStr);
             }
             else
             {
                 locRem = "REMOTE";
-                context = new DataClasses1DataContext(remConStr);
+                context = new OFDataContext(remConStr);
             }
             SetLogMessage(string.Format("You selected {0} DB", locRem));
         }
@@ -215,5 +212,6 @@ namespace ICE_Import
                 buttonToCSV.Enabled = true;
             }
         }
+
     }
 }

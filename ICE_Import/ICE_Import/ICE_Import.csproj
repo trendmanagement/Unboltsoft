@@ -69,11 +69,6 @@
     <Compile Include="BgWorkerFutures.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DataClasses1.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DataClasses1.dbml</DependentUpon>
-    </Compile>
     <Compile Include="MonthCodes.cs" />
     <Compile Include="BgWorkerOptions.cs">
       <SubType>Form</SubType>
@@ -87,6 +82,11 @@
       <DependentUpon>FormDB.cs</DependentUpon>
     </Compile>
     <Compile Include="EntityNames.cs" />
+    <Compile Include="OF.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OF.dbml</DependentUpon>
+    </Compile>
     <Compile Include="OptionCalcs.cs" />
     <Compile Include="ParsedData.cs" />
     <Compile Include="PullFromFB.cs">
@@ -106,9 +106,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities.cs" />
-    <None Include="DataClasses1.dbml.layout">
-      <DependentUpon>DataClasses1.dbml</DependentUpon>
-    </None>
     <EmbeddedResource Include="FormDB.resx">
       <DependentUpon>FormDB.cs</DependentUpon>
     </EmbeddedResource>
@@ -116,10 +113,8 @@
       <DependentUpon>FormCSV.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="DataClasses1.dbml">
-      <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>DataClasses1.designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
+    <None Include="OF.dbml.layout">
+      <DependentUpon>OF.dbml</DependentUpon>
     </None>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -130,6 +125,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="OF.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>OF.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

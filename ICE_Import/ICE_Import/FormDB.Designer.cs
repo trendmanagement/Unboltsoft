@@ -58,10 +58,13 @@
             // richTextBoxLog
             // 
             this.richTextBoxLog.BackColor = System.Drawing.SystemColors.InfoText;
+            this.richTextBoxLog.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.richTextBoxLog.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.richTextBoxLog.ForeColor = System.Drawing.SystemColors.Info;
-            this.richTextBoxLog.Location = new System.Drawing.Point(6, 294);
+            this.richTextBoxLog.Location = new System.Drawing.Point(0, 296);
             this.richTextBoxLog.Name = "richTextBoxLog";
-            this.richTextBoxLog.Size = new System.Drawing.Size(646, 80);
+            this.richTextBoxLog.ReadOnly = true;
+            this.richTextBoxLog.Size = new System.Drawing.Size(664, 90);
             this.richTextBoxLog.TabIndex = 1;
             this.richTextBoxLog.Text = "";
             // 
