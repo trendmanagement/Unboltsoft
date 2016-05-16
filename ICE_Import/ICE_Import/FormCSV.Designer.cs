@@ -43,6 +43,7 @@
             this.button_ParseOption = new System.Windows.Forms.Button();
             this.label_InputOption = new System.Windows.Forms.Label();
             this.button_InputOption = new System.Windows.Forms.Button();
+            this.checkBoxJustFuture = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // backgroundWorker_ParsingOptions
@@ -183,11 +184,23 @@
             this.button_InputOption.UseVisualStyleBackColor = true;
             this.button_InputOption.Click += new System.EventHandler(this.button_InputOption_Click);
             // 
+            // checkBoxJustFuture
+            // 
+            this.checkBoxJustFuture.AutoSize = true;
+            this.checkBoxJustFuture.Location = new System.Drawing.Point(492, 12);
+            this.checkBoxJustFuture.Name = "checkBoxJustFuture";
+            this.checkBoxJustFuture.Size = new System.Drawing.Size(83, 17);
+            this.checkBoxJustFuture.TabIndex = 20;
+            this.checkBoxJustFuture.Text = "Just Futures";
+            this.checkBoxJustFuture.UseVisualStyleBackColor = true;
+            this.checkBoxJustFuture.CheckedChanged += new System.EventHandler(this.checkBoxJustFuture_CheckedChanged);
+            // 
             // FormCSV
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 261);
+            this.Controls.Add(this.checkBoxJustFuture);
             this.Controls.Add(this.button_CancelOption);
             this.Controls.Add(this.progressBar_ParsingOption);
             this.Controls.Add(this.label_ParsedOption);
@@ -227,6 +240,7 @@
         private System.Windows.Forms.Button button_ParseOption;
         private System.Windows.Forms.Label label_InputOption;
         private System.Windows.Forms.Button button_InputOption;
+        private System.Windows.Forms.CheckBox checkBoxJustFuture;
     }
 }
 

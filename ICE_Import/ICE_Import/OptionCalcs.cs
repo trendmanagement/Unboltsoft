@@ -66,14 +66,11 @@ namespace ICE_Import
                         volInc /= 2;
                         tempV += volInc;
                     }
-
                     i++;
-
                 }
             }
             catch (Exception ex)
             {
-
                 throw(ex);
             }
 

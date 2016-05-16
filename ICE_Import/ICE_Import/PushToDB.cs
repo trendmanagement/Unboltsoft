@@ -21,12 +21,11 @@ namespace ICE_Import
             progressBarLoad.Maximum = ParsedData.FutureRecords.Length;
             if (isLocal)
             {
-                progressBarLoad.Maximum += ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length;
+                progressBarLoad.Maximum += ParsedData.FutureRecords.Length + ((!ParsedData.justFuture)? ParsedData.OptionRecords.Length : 0);
             }
             Utilities utilites = new Utilities();
             List<string> stripName = new List<string>();
             bool newFuture = true;
-            
             try
             {
                 EnableDisable(true);
@@ -63,6 +62,7 @@ namespace ICE_Import
                                 char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
                                 string contractName = utilites.generateCQGSymbolFromSpan('F', "CCE", monthchar, future.StripName.Year);
 
+                                #region Find data in DB like pushed
                                 try
                                 {
                                     List<tblcontract> tblcontracts = new List<tblcontract>();
@@ -76,7 +76,7 @@ namespace ICE_Import
                                         long id = tblcontracts[0].idcontract;
                                         log += string.Format(
                                             "Message from {0} pushing TBLCONTRACTS tables \n" +
-                                            "Wee already have entity with id: {1}\n",
+                                            "We already have entity with id: {1}\n",
                                             locRem, id);
                                         continue;
                                     }
@@ -91,6 +91,7 @@ namespace ICE_Import
                                     log += ex.Message + "\n";
                                     continue;
                                 }
+                                #endregion
 
                                 var tableFuture = new tblcontract
                                 {
@@ -156,6 +157,7 @@ namespace ICE_Import
                             char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
                             tblcontract contract = context.tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
 
+                            #region Find data in DB like pushed
                             try
                             {
                                 List<tbldailycontractsettlement> tdcs = new List<tbldailycontractsettlement>();
@@ -168,7 +170,7 @@ namespace ICE_Import
                                     long id = tdcs[0].iddailycontractsettlements;
                                     log += string.Format(
                                         "Message from {0} pushing TBLDAILYCONTRACTSETTLEMENT tables \n" +
-                                        "Wee already have entity with id: {1}\n",
+                                        "We already have entity with id: {1}\n",
                                         locRem, id);
                                     continue;
                                 }
@@ -183,6 +185,7 @@ namespace ICE_Import
                                 log += ex.Message + "\n";
                                 continue;
                             }
+                            #endregion
 
                             tbldailycontractsettlement tableDCS = new tbldailycontractsettlement
                             {
@@ -227,190 +230,239 @@ namespace ICE_Import
                     }
                 }, ct);
 
-                count = 0;
-                await Task.Run(() =>
+                if (!ParsedData.justFuture)
                 {
-                    string log = string.Empty;
-                    foreach (EOD_Options_578 option in ParsedData.OptionRecords)
+                    count = 0;
+                    await Task.Run(() =>
                     {
-                        if (ct.IsCancellationRequested)
+                        string log = string.Empty;
+                        foreach (EOD_Options_578 option in ParsedData.OptionRecords)
                         {
-                            break;
-                        }
-                        try
-                        {
-                            //TODO: Create query to get idinstrument by description from tblinstruments
-                            //idinstrument for description = Cocoa is 36
-                            int idinstrument = 36;
-
-                            char monthchar = Convert.ToChar(((MonthCodes)option.StripName.Month).ToString());
-
-                            string optionName = utilites.generateOptionCQGSymbolFromSpan(option.OptionType, "CCE", monthchar, option.StripName.Year, (option.StrikePrice != null) ? (double)option.StrikePrice : 0, 0, 0, idinstrument);
-
-                            List<tbloption> tbloptions = new List<tbloption>();
+                            if (ct.IsCancellationRequested)
+                            {
+                                break;
+                            }
                             try
                             {
-                                foreach (tbloption item in context.tbloptions.Where(item => item.optionmonth == monthchar && item.optionyear == option.StripName.Year && item.optionname == optionName).ToList())
+                                //TODO: Create query to get idinstrument by description from tblinstruments
+                                //idinstrument for description = Cocoa is 36
+                                int idinstrument = 36;
+
+                                char monthchar = Convert.ToChar(((MonthCodes)option.StripName.Month).ToString());
+
+                                string optionName = utilites.generateOptionCQGSymbolFromSpan(option.OptionType, "CCE", monthchar, option.StripName.Year, (option.StrikePrice != null) ? (double)option.StrikePrice : 0, 0, 0, idinstrument);
+
+                                bool isOptionCreated = false;
+
+                                tbloption TO = new tbloption();
+
+                                #region Find data in DB like pushed
+                                List<tbloption> tbloptions = new List<tbloption>();
+                                try
                                 {
-                                    tbloptions.Add(item);
+
+                                    List<tbloption> optlist = context.tbloptions.Where(item => item.optionmonth == monthchar && item.optionyear == option.StripName.Year && item.optionname == optionName).ToList();
+                                    foreach (tbloption item in optlist)
+                                    {
+                                        tbloptions.Add(item);
+                                    }
+                                    int countContracts = tbloptions.Count;
+                                    if (countContracts > 0)
+                                    {
+                                        isOptionCreated = true;
+                                        TO = tbloptions[0];
+                                    }
                                 }
-                                int countContracts = tbloptions.Count;
-                                if (countContracts != 0)
+                                catch (Exception ex)
                                 {
-                                    long id = tbloptions[0].idoption;
+                                    int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
                                     log += string.Format(
-                                        "Message from {0} pushing pushing TBLOPTIONS table \n" +
-                                        "Wee already have entity with id: {1}\n",
-                                        locRem, id);
+                                        "ERROR message from {0} pushing pushing TBLOPTIONS table \n" +
+                                        "Can't read N: {1} from DB\n",
+                                        locRem, erc);
+                                    log += ex.Message + "\n";
                                     continue;
                                 }
+                                #endregion
+
+                                if (!isOptionCreated)
+                                {
+                                    #region Find id contract for pushing option
+                                    long idContract;
+                                    try
+                                    {
+                                        idContract = context.tblcontracts.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToList()[0].idcontract;
+                                    }
+                                    catch (IndexOutOfRangeException outEx)
+                                    {
+                                        int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                                        log += string.Format(
+                                            "ERROR message from {0} pushing pushing TBLOPTIONS table \n" +
+                                            "We dont have contract for option entity N: {1}\n",
+                                            locRem, erc);
+                                        log += outEx.Message + "\n";
+                                        continue;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                                        log += string.Format(
+                                            "ERROR message from {0} pushing pushing TBLOPTIONS table \n" +
+                                            "Can't find contract for option entity N: {1}\n",
+                                            locRem, erc);
+                                        log += ex.Message + "\n";
+                                        continue;
+                                    }
+                                    #endregion
+
+                                    tbloption tableOption = new tbloption
+                                    {
+                                        //idoption must generete by DB
+                                        optionname = optionName,
+                                        optionmonth = monthchar,
+                                        optionmonthint = option.StripName.Month,
+                                        optionyear = option.StripName.Year,
+                                        strikeprice = (option.StrikePrice != null) ? (double)option.StrikePrice : 0,
+                                        callorput = option.OptionType,
+                                        idinstrument = idinstrument,
+                                        expirationdate = option.Date,
+                                        idcontract = idContract,
+                                        cqgsymbol = optionName
+                                    };
+                                    context.tbloptions.InsertOnSubmit(tableOption);
+                                    context.SubmitChanges();
+
+                                    #region Find id for fist time pushed option
+                                    List<tbloption> tblopt = new List<tbloption>();
+                                    try
+                                    {
+                                        foreach (tbloption item in context.tbloptions.Where(item => item == tableOption).ToList())
+                                        {
+                                            tblopt.Add(item);
+                                        }
+                                        if (tblopt.Count == 0)
+                                        {
+                                            long id = count;
+                                            log += string.Format(
+                                                "Message from {0} pushing TBLOPTIONDATAS tables \n" +
+                                                "Can't check idoption for entity with N: {1}, Second query\n",
+                                                locRem, id);
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            TO = tblopt[0];
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                                        log += string.Format(
+                                            "ERROR message from {0} pushing TBLOPTIONDATAS tables \n" +
+                                            "Connection error - can't check idoption for entity N: {1}\n",
+                                            locRem, erc);
+                                        log += ex.Message + "\n";
+                                        continue;
+                                    }
+                                    #endregion
+
+                                }
+
+                                double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
+                                double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
+
+                                #region Find data in DB like pushed
+                                List<tbloptiondata> tdcs = new List<tbloptiondata>();
+                                try
+                                {
+                                    foreach (tbloptiondata item in context.tbloptiondatas.Where(item => item.timetoexpinyears == (futureYear - expiranteYear) && item.datetime == option.Date && item.idoption == TO.idoption).ToList())
+                                    {
+                                        tdcs.Add(item);
+                                    }
+                                    if (tdcs.Count > 0)
+                                    {
+                                        long id = tdcs[0].idoptiondata;
+                                        log += string.Format(
+                                            "Message from {0} pushing TBLOPTIONDATAS tables \n" +
+                                            "We already have entity with id: {1}\n",
+                                            locRem, id);
+                                        continue;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                                    log += string.Format(
+                                        "ERROR message from {0} pushing TBLOPTIONDATAS tables \n" +
+                                        "Connection error - can't check idcontract for entity N: {1}\n",
+                                        locRem, erc);
+                                    log += ex.Message + "\n";
+                                    continue;
+                                }
+                                #endregion
+
+                                // callPutFlag                      - tableOption.callorput
+                                // S - stock price                  - 1.56
+                                // X - strike price of option       - option.StrikePrice
+                                // T - time to expiration in years  - 0.5
+                                // r - risk-free interest rate      - r(f) = 0.08, foreign risk-free interest rate in the U.S. is 8% per annum
+                                // currentOptionPrice               - option.SettlementPrice 
+
+                                double impliedvol = OptionCalcs.calculateOptionVolatility(TO.callorput,
+                                                                                        1.56,
+                                                                                        (option.StrikePrice != null) ? (double)option.StrikePrice : 0,
+                                                                                        0.5,
+                                                                                        0.08,
+                                                                                        (option.SettlementPrice != null) ? (double)option.SettlementPrice : 0);
+
+                                tbloptiondata tableOptionData = new tbloptiondata
+                                {
+                                    //idoptiondata must generate by DB
+                                    idoption = TO.idoption,
+                                    datetime = option.Date,
+                                    price = (option.StrikePrice != null) ? (double)option.StrikePrice : 1,
+                                    impliedvol = impliedvol,
+                                    timetoexpinyears = futureYear - expiranteYear
+                                };
+
+                                context.tbloptiondatas.InsertOnSubmit(tableOptionData);
+                                context.SubmitChanges();
+                                count++;
+                            }
+                            catch (OperationCanceledException cancel)
+                            {
+                                log += string.Format("Cancel message from {0} pushing TBLOPTIONS and TBLOPTIONDATAS table \n", locRem);
+                                log += cancel.Message + "\n";
                             }
                             catch (Exception ex)
                             {
                                 int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
                                 log += string.Format(
-                                    "ERROR message from {0} pushing pushing TBLOPTIONS table \n" +
-                                    "Can't read N: {1} from DB\n",
+                                    "ERROR message from {0} pushing TBLOPTIONS and TBLOPTIONDATAS tables \n" +
+                                    "Can't push entity N: {1}\n",
                                     locRem, erc);
                                 log += ex.Message + "\n";
                                 continue;
                             }
-
-                            long idContract;
-                            try
+                            finally
                             {
-                                idContract = context.tblcontracts.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToList()[0].idcontract;
-                            }
-                            catch(IndexOutOfRangeException outEx)
-                            {
-                                int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
-                                log += string.Format(
-                                    "ERROR message from {0} pushing pushing TBLOPTIONS table \n" +
-                                    "We dont have contract for option entity N: {1}\n",
-                                    locRem, erc);
-                                log += outEx.Message + "\n";
-                                continue;
-                            }
-                            catch(Exception ex)
-                            {
-                                int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
-                                log += string.Format(
-                                    "ERROR message from {0} pushing pushing TBLOPTIONS table \n" +
-                                    "Can't find contract for option entity N: {1}\n",
-                                    locRem, erc);
-                                log += ex.Message + "\n";
-                                continue;
-                            }
-
-                            tbloption tableOption = new tbloption
-                            {
-                                //idoption must generete by DB
-                                optionname = optionName,
-                                optionmonth = monthchar,
-                                optionmonthint = option.StripName.Month,
-                                optionyear = option.StripName.Year,
-                                strikeprice = (option.StrikePrice != null) ? (double)option.StrikePrice : 0,
-                                callorput = option.OptionType,
-                                idinstrument = idinstrument,
-                                expirationdate = option.Date,
-                                idcontract = idContract,
-                                cqgsymbol = optionName
-                            };
-                            context.tbloptions.InsertOnSubmit(tableOption);
-                            context.SubmitChanges();
-
-                            double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
-                            double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
-
-                            List<tbloptiondata> tdcs = new List<tbloptiondata>();
-                            try
-                            {
-                                foreach (tbloptiondata item in context.tbloptiondatas.Where(item => item.timetoexpinyears == (futureYear - expiranteYear) && item.datetime == option.Date).ToList())
+                                globalCount++;
+                                if (globalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
                                 {
-                                    tdcs.Add(item);
+                                    log += string.Format("Pushed {0} entities to {1} TBLOPTIONS and TBLOPTIONDATAS tables", count, locRem);
                                 }
-                                if (tdcs.Count != 0)
-                                {
-                                    long id = tdcs[0].idoptiondata;
-                                    log += string.Format(
-                                        "Message from {0} pushing TBLOPTIONDATAS tables \n" +
-                                        "Wee already have entity with id: {1}\n",
-                                        locRem, id);
-                                    continue;
-                                }
+                                //TODO: Fix this
+                                //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
+                                //{
+                                //    currentPercent += 10;
+                                //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entities" + "\n";
+                                //}
+                                Invoke(new Action(() => ValuesFromTask(log, globalCount)));
+                                log = String.Empty;
                             }
-                            catch (Exception ex)
-                            {
-                                int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
-                                log += string.Format(
-                                    "ERROR message from {0} pushing TBLOPTIONDATAS tables \n" +
-                                    "Can't check idcontract for entity N: {1}\n",
-                                    locRem, erc);
-                                log += ex.Message + "\n";
-                                continue;
-                            }
-
-                            // callPutFlag                      - tableOption.callorput
-                            // S - stock price                  - 1.56
-                            // X - strike price of option       - option.SettlementPrice
-                            // T - time to expiration in years  - 0.5
-                            // r - risk-free interest rate      - option.OpenInterest
-                            // currentOptionPrice               - tableOption.strikeprice
-
-                            double impliedvol = OptionCalcs.calculateOptionVolatility(tableOption.callorput,
-                                                                                    1.56,
-                                                                                    (option.SettlementPrice != null) ? (double)option.SettlementPrice : 0,
-                                                                                    0.5,
-                                                                                    (option.OpenInterest != null) ? (double)option.OpenInterest : 0,
-                                                                                    tableOption.strikeprice);
-
-                            tbloptiondata tableOptionData = new tbloptiondata
-                            {
-                                //idoptiondata must generate by DB
-                                idoption = idContract,
-                                datetime = option.Date,
-                                price = (option.StrikePrice != null) ? (double)option.StrikePrice : 1,
-                                impliedvol = impliedvol,
-                                timetoexpinyears = futureYear - expiranteYear
-                            };
-
-                            context.tbloptiondatas.InsertOnSubmit(tableOptionData);
-                            context.SubmitChanges();
-                            count++;
                         }
-                        catch (OperationCanceledException cancel)
-                        {
-                            log += string.Format("Cancel message from {0} pushing TBLOPTIONDATAS table \n", locRem);
-                            log += cancel.Message + "\n";
-                        }
-                        catch (Exception ex)
-                        {
-                            int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
-                            log += string.Format(
-                                "ERROR message from {0} pushing TBLOPTIONDATAS tables \n" +
-                                "Can't push entity N: {1}\n",
-                                locRem, erc);
-                            log += ex.Message + "\n";
-                            continue;
-                        }
-                        finally
-                        {
-                            globalCount++;
-                            if (globalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
-                            {
-                                log += string.Format("Pushed {0} entities to {1} TBLOPTIONS and TBLOPTIONDATAS tables", count, locRem);
-                            }
-                            //TODO: Fix this
-                            //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
-                            //{
-                            //    currentPercent += 10;
-                            //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entities" + "\n";
-                            //}
-                            Invoke(new Action(() => ValuesFromTask(log, globalCount)));
-                            log = String.Empty;
-                        }
-                    }
-                }, ct);
+                    }, ct);
+                }
             }
             catch (Exception ex)
             {

@@ -6,12 +6,20 @@
         public static event ParseEventHandler ParseComplete;
         public static EOD_Futures_578[] FutureRecords;
         public static EOD_Options_578[] OptionRecords;
+        public static bool justFuture;
 
         public static bool IsReady
         {
             get
             {
-                return OptionRecords != null && FutureRecords != null;
+                if (justFuture)
+                {
+                    return FutureRecords != null;
+                }
+                else
+                {
+                    return OptionRecords != null && FutureRecords != null;
+                }
             }
         }
 

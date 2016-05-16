@@ -20,31 +20,33 @@ namespace ICE_Import
             BindingSource bsDailyContractSettlement = new BindingSource();
 
             List<tbloption> listOption = new List<tbloption>();
-            int count = isLocal ? int.MaxValue : 100;
+
+            int count = 100;
+
             try
             {
                 EnableDisable(true);
 
-                SetLogMessage(string.Format("Started pulling {0} entities from {1} TBLCONTRACT table", count, locRem));
+                SetLogMessage(string.Format("Started pulling {0} entities from {1} TBLCONTRACT table", (isLocal) ? context.tblcontracts.Count() : count, locRem));
 
                 await Task.Run(() =>
                             {
                                 bsContract.DataSource = (from item in context.tblcontracts
                                                          select item
-                                                        ).Take(count).ToList();
+                                                        ).Take((isLocal) ? context.tblcontracts.Count() : count).ToList();
                             }, cts.Token);
 
-                SetLogMessage(string.Format("Started pulling {0} entities from {1} TBLDAILYCONTRACTSETTLEMENT table", count, locRem));
+                SetLogMessage(string.Format("Started pulling {0} entities from {1} TBLDAILYCONTRACTSETTLEMENT table", (isLocal) ? context.tbldailycontractsettlements.Count() : count, locRem));
 
                 await Task.Run(() =>
                                 {
                                     bsDailyContractSettlement.DataSource = (from item in context.tbldailycontractsettlements
                                                                             select item
-                                                                            ).Take(count).ToList();
+                                                                            ).Take((isLocal) ? context.tbldailycontractsettlements.Count() : count).ToList();
                                 }, cts.Token);
 
                 //int count = remoteContext.tbloptions.Where(item => item.cqgsymbol == "somesymbol").Count();
-                SetLogMessage(string.Format("Started pulling {0} entities from {1} TBLOPTIONS table", count, locRem));
+                SetLogMessage(string.Format("Started pulling {0} entities from {1} TBLOPTIONS table", (isLocal) ? context.tbloptions.Count() : count, locRem));
                 try
                 {
                     await Task.Run(() =>
@@ -52,7 +54,7 @@ namespace ICE_Import
                         listOption = (from item in context.tbloptions
                                           //where item.cqgsymbol == "somesymbol"
                                       select item
-                                              ).Take(count).ToList();
+                                              ).Take((isLocal) ? context.tbloptions.Count() : count).ToList();
                     }, cts.Token);
                 }
                 catch (Exception ex)
@@ -64,12 +66,12 @@ namespace ICE_Import
                     bsOption.DataSource = listOption;
                 }
 
-                SetLogMessage(string.Format("Started pulling {0} entities from {1} TBLOPTIONDATAS table", count, locRem));
+                SetLogMessage(string.Format("Started pulling {0} entities from {1} TBLOPTIONDATAS table", (isLocal) ? context.tbloptiondatas.Count() : count, locRem));
                 await Task.Run(() =>
                                     {
                                         bsOptionData.DataSource = (from item in context.tbloptiondatas
                                                                    select item
-                                                                  ).Take(count).ToList();
+                                                                  ).Take((isLocal) ? context.tbloptiondatas.Count() : count).ToList();
                                     }, cts.Token);
 
             }

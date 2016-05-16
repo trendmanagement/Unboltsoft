@@ -119,7 +119,11 @@ namespace ICE_Import
             else
             {
                 SetLogMessage(ParsedData.FutureRecords.GetType().Name.Trim('[', ']') + " entities count: " + ParsedData.FutureRecords.Length.ToString()  + " ready to push to DB");
-                SetLogMessage(ParsedData.OptionRecords.GetType().Name.Trim('[', ']') + " entities count: " + ParsedData.OptionRecords.Length.ToString() + " ready to push to DB");
+                if (!ParsedData.justFuture)
+                {
+                    SetLogMessage(ParsedData.OptionRecords.GetType().Name.Trim('[', ']') + " entities count: " + ParsedData.OptionRecords.Length.ToString() + " ready to push to DB");
+                }
+
                 buttonPush.Enabled = true;
             }
         }
@@ -137,22 +141,25 @@ namespace ICE_Import
         private async void buttonPush_Click(object sender, EventArgs e)
         {
             cts = new CancellationTokenSource();
-            string input = ParsedData.OptionRecords.GetType().Name.Trim('[', ']');
-            EntityNames name = new EntityNames();
-            Enum.TryParse(input, out name);
-            switch (name)
-            {
-                case EntityNames.EOD_Futures_578:
-                    // TODO: load data EOD_Futures_578 to db like EOD_Options_578 entity
-                    break;
-                case EntityNames.EOD_Options_578:
-                    richTextBoxLog.Text += "Pushing started\n";
-                    await PushDataToDB(cts.Token);
-                    buttonPull_Click(sender, e);
-                    break;
-                default:
-                    break;
-            }
+
+            richTextBoxLog.Text += "Pushing started\n";
+            await PushDataToDB(cts.Token);
+            buttonPull_Click(sender, e);
+
+            //string input = ParsedData.OptionRecords.GetType().Name.Trim('[', ']');
+
+            //EntityNames name = new EntityNames();
+            //Enum.TryParse(input, out name);
+            //switch (name)
+            //{
+            //    case EntityNames.EOD_Futures_578:
+            //        // TODO: load data EOD_Futures_578 to db like EOD_Options_578 entity
+            //        break;
+            //    case EntityNames.EOD_Options_578:
+            //        break;
+            //    default:
+            //        break;
+            //}
         }
 
         private void checkBoxLocalDB_CheckedChanged(object sender, EventArgs e)
@@ -177,6 +184,7 @@ namespace ICE_Import
             {
                 cts.Cancel();
             }
+            progressBarLoad.Value = 0;
         }
 
         private void buttonPull_Click(object sender, EventArgs e)
