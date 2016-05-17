@@ -21,11 +21,12 @@ namespace ICE_Import
 	using System.ComponentModel;
 	using System;
 	
-	[Database(Name="TMLDB_Copy")]
+	
+	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="TMLDB_Copy")]
 	public partial class OFDataContext : System.Data.Linq.DataContext
 	{
 		
-		private static MappingSource mappingSource = new AttributeMappingSource();
+		private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource();
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
@@ -76,7 +77,7 @@ namespace ICE_Import
 			OnCreated();
 		}
 		
-		public Table<tbloption> tbloptions
+		public System.Data.Linq.Table<tbloption> tbloptions
 		{
 			get
 			{
@@ -84,7 +85,7 @@ namespace ICE_Import
 			}
 		}
 		
-		public Table<tblcontract> tblcontracts
+		public System.Data.Linq.Table<tblcontract> tblcontracts
 		{
 			get
 			{
@@ -92,7 +93,7 @@ namespace ICE_Import
 			}
 		}
 		
-		public Table<tbldailycontractsettlement> tbldailycontractsettlements
+		public System.Data.Linq.Table<tbldailycontractsettlement> tbldailycontractsettlements
 		{
 			get
 			{
@@ -100,7 +101,7 @@ namespace ICE_Import
 			}
 		}
 		
-		public Table<tbloptiondata> tbloptiondatas
+		public System.Data.Linq.Table<tbloptiondata> tbloptiondatas
 		{
 			get
 			{
@@ -108,16 +109,38 @@ namespace ICE_Import
 			}
 		}
 		
-		public Table<tblinstrument> tblinstruments
+		public System.Data.Linq.Table<tblinstrument> tblinstruments
 		{
 			get
 			{
 				return this.GetTable<tblinstrument>();
 			}
 		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.sp_updateOrInsertContractSettlementsFromSpanUpsert")]
+		public int sp_updateOrInsertContractSettlementsFromSpanUpsert([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> futureContractID, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> spanDate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> settlementPrice)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), futureContractID, spanDate, settlementPrice);
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.sp_updateContractTblFromSpanUpsert")]
+		public ISingleResult<sp_updateContractTblFromSpanUpsertResult> sp_updateContractTblFromSpanUpsert([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, expirationdate, cqgsymbol);
+			return ((ISingleResult<sp_updateContractTblFromSpanUpsertResult>)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.sp_updateOrInsertTbloptionsInfoAndDataUpsert")]
+		public int sp_updateOrInsertTbloptionsInfoAndDataUpsert([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idcontract, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> datetime, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> price, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> impliedvol, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> timetoexpinyears)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, expirationdate, idcontract, cqgsymbol, datetime, price, impliedvol, timetoexpinyears);
+			return ((int)(result.ReturnValue));
+		}
+		
 	}
 	
-	[Table(Name="cqgdb.tbloptions")]
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tbloptions")]
 	public partial class tbloption : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
@@ -178,7 +201,7 @@ namespace ICE_Import
 			OnCreated();
 		}
 		
-		[Column(Storage="_idoption", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoption", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
 		public long idoption
 		{
 			get
@@ -198,7 +221,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optionname", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionname", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
 		public string optionname
 		{
 			get
@@ -218,7 +241,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optionmonth", DbType="Char(1) NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmonth", DbType="Char(1) NOT NULL")]
 		public char optionmonth
 		{
 			get
@@ -238,7 +261,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optionmonthint", DbType="Int NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmonthint", DbType="Int NOT NULL")]
 		public int optionmonthint
 		{
 			get
@@ -258,7 +281,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optionyear", DbType="Int NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionyear", DbType="Int NOT NULL")]
 		public int optionyear
 		{
 			get
@@ -278,7 +301,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_strikeprice", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_strikeprice", DbType="Float NOT NULL")]
 		public double strikeprice
 		{
 			get
@@ -298,7 +321,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_callorput", DbType="Char(1) NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_callorput", DbType="Char(1) NOT NULL")]
 		public char callorput
 		{
 			get
@@ -318,7 +341,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_idinstrument", DbType="BigInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL")]
 		public long idinstrument
 		{
 			get
@@ -338,7 +361,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_expirationdate", DbType="Date NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_expirationdate", DbType="Date NOT NULL")]
 		public System.DateTime expirationdate
 		{
 			get
@@ -358,7 +381,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_idcontract", DbType="BigInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
 		public long idcontract
 		{
 			get
@@ -378,7 +401,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
 		public string cqgsymbol
 		{
 			get
@@ -419,7 +442,7 @@ namespace ICE_Import
 		}
 	}
 	
-	[Table(Name="cqgdb.tblcontracts")]
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tblcontracts")]
 	public partial class tblcontract : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
@@ -468,7 +491,7 @@ namespace ICE_Import
 			OnCreated();
 		}
 		
-		[Column(Storage="_idcontract", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
 		public long idcontract
 		{
 			get
@@ -488,7 +511,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_contractname", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_contractname", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
 		public string contractname
 		{
 			get
@@ -508,7 +531,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_month", DbType="Char(1) NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_month", DbType="Char(1) NOT NULL")]
 		public char month
 		{
 			get
@@ -528,7 +551,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_monthint", DbType="SmallInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_monthint", DbType="SmallInt NOT NULL")]
 		public short monthint
 		{
 			get
@@ -548,7 +571,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_year", DbType="BigInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_year", DbType="BigInt NOT NULL")]
 		public long year
 		{
 			get
@@ -568,7 +591,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_idinstrument", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
 		public long idinstrument
 		{
 			get
@@ -588,7 +611,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_expirationdate", DbType="Date NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_expirationdate", DbType="Date NOT NULL")]
 		public System.DateTime expirationdate
 		{
 			get
@@ -608,7 +631,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
 		public string cqgsymbol
 		{
 			get
@@ -649,7 +672,7 @@ namespace ICE_Import
 		}
 	}
 	
-	[Table(Name="cqgdb.tbldailycontractsettlements")]
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tbldailycontractsettlements")]
 	public partial class tbldailycontractsettlement : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
@@ -690,7 +713,7 @@ namespace ICE_Import
 			OnCreated();
 		}
 		
-		[Column(Storage="_iddailycontractsettlements", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_iddailycontractsettlements", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
 		public long iddailycontractsettlements
 		{
 			get
@@ -710,7 +733,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_idcontract", DbType="BigInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
 		public long idcontract
 		{
 			get
@@ -730,7 +753,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_date", DbType="Date NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_date", DbType="Date NOT NULL")]
 		public System.DateTime date
 		{
 			get
@@ -750,7 +773,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_settlement", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_settlement", DbType="Float NOT NULL")]
 		public double settlement
 		{
 			get
@@ -770,7 +793,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_volume", DbType="BigInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_volume", DbType="BigInt NOT NULL")]
 		public long volume
 		{
 			get
@@ -790,7 +813,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_openinterest", DbType="BigInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_openinterest", DbType="BigInt NOT NULL")]
 		public long openinterest
 		{
 			get
@@ -831,7 +854,7 @@ namespace ICE_Import
 		}
 	}
 	
-	[Table(Name="cqgdb.tbloptiondata")]
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tbloptiondata")]
 	public partial class tbloptiondata : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
@@ -872,7 +895,7 @@ namespace ICE_Import
 			OnCreated();
 		}
 		
-		[Column(Storage="_idoptiondata", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptiondata", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
 		public long idoptiondata
 		{
 			get
@@ -892,7 +915,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_idoption", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoption", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
 		public long idoption
 		{
 			get
@@ -912,7 +935,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_datetime", DbType="DateTime2 NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_datetime", DbType="DateTime2 NOT NULL", IsPrimaryKey=true)]
 		public System.DateTime datetime
 		{
 			get
@@ -932,7 +955,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_price", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_price", DbType="Float NOT NULL")]
 		public double price
 		{
 			get
@@ -952,7 +975,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_impliedvol", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_impliedvol", DbType="Float NOT NULL")]
 		public double impliedvol
 		{
 			get
@@ -972,7 +995,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_timetoexpinyears", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_timetoexpinyears", DbType="Float NOT NULL")]
 		public double timetoexpinyears
 		{
 			get
@@ -1013,7 +1036,7 @@ namespace ICE_Import
 		}
 	}
 	
-	[Table(Name="cqgdb.tblinstruments")]
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tblinstruments")]
 	public partial class tblinstrument : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
@@ -1274,7 +1297,7 @@ namespace ICE_Import
 			OnCreated();
 		}
 		
-		[Column(Storage="_idinstrument", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
 		public long idinstrument
 		{
 			get
@@ -1294,7 +1317,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_symbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_symbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
 		public string symbol
 		{
 			get
@@ -1314,7 +1337,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_description", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_description", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
 		public string description
 		{
 			get
@@ -1334,7 +1357,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
 		public string cqgsymbol
 		{
 			get
@@ -1354,7 +1377,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_exchangesymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_exchangesymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
 		public string exchangesymbol
 		{
 			get
@@ -1374,7 +1397,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optionexchangesymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionexchangesymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
 		public string optionexchangesymbol
 		{
 			get
@@ -1394,7 +1417,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_exchangesymbolTT", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_exchangesymbolTT", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
 		public string exchangesymbolTT
 		{
 			get
@@ -1414,7 +1437,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optionexchangesymbolTT", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionexchangesymbolTT", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
 		public string optionexchangesymbolTT
 		{
 			get
@@ -1434,7 +1457,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_idinstrumentgroup", DbType="BigInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrumentgroup", DbType="BigInt NOT NULL")]
 		public long idinstrumentgroup
 		{
 			get
@@ -1454,7 +1477,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_idexchange", DbType="BigInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idexchange", DbType="BigInt NOT NULL")]
 		public long idexchange
 		{
 			get
@@ -1474,7 +1497,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_margin", DbType="BigInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_margin", DbType="BigInt NOT NULL")]
 		public long margin
 		{
 			get
@@ -1494,7 +1517,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_commissionpercontract", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_commissionpercontract", DbType="Float NOT NULL")]
 		public double commissionpercontract
 		{
 			get
@@ -1514,7 +1537,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_modeled", DbType="TinyInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_modeled", DbType="TinyInt NOT NULL")]
 		public byte modeled
 		{
 			get
@@ -1534,7 +1557,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_enabled", DbType="TinyInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_enabled", DbType="TinyInt NOT NULL")]
 		public byte enabled
 		{
 			get
@@ -1554,7 +1577,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_listedspread", DbType="SmallInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_listedspread", DbType="SmallInt NOT NULL")]
 		public short listedspread
 		{
 			get
@@ -1574,7 +1597,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_datastart", DbType="Date NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_datastart", DbType="Date NOT NULL")]
 		public System.DateTime datastart
 		{
 			get
@@ -1594,7 +1617,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_timeshifthours", DbType="Int NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_timeshifthours", DbType="Int NOT NULL")]
 		public int timeshifthours
 		{
 			get
@@ -1614,7 +1637,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_ticksize", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ticksize", DbType="Float NOT NULL")]
 		public double ticksize
 		{
 			get
@@ -1634,7 +1657,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_tickdisplay", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_tickdisplay", DbType="Float NOT NULL")]
 		public double tickdisplay
 		{
 			get
@@ -1654,7 +1677,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_tickvalue", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_tickvalue", DbType="Float NOT NULL")]
 		public double tickvalue
 		{
 			get
@@ -1674,7 +1697,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optionstrikeincrement", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionstrikeincrement", DbType="Float NOT NULL")]
 		public double optionstrikeincrement
 		{
 			get
@@ -1694,7 +1717,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optionstrikedisplay", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionstrikedisplay", DbType="Float NOT NULL")]
 		public double optionstrikedisplay
 		{
 			get
@@ -1714,7 +1737,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optionstrikedisplayTT", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionstrikedisplayTT", DbType="Float NOT NULL")]
 		public double optionstrikedisplayTT
 		{
 			get
@@ -1734,7 +1757,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optionticksize", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionticksize", DbType="Float NOT NULL")]
 		public double optionticksize
 		{
 			get
@@ -1754,7 +1777,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optiontickdisplay", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optiontickdisplay", DbType="Float NOT NULL")]
 		public double optiontickdisplay
 		{
 			get
@@ -1774,7 +1797,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optiontickvalue", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optiontickvalue", DbType="Float NOT NULL")]
 		public double optiontickvalue
 		{
 			get
@@ -1794,7 +1817,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_secondaryoptionticksize", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_secondaryoptionticksize", DbType="Float NOT NULL")]
 		public double secondaryoptionticksize
 		{
 			get
@@ -1814,7 +1837,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_secondaryoptiontickvalue", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_secondaryoptiontickvalue", DbType="Float NOT NULL")]
 		public double secondaryoptiontickvalue
 		{
 			get
@@ -1834,7 +1857,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_secondaryoptiontickdisplay", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_secondaryoptiontickdisplay", DbType="Float NOT NULL")]
 		public double secondaryoptiontickdisplay
 		{
 			get
@@ -1854,7 +1877,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_secondaryoptionticksizerule", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_secondaryoptionticksizerule", DbType="Float NOT NULL")]
 		public double secondaryoptionticksizerule
 		{
 			get
@@ -1874,7 +1897,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_spanticksize", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanticksize", DbType="Float NOT NULL")]
 		public double spanticksize
 		{
 			get
@@ -1894,7 +1917,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_spantickdisplay", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spantickdisplay", DbType="Float NOT NULL")]
 		public double spantickdisplay
 		{
 			get
@@ -1914,7 +1937,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_spanstrikedisplay", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanstrikedisplay", DbType="Float NOT NULL")]
 		public double spanstrikedisplay
 		{
 			get
@@ -1934,7 +1957,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_spanoptionticksize", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanoptionticksize", DbType="Float NOT NULL")]
 		public double spanoptionticksize
 		{
 			get
@@ -1954,7 +1977,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_spanoptiontickdisplay", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanoptiontickdisplay", DbType="Float NOT NULL")]
 		public double spanoptiontickdisplay
 		{
 			get
@@ -1974,7 +1997,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optionadmstrikedisplay", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionadmstrikedisplay", DbType="Float NOT NULL")]
 		public double optionadmstrikedisplay
 		{
 			get
@@ -1994,7 +2017,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_admoptionftpfilestrikedisplay", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admoptionftpfilestrikedisplay", DbType="Float NOT NULL")]
 		public double admoptionftpfilestrikedisplay
 		{
 			get
@@ -2014,7 +2037,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optionstart", DbType="Date NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionstart", DbType="Date NOT NULL")]
 		public System.DateTime optionstart
 		{
 			get
@@ -2034,7 +2057,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_spanoptionstart", DbType="Date NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanoptionstart", DbType="Date NOT NULL")]
 		public System.DateTime spanoptionstart
 		{
 			get
@@ -2054,7 +2077,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_stoptype", DbType="TinyInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_stoptype", DbType="TinyInt NOT NULL")]
 		public byte stoptype
 		{
 			get
@@ -2074,7 +2097,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_pricebandinticks", DbType="BigInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pricebandinticks", DbType="BigInt NOT NULL")]
 		public long pricebandinticks
 		{
 			get
@@ -2094,7 +2117,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_limittickoffset", DbType="BigInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_limittickoffset", DbType="BigInt NOT NULL")]
 		public long limittickoffset
 		{
 			get
@@ -2114,7 +2137,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_customdayboundarytime", DbType="DateTime2 NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_customdayboundarytime", DbType="DateTime2 NOT NULL")]
 		public System.DateTime customdayboundarytime
 		{
 			get
@@ -2134,7 +2157,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_usedailycustomdata", DbType="SmallInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_usedailycustomdata", DbType="SmallInt NOT NULL")]
 		public short usedailycustomdata
 		{
 			get
@@ -2154,7 +2177,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_decisionoffsetminutes", DbType="SmallInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_decisionoffsetminutes", DbType="SmallInt NOT NULL")]
 		public short decisionoffsetminutes
 		{
 			get
@@ -2174,7 +2197,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optionenabled", DbType="TinyInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionenabled", DbType="TinyInt NOT NULL")]
 		public byte optionenabled
 		{
 			get
@@ -2194,7 +2217,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_productionenabled", DbType="TinyInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_productionenabled", DbType="TinyInt NOT NULL")]
 		public byte productionenabled
 		{
 			get
@@ -2214,7 +2237,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_admcode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admcode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
 		public string admcode
 		{
 			get
@@ -2234,7 +2257,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_admexchangecode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admexchangecode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
 		public string admexchangecode
 		{
 			get
@@ -2254,7 +2277,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_admfuturepricefactor", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admfuturepricefactor", DbType="Float NOT NULL")]
 		public double admfuturepricefactor
 		{
 			get
@@ -2274,7 +2297,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_admoptionpricefactor", DbType="Float NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admoptionpricefactor", DbType="Float NOT NULL")]
 		public double admoptionpricefactor
 		{
 			get
@@ -2294,7 +2317,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_spanfuturecode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanfuturecode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
 		public string spanfuturecode
 		{
 			get
@@ -2314,7 +2337,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_spanoptioncode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanoptioncode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
 		public string spanoptioncode
 		{
 			get
@@ -2334,7 +2357,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_optiondatamonthscollected", DbType="TinyInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optiondatamonthscollected", DbType="TinyInt NOT NULL")]
 		public byte optiondatamonthscollected
 		{
 			get
@@ -2354,7 +2377,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_notes", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_notes", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
 		public string notes
 		{
 			get
@@ -2374,7 +2397,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_idAssetClass", DbType="SmallInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idAssetClass", DbType="SmallInt NOT NULL")]
 		public short idAssetClass
 		{
 			get
@@ -2394,7 +2417,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_substitutesymbol_eod", DbType="SmallInt NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_substitutesymbol_eod", DbType="SmallInt NOT NULL")]
 		public short substitutesymbol_eod
 		{
 			get
@@ -2414,7 +2437,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_instrumentsymbol_pre_eod", DbType="VarChar(5) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_instrumentsymbol_pre_eod", DbType="VarChar(5) NOT NULL", CanBeNull=false)]
 		public string instrumentsymbol_pre_eod
 		{
 			get
@@ -2434,7 +2457,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_instrumentsymboleod_eod", DbType="VarChar(5) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_instrumentsymboleod_eod", DbType="VarChar(5) NOT NULL", CanBeNull=false)]
 		public string instrumentsymboleod_eod
 		{
 			get
@@ -2454,7 +2477,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_instrumentid_eod", DbType="Int NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_instrumentid_eod", DbType="Int NOT NULL")]
 		public int instrumentid_eod
 		{
 			get
@@ -2474,7 +2497,7 @@ namespace ICE_Import
 			}
 		}
 		
-		[Column(Storage="_settlementtime", DbType="DateTime NOT NULL")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_settlementtime", DbType="DateTime NOT NULL")]
 		public System.DateTime settlementtime
 		{
 			get
@@ -2511,6 +2534,32 @@ namespace ICE_Import
 			if ((this.PropertyChanged != null))
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	public partial class sp_updateContractTblFromSpanUpsertResult
+	{
+		
+		private long _idcontract;
+		
+		public sp_updateContractTblFromSpanUpsertResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
+		public long idcontract
+		{
+			get
+			{
+				return this._idcontract;
+			}
+			set
+			{
+				if ((this._idcontract != value))
+				{
+					this._idcontract = value;
+				}
 			}
 		}
 	}

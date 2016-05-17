@@ -83,6 +83,11 @@ namespace ICE_Import
                 X = checkBoxLocalDB.Location.X,
                 Y = tabControlOption.Height + 7
             };
+            checkSP.Location = new Point()
+            {
+                X = checkSP.Location.X,
+                Y = tabControlOption.Height + 7
+            };
             progressBarLoad.Location = new Point()
             {
                 X = progressBarLoad.Location.X,
@@ -143,7 +148,15 @@ namespace ICE_Import
             cts = new CancellationTokenSource();
 
             richTextBoxLog.Text += "Pushing started\n";
-            await PushDataToDB(cts.Token);
+            if (checkSP.Checked)
+            {
+                await PushDataToDBStoredProcedures(cts.Token);
+            }
+            else
+            {
+                await PushDataToDB(cts.Token);
+            }
+
             buttonPull_Click(sender, e);
 
             //string input = ParsedData.OptionRecords.GetType().Name.Trim('[', ']');
@@ -207,6 +220,7 @@ namespace ICE_Import
                 buttonCancel.Enabled = true;
                 checkBoxLocalDB.Enabled = false;
                 buttonToCSV.Enabled = false;
+                checkSP.Enabled = false;
             }
             else
             {
@@ -218,8 +232,13 @@ namespace ICE_Import
                 buttonCancel.Enabled = false;
                 checkBoxLocalDB.Enabled = true;
                 buttonToCSV.Enabled = true;
+                checkSP.Enabled = true;
             }
         }
 
+        private void checkSP_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
