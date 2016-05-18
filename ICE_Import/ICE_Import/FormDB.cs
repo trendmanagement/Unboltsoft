@@ -27,8 +27,18 @@ namespace ICE_Import
                              Encrypt=True;
                              TrustServerCertificate=False;
                              Connection Timeout=30;";
+        string remConStrTest = @"Server=tcp:h9ggwlagd1.database.windows.net,1433;
+                             Database=TMLDB;
+                             User ID=dataupdate@h9ggwlagd1;
+                             Password=6dcEpZKSFRNYk^AN;
+                             Encrypt=True;
+                             TrustServerCertificate=False;
+                             Connection Timeout=30;";
+
         bool isLocal;
         string locRem;
+
+        TestOFDataContext contextTest;
         OFDataContext context;
 
         public FormDB()
@@ -148,15 +158,22 @@ namespace ICE_Import
             cts = new CancellationTokenSource();
 
             richTextBoxLog.Text += "Pushing started\n";
-            if (checkSP.Checked)
+            if (!isLocal)
             {
-                await PushDataToDBStoredProcedures(cts.Token);
+                await PushDataToDBTest(cts.Token);
             }
             else
             {
-                await PushDataToDB(cts.Token);
-            }
+                if (checkSP.Checked)
+                {
+                    await PushDataToDBStoredProcedures(cts.Token);
+                }
+                else
+                {
+                    await PushDataToDB(cts.Token);
+                }
 
+            }
             buttonPull_Click(sender, e);
 
             //string input = ParsedData.OptionRecords.GetType().Name.Trim('[', ']');
@@ -186,7 +203,7 @@ namespace ICE_Import
             else
             {
                 locRem = "REMOTE";
-                context = new OFDataContext(remConStr);
+                contextTest = new TestOFDataContext(remConStrTest);
             }
             SetLogMessage(string.Format("You selected {0} DB", locRem));
         }
@@ -202,7 +219,14 @@ namespace ICE_Import
 
         private void buttonPull_Click(object sender, EventArgs e)
         {
-            PullDataFromDB();
+            if (isLocal)
+            {
+                PullDataFromDB();
+            }
+            else
+            {
+                PullTastDataFromDB();
+            }
         }
         
         private void buttonToCSV_Click(object sender, EventArgs e)
