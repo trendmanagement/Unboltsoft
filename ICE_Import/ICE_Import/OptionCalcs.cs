@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ICE_Import
 {
@@ -66,7 +62,9 @@ namespace ICE_Import
                         volInc /= 2;
                         tempV += volInc;
                     }
+
                     i++;
+
                 }
             }
             catch (Exception ex)
@@ -77,19 +75,19 @@ namespace ICE_Import
             return tempV;
         }
 
-        public static double calculateOptionVolatilityNR(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice, double tickSize)
+        private static double calculateOptionVolatilityNR(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice, double tickSize)
         {
             return calculateOptionVolatilityNRCalc(callPutFlag, S, X, T, r, currentOptionPrice,
                 tickSize);
         }
 
-        public static double calculateOptionVolatilityNR(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice)
+        private static double calculateOptionVolatilityNR(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice)
         {
             return calculateOptionVolatilityNRCalc(callPutFlag, S, X, T, r, currentOptionPrice,
                 0.0001);
         }
 
-        public static double calculateOptionVolatilityNRCalc(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice, double epsilon)
+        private static double calculateOptionVolatilityNRCalc(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice, double epsilon)
         {
             double vi = 0, ci, vegai, prevVi = 0;
             double b = 0; //for futures b = 0;
@@ -167,7 +165,7 @@ namespace ICE_Import
         }
 
         // The Black and Scholes (1973) Stock option formula
-        public static double blackScholes(char CallPutFlag, double S, double X, double T, double r, double v)
+        private static double blackScholes(char CallPutFlag, double S, double X, double T, double r, double v)
         {
             try
             {
@@ -198,7 +196,7 @@ namespace ICE_Import
         }
 
         // The cumulative normal distribution function 
-        public static double CND(double X)
+        private static double CND(double X)
         {
             try
             {
@@ -226,7 +224,7 @@ namespace ICE_Import
             }
         }
 
-        public static double ND(double X)
+        private static double ND(double X)
         {
             try
             {
@@ -239,7 +237,7 @@ namespace ICE_Import
         }
 
         // Vega for the generalized Black and Scholes formula
-        public static double gVega(double S, double X, double T, double r, double b, double v)
+        private static double gVega(double S, double X, double T, double r, double b, double v)
         {
             try
             {
@@ -258,7 +256,7 @@ namespace ICE_Import
         }
 
         // Gamma for the generalized Black and Scholes formula
-        public static double gGamma(double S, double X, double T, double r, double b, double v)
+        private static double gGamma(double S, double X, double T, double r, double b, double v)
         {
             if (T == 0)
             {
@@ -271,7 +269,7 @@ namespace ICE_Import
         }
 
         // Theta for the generalized Black and Scholes formula
-        public static double gTheta(char CallPutFlag, double S, double X, double T, double r, double b, double v)
+        private static double gTheta(char CallPutFlag, double S, double X, double T, double r, double b, double v)
         {
             if (T == 0)
             {
@@ -296,7 +294,7 @@ namespace ICE_Import
         }
 
         // Delta for the generalized Black and Scholes formula
-        public static double gDelta(char CallPutFlag, double S, double X, double T, double r, double b, double v)
+        private static double gDelta(char CallPutFlag, double S, double X, double T, double r, double b, double v)
         {
             if (T == 0)
             {

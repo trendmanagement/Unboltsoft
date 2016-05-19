@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ICE_Import
@@ -38,8 +35,8 @@ namespace ICE_Import
         bool isLocal;
         string locRem;
 
-        TestOFDataContext contextTest;
-        OFDataContext context;
+        OFDataContext Context;
+        TestOFDataContext TestContext;
 
         public FormDB()
         {
@@ -50,6 +47,7 @@ namespace ICE_Import
             this.FormClosed += FormDB_FormClosed;
 
             checkBoxLocalDB_CheckedChanged(null, null);
+            checkBoxUseSP_CheckedChanged(null, null);
         }
 
         private void FormDB_FormClosed(object sender, FormClosedEventArgs e)
@@ -93,9 +91,9 @@ namespace ICE_Import
                 X = checkBoxLocalDB.Location.X,
                 Y = tabControlOption.Height + 7
             };
-            checkSP.Location = new Point()
+            checkBoxUseSP.Location = new Point()
             {
-                X = checkSP.Location.X,
+                X = checkBoxUseSP.Location.X,
                 Y = tabControlOption.Height + 7
             };
             progressBarLoad.Location = new Point()
@@ -134,7 +132,7 @@ namespace ICE_Import
             else
             {
                 SetLogMessage(ParsedData.FutureRecords.GetType().Name.Trim('[', ']') + " entities count: " + ParsedData.FutureRecords.Length.ToString()  + " ready to push to DB");
-                if (!ParsedData.justFuture)
+                if (!ParsedData.FuturesOnly)
                 {
                     SetLogMessage(ParsedData.OptionRecords.GetType().Name.Trim('[', ']') + " entities count: " + ParsedData.OptionRecords.Length.ToString() + " ready to push to DB");
                 }
@@ -164,7 +162,7 @@ namespace ICE_Import
             }
             else
             {
-                if (checkSP.Checked)
+                if (checkBoxUseSP.Checked)
                 {
                     await PushDataToDBStoredProcedures(cts.Token);
                 }
@@ -198,12 +196,12 @@ namespace ICE_Import
             if (isLocal)
             {
                 locRem = "LOCAL";
-                context = new OFDataContext(locConStr);
+                Context = new OFDataContext(locConStr);
             }
             else
             {
                 locRem = "REMOTE";
-                contextTest = new TestOFDataContext(remConStrTest);
+                TestContext = new TestOFDataContext(remConStrTest);
             }
             SetLogMessage(string.Format("You selected {0} DB", locRem));
         }
@@ -225,7 +223,7 @@ namespace ICE_Import
             }
             else
             {
-                PullTastDataFromDB();
+                PullDataFromDBTest();
             }
         }
         
@@ -244,7 +242,7 @@ namespace ICE_Import
                 buttonCancel.Enabled = true;
                 checkBoxLocalDB.Enabled = false;
                 buttonToCSV.Enabled = false;
-                checkSP.Enabled = false;
+                checkBoxUseSP.Enabled = false;
             }
             else
             {
@@ -256,13 +254,14 @@ namespace ICE_Import
                 buttonCancel.Enabled = false;
                 checkBoxLocalDB.Enabled = true;
                 buttonToCSV.Enabled = true;
-                checkSP.Enabled = true;
+                checkBoxUseSP.Enabled = true;
             }
         }
 
-        private void checkSP_CheckedChanged(object sender, EventArgs e)
+        private void checkBoxUseSP_CheckedChanged(object sender, EventArgs e)
         {
-
+            string storedCoded = checkBoxUseSP.Checked ? "STORED" : "CODED";
+            SetLogMessage(string.Format("You selected {0} PROCEDURES", storedCoded));
         }
     }
 }

@@ -89,7 +89,16 @@
     </Compile>
     <Compile Include="OptionCalcs.cs" />
     <Compile Include="ParsedData.cs" />
-    <Compile Include="PullFromFB.cs">
+    <Compile Include="PullDataFromDB.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PullDataFromDB.tt</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PushDataToDB.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PushDataToDB.tt</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PushToDB.cs">
@@ -165,6 +174,14 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>Database1.mdf</DependentUpon>
     </Content>
+    <Content Include="PullDataFromDB.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PullDataFromDB.cs</LastGenOutput>
+    </Content>
+    <Content Include="PushDataToDB.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PushDataToDB.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
@@ -180,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

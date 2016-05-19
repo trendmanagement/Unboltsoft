@@ -43,7 +43,7 @@
             this.button_ParseOption = new System.Windows.Forms.Button();
             this.label_InputOption = new System.Windows.Forms.Label();
             this.button_InputOption = new System.Windows.Forms.Button();
-            this.checkBoxJustFuture = new System.Windows.Forms.CheckBox();
+            this.checkBoxFuturesOnly = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // backgroundWorker_ParsingOptions
@@ -116,7 +116,7 @@
             this.button_InputFuture.Name = "button_InputFuture";
             this.button_InputFuture.Size = new System.Drawing.Size(115, 23);
             this.button_InputFuture.TabIndex = 8;
-            this.button_InputFuture.Text = "Input Future File(s)";
+            this.button_InputFuture.Text = "Future CSV File(s)";
             this.button_InputFuture.UseVisualStyleBackColor = true;
             this.button_InputFuture.Click += new System.EventHandler(this.button_InputFuture_Click);
             // 
@@ -131,7 +131,7 @@
             // button_CancelOption
             // 
             this.button_CancelOption.Enabled = false;
-            this.button_CancelOption.Location = new System.Drawing.Point(69, 134);
+            this.button_CancelOption.Location = new System.Drawing.Point(69, 151);
             this.button_CancelOption.Name = "button_CancelOption";
             this.button_CancelOption.Size = new System.Drawing.Size(58, 23);
             this.button_CancelOption.TabIndex = 19;
@@ -141,7 +141,7 @@
             // 
             // progressBar_ParsingOption
             // 
-            this.progressBar_ParsingOption.Location = new System.Drawing.Point(12, 163);
+            this.progressBar_ParsingOption.Location = new System.Drawing.Point(12, 180);
             this.progressBar_ParsingOption.Name = "progressBar_ParsingOption";
             this.progressBar_ParsingOption.Size = new System.Drawing.Size(560, 23);
             this.progressBar_ParsingOption.TabIndex = 18;
@@ -157,7 +157,7 @@
             // button_ParseOption
             // 
             this.button_ParseOption.Enabled = false;
-            this.button_ParseOption.Location = new System.Drawing.Point(12, 134);
+            this.button_ParseOption.Location = new System.Drawing.Point(12, 151);
             this.button_ParseOption.Name = "button_ParseOption";
             this.button_ParseOption.Size = new System.Drawing.Size(51, 23);
             this.button_ParseOption.TabIndex = 16;
@@ -168,7 +168,7 @@
             // label_InputOption
             // 
             this.label_InputOption.AutoSize = true;
-            this.label_InputOption.Location = new System.Drawing.Point(134, 110);
+            this.label_InputOption.Location = new System.Drawing.Point(133, 127);
             this.label_InputOption.Name = "label_InputOption";
             this.label_InputOption.Size = new System.Drawing.Size(71, 13);
             this.label_InputOption.TabIndex = 15;
@@ -176,31 +176,31 @@
             // 
             // button_InputOption
             // 
-            this.button_InputOption.Location = new System.Drawing.Point(12, 105);
+            this.button_InputOption.Location = new System.Drawing.Point(12, 122);
             this.button_InputOption.Name = "button_InputOption";
             this.button_InputOption.Size = new System.Drawing.Size(115, 23);
             this.button_InputOption.TabIndex = 14;
-            this.button_InputOption.Text = "Input Option File(s)";
+            this.button_InputOption.Text = "Option CSV File(s)";
             this.button_InputOption.UseVisualStyleBackColor = true;
             this.button_InputOption.Click += new System.EventHandler(this.button_InputOption_Click);
             // 
-            // checkBoxJustFuture
+            // checkBoxFuturesOnly
             // 
-            this.checkBoxJustFuture.AutoSize = true;
-            this.checkBoxJustFuture.Location = new System.Drawing.Point(492, 12);
-            this.checkBoxJustFuture.Name = "checkBoxJustFuture";
-            this.checkBoxJustFuture.Size = new System.Drawing.Size(83, 17);
-            this.checkBoxJustFuture.TabIndex = 20;
-            this.checkBoxJustFuture.Text = "Just Futures";
-            this.checkBoxJustFuture.UseVisualStyleBackColor = true;
-            this.checkBoxJustFuture.CheckedChanged += new System.EventHandler(this.checkBoxJustFuture_CheckedChanged);
+            this.checkBoxFuturesOnly.AutoSize = true;
+            this.checkBoxFuturesOnly.Location = new System.Drawing.Point(12, 99);
+            this.checkBoxFuturesOnly.Name = "checkBoxFuturesOnly";
+            this.checkBoxFuturesOnly.Size = new System.Drawing.Size(85, 17);
+            this.checkBoxFuturesOnly.TabIndex = 20;
+            this.checkBoxFuturesOnly.Text = "Futures Only";
+            this.checkBoxFuturesOnly.UseVisualStyleBackColor = true;
+            this.checkBoxFuturesOnly.CheckedChanged += new System.EventHandler(this.checkBoxFuturesOnly_CheckedChanged);
             // 
             // FormCSV
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 261);
-            this.Controls.Add(this.checkBoxJustFuture);
+            this.Controls.Add(this.checkBoxFuturesOnly);
             this.Controls.Add(this.button_CancelOption);
             this.Controls.Add(this.progressBar_ParsingOption);
             this.Controls.Add(this.label_ParsedOption);
@@ -240,7 +240,7 @@
         private System.Windows.Forms.Button button_ParseOption;
         private System.Windows.Forms.Label label_InputOption;
         private System.Windows.Forms.Button button_InputOption;
-        private System.Windows.Forms.CheckBox checkBoxJustFuture;
+        private System.Windows.Forms.CheckBox checkBoxFuturesOnly;
     }
 }
 

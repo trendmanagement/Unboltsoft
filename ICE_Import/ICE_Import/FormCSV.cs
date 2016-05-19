@@ -157,28 +157,16 @@ namespace ICE_Import
             return records;
         }
 
-        private void checkBoxJustFuture_CheckedChanged(object sender, EventArgs e)
+        private void checkBoxFuturesOnly_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxJustFuture.Checked)
-            {
-                ParsedData.justFuture = true;
-                button_InputOption.Visible = false;
-                button_ParseOption.Visible = false;
-                button_CancelOption.Visible = false;
-                progressBar_ParsingOption.Visible = false;
-                label_ParsedOption.Visible = false;
-                label_InputOption.Visible = false;
-            }
-            else
-            {
-                ParsedData.justFuture = false;
-                button_InputOption.Visible = true;
-                button_ParseOption.Visible = true;
-                button_CancelOption.Visible = true;
-                progressBar_ParsingOption.Visible = true;
-                label_ParsedOption.Visible = true;
-                label_InputOption.Visible = true;
-            }
+            bool isChecked = checkBoxFuturesOnly.Checked;
+            ParsedData.FuturesOnly = isChecked;
+            button_InputOption.Visible = !isChecked;
+            button_ParseOption.Visible = !isChecked;
+            button_CancelOption.Visible = !isChecked;
+            progressBar_ParsingOption.Visible = !isChecked;
+            label_ParsedOption.Visible = !isChecked;
+            label_InputOption.Visible = !isChecked;
         }
     }
 }

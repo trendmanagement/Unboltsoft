@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ICE_Import
 {
     class Utilities
     {
-        // <summary>
+        /// <summary>
         /// Generates the CQG symbol from span.
         /// </summary>
         /// <param name="contractType">Type of the contract 'F'=future, 'C'=call, 'P'=put.</param>
