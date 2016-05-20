@@ -1,5 +1,4 @@
-﻿
-namespace ICE_Import
+﻿namespace ICE_Import
 {
     public enum MonthCodes
     {

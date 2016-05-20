@@ -44,7 +44,7 @@
             this.dataGridViewOption = new System.Windows.Forms.DataGridView();
             this.tabControlOption = new System.Windows.Forms.TabControl();
             this.buttonToCSV = new System.Windows.Forms.Button();
-            this.checkSP = new System.Windows.Forms.CheckBox();
+            this.checkBoxUseSP = new System.Windows.Forms.CheckBox();
             this.tabPageDailyContract.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDailyContract)).BeginInit();
             this.tabPageContract.SuspendLayout();
@@ -221,25 +221,25 @@
             this.buttonToCSV.UseVisualStyleBackColor = true;
             this.buttonToCSV.Click += new System.EventHandler(this.buttonToCSV_Click);
             // 
-            // checkSP
+            // checkBoxUseSP
             // 
-            this.checkSP.AutoSize = true;
-            this.checkSP.Checked = true;
-            this.checkSP.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkSP.Location = new System.Drawing.Point(386, 257);
-            this.checkSP.Name = "checkSP";
-            this.checkSP.Size = new System.Drawing.Size(40, 17);
-            this.checkSP.TabIndex = 9;
-            this.checkSP.Text = "SP";
-            this.checkSP.UseVisualStyleBackColor = true;
-            this.checkSP.CheckedChanged += new System.EventHandler(this.checkSP_CheckedChanged);
+            this.checkBoxUseSP.AutoSize = true;
+            this.checkBoxUseSP.Checked = true;
+            this.checkBoxUseSP.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxUseSP.Location = new System.Drawing.Point(386, 257);
+            this.checkBoxUseSP.Name = "checkBoxUseSP";
+            this.checkBoxUseSP.Size = new System.Drawing.Size(62, 17);
+            this.checkBoxUseSP.TabIndex = 9;
+            this.checkBoxUseSP.Text = "Use SP";
+            this.checkBoxUseSP.UseVisualStyleBackColor = true;
+            this.checkBoxUseSP.CheckedChanged += new System.EventHandler(this.checkBoxUseSP_CheckedChanged);
             // 
             // FormDB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 386);
-            this.Controls.Add(this.checkSP);
+            this.Controls.Add(this.checkBoxUseSP);
             this.Controls.Add(this.buttonToCSV);
             this.Controls.Add(this.buttonPull);
             this.Controls.Add(this.buttonCancel);
@@ -283,6 +283,6 @@
         private System.Windows.Forms.DataGridView dataGridViewOption;
         private System.Windows.Forms.TabControl tabControlOption;
         private System.Windows.Forms.Button buttonToCSV;
-        private System.Windows.Forms.CheckBox checkSP;
+        private System.Windows.Forms.CheckBox checkBoxUseSP;
     }
 }
