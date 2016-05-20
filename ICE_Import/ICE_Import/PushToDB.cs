@@ -65,7 +65,7 @@ namespace ICE_Import
                 string log = String.Empty;
                 try
                 {
-                    Context.sp_updateContractTblFromSpanUpsert(contractName, 
+                    TestContext.test_sp_updateContractTblFromSpanUpsert(contractName, 
                                                                monthchar, 
                                                                future.StripName.Month, 
                                                                future.StripName.Year, 
@@ -73,11 +73,11 @@ namespace ICE_Import
                                                                future.Date, 
                                                                contractName);
 
-                    tblcontract contract = Context.tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
+                    test_tblcontract contract = TestContext.test_tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
 
-                    Context.sp_updateOrInsertContractSettlementsFromSpanUpsert((int)contract.idcontract, 
-                                                                               future.StripName, 
-                                                                               (future.SettlementPrice != null)? future.SettlementPrice : 0);
+                    TestContext.test_sp_updateOrInsertContractSettlementsFromSpanUpsert((int)contract.idcontract, 
+                                                                                       future.StripName, 
+                                                                                       (future.SettlementPrice != null)? future.SettlementPrice : 0);
                 }
                 catch (OperationCanceledException cancel)
                 {
@@ -122,11 +122,11 @@ namespace ICE_Import
                 try
                 {
 
-                    tblcontract contract = Context.tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
+                    test_tblcontract contract = TestContext.test_tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
 
-                    Context.sp_updateOrInsertContractSettlementsFromSpanUpsert((int)contract.idcontract,
-                                                                               future.StripName,
-                                                                               (future.SettlementPrice != null) ? future.SettlementPrice : 0);
+                    TestContext.test_sp_updateOrInsertContractSettlementsFromSpanUpsert((int)contract.idcontract,
+                                                                                       future.StripName,
+                                                                                       (future.SettlementPrice != null) ? future.SettlementPrice : 0);
                 }
                 catch (OperationCanceledException cancel)
                 {
@@ -179,7 +179,7 @@ namespace ICE_Import
 
                     string optionName = utilites.generateOptionCQGSymbolFromSpan(option.OptionType, "CCE", monthchar, option.StripName.Year, (option.StrikePrice != null) ? (double)option.StrikePrice : 0, 0, 0, idinstrument);
 
-                    long idContract = Context.tblcontracts.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToList()[0].idcontract;
+                    long idContract = TestContext.test_tblcontracts.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToList()[0].idcontract;
 
 
                     // callPutFlag                      - tableOption.callorput
@@ -199,21 +199,21 @@ namespace ICE_Import
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                     double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
 
-                    Context.sp_updateOrInsertTbloptionsInfoAndDataUpsert(optionName,
-                                                                         monthchar,
-                                                                         option.StripName.Month,
-                                                                         option.StripName.Year,
-                                                                         option.StrikePrice,
-                                                                         option.OptionType,
-                                                                         idinstrument,
-                                                                         option.Date,
-                                                                         idContract,
-                                                                         optionName,
-                                                                         option.StripName,
-                                                                         option.StrikePrice,
-                                                                         impliedvol,
-                                                                         futureYear - expiranteYear
-                                                                         );
+                    TestContext.test_sp_updateOrInsertTbloptionsInfoAndDataUpsert(optionName,
+                                                                                 monthchar,
+                                                                                 option.StripName.Month,
+                                                                                 option.StripName.Year,
+                                                                                 option.StrikePrice,
+                                                                                 option.OptionType,
+                                                                                 idinstrument,
+                                                                                 option.Date,
+                                                                                 idContract,
+                                                                                 optionName,
+                                                                                 option.StripName,
+                                                                                 option.StrikePrice,
+                                                                                 impliedvol,
+                                                                                 futureYear - expiranteYear
+                                                                                 );
                 }
                 catch (OperationCanceledException cancel)
                 {
@@ -242,6 +242,7 @@ namespace ICE_Import
                 }
             }
         }
+
         /// <summary>
         /// Example async method
         /// </summary>

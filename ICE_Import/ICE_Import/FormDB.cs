@@ -168,7 +168,7 @@ namespace ICE_Import
                 }
                 else
                 {
-                    await PushDataToDB(cts.Token);
+                    await PushDataToDBTest(cts.Token);
                 }
 
             }
@@ -196,7 +196,9 @@ namespace ICE_Import
             if (isLocal)
             {
                 locRem = "LOCAL";
-                Context = new OFDataContext(locConStr);
+                TestContext = new TestOFDataContext(locConStr);
+
+                //Context = new OFDataContext(locConStr);
             }
             else
             {
@@ -212,11 +214,12 @@ namespace ICE_Import
             {
                 cts.Cancel();
             }
-            progressBarLoad.Value = 0;
         }
 
         private void buttonPull_Click(object sender, EventArgs e)
         {
+            progressBarLoad.Value = 0;
+
             if (isLocal)
             {
                 PullDataFromDBTest();
