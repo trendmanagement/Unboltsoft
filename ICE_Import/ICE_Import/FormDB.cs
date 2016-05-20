@@ -170,7 +170,7 @@ namespace ICE_Import
                 }
                 else
                 {
-                    await PushDataToDB(cts.Token);
+                    await PushDataToDBTest(cts.Token);
                 }
 
             }
@@ -198,7 +198,8 @@ namespace ICE_Import
             if (isLocal)
             {
                 locRem = "LOCAL";
-                context = new OFDataContext(locConStr);
+                //context = new OFDataContext(locConStr);
+                contextTest = new TestOFDataContext(locConStr);
             }
             else
             {
@@ -221,11 +222,11 @@ namespace ICE_Import
         {
             if (isLocal)
             {
-                PullDataFromDB();
+                PullTestDataFromDB();
             }
             else
             {
-                PullTastDataFromDB();
+                PullTestDataFromDB();
             }
         }
         

@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="TMLDB" Class="TestOFDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=h9ggwlagd1.database.windows.net;Initial Catalog=TMLDB;User ID=dataupdate;Encrypt=False;TrustServerCertificate=True" SettingsObjectName="ICE_Import.Properties.Settings" SettingsPropertyName="TMLDBConnectionString" Provider="System.Data.SqlClient" />
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Database1" Class="TestOFDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Database1.mdf;Integrated Security=True" SettingsObjectName="ICE_Import.Properties.Settings" SettingsPropertyName="Database1ConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="cqgdb.test_tblcontracts" Member="test_tblcontracts">
     <Type Name="test_tblcontract">
       <Column Name="idcontract" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -47,4 +47,39 @@
       <Column Name="cqgsymbol" Type="System.String" DbType="VarChar(45) NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
+  <Function Name="cqgdb.test_sp_updateContractTblFromSpanUpsert" Method="test_sp_updateContractTblFromSpanUpsert">
+    <Parameter Name="contractname" Type="System.String" DbType="VarChar(45)" />
+    <Parameter Name="month" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="monthint" Type="System.Int32" DbType="Int" />
+    <Parameter Name="year" Type="System.Int32" DbType="Int" />
+    <Parameter Name="idinstrument" Type="System.Int32" DbType="Int" />
+    <Parameter Name="expirationdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="cqgsymbol" Type="System.String" DbType="VarChar(45)" />
+    <ElementType Name="test_sp_updateContractTblFromSpanUpsertResult">
+      <Column Name="idcontract" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="cqgdb.test_sp_updateOrInsertContractSettlementsFromSpanUpsert" Method="test_sp_updateOrInsertContractSettlementsFromSpanUpsert">
+    <Parameter Name="futureContractID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="spanDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="settlementPrice" Type="System.Double" DbType="Float" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="cqgdb.test_sp_updateOrInsertTbloptionsInfoAndDataUpsert" Method="test_sp_updateOrInsertTbloptionsInfoAndDataUpsert">
+    <Parameter Name="optionname" Type="System.String" DbType="VarChar(45)" />
+    <Parameter Name="optionmonth" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="optionmonthint" Type="System.Int32" DbType="Int" />
+    <Parameter Name="optionyear" Type="System.Int32" DbType="Int" />
+    <Parameter Name="strikeprice" Type="System.Double" DbType="Float" />
+    <Parameter Name="callorput" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="idinstrument" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="expirationdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="idcontract" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="cqgsymbol" Type="System.String" DbType="VarChar(45)" />
+    <Parameter Name="datetime" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="price" Type="System.Double" DbType="Float" />
+    <Parameter Name="impliedvol" Type="System.Double" DbType="Float" />
+    <Parameter Name="timetoexpinyears" Type="System.Double" DbType="Float" />
+    <Return Type="System.Int32" />
+  </Function>
 </Database>

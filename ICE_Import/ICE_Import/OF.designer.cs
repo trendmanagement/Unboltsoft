@@ -117,24 +117,24 @@ namespace ICE_Import
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.sp_updateOrInsertContractSettlementsFromSpanUpsert")]
-		public int sp_updateOrInsertContractSettlementsFromSpanUpsert([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> futureContractID, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> spanDate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> settlementPrice)
+		[Function(Name="cqgdb.sp_updateOrInsertContractSettlementsFromSpanUpsert")]
+		public int sp_updateOrInsertContractSettlementsFromSpanUpsert([Parameter(DbType="Int")] int? futureContractID, [Parameter(DbType="Date")] DateTime? spanDate, [Parameter(DbType="Float")] double? settlementPrice)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), futureContractID, spanDate, settlementPrice);
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodBase.GetCurrentMethod())), futureContractID, spanDate, settlementPrice);
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.sp_updateContractTblFromSpanUpsert")]
-		public ISingleResult<sp_updateContractTblFromSpanUpsertResult> sp_updateContractTblFromSpanUpsert([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
+		[Function(Name="cqgdb.sp_updateContractTblFromSpanUpsert")]
+		public ISingleResult<sp_updateContractTblFromSpanUpsertResult> sp_updateContractTblFromSpanUpsert([Parameter(DbType="VarChar(45)")] string contractname, [Parameter(DbType="Char(1)")] char? month, [Parameter(DbType="Int")] int? monthint, [Parameter(DbType="Int")] int? year, [Parameter(DbType="Int")] int? idinstrument, [Parameter(DbType="Date")] DateTime? expirationdate, [Parameter(DbType="VarChar(45)")] string cqgsymbol)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, expirationdate, cqgsymbol);
 			return ((ISingleResult<sp_updateContractTblFromSpanUpsertResult>)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.sp_updateOrInsertTbloptionsInfoAndDataUpsert")]
-		public int sp_updateOrInsertTbloptionsInfoAndDataUpsert([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idcontract, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> datetime, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> price, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> impliedvol, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> timetoexpinyears)
+		[Function(Name="cqgdb.sp_updateOrInsertTbloptionsInfoAndDataUpsert")]
+		public int sp_updateOrInsertTbloptionsInfoAndDataUpsert([Parameter(DbType="VarChar(45)")] string optionname, [Parameter(DbType="Char(1)")] char? optionmonth, [Parameter(DbType="Int")] int? optionmonthint, [Parameter(DbType="Int")] int? optionyear, [Parameter(DbType="Float")] double? strikeprice, [Parameter(DbType="Char(1)")] char? callorput, [Parameter(DbType="BigInt")] long? idinstrument, [Parameter(DbType="Date")] DateTime? expirationdate, [Parameter(DbType="BigInt")] long? idcontract, [Parameter(DbType="VarChar(45)")] string cqgsymbol, [Parameter(DbType="Date")] DateTime? datetime, [Parameter(DbType="Float")] double? price, [Parameter(DbType="Float")] double? impliedvol, [Parameter(DbType="Float")] double? timetoexpinyears)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, expirationdate, idcontract, cqgsymbol, datetime, price, impliedvol, timetoexpinyears);
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodBase.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, expirationdate, idcontract, cqgsymbol, datetime, price, impliedvol, timetoexpinyears);
 			return ((int)(result.ReturnValue));
 		}
 		

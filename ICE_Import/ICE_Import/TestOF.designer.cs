@@ -22,7 +22,7 @@ namespace ICE_Import
 	using System;
 	
 	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="TMLDB")]
+	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="Database1")]
 	public partial class TestOFDataContext : System.Data.Linq.DataContext
 	{
 		
@@ -45,7 +45,7 @@ namespace ICE_Import
     #endregion
 		
 		public TestOFDataContext() : 
-				base(global::ICE_Import.Properties.Settings.Default.TMLDBConnectionString, mappingSource)
+				base(global::ICE_Import.Properties.Settings.Default.Database1ConnectionString, mappingSource)
 		{
 			OnCreated();
 		}
@@ -104,6 +104,27 @@ namespace ICE_Import
 			{
 				return this.GetTable<test_tbloption>();
 			}
+		}
+		
+		[Function(Name="cqgdb.test_sp_updateContractTblFromSpanUpsert")]
+		public ISingleResult<test_sp_updateContractTblFromSpanUpsertResult> test_sp_updateContractTblFromSpanUpsert([Parameter(DbType="VarChar(45)")] string contractname, [Parameter(DbType="Char(1)")] char? month, [Parameter(DbType="Int")] int? monthint, [Parameter(DbType="Int")] int? year, [Parameter(DbType="Int")] int? idinstrument, [Parameter(DbType="Date")] DateTime? expirationdate, [Parameter(DbType="VarChar(45)")] string cqgsymbol)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, expirationdate, cqgsymbol);
+			return ((ISingleResult<test_sp_updateContractTblFromSpanUpsertResult>)(result.ReturnValue));
+		}
+		
+		[Function(Name="cqgdb.test_sp_updateOrInsertContractSettlementsFromSpanUpsert")]
+		public int test_sp_updateOrInsertContractSettlementsFromSpanUpsert([Parameter(DbType="Int")] int? futureContractID, [Parameter(DbType="Date")] DateTime? spanDate, [Parameter(DbType="Float")] double? settlementPrice)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), futureContractID, spanDate, settlementPrice);
+			return ((int)(result.ReturnValue));
+		}
+		
+		[Function(Name="cqgdb.test_sp_updateOrInsertTbloptionsInfoAndDataUpsert")]
+		public int test_sp_updateOrInsertTbloptionsInfoAndDataUpsert([Parameter(DbType="VarChar(45)")] string optionname, [Parameter(DbType="Char(1)")] char? optionmonth, [Parameter(DbType="Int")] int? optionmonthint, [Parameter(DbType="Int")] int? optionyear, [Parameter(DbType="Float")] double? strikeprice, [Parameter(DbType="Char(1)")] char? callorput, [Parameter(DbType="BigInt")] long? idinstrument, [Parameter(DbType="Date")] DateTime? expirationdate, [Parameter(DbType="BigInt")] long? idcontract, [Parameter(DbType="VarChar(45)")] string cqgsymbol, [Parameter(DbType="Date")] DateTime? datetime, [Parameter(DbType="Float")] double? price, [Parameter(DbType="Float")] double? impliedvol, [Parameter(DbType="Float")] double? timetoexpinyears)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, expirationdate, idcontract, cqgsymbol, datetime, price, impliedvol, timetoexpinyears);
+			return ((int)(result.ReturnValue));
 		}
 	}
 	
@@ -999,6 +1020,32 @@ namespace ICE_Import
 			if ((this.PropertyChanged != null))
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	public partial class test_sp_updateContractTblFromSpanUpsertResult
+	{
+		
+		private long _idcontract;
+		
+		public test_sp_updateContractTblFromSpanUpsertResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
+		public long idcontract
+		{
+			get
+			{
+				return this._idcontract;
+			}
+			set
+			{
+				if ((this._idcontract != value))
+				{
+					this._idcontract = value;
+				}
 			}
 		}
 	}

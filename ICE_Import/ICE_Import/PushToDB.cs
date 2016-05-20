@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +13,11 @@ namespace ICE_Import
     {
         int globalCount = 0;
 
+        /// <summary>
+        /// Colling push data methods to db with stored procedures with TestOF model
+        /// </summary>
+        /// <param name="ct"></param>
+        /// <returns></returns>
         private async Task PushDataToDBStoredProcedures(CancellationToken ct)
         {
             progressBarLoad.Minimum = 0;
@@ -39,6 +45,12 @@ namespace ICE_Import
             EnableDisable(false);
         }
 
+        /// <summary>
+        /// Push method futures to db with stored procedures
+        /// </summary>
+        /// <param name="globalCount"></param>
+        /// <param name="utilites"></param>
+        /// <param name="ct"></param>
         void PushFutures(int globalCount,  Utilities utilites, CancellationToken ct)
         {
             foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
@@ -53,19 +65,19 @@ namespace ICE_Import
                 string log = String.Empty;
                 try
                 {
-                    context.sp_updateContractTblFromSpanUpsert(contractName, 
-                                                               monthchar, 
-                                                               future.StripName.Month, 
-                                                               future.StripName.Year, 
-                                                               idinstrument, 
-                                                               future.Date, 
-                                                               contractName);
+                    contextTest.test_sp_updateContractTblFromSpanUpsert(contractName, 
+                                                                       monthchar, 
+                                                                       future.StripName.Month, 
+                                                                       future.StripName.Year, 
+                                                                       idinstrument, 
+                                                                       future.Date, 
+                                                                       contractName);
 
-                    tblcontract contract = context.tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
+                    test_tblcontract contract = contextTest.test_tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
 
-                    context.sp_updateOrInsertContractSettlementsFromSpanUpsert((int)contract.idcontract, 
-                                                                               future.StripName, 
-                                                                               (future.SettlementPrice != null)? future.SettlementPrice : 0);
+                    contextTest.test_sp_updateOrInsertContractSettlementsFromSpanUpsert((int)contract.idcontract,
+                                                                               future.StripName,
+                                                                               (future.SettlementPrice != null) ? future.SettlementPrice : 0);
                 }
                 catch (OperationCanceledException cancel)
                 {
@@ -90,6 +102,12 @@ namespace ICE_Import
             }
         }
 
+        /// <summary>
+        /// Push method dailyfutures to db with stored procedures
+        /// </summary>
+        /// <param name="globalCount"></param>
+        /// <param name="utilites"></param>
+        /// <param name="ct"></param>
         void PushDailyFutures(int globalCount, Utilities utilites, CancellationToken ct)
         {
             globalCount += ParsedData.FutureRecords.Length;
@@ -104,11 +122,11 @@ namespace ICE_Import
                 try
                 {
 
-                    tblcontract contract = context.tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
+                    test_tblcontract contract = contextTest.test_tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
 
-                    context.sp_updateOrInsertContractSettlementsFromSpanUpsert((int)contract.idcontract,
-                                                                               future.StripName,
-                                                                               (future.SettlementPrice != null) ? future.SettlementPrice : 0);
+                    contextTest.test_sp_updateOrInsertContractSettlementsFromSpanUpsert((int)contract.idcontract,
+                                                                                       future.StripName,
+                                                                                       (future.SettlementPrice != null) ? future.SettlementPrice : 0);
                 }
                 catch (OperationCanceledException cancel)
                 {
@@ -134,6 +152,12 @@ namespace ICE_Import
 
         }
 
+        /// <summary>
+        /// Push method options and options data to db with stored procedures
+        /// </summary>
+        /// <param name="globalCount"></param>
+        /// <param name="utilites"></param>
+        /// <param name="ct"></param>
         void PushOptions(int globalCount, Utilities utilites, CancellationToken ct)
         {
             globalCount += ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length;
@@ -175,7 +199,7 @@ namespace ICE_Import
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                     double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
 
-                    context.sp_updateOrInsertTbloptionsInfoAndDataUpsert(optionName,
+                    contextTest.test_sp_updateOrInsertTbloptionsInfoAndDataUpsert(optionName,
                                                                          monthchar,
                                                                          option.StripName.Month,
                                                                          option.StripName.Year,
@@ -219,6 +243,11 @@ namespace ICE_Import
             }
         }
 
+        /// <summary>
+        /// Push data with OF model
+        /// </summary>
+        /// <param name="ct"></param>
+        /// <returns></returns>
         private async Task PushDataToDB(CancellationToken ct)
         {
             int count = 0;
@@ -698,12 +727,17 @@ namespace ICE_Import
             }
         }
 
+        /// <summary>
+        /// Push data with TestOF model
+        /// </summary>
+        /// <param name="ct"></param>
+        /// <returns></returns>
         private async Task PushDataToDBTest(CancellationToken ct)
         {
             int count = 0;
             int globalCount = 0;
-            int number;
-            int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
+            //int number;
+            //int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
             //int currentPercent = 0;
             progressBarLoad.Minimum = 0;
             progressBarLoad.Maximum = ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length + ((!ParsedData.justFuture) ? ParsedData.OptionRecords.Length : 0);
@@ -1173,5 +1207,87 @@ namespace ICE_Import
             }
         }
 
+        /// <summary>
+        /// Example async method
+        /// </summary>
+        /// <param name="queryStringToUpdate"></param>
+        /// <param name="connString1BuilderInternal"></param>
+        /// <returns></returns>
+        public static async Task ConnectDBAndExecuteQueryAsyncWithTransaction(List<string> queryStringToUpdate, SqlConnectionStringBuilder connString1BuilderInternal)//, SqlConnection connection)
+        {
+            try
+            {
+                //http://executeautomation.com/blog/using-async-and-await-for-asynchronous-operation-also-with-multi-threading/
+                //http://stackoverflow.com/questions/200986/c-sql-how-to-execute-a-batch-of-storedprocedure
+                //http://stackoverflow.com/questions/17008902/sending-several-sql-commands-in-a-single-transaction
+
+                //string sqlQuery = "insert into tblMasterLookup Values (" + ThreadNumber + ",'Test','2.0','Myapplication',GetDate()) waitfor delay '00:00:30'";
+                //foreach (var commandString in queryStringToUpdate)
+
+                //while()
+                {
+                    //string connectionString = @"Server=.\SQLEXPRESS;Database=AUTODATA;Password=abc123;User ID=sa";
+                    using (SqlConnection connection = new SqlConnection(connString1BuilderInternal.ToString()))
+                    {
+                        await connection.OpenAsync();
+
+                        using (SqlTransaction trans = connection.BeginTransaction())
+                        {
+
+                            using (SqlCommand command = new SqlCommand("", connection, trans))
+                            {
+                                command.CommandType = CommandType.Text;
+                                //IAsyncResult result = command.BeginExecuteNonQuery();
+                                //Console.WriteLine("Command complete. Affected {0} rows.",
+                                //command.EndExecuteNonQuery(result));
+
+                                //DateTime currenttime = DateTime.Now;
+                                //Console.WriteLine("Executed Thread.. " + Thread.CurrentThread.ManagedThreadId);
+                                command.CommandTimeout = 0;
+
+                                foreach (var commandString in queryStringToUpdate)
+                                {
+                                    command.CommandText = commandString;
+
+                                    try
+                                    {
+                                        await command.ExecuteNonQueryAsync();
+                                        //command.ExecuteNonQuery();
+                                    }
+                                    catch (Exception)
+                                    {
+                                        //trans.Rollback();
+                                        Console.WriteLine(commandString);
+                                    }
+                                    //trans.Commit();
+
+                                }
+
+                                //long elapsedTicks = DateTime.Now.Ticks - currenttime.Ticks;
+                                //TimeSpan elapsedSpan = new TimeSpan(elapsedTicks);
+
+                                //TSErrorCatch.debugWriteOut("TEST 2 seconds " + elapsedSpan.TotalSeconds);
+                            }
+                            try
+                            {
+                                trans.Commit();
+                            }
+                            catch (Exception)
+                            {
+                                //trans.Rollback();
+                                Console.WriteLine("didn't work Transaction "); ;
+                            }
+
+                        }
+
+                        connection.Close();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
     }
 }

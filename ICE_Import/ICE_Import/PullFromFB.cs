@@ -10,6 +10,9 @@ namespace ICE_Import
 {
     public partial class FormDB : Form
     {
+        /// <summary>
+        /// Pulling data with OF model
+        /// </summary>
         private async void PullDataFromDB()
         {
             cts = new CancellationTokenSource();
@@ -106,7 +109,10 @@ namespace ICE_Import
             dataGridViewDailyContract.DataSource = bsDailyContractSettlement;
         }
 
-        private async void PullTastDataFromDB()
+        /// <summary>
+        /// Pulling data with TestPF model
+        /// </summary>
+        private async void PullTestDataFromDB()
         {
             cts = new CancellationTokenSource();
 
