@@ -176,7 +176,6 @@
     </Content>
     <Content Include="PullDataFromDB.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>PullDataFromDB.cs</LastGenOutput>
     </Content>
     <Content Include="PushDataToDB.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

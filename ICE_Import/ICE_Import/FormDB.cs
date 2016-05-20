@@ -219,7 +219,7 @@ namespace ICE_Import
         {
             if (isLocal)
             {
-                PullTestDataFromDB();
+                PullDataFromDBTest();
             }
             else
             {

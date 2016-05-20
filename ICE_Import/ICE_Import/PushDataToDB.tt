@@ -50,7 +50,7 @@ namespace ICE_Import
             progressBarLoad.Maximum = ParsedData.FutureRecords.Length;
             if (isLocal)
             {
-                progressBarLoad.Maximum += ParsedData.FutureRecords.Length + ((!ParsedData.justFuture)? ParsedData.OptionRecords.Length : 0);
+                progressBarLoad.Maximum += ParsedData.FutureRecords.Length + ((!ParsedData.FuturesOnly)? ParsedData.OptionRecords.Length : 0);
             }
             Utilities utilites = new Utilities();
             List<string> stripName = new List<string>();
@@ -264,7 +264,7 @@ namespace ICE_Import
                 }, ct);
                 SetLogMessage("Time with Stored Procedures - " + (DateTime.Now - start));
 
-                if (!ParsedData.justFuture)
+                if (!ParsedData.FuturesOnly)
                 {
                     count = 0;
                     await Task.Run(() =>
