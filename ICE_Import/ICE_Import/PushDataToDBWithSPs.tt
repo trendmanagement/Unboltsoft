@@ -1,0 +1,275 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+// WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+// WARNING                                                                         WARNING
+// WARNING    DO NOT EDIT THIS .CS FILE, BECAUSE ALL YOUR CHANGES WILL BE LOST!    WARNING
+// WARNING    EDIT CORRESPONDING .TT FILE INSTEAD!                                 WARNING
+// WARNING    ALSO, DO NOT COMMIT THIS .CS FILE!                                   WARNING
+// WARNING                                                                         WARNING
+// WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+
+using System;
+using System.Data;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace ICE_Import
+{
+    public partial class FormDB : Form
+    {
+        int spGlobalCount = 0;
+
+<# string[] methodNameSuffix = { string.Empty, "Test" }; #>
+<# string[] spProcNamePrefix = { string.Empty, "test_" }; #>
+<# string[] tableNamePrefix = { string.Empty, "test_" }; #>
+<# for (int i = 0; i < 2; i++) #>
+<# { #>
+        /// <summary>
+        /// Push all data to DB with stored procedures.
+        /// </summary>
+        async Task PushDataToDBWithSPs<# Write(methodNameSuffix[i]); #>(CancellationToken ct)
+        {
+            progressBarLoad.Minimum = 0;
+            progressBarLoad.Maximum = ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length;
+            if (!ParsedData.FuturesOnly)
+            {
+                progressBarLoad.Maximum += ParsedData.OptionRecords.Length;
+            }
+
+            DateTime start = DateTime.Now;
+
+            try
+            {
+                await Task.Run(() => PushFuturesToDBWithSP<# Write(methodNameSuffix[i]); #>(spGlobalCount, ct), ct);
+                LogMessage("Elapsed time: " + (DateTime.Now - start));
+
+                await Task.Run(() => PushDailyFuturesToDBWithSP<# Write(methodNameSuffix[i]); #>(spGlobalCount, ct), ct);
+                LogMessage("Elapsed time: " + (DateTime.Now - start));
+
+                if (!ParsedData.FuturesOnly)
+                {
+                    await Task.Run(() => PushOptionsToDBWithSP<# Write(methodNameSuffix[i]); #>(spGlobalCount, ct), ct);
+                    LogMessage("Elapsed time: " + (DateTime.Now - start));
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Already logged
+            }
+            finally
+            {
+                EnableDisable(false);
+            }
+
+            LogMessage(string.Format("Pushed to DB: {0} entries", spGlobalCount));
+        }
+
+        /// <summary>
+        /// Push futures to DB with stored procedures.
+        /// </summary>
+        /// <param name="spGlobalCount"></param>
+        /// <param name="ct"></param>
+        void PushFuturesToDBWithSP<# Write(methodNameSuffix[i]); #>(int spGlobalCount, CancellationToken ct)
+        {
+            foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
+            {
+                if (ct.IsCancellationRequested)
+                {
+                    break;
+                }
+                int idinstrument = 36;
+                char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+                string contractName = Utilities.generateCQGSymbolFromSpan('F', "CCE", monthchar, future.StripName.Year);
+                string log = string.Empty;
+                try
+                {
+                    Context.<# Write(spProcNamePrefix[i]); #>sp_updateContractTblFromSpanUpsert(
+                        contractName, 
+                        monthchar, 
+                        future.StripName.Month, 
+                        future.StripName.Year, 
+                        idinstrument, 
+                        future.Date, 
+                        contractName);
+
+                    var contract = Context.<# Write(tableNamePrefix[i]); #>tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
+
+                    Context.<# Write(spProcNamePrefix[i]); #>sp_updateOrInsertContractSettlementsFromSpanUpsert(
+                        (int)contract.idcontract, 
+                        future.StripName, 
+                        (future.SettlementPrice != null)? future.SettlementPrice : 0);
+                }
+                catch (OperationCanceledException cancel)
+                {
+                    log += string.Format("Cancel message from {0} pushing {1}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
+                    log += cancel.Message + "\n";
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    log += string.Format("ERROR message from {0} pushing {1}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
+                    log += ex.Message + "\n";
+                }
+                finally
+                {
+                    spGlobalCount++;
+                    if (spGlobalCount == ParsedData.FutureRecords.Length)
+                    {
+                        log += string.Format("Pushed {0} entries to {1} {2}TBLCONTRACT table", spGlobalCount, DatabaseName, TablesPrefix);
+                    }
+                    Invoke(new Action(() => ValuesFromTask(log, spGlobalCount)));
+                    log = string.Empty;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Push dailyfutures to DB with stored procedures.
+        /// </summary>
+        /// <param name="spGlobalCount"></param>
+        /// <param name="ct"></param>
+        void PushDailyFuturesToDBWithSP<# Write(methodNameSuffix[i]); #>(int spGlobalCount, CancellationToken ct)
+        {
+            spGlobalCount += ParsedData.FutureRecords.Length;
+            foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
+            {
+                if (ct.IsCancellationRequested)
+                {
+                    break;
+                }
+                char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+                string log = string.Empty;
+                try
+                {
+                    var contract = Context.<# Write(tableNamePrefix[i]); #>tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
+
+                    Context.<# Write(spProcNamePrefix[i]); #>sp_updateOrInsertContractSettlementsFromSpanUpsert(
+                        (int)contract.idcontract,
+                        future.StripName,
+                        (future.SettlementPrice != null) ? future.SettlementPrice : 0);
+                }
+                catch (OperationCanceledException cancel)
+                {
+                    log += string.Format("Cancel message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
+                    log += cancel.Message + "\n";
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    log += string.Format("ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
+                    log += ex.Message + "\n";
+                }
+                finally
+                {
+                    spGlobalCount++;
+                    if (spGlobalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length)
+                    {
+                        log += string.Format("Pushed {0} entries to {1} {2}TBLDAILYCONTRACTSETTLEMENT table", spGlobalCount - ParsedData.FutureRecords.Length, DatabaseName, TablesPrefix);
+                    }
+                    Invoke(new Action(() => ValuesFromTask(log, spGlobalCount)));
+                    log = string.Empty;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Push options and optionsdata to DB with stored procedures.
+        /// </summary>
+        /// <param name="spGlobalCount"></param>
+        /// <param name="ct"></param>
+        void PushOptionsToDBWithSP<# Write(methodNameSuffix[i]); #>(int spGlobalCount, CancellationToken ct)
+        {
+            spGlobalCount += ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length;
+
+            string log = string.Empty;
+            foreach (EOD_Options_578 option in ParsedData.OptionRecords)
+            {
+                if (ct.IsCancellationRequested)
+                {
+                    break;
+                }
+                try
+                {
+                    //TODO: Create query to get idinstrument by description from tblinstruments
+                    //idinstrument for description = Cocoa is 36
+                    int idinstrument = 36;
+
+                    char monthchar = Convert.ToChar(((MonthCodes)option.StripName.Month).ToString());
+
+                    string optionName = Utilities.generateOptionCQGSymbolFromSpan(option.OptionType, "CCE", monthchar, option.StripName.Year, (option.StrikePrice != null) ? (double)option.StrikePrice : 0, 0, 0, idinstrument);
+
+                    long idContract = Context.<# Write(spProcNamePrefix[i]); #>tblcontracts.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToList()[0].idcontract;
+
+
+                    // callPutFlag                      - tableOption.callorput
+                    // S - stock price                  - 1.56
+                    // X - strike price of option       - option.StrikePrice
+                    // T - time to expiration in years  - 0.5
+                    // r - risk-free interest rate      - r(f) = 0.08, foreign risk-free interest rate in the U.S. is 8% per annum
+                    // currentOptionPrice               - option.SettlementPrice 
+
+                    double impliedvol = OptionCalcs.calculateOptionVolatility(
+                        option.OptionType,
+                        1.56,
+                        (option.StrikePrice != null) ? (double)option.StrikePrice : 0,
+                        0.5,
+                        0.08,
+                        (option.SettlementPrice != null) ? (double)option.SettlementPrice : 0);
+
+                    double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
+                    double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
+
+                    Context.<# Write(spProcNamePrefix[i]); #>sp_updateOrInsertTbloptionsInfoAndDataUpsert(
+                        optionName,
+                        monthchar,
+                        option.StripName.Month,
+                        option.StripName.Year,
+                        option.StrikePrice,
+                        option.OptionType,
+                        idinstrument,
+                        option.Date,
+                        idContract,
+                        optionName,
+                        option.StripName,
+                        option.StrikePrice,
+                        impliedvol,
+                        futureYear - expiranteYear);
+                }
+                catch (OperationCanceledException cancel)
+                {
+                    log += string.Format("Cancel message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n", DatabaseName, TablesPrefix);
+                    log += cancel.Message + "\n";
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    int erc = spGlobalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                    log += string.Format(
+                        "ERROR message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n" +
+                        "Can't push entry N: {2}\n",
+                        DatabaseName, TablesPrefix, erc);
+                    log += ex.Message + "\n";
+                    continue;
+                }
+                finally
+                {
+                    spGlobalCount++;
+                    if (spGlobalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
+                    {
+                        log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", spGlobalCount, DatabaseName, TablesPrefix);
+                    }
+                    Invoke(new Action(() => ValuesFromTask(log, spGlobalCount)));
+                    log = string.Empty;
+                }
+            }
+        }
+
+<# } #>
+    }
+}

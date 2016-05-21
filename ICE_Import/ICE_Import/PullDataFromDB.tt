@@ -25,7 +25,6 @@ namespace ICE_Import
     public partial class FormDB : Form
     {
 <# string[] methodNameSuffix = { string.Empty, "Test" }; #>
-<# string[] contextPrefix = { string.Empty, "Test" }; #>
 <# string[] tableClassPrefix = { string.Empty, "test_" }; #>
 <# string[] tableNamePrefix = { string.Empty, "test_" }; #>
 <# for (int i = 0; i < 2; i++) #>
@@ -36,12 +35,12 @@ namespace ICE_Import
 <# string TblOptionData = tableClassPrefix[i] + "tbloptiondata"; #>
         private async void PullDataFromDB<# Write(methodNameSuffix[i]); #>()
         {
+            cts = new CancellationTokenSource();
+
             var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
             var tbldailycontractsettlements_ = Context.<# Write(tableNamePrefix[i]); #>tbldailycontractsettlements;
             var tbloptions_ = Context.<# Write(tableNamePrefix[i]); #>tbloptions;
             var tbloptiondatas_ = Context.<# Write(tableNamePrefix[i]); #>tbloptiondatas;
-
-            cts = new CancellationTokenSource();
 
             BindingSource bsOption = new BindingSource();
             BindingSource bsOptionData = new BindingSource();
@@ -54,9 +53,7 @@ namespace ICE_Import
 
             try
             {
-                EnableDisable(true);
-
-                LogMessage(string.Format("Started pulling {0} entities from {1} {2}TBLCONTRACT table", IsLocalDB ? tblcontracts_.Count() : count, DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLCONTRACT table", IsLocalDB ? tblcontracts_.Count() : count, DatabaseName, TablesPrefix));
 
                 await Task.Run(() =>
                             {
@@ -65,7 +62,7 @@ namespace ICE_Import
                                                         ).Take(IsLocalDB ? tblcontracts_.Count() : count).ToList();
                             }, cts.Token);
 
-                LogMessage(string.Format("Started pulling {0} entities from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", IsLocalDB ? tbldailycontractsettlements_.Count() : count, DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", IsLocalDB ? tbldailycontractsettlements_.Count() : count, DatabaseName, TablesPrefix));
 
                 await Task.Run(() =>
                                 {
@@ -75,7 +72,7 @@ namespace ICE_Import
                                 }, cts.Token);
 
                 //int count = tbloptions_.Where(item => item.cqgsymbol == "somesymbol").Count();
-                LogMessage(string.Format("Started pulling {0} entities from {1} {2}TBLOPTIONS table", IsLocalDB ? tbloptions_.Count() : count, DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONS table", IsLocalDB ? tbloptions_.Count() : count, DatabaseName, TablesPrefix));
                 try
                 {
                     await Task.Run(() =>
@@ -95,7 +92,7 @@ namespace ICE_Import
                     bsOption.DataSource = listOption;
                 }
 
-                LogMessage(string.Format("Started pulling {0} entities from {1} {2}TBLOPTIONDATAS table", IsLocalDB ? tbloptiondatas_.Count() : count, DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONDATAS table", IsLocalDB ? tbloptiondatas_.Count() : count, DatabaseName, TablesPrefix));
                 await Task.Run(() =>
                                     {
                                         bsOptionData.DataSource = (from item in tbloptiondatas_
@@ -115,8 +112,6 @@ namespace ICE_Import
             }
             finally
             {
-                EnableDisable(false);
-
                 int totalCount =
                     IsLocalDB ?
                     tblcontracts_.Count() +
@@ -126,7 +121,9 @@ namespace ICE_Import
                     :
                     4 * count;
 
-                LogMessage(string.Format("Pulled: {0} entities from {1} DB", totalCount, DatabaseName));
+                LogMessage(string.Format("Pulled: {0} entries from {1} DB", totalCount, DatabaseName));
+
+                EnableDisable(false);
             }
 
             dataGridViewOption.DataSource = bsOption;

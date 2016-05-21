@@ -2,7 +2,7 @@ using System.Text;
 
 namespace ICE_Import
 {
-    class Utilities
+    static class Utilities
     {
         /// <summary>
         /// Generates the CQG symbol from span.
@@ -12,7 +12,11 @@ namespace ICE_Import
         /// <param name="month">The month code, monthCodes = ['F','G','H','J','K','M','N','Q','U','V','X','Z'];</param>
         /// <param name="year">The year.</param>
         /// <returns>cqgSymbol</returns>
-        public string generateCQGSymbolFromSpan(char contractType, string underlyingSymbol, char month, int year)
+        public static string generateCQGSymbolFromSpan(
+            char contractType,
+            string underlyingSymbol,
+            char month,
+            int year)
         {
             StringBuilder cqgSymbol = new StringBuilder();
 
@@ -29,7 +33,6 @@ namespace ICE_Import
             return cqgSymbol.ToString();
         }
 
-
         /// <summary>
         /// Generates the option CQG symbol from span.
         /// </summary>
@@ -42,8 +45,15 @@ namespace ICE_Import
         /// <param name="optionStrikeDisplay">The option strike display.</param>
         /// <param name="instrumentId">The instrument identifier.</param>
         /// <returns></returns>
-        public string generateOptionCQGSymbolFromSpan(char contractType, string underlyingSymbol, char month, int year, 
-            double optionStrikePrice, double optionStrikeIncrement, double optionStrikeDisplay, int instrumentId)
+        public static string generateOptionCQGSymbolFromSpan(
+            char contractType,
+            string underlyingSymbol,
+            char month,
+            int year, 
+            double optionStrikePrice,
+            double optionStrikeIncrement,
+            double optionStrikeDisplay,
+            int instrumentId)
         {
             StringBuilder cqgSymbol = new StringBuilder();
 

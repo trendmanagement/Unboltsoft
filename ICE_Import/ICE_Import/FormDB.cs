@@ -99,7 +99,7 @@ namespace ICE_Import
                 X = progressBarLoad.Location.X,
                 Y = this.Height - 146
             };
-            progressBarLoad.Width = tabControl.Width - 15;
+            progressBarLoad.Width = this.Width - 40;
             buttonToCSV.Location = new Point()
             {
                 X = this.Width - 25 - buttonToCSV.Width,
@@ -119,10 +119,19 @@ namespace ICE_Import
             }
             else
             {
-                LogMessage(ParsedData.FutureRecords.GetType().Name.Trim('[', ']') + " entities count: " + ParsedData.FutureRecords.Length.ToString()  + " ready to push to DB");
+                string pat = "{0} entries count: {1} (ready for pushing to DB)";
+                string msg = string.Format(
+                    pat,
+                    ParsedData.FutureRecords.GetType().Name.Trim('[', ']'),
+                    ParsedData.FutureRecords.Length);
+                LogMessage(msg);
                 if (!ParsedData.FuturesOnly)
                 {
-                    LogMessage(ParsedData.OptionRecords.GetType().Name.Trim('[', ']') + " entities count: " + ParsedData.OptionRecords.Length.ToString() + " ready to push to DB");
+                    msg = string.Format(
+                        pat,
+                        ParsedData.OptionRecords.GetType().Name.Trim('[', ']'),
+                        ParsedData.OptionRecords.Length);
+                    LogMessage(msg);
                 }
 
                 buttonPush.Enabled = true;
@@ -133,8 +142,8 @@ namespace ICE_Import
         {
             if (buttonPush.Enabled != true)
             {
-                LogMessage("Entities count: " + ParsedData.OptionRecords.Length.ToString());
-                LogMessage("Type of entity: " + ParsedData.OptionRecords.GetType().Name.Trim('[', ']'));
+                LogMessage("Entries count: " + ParsedData.OptionRecords.Length.ToString());
+                LogMessage("Type of entry: " + ParsedData.OptionRecords.GetType().Name.Trim('[', ']'));
                 buttonPush.Enabled = true;
             }
         }
@@ -145,6 +154,8 @@ namespace ICE_Import
             {
                 return;
             }
+
+            EnableDisable(true);
 
             if (DatabaseName == "TMLDB" && !IsTestTables)
             {
@@ -160,49 +171,42 @@ namespace ICE_Import
                 }
             }
 
-            cts = new CancellationTokenSource();
-
             LogMessage("Pushing started");
 
-            if (IsTestTables)
+            cts = new CancellationTokenSource();
+
+            try
             {
-                if (IsStoredProcs)
+                if (IsTestTables)
                 {
-                    // await PushDataToDBTestStoredProcedures(cts.Token);
+                    if (IsStoredProcs)
+                    {
+                        await PushDataToDBWithSPsTest(cts.Token);
+                    }
+                    else
+                    {
+                        await PushDataToDBTest(cts.Token);
+                    }
                 }
                 else
                 {
-                    await PushDataToDBTest(cts.Token);
+                    if (IsStoredProcs)
+                    {
+                        await PushDataToDBWithSPs(cts.Token);
+                    }
+                    else
+                    {
+                        await PushDataToDB(cts.Token);
+                    }
                 }
             }
-            else
+            catch (ObjectDisposedException)
             {
-                if (IsStoredProcs)
-                {
-                    await PushDataToDBStoredProcedures(cts.Token);
-                }
-                else
-                {
-                    await PushDataToDB(cts.Token);
-                }
+                // The form was closed during the process
             }
 
+            // Update the data grid
             buttonPull_Click(sender, e);
-
-            //string input = ParsedData.OptionRecords.GetType().Name.Trim('[', ']');
-
-            //EntityNames name = new EntityNames();
-            //Enum.TryParse(input, out name);
-            //switch (name)
-            //{
-            //    case EntityNames.EOD_Futures_578:
-            //        // TODO: load data EOD_Futures_578 to db like EOD_Options_578 entity
-            //        break;
-            //    case EntityNames.EOD_Options_578:
-            //        break;
-            //    default:
-            //        break;
-            //}
         }
 
         private void buttonPull_Click(object sender, EventArgs e)
@@ -212,15 +216,24 @@ namespace ICE_Import
                 return;
             }
 
+            EnableDisable(true);
+
             progressBarLoad.Value = 0;
 
-            if (IsTestTables)
+            try
             {
-                PullDataFromDBTest();
+                if (IsTestTables)
+                {
+                    PullDataFromDBTest();
+                }
+                else
+                {
+                    PullDataFromDB();
+                }
             }
-            else
+            catch (ObjectDisposedException)
             {
-                PullDataFromDB();
+                // The form was closed during the process
             }
         }
 
@@ -257,7 +270,7 @@ namespace ICE_Import
                 }
             }
             buttonPull.Enabled = !start;
-            buttonCancel.Enabled = !start;
+            buttonCancel.Enabled = start;
             buttonToCSV.Enabled = !start;
         }
 

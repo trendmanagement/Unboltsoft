@@ -294,9 +294,9 @@
             this.cb_TestTables.AutoSize = true;
             this.cb_TestTables.Location = new System.Drawing.Point(6, 21);
             this.cb_TestTables.Name = "cb_TestTables";
-            this.cb_TestTables.Size = new System.Drawing.Size(112, 17);
+            this.cb_TestTables.Size = new System.Drawing.Size(116, 17);
             this.cb_TestTables.TabIndex = 0;
-            this.cb_TestTables.Text = "Use \"test_\" tables";
+            this.cb_TestTables.Text = "Use \"test_\" Tables";
             this.cb_TestTables.UseVisualStyleBackColor = true;
             this.cb_TestTables.CheckedChanged += new System.EventHandler(this.cb_TestTables_CheckedChanged);
             // 

@@ -168,8 +168,8 @@ namespace ICE_Import
 			return ((ISingleResult<sp_updateContractTblFromSpanUpsertResult>)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.sp_updateOrInsertContractSettlementsFromSpan")]
-		public int sp_updateOrInsertContractSettlementsFromSpan([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> futureContractID, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> spanDate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> settlementPrice)
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.sp_updateOrInsertContractSettlementsFromSpanUpsert")]
+		public int sp_updateOrInsertContractSettlementsFromSpanUpsert([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> futureContractID, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> spanDate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> settlementPrice)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), futureContractID, spanDate, settlementPrice);
 			return ((int)(result.ReturnValue));
