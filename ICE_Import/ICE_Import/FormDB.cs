@@ -9,45 +9,34 @@ namespace ICE_Import
 {
     public partial class FormDB : Form
     {
-        public delegate void SetLogMessageDelegate(string message);
-        public event SetLogMessageDelegate SetLogMessage;
+        public delegate void LogMessageDelegate(string message);
+        public event LogMessageDelegate LogMessage;
 
         CancellationTokenSource cts;
 
-        string locConStr = @"Data Source=(localdb)\MSSQLLocalDB;
-                             Integrated Security=True;
-                             AttachDbFileName=" + Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Database1.mdf") + ";";
-        string remConStr = @"Server=tcp:h9ggwlagd1.database.windows.net,1433;
-                             Database=TMLDB_Copy;
-                             User ID=dataupdate@h9ggwlagd1;
-                             Password=6dcEpZKSFRNYk^AN;
-                             Encrypt=True;
-                             TrustServerCertificate=False;
-                             Connection Timeout=30;";
-        string remConStrTest = @"Server=tcp:h9ggwlagd1.database.windows.net,1433;
-                             Database=TMLDB;
-                             User ID=dataupdate@h9ggwlagd1;
-                             Password=6dcEpZKSFRNYk^AN;
-                             Encrypt=True;
-                             TrustServerCertificate=False;
-                             Connection Timeout=30;";
+        string DatabaseName;
+        bool IsLocalDB;
 
-        bool isLocal;
-        string locRem;
+        string TablesPrefix;
+        bool IsTestTables;
 
-        OFDataContext Context;
-        TestOFDataContext TestContext;
+        bool IsStoredProcs;
+
+        string ConnectionString;
+        DataClassesTMLDBDataContext Context;
 
         public FormDB()
         {
             InitializeComponent();
+
             this.Resize += FormDB_Resize;
             ParsedData.ParseComplete += ParsedData_ParseComplete;
-            this.SetLogMessage += FormDB_SetLogMessage;
+            this.LogMessage += FormDB_LogMessage;
             this.FormClosed += FormDB_FormClosed;
-
-            checkBoxLocalDB_CheckedChanged(null, null);
-            checkBoxUseSP_CheckedChanged(null, null);
+            
+            rb_DB_CheckedChanged(rb_LocalDB, null);
+            cb_TestTables_CheckedChanged(null, null);
+            cb_StoredProcs_CheckedChanged(null, null);
         }
 
         private void FormDB_FormClosed(object sender, FormClosedEventArgs e)
@@ -55,7 +44,7 @@ namespace ICE_Import
             Program.csvf.Close();
         }
 
-        private void FormDB_SetLogMessage(string message)
+        private void FormDB_LogMessage(string message)
         {
             richTextBoxLog.Text += message + "\n";
             richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
@@ -75,47 +64,46 @@ namespace ICE_Import
 
         private void FormDB_Resize(object sender, EventArgs e)
         {
-            tabControlOption.Size = new Size()
+            tabControl.Size = new Size()
             {
                 Width = this.Width - 15,
-                Height = this.Height - 175
+                Height = this.Height - 253
             };
-
+            groupBox1.Location = new Point()
+            {
+                X = groupBox1.Location.X,
+                Y = this.Height - 247
+            };
+            groupBox2.Location = new Point()
+            {
+                X = groupBox2.Location.X,
+                Y = this.Height - 247
+            };
             buttonPush.Location = new Point()
             {
                 X = buttonPush.Location.X,
-                Y = tabControlOption.Height + 5
-            };
-            checkBoxLocalDB.Location = new Point()
-            {
-                X = checkBoxLocalDB.Location.X,
-                Y = tabControlOption.Height + 7
-            };
-            checkBoxUseSP.Location = new Point()
-            {
-                X = checkBoxUseSP.Location.X,
-                Y = tabControlOption.Height + 7
-            };
-            progressBarLoad.Location = new Point()
-            {
-                X = progressBarLoad.Location.X,
-                Y = tabControlOption.Height + 7 + 25
-            };
-            progressBarLoad.Width = tabControlOption.Width - 15;
-            buttonCancel.Location = new Point()
-            {
-                X = buttonCancel.Location.X,
-                Y = tabControlOption.Height + 5
+                Y = this.Height - 247
             };
             buttonPull.Location = new Point()
             {
                 X = buttonPull.Location.X,
-                Y = tabControlOption.Height + 5
+                Y = this.Height - 218
             };
+            buttonCancel.Location = new Point()
+            {
+                X = buttonCancel.Location.X,
+                Y = this.Height - 175
+            };
+            progressBarLoad.Location = new Point()
+            {
+                X = progressBarLoad.Location.X,
+                Y = this.Height - 146
+            };
+            progressBarLoad.Width = tabControl.Width - 15;
             buttonToCSV.Location = new Point()
             {
                 X = this.Width - 25 - buttonToCSV.Width,
-                Y = tabControlOption.Height + 5
+                Y = this.Height - 247
             };
         }
 
@@ -131,10 +119,10 @@ namespace ICE_Import
             }
             else
             {
-                SetLogMessage(ParsedData.FutureRecords.GetType().Name.Trim('[', ']') + " entities count: " + ParsedData.FutureRecords.Length.ToString()  + " ready to push to DB");
+                LogMessage(ParsedData.FutureRecords.GetType().Name.Trim('[', ']') + " entities count: " + ParsedData.FutureRecords.Length.ToString()  + " ready to push to DB");
                 if (!ParsedData.FuturesOnly)
                 {
-                    SetLogMessage(ParsedData.OptionRecords.GetType().Name.Trim('[', ']') + " entities count: " + ParsedData.OptionRecords.Length.ToString() + " ready to push to DB");
+                    LogMessage(ParsedData.OptionRecords.GetType().Name.Trim('[', ']') + " entities count: " + ParsedData.OptionRecords.Length.ToString() + " ready to push to DB");
                 }
 
                 buttonPush.Enabled = true;
@@ -145,33 +133,60 @@ namespace ICE_Import
         {
             if (buttonPush.Enabled != true)
             {
-                SetLogMessage("Entities count: " + ParsedData.OptionRecords.Length.ToString());
-                SetLogMessage("Type of entity: " + ParsedData.OptionRecords.GetType().Name.Trim('[', ']'));
+                LogMessage("Entities count: " + ParsedData.OptionRecords.Length.ToString());
+                LogMessage("Type of entity: " + ParsedData.OptionRecords.GetType().Name.Trim('[', ']'));
                 buttonPush.Enabled = true;
             }
         }
         
         private async void buttonPush_Click(object sender, EventArgs e)
         {
+            if (!ValidateOptions())
+            {
+                return;
+            }
+
+            if (DatabaseName == "TMLDB" && !IsTestTables)
+            {
+                // Ask confirmation
+                var result = MessageBox.Show(
+                    "Are you about to update NON-TEST tables of NON-TEST database.\n\nAre you sure?",
+                    Text,
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question);
+                if (result != DialogResult.Yes)
+                {
+                    return;
+                }
+            }
+
             cts = new CancellationTokenSource();
 
-            richTextBoxLog.Text += "Pushing started\n";
-            if (!isLocal)
+            LogMessage("Pushing started");
+
+            if (IsTestTables)
             {
-                await PushDataToDBTest(cts.Token);
-            }
-            else
-            {
-                if (checkBoxUseSP.Checked)
+                if (IsStoredProcs)
                 {
-                    await PushDataToDBStoredProcedures(cts.Token);
+                    // await PushDataToDBTestStoredProcedures(cts.Token);
                 }
                 else
                 {
                     await PushDataToDBTest(cts.Token);
                 }
-
             }
+            else
+            {
+                if (IsStoredProcs)
+                {
+                    await PushDataToDBStoredProcedures(cts.Token);
+                }
+                else
+                {
+                    await PushDataToDB(cts.Token);
+                }
+            }
+
             buttonPull_Click(sender, e);
 
             //string input = ParsedData.OptionRecords.GetType().Name.Trim('[', ']');
@@ -190,22 +205,23 @@ namespace ICE_Import
             //}
         }
 
-        private void checkBoxLocalDB_CheckedChanged(object sender, EventArgs e)
+        private void buttonPull_Click(object sender, EventArgs e)
         {
-            isLocal = checkBoxLocalDB.Checked;
-            if (isLocal)
+            if (!ValidateOptions())
             {
-                locRem = "LOCAL";
-                TestContext = new TestOFDataContext(locConStr);
+                return;
+            }
 
-                //Context = new OFDataContext(locConStr);
+            progressBarLoad.Value = 0;
+
+            if (IsTestTables)
+            {
+                PullDataFromDBTest();
             }
             else
             {
-                locRem = "REMOTE";
-                TestContext = new TestOFDataContext(remConStrTest);
+                PullDataFromDB();
             }
-            SetLogMessage(string.Format("You selected {0} DB", locRem));
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -216,20 +232,6 @@ namespace ICE_Import
             }
         }
 
-        private void buttonPull_Click(object sender, EventArgs e)
-        {
-            progressBarLoad.Value = 0;
-
-            if (isLocal)
-            {
-                PullDataFromDBTest();
-            }
-            else
-            {
-                PullDataFromDBTest();
-            }
-        }
-        
         private void buttonToCSV_Click(object sender, EventArgs e)
         {
             Hide();
@@ -238,14 +240,14 @@ namespace ICE_Import
 
         private void EnableDisable(bool start)
         {
+            rb_LocalDB.Enabled = !start;
+            rb_TMLDBCopy.Enabled = !start;
+            rb_TMLDB.Enabled = !start;
+            cb_StoredProcs.Enabled = !start;
+            cb_TestTables.Enabled = !start;
             if (start)
             {
                 buttonPush.Enabled = false;
-                buttonPull.Enabled = false;
-                buttonCancel.Enabled = true;
-                checkBoxLocalDB.Enabled = false;
-                buttonToCSV.Enabled = false;
-                checkBoxUseSP.Enabled = false;
             }
             else
             {
@@ -253,18 +255,128 @@ namespace ICE_Import
                 {
                     buttonPush.Enabled = true;
                 }
-                buttonPull.Enabled = true;
-                buttonCancel.Enabled = false;
-                checkBoxLocalDB.Enabled = true;
-                buttonToCSV.Enabled = true;
-                checkBoxUseSP.Enabled = true;
             }
+            buttonPull.Enabled = !start;
+            buttonCancel.Enabled = !start;
+            buttonToCSV.Enabled = !start;
         }
 
-        private void checkBoxUseSP_CheckedChanged(object sender, EventArgs e)
+        private void rb_DB_CheckedChanged(object sender, EventArgs e)
         {
-            string storedCoded = checkBoxUseSP.Checked ? "STORED" : "CODED";
-            SetLogMessage(string.Format("You selected {0} PROCEDURES", storedCoded));
+            var rb = (RadioButton)sender;
+            if (!rb.Checked)
+            {
+                return;
+            }
+
+            int tag = int.Parse((string)rb.Tag);
+
+            string localConnectionStringPattern =
+@"Data Source=(localdb)\MSSQLLocalDB;
+Integrated Security=True;
+AttachDbFileName={0};";
+
+            string remoteConnectionStringPattern =
+@"Server=tcp:h9ggwlagd1.database.windows.net,1433;
+Database={0};
+User ID=dataupdate@h9ggwlagd1;
+Password=6dcEpZKSFRNYk^AN;
+Encrypt=True;
+TrustServerCertificate=False;
+Connection Timeout=30;";
+
+            // Prepare the connection string
+            switch (tag)
+            {
+                case 1:
+                    // Local DB
+                    DatabaseName = "LOCAL";
+                    IsLocalDB = true;
+                    string filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "DatabaseLocal.mdf");
+                    ConnectionString = string.Format(localConnectionStringPattern, filePath);
+                    break;
+                case 2:
+                    // TMLDB_Copy
+                    DatabaseName = "TMLDB_Copy";
+                    IsLocalDB = false;
+                    ConnectionString = string.Format(remoteConnectionStringPattern, "TMLDB_Copy");
+                    break;
+                case 3:
+                    // TMLDB
+                    DatabaseName = "TMLDB";
+                    IsLocalDB = false;
+                    ConnectionString = string.Format(remoteConnectionStringPattern, "TMLDB");
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
+
+            // Change DB context
+            Context = new DataClassesTMLDBDataContext(ConnectionString);
+
+            LogMessage(string.Format("You selected {0} database", DatabaseName));
+        }
+
+        private void cb_TestTables_CheckedChanged(object sender, EventArgs e)
+        {
+            IsTestTables = cb_TestTables.Checked;
+
+            string prefix;
+            string testNonTest;
+            if (IsTestTables)
+            {
+                TablesPrefix = "TEST_";
+                prefix = "test_";
+                testNonTest = "TEST";
+            }
+            else
+            {
+                TablesPrefix = string.Empty;
+                prefix = string.Empty;
+                testNonTest = "NON-TEST";
+            }
+
+            // Rename tabs
+            tabPageContract.Text = prefix + "tblcontracts";
+            tabPageDailyContract.Text = prefix + "tbldailycontractsettlements";
+            tabPageOption.Text = prefix + "tbloption";
+            tabPageOptionData.Text = prefix + "tbloptiondata";
+
+            LogMessage(string.Format("You selected {0} tables", testNonTest));
+        }
+
+        private void cb_StoredProcs_CheckedChanged(object sender, EventArgs e)
+        {
+            IsStoredProcs = cb_StoredProcs.Checked;
+
+            string storedCoded = IsStoredProcs ? "STORED" : "CODED";
+            LogMessage(string.Format("You selected {0} procedures", storedCoded));
+        }
+
+        private bool ValidateOptions()
+        {
+            if (DatabaseName == "TMLDB" && IsTestTables && IsStoredProcs)
+            {
+                MessageBox.Show(
+                    "TMLDB does not have stored procedures for working with test tables.",
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return false;
+            }
+            else if (DatabaseName == "TMLDB_Copy" && IsTestTables)
+            {
+                MessageBox.Show(
+                    "TMLDB_Copy does not have test tables.",
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }

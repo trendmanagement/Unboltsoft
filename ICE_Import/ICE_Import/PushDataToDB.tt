@@ -8,6 +8,7 @@
 // WARNING                                                                         WARNING
 // WARNING    DO NOT EDIT THIS .CS FILE, BECAUSE ALL YOUR CHANGES WILL BE LOST!    WARNING
 // WARNING    EDIT CORRESPONDING .TT FILE INSTEAD!                                 WARNING
+// WARNING    ALSO, DO NOT COMMIT THIS .CS FILE!                                   WARNING
 // WARNING                                                                         WARNING
 // WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
 
@@ -35,11 +36,10 @@ namespace ICE_Import
 <# string TblOptionData = tableClassPrefix[i] + "tbloptiondata"; #>
         private async Task PushDataToDB<# Write(methodNameSuffix[i]); #>(CancellationToken ct)
         {
-            var context_ = <# Write(contextPrefix[i]); #>Context;
-            var tblcontracts_ = context_.<# Write(tableNamePrefix[i]); #>tblcontracts;
-            var tbldailycontractsettlements_ = context_.<# Write(tableNamePrefix[i]); #>tbldailycontractsettlements;
-            var tbloptions_ = context_.<# Write(tableNamePrefix[i]); #>tbloptions;
-            var tbloptiondatas_ = context_.<# Write(tableNamePrefix[i]); #>tbloptiondatas;
+            var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
+            var tbldailycontractsettlements_ = Context.<# Write(tableNamePrefix[i]); #>tbldailycontractsettlements;
+            var tbloptions_ = Context.<# Write(tableNamePrefix[i]); #>tbloptions;
+            var tbloptiondatas_ = Context.<# Write(tableNamePrefix[i]); #>tbloptiondatas;
 
             int count = 0;
             int globalCount = 0;
@@ -103,9 +103,9 @@ namespace ICE_Import
                                     {
                                         long id = tblcontracts[0].idcontract;
                                         log += string.Format(
-                                            "Message from {0} pushing TBLCONTRACTS tables \n" +
-                                            "We already have entity with id: {1}\n",
-                                            locRem, id);
+                                            "Message from {0} pushing {1}TBLCONTRACTS tables \n" +
+                                            "We already have entity with id: {2}\n",
+                                            DatabaseName, TablesPrefix, id);
                                         continue;
                                     }
                                 }
@@ -113,9 +113,9 @@ namespace ICE_Import
                                 {
                                     int erc = globalCount;
                                     log += string.Format(
-                                        "ERROR message from {0} pushing TBLCONTRACTS tables \n" +
-                                        "Can't check idcontract for entity N: {1}\n",
-                                        locRem, erc);
+                                        "ERROR message from {0} pushing {1}TBLCONTRACTS tables \n" +
+                                        "Can't check idcontract for entity N: {2}\n",
+                                        DatabaseName, TablesPrefix, erc);
                                     log += ex.Message + "\n";
                                     continue;
                                 }
@@ -136,19 +136,19 @@ namespace ICE_Import
                                     cqgsymbol = contractName
                                 };
                                 tblcontracts_.InsertOnSubmit(tableFuture);
-                                context_.SubmitChanges();
+                                Context.SubmitChanges();
                                 count++;
                                 stripName.Add(future.StripName.ToString());
                             }
                         }
                         catch (OperationCanceledException cancel)
                         {
-                            log += string.Format("Cancel message from {0} pushing TBLCONTRACT table \n", locRem);
+                            log += string.Format("Cancel message from {0} pushing {1}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
                             log += cancel.Message + "\n";
                         }
                         catch (Exception ex)
                         {
-                            log += string.Format("ERROR message from {0} pushing TBLCONTRACT table \n", locRem);
+                            log += string.Format("ERROR message from {0} pushing {1}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
                             log += ex.Message + "\n";
                         }
                         finally
@@ -156,7 +156,7 @@ namespace ICE_Import
                             globalCount++;
                             if (globalCount == ParsedData.FutureRecords.Length)
                             {
-                                log += string.Format("Pushed {0} entities to {1} TBLCONTRACT table", count, locRem);
+                                log += string.Format("Pushed {0} entities to {1} {2}TBLCONTRACT table", count, DatabaseName, TablesPrefix);
                             }
                             //TODO: Fix this
                             //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
@@ -169,7 +169,7 @@ namespace ICE_Import
                         }
                     }
                 }, ct);
-                SetLogMessage("Time with Stored Procedures - " + (DateTime.Now - start));
+                LogMessage("Time with Stored Procedures - " + (DateTime.Now - start));
 
                 count = 0;
                 await Task.Run(() =>
@@ -198,9 +198,9 @@ namespace ICE_Import
                                 {
                                     long id = tdcs[0].iddailycontractsettlements;
                                     log += string.Format(
-                                        "Message from {0} pushing TBLDAILYCONTRACTSETTLEMENT tables \n" +
-                                        "We already have entity with id: {1}\n",
-                                        locRem, id);
+                                        "Message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
+                                        "We already have entity with id: {2}\n",
+                                        DatabaseName, TablesPrefix, id);
                                     continue;
                                 }
                             }
@@ -208,9 +208,9 @@ namespace ICE_Import
                             {
                                 int erc = globalCount - ParsedData.FutureRecords.Length;
                                 log += string.Format(
-                                    "ERROR message from {0} pushing TBLDAILYCONTRACTSETTLEMENT tables \n" +
-                                    "Can't check idcontract for entity N: {1}\n",
-                                    locRem, erc);
+                                    "ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
+                                    "Can't check idcontract for entity N: {2}\n",
+                                    DatabaseName, TablesPrefix, erc);
                                 log += ex.Message + "\n";
                                 continue;
                             }
@@ -227,17 +227,17 @@ namespace ICE_Import
                             };
 
                             tbldailycontractsettlements_.InsertOnSubmit(tableDCS);
-                            context_.SubmitChanges();
+                            Context.SubmitChanges();
                             count++;
                         }
                         catch (OperationCanceledException cancel)
                         {
-                            log += string.Format("Cancel message from {0} pushing TBLDAILYCONTRACTSETTLEMENT table \n", locRem);
+                            log += string.Format("Cancel message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
                             log += cancel.Message + "\n";
                         }
                         catch (Exception ex)
                         {
-                            log += string.Format("ERROR message from {0} pushing TBLDAILYCONTRACTSETTLEMENT table \n", locRem);
+                            log += string.Format("ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
                             log += ex.Message + "\n";
                         }
                         finally
@@ -245,7 +245,7 @@ namespace ICE_Import
                             globalCount++;
                             if (globalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length)
                             {
-                                log += string.Format("Pushed {0} entities to {1} TBLDAILYCONTRACTSETTLEMENT table", count, locRem);
+                                log += string.Format("Pushed {0} entities to {1} {2}TBLDAILYCONTRACTSETTLEMENT table", count, DatabaseName, TablesPrefix);
                             }
                             //TODO: Fix this
                             //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
@@ -258,7 +258,7 @@ namespace ICE_Import
                         }
                     }
                 }, ct);
-                SetLogMessage("Time with Stored Procedures - " + (DateTime.Now - start));
+                LogMessage("Time with Stored Procedures - " + (DateTime.Now - start));
 
                 if (!ParsedData.FuturesOnly)
                 {
@@ -306,9 +306,9 @@ namespace ICE_Import
                                 {
                                     int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
                                     log += string.Format(
-                                        "ERROR message from {0} pushing pushing TBLOPTIONS table \n" +
-                                        "Can't read N: {1} from DB\n",
-                                        locRem, erc);
+                                        "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
+                                        "Can't read N: {2} from DB\n",
+                                        DatabaseName, TablesPrefix, erc);
                                     log += ex.Message + "\n";
                                     continue;
                                 }
@@ -326,9 +326,9 @@ namespace ICE_Import
                                     {
                                         int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
                                         log += string.Format(
-                                            "ERROR message from {0} pushing pushing TBLOPTIONS table \n" +
-                                            "We dont have contract for option entity N: {1}\n",
-                                            locRem, erc);
+                                            "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
+                                            "We dont have contract for option entity N: {2}\n",
+                                            DatabaseName, TablesPrefix, erc);
                                         log += outEx.Message + "\n";
                                         continue;
                                     }
@@ -336,9 +336,9 @@ namespace ICE_Import
                                     {
                                         int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
                                         log += string.Format(
-                                            "ERROR message from {0} pushing pushing TBLOPTIONS table \n" +
-                                            "Can't find contract for option entity N: {1}\n",
-                                            locRem, erc);
+                                            "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
+                                            "Can't find contract for option entity N: {2}\n",
+                                            DatabaseName, TablesPrefix, erc);
                                         log += ex.Message + "\n";
                                         continue;
                                     }
@@ -359,7 +359,7 @@ namespace ICE_Import
                                         cqgsymbol = optionName
                                     };
                                     tbloptions_.InsertOnSubmit(tableOption);
-                                    context_.SubmitChanges();
+                                    Context.SubmitChanges();
 
                                     #region Find id for fist time pushed option
                                     var tblopt = new List<<# Write(TblOption); #>>();
@@ -373,9 +373,9 @@ namespace ICE_Import
                                         {
                                             long id = count;
                                             log += string.Format(
-                                                "Message from {0} pushing TBLOPTIONDATAS tables \n" +
-                                                "Can't check idoption for entity with N: {1}, Second query\n",
-                                                locRem, id);
+                                                "Message from {0} pushing {1}TBLOPTIONDATAS table\n" +
+                                                "Can't check idoption for entity with N: {2}, Second query\n",
+                                                DatabaseName, TablesPrefix, id);
                                             continue;
                                         }
                                         else
@@ -387,9 +387,9 @@ namespace ICE_Import
                                     {
                                         int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
                                         log += string.Format(
-                                            "ERROR message from {0} pushing TBLOPTIONDATAS tables \n" +
-                                            "Connection error - can't check idoption for entity N: {1}\n",
-                                            locRem, erc);
+                                            "ERROR message from {0} pushing {1}TBLOPTIONDATAS table\n" +
+                                            "Connection error - can't check idoption for entity N: {2}\n",
+                                            DatabaseName, TablesPrefix, erc);
                                         log += ex.Message + "\n";
                                         continue;
                                     }
@@ -412,9 +412,9 @@ namespace ICE_Import
                                     {
                                         long id = tdcs[0].idoptiondata;
                                         log += string.Format(
-                                            "Message from {0} pushing TBLOPTIONDATAS tables \n" +
-                                            "We already have entity with id: {1}\n",
-                                            locRem, id);
+                                            "Message from {0} pushing {1}TBLOPTIONDATAS table\n" +
+                                            "We already have entity with id: {2}\n",
+                                            DatabaseName, TablesPrefix, id);
                                         continue;
                                     }
                                 }
@@ -422,9 +422,9 @@ namespace ICE_Import
                                 {
                                     int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
                                     log += string.Format(
-                                        "ERROR message from {0} pushing TBLOPTIONDATAS tables \n" +
-                                        "Connection error - can't check idcontract for entity N: {1}\n",
-                                        locRem, erc);
+                                        "ERROR message from {0} pushing TBLOPTIONDATAS{1} tables\n" +
+                                        "Connection error - can't check idcontract for entity N: {2}\n",
+                                        DatabaseName, TablesPrefix, erc);
                                     log += ex.Message + "\n";
                                     continue;
                                 }
@@ -455,21 +455,21 @@ namespace ICE_Import
                                 };
 
                                 tbloptiondatas_.InsertOnSubmit(tableOptionData);
-                                context_.SubmitChanges();
+                                Context.SubmitChanges();
                                 count++;
                             }
                             catch (OperationCanceledException cancel)
                             {
-                                log += string.Format("Cancel message from {0} pushing TBLOPTIONS and TBLOPTIONDATAS table \n", locRem);
+                                log += string.Format("Cancel message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n", DatabaseName, TablesPrefix);
                                 log += cancel.Message + "\n";
                             }
                             catch (Exception ex)
                             {
                                 int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
                                 log += string.Format(
-                                    "ERROR message from {0} pushing TBLOPTIONS and TBLOPTIONDATAS tables \n" +
-                                    "Can't push entity N: {1}\n",
-                                    locRem, erc);
+                                    "ERROR message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n" +
+                                    "Can't push entity N: {2}\n",
+                                    DatabaseName, TablesPrefix, erc);
                                 log += ex.Message + "\n";
                                 continue;
                             }
@@ -478,7 +478,7 @@ namespace ICE_Import
                                 globalCount++;
                                 if (globalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
                                 {
-                                    log += string.Format("Pushed {0} entities to {1} TBLOPTIONS and TBLOPTIONDATAS tables", count, locRem);
+                                    log += string.Format("Pushed {0} entities to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", count, DatabaseName, TablesPrefix);
                                 }
                                 //TODO: Fix this
                                 //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
@@ -495,20 +495,20 @@ namespace ICE_Import
             }
             catch (Exception ex)
             {
-                SetLogMessage("ERROR");
-                SetLogMessage(ex.Message);
+                LogMessage("ERROR");
+                LogMessage(ex.Message);
             }
             finally
             {
                 DateTime stop = DateTime.Now;
-                SetLogMessage("Timy with clientside checking - " + (stop - start));
+                LogMessage("Timy with clientside checking - " + (stop - start));
 
                 EnableDisable(false);
 
-                SetLogMessage("Pushed to DB: " + count.ToString() + " entities");
+                LogMessage("Pushed to DB: " + count.ToString() + " entities");
                 if (ParsedData.FutureRecords.Length > count)
                 {
-                    SetLogMessage("Was NOT pushed " + (ParsedData.FutureRecords.Length - count).ToString() + " entities from " + ParsedData.FutureRecords.Length.ToString() + " to DB");
+                    LogMessage("Was NOT pushed " + (ParsedData.FutureRecords.Length - count).ToString() + " entities from " + ParsedData.FutureRecords.Length.ToString() + " to DB");
                 }
             }
         }

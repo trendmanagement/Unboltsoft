@@ -26,22 +26,11 @@ namespace ICE_Import.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\TestDatabase." +
-            "mdf;Integrated Security=True")]
-        public string TestDatabaseConnectionString {
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\DatabaseLocal" +
+            ".mdf;Integrated Security=True")]
+        public string LocalDatabaseConnectionString {
             get {
-                return ((string)(this["TestDatabaseConnectionString"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=h9ggwlagd1.database.windows.net;Initial Catalog=TMLDB_Copy;Persist Se" +
-            "curity Info=True;User ID=dataupdate")]
-        public string TMLDB_CopyConnectionString {
-            get {
-                return ((string)(this["TMLDB_CopyConnectionString"]));
+                return ((string)(this["LocalDatabaseConnectionString"]));
             }
         }
         
@@ -50,9 +39,9 @@ namespace ICE_Import.Properties {
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
         [global::System.Configuration.DefaultSettingValueAttribute("Data Source=h9ggwlagd1.database.windows.net;Initial Catalog=TMLDB_Copy;User ID=da" +
             "taupdate;Password=6dcEpZKSFRNYk^AN;Encrypt=False;TrustServerCertificate=True")]
-        public string TMLDB_CopyConnectionString1 {
+        public string TMLDB_CopyConnectionString {
             get {
-                return ((string)(this["TMLDB_CopyConnectionString1"]));
+                return ((string)(this["TMLDB_CopyConnectionString"]));
             }
         }
         
@@ -64,17 +53,6 @@ namespace ICE_Import.Properties {
         public string TMLDBConnectionString {
             get {
                 return ((string)(this["TMLDBConnectionString"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\Database1.mdf" +
-            ";Integrated Security=True")]
-        public string Database1ConnectionString {
-            get {
-                return ((string)(this["Database1ConnectionString"]));
             }
         }
     }

@@ -30,7 +30,6 @@
         {
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.buttonPush = new System.Windows.Forms.Button();
-            this.checkBoxLocalDB = new System.Windows.Forms.CheckBox();
             this.progressBarLoad = new System.Windows.Forms.ProgressBar();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonPull = new System.Windows.Forms.Button();
@@ -42,9 +41,15 @@
             this.dataGridViewOptionData = new System.Windows.Forms.DataGridView();
             this.tabPageOption = new System.Windows.Forms.TabPage();
             this.dataGridViewOption = new System.Windows.Forms.DataGridView();
-            this.tabControlOption = new System.Windows.Forms.TabControl();
+            this.tabControl = new System.Windows.Forms.TabControl();
             this.buttonToCSV = new System.Windows.Forms.Button();
-            this.checkBoxUseSP = new System.Windows.Forms.CheckBox();
+            this.cb_StoredProcs = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rb_TMLDB = new System.Windows.Forms.RadioButton();
+            this.rb_TMLDBCopy = new System.Windows.Forms.RadioButton();
+            this.rb_LocalDB = new System.Windows.Forms.RadioButton();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.cb_TestTables = new System.Windows.Forms.CheckBox();
             this.tabPageDailyContract.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDailyContract)).BeginInit();
             this.tabPageContract.SuspendLayout();
@@ -53,7 +58,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOptionData)).BeginInit();
             this.tabPageOption.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOption)).BeginInit();
-            this.tabControlOption.SuspendLayout();
+            this.tabControl.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // richTextBoxLog
@@ -62,59 +69,46 @@
             this.richTextBoxLog.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.richTextBoxLog.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.richTextBoxLog.ForeColor = System.Drawing.SystemColors.Info;
-            this.richTextBoxLog.Location = new System.Drawing.Point(0, 296);
+            this.richTextBoxLog.Location = new System.Drawing.Point(0, 375);
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.ReadOnly = true;
             this.richTextBoxLog.Size = new System.Drawing.Size(664, 90);
-            this.richTextBoxLog.TabIndex = 1;
+            this.richTextBoxLog.TabIndex = 9;
             this.richTextBoxLog.Text = "";
             // 
             // buttonPush
             // 
-            this.buttonPush.Location = new System.Drawing.Point(12, 253);
+            this.buttonPush.Location = new System.Drawing.Point(276, 257);
             this.buttonPush.Name = "buttonPush";
-            this.buttonPush.Size = new System.Drawing.Size(95, 23);
-            this.buttonPush.TabIndex = 2;
+            this.buttonPush.Size = new System.Drawing.Size(85, 23);
+            this.buttonPush.TabIndex = 4;
             this.buttonPush.Text = "Push to DB";
             this.buttonPush.UseVisualStyleBackColor = true;
             this.buttonPush.Click += new System.EventHandler(this.buttonPush_Click);
             // 
-            // checkBoxLocalDB
-            // 
-            this.checkBoxLocalDB.AutoSize = true;
-            this.checkBoxLocalDB.Checked = true;
-            this.checkBoxLocalDB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxLocalDB.Location = new System.Drawing.Point(309, 257);
-            this.checkBoxLocalDB.Name = "checkBoxLocalDB";
-            this.checkBoxLocalDB.Size = new System.Drawing.Size(70, 17);
-            this.checkBoxLocalDB.TabIndex = 3;
-            this.checkBoxLocalDB.Text = "Local DB";
-            this.checkBoxLocalDB.UseVisualStyleBackColor = true;
-            this.checkBoxLocalDB.CheckedChanged += new System.EventHandler(this.checkBoxLocalDB_CheckedChanged);
-            // 
             // progressBarLoad
             // 
-            this.progressBarLoad.Location = new System.Drawing.Point(6, 280);
+            this.progressBarLoad.Location = new System.Drawing.Point(12, 358);
             this.progressBarLoad.Name = "progressBarLoad";
-            this.progressBarLoad.Size = new System.Drawing.Size(646, 10);
-            this.progressBarLoad.TabIndex = 4;
+            this.progressBarLoad.Size = new System.Drawing.Size(640, 10);
+            this.progressBarLoad.TabIndex = 8;
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(221, 253);
+            this.buttonCancel.Location = new System.Drawing.Point(276, 329);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(82, 23);
-            this.buttonCancel.TabIndex = 5;
+            this.buttonCancel.Size = new System.Drawing.Size(85, 23);
+            this.buttonCancel.TabIndex = 6;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // buttonPull
             // 
-            this.buttonPull.Location = new System.Drawing.Point(113, 253);
+            this.buttonPull.Location = new System.Drawing.Point(276, 286);
             this.buttonPull.Name = "buttonPull";
-            this.buttonPull.Size = new System.Drawing.Size(102, 23);
-            this.buttonPull.TabIndex = 6;
+            this.buttonPull.Size = new System.Drawing.Size(85, 23);
+            this.buttonPull.TabIndex = 5;
             this.buttonPull.Text = "Pull from DB";
             this.buttonPull.UseVisualStyleBackColor = true;
             this.buttonPull.Click += new System.EventHandler(this.buttonPull_Click);
@@ -157,7 +151,7 @@
             this.dataGridViewContract.Location = new System.Drawing.Point(3, 3);
             this.dataGridViewContract.Name = "dataGridViewContract";
             this.dataGridViewContract.Size = new System.Drawing.Size(648, 219);
-            this.dataGridViewContract.TabIndex = 0;
+            this.dataGridViewContract.TabIndex = 1;
             // 
             // tabPageOptionData
             // 
@@ -199,57 +193,130 @@
             this.dataGridViewOption.Size = new System.Drawing.Size(648, 219);
             this.dataGridViewOption.TabIndex = 0;
             // 
-            // tabControlOption
+            // tabControl
             // 
-            this.tabControlOption.Controls.Add(this.tabPageContract);
-            this.tabControlOption.Controls.Add(this.tabPageDailyContract);
-            this.tabControlOption.Controls.Add(this.tabPageOption);
-            this.tabControlOption.Controls.Add(this.tabPageOptionData);
-            this.tabControlOption.Location = new System.Drawing.Point(-1, 0);
-            this.tabControlOption.Name = "tabControlOption";
-            this.tabControlOption.SelectedIndex = 0;
-            this.tabControlOption.Size = new System.Drawing.Size(662, 251);
-            this.tabControlOption.TabIndex = 0;
+            this.tabControl.Controls.Add(this.tabPageContract);
+            this.tabControl.Controls.Add(this.tabPageDailyContract);
+            this.tabControl.Controls.Add(this.tabPageOption);
+            this.tabControl.Controls.Add(this.tabPageOptionData);
+            this.tabControl.Location = new System.Drawing.Point(-1, 0);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(662, 251);
+            this.tabControl.TabIndex = 0;
             // 
             // buttonToCSV
             // 
-            this.buttonToCSV.Location = new System.Drawing.Point(570, 253);
+            this.buttonToCSV.Location = new System.Drawing.Point(567, 257);
             this.buttonToCSV.Name = "buttonToCSV";
-            this.buttonToCSV.Size = new System.Drawing.Size(82, 23);
-            this.buttonToCSV.TabIndex = 8;
+            this.buttonToCSV.Size = new System.Drawing.Size(85, 23);
+            this.buttonToCSV.TabIndex = 7;
             this.buttonToCSV.Text = "To CSV Form";
             this.buttonToCSV.UseVisualStyleBackColor = true;
             this.buttonToCSV.Click += new System.EventHandler(this.buttonToCSV_Click);
             // 
-            // checkBoxUseSP
+            // cb_StoredProcs
             // 
-            this.checkBoxUseSP.AutoSize = true;
-            this.checkBoxUseSP.Checked = true;
-            this.checkBoxUseSP.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxUseSP.Location = new System.Drawing.Point(386, 257);
-            this.checkBoxUseSP.Name = "checkBoxUseSP";
-            this.checkBoxUseSP.Size = new System.Drawing.Size(62, 17);
-            this.checkBoxUseSP.TabIndex = 9;
-            this.checkBoxUseSP.Text = "Use SP";
-            this.checkBoxUseSP.UseVisualStyleBackColor = true;
-            this.checkBoxUseSP.CheckedChanged += new System.EventHandler(this.checkBoxUseSP_CheckedChanged);
+            this.cb_StoredProcs.AutoSize = true;
+            this.cb_StoredProcs.Checked = true;
+            this.cb_StoredProcs.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cb_StoredProcs.Location = new System.Drawing.Point(6, 44);
+            this.cb_StoredProcs.Name = "cb_StoredProcs";
+            this.cb_StoredProcs.Size = new System.Drawing.Size(136, 17);
+            this.cb_StoredProcs.TabIndex = 1;
+            this.cb_StoredProcs.Text = "Use Stored Procedures";
+            this.cb_StoredProcs.UseVisualStyleBackColor = true;
+            this.cb_StoredProcs.CheckedChanged += new System.EventHandler(this.cb_StoredProcs_CheckedChanged);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.rb_TMLDB);
+            this.groupBox1.Controls.Add(this.rb_TMLDBCopy);
+            this.groupBox1.Controls.Add(this.rb_LocalDB);
+            this.groupBox1.Location = new System.Drawing.Point(12, 257);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(104, 95);
+            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Database";
+            // 
+            // rb_TMLDB
+            // 
+            this.rb_TMLDB.AutoSize = true;
+            this.rb_TMLDB.Location = new System.Drawing.Point(7, 66);
+            this.rb_TMLDB.Name = "rb_TMLDB";
+            this.rb_TMLDB.Size = new System.Drawing.Size(62, 17);
+            this.rb_TMLDB.TabIndex = 2;
+            this.rb_TMLDB.Tag = "3";
+            this.rb_TMLDB.Text = "TMLDB";
+            this.rb_TMLDB.UseVisualStyleBackColor = true;
+            this.rb_TMLDB.CheckedChanged += new System.EventHandler(this.rb_DB_CheckedChanged);
+            // 
+            // rb_TMLDBCopy
+            // 
+            this.rb_TMLDBCopy.AutoSize = true;
+            this.rb_TMLDBCopy.Location = new System.Drawing.Point(7, 43);
+            this.rb_TMLDBCopy.Name = "rb_TMLDBCopy";
+            this.rb_TMLDBCopy.Size = new System.Drawing.Size(92, 17);
+            this.rb_TMLDBCopy.TabIndex = 1;
+            this.rb_TMLDBCopy.Tag = "2";
+            this.rb_TMLDBCopy.Text = "TMLDB_Copy";
+            this.rb_TMLDBCopy.UseVisualStyleBackColor = true;
+            this.rb_TMLDBCopy.CheckedChanged += new System.EventHandler(this.rb_DB_CheckedChanged);
+            // 
+            // rb_LocalDB
+            // 
+            this.rb_LocalDB.AutoSize = true;
+            this.rb_LocalDB.Checked = true;
+            this.rb_LocalDB.Location = new System.Drawing.Point(7, 20);
+            this.rb_LocalDB.Name = "rb_LocalDB";
+            this.rb_LocalDB.Size = new System.Drawing.Size(51, 17);
+            this.rb_LocalDB.TabIndex = 0;
+            this.rb_LocalDB.TabStop = true;
+            this.rb_LocalDB.Tag = "1";
+            this.rb_LocalDB.Text = "Local";
+            this.rb_LocalDB.UseVisualStyleBackColor = true;
+            this.rb_LocalDB.CheckedChanged += new System.EventHandler(this.rb_DB_CheckedChanged);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.cb_TestTables);
+            this.groupBox2.Controls.Add(this.cb_StoredProcs);
+            this.groupBox2.Location = new System.Drawing.Point(122, 257);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(148, 95);
+            this.groupBox2.TabIndex = 3;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Options";
+            // 
+            // cb_TestTables
+            // 
+            this.cb_TestTables.AutoSize = true;
+            this.cb_TestTables.Location = new System.Drawing.Point(6, 21);
+            this.cb_TestTables.Name = "cb_TestTables";
+            this.cb_TestTables.Size = new System.Drawing.Size(112, 17);
+            this.cb_TestTables.TabIndex = 0;
+            this.cb_TestTables.Text = "Use \"test_\" tables";
+            this.cb_TestTables.UseVisualStyleBackColor = true;
+            this.cb_TestTables.CheckedChanged += new System.EventHandler(this.cb_TestTables_CheckedChanged);
             // 
             // FormDB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(664, 386);
-            this.Controls.Add(this.checkBoxUseSP);
+            this.ClientSize = new System.Drawing.Size(664, 465);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.buttonToCSV);
             this.Controls.Add(this.buttonPull);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.progressBarLoad);
-            this.Controls.Add(this.checkBoxLocalDB);
             this.Controls.Add(this.buttonPush);
             this.Controls.Add(this.richTextBoxLog);
-            this.Controls.Add(this.tabControlOption);
-            this.MinimumSize = new System.Drawing.Size(680, 425);
+            this.Controls.Add(this.tabControl);
+            this.MinimumSize = new System.Drawing.Size(680, 504);
             this.Name = "FormDB";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ICE Import (DB Form)";
             this.Load += new System.EventHandler(this.FormDB_Load);
             this.tabPageDailyContract.ResumeLayout(false);
@@ -260,16 +327,18 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOptionData)).EndInit();
             this.tabPageOption.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewOption)).EndInit();
-            this.tabControlOption.ResumeLayout(false);
+            this.tabControl.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
         private System.Windows.Forms.RichTextBox richTextBoxLog;
         private System.Windows.Forms.Button buttonPush;
-        private System.Windows.Forms.CheckBox checkBoxLocalDB;
         private System.Windows.Forms.ProgressBar progressBarLoad;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonPull;
@@ -281,8 +350,14 @@
         private System.Windows.Forms.DataGridView dataGridViewOptionData;
         private System.Windows.Forms.TabPage tabPageOption;
         private System.Windows.Forms.DataGridView dataGridViewOption;
-        private System.Windows.Forms.TabControl tabControlOption;
+        private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.Button buttonToCSV;
-        private System.Windows.Forms.CheckBox checkBoxUseSP;
+        private System.Windows.Forms.CheckBox cb_StoredProcs;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton rb_TMLDB;
+        private System.Windows.Forms.RadioButton rb_TMLDBCopy;
+        private System.Windows.Forms.RadioButton rb_LocalDB;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.CheckBox cb_TestTables;
     }
 }

@@ -8,6 +8,7 @@
 // WARNING                                                                         WARNING
 // WARNING    DO NOT EDIT THIS .CS FILE, BECAUSE ALL YOUR CHANGES WILL BE LOST!    WARNING
 // WARNING    EDIT CORRESPONDING .TT FILE INSTEAD!                                 WARNING
+// WARNING    ALSO, DO NOT COMMIT THIS .CS FILE!                                   WARNING
 // WARNING                                                                         WARNING
 // WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
 
@@ -35,11 +36,10 @@ namespace ICE_Import
 <# string TblOptionData = tableClassPrefix[i] + "tbloptiondata"; #>
         private async void PullDataFromDB<# Write(methodNameSuffix[i]); #>()
         {
-            var context_ = <# Write(contextPrefix[i]); #>Context;
-            var tblcontracts_ = context_.<# Write(tableNamePrefix[i]); #>tblcontracts;
-            var tbldailycontractsettlements_ = context_.<# Write(tableNamePrefix[i]); #>tbldailycontractsettlements;
-            var tbloptions_ = context_.<# Write(tableNamePrefix[i]); #>tbloptions;
-            var tbloptiondatas_ = context_.<# Write(tableNamePrefix[i]); #>tbloptiondatas;
+            var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
+            var tbldailycontractsettlements_ = Context.<# Write(tableNamePrefix[i]); #>tbldailycontractsettlements;
+            var tbloptions_ = Context.<# Write(tableNamePrefix[i]); #>tbloptions;
+            var tbloptiondatas_ = Context.<# Write(tableNamePrefix[i]); #>tbloptiondatas;
 
             cts = new CancellationTokenSource();
 
@@ -56,26 +56,26 @@ namespace ICE_Import
             {
                 EnableDisable(true);
 
-                SetLogMessage(string.Format("Started pulling {0} entities from {1} TBLCONTRACT table", (isLocal) ? tblcontracts_.Count() : count, locRem));
+                LogMessage(string.Format("Started pulling {0} entities from {1} {2}TBLCONTRACT table", IsLocalDB ? tblcontracts_.Count() : count, DatabaseName, TablesPrefix));
 
                 await Task.Run(() =>
                             {
                                 bsContract.DataSource = (from item in tblcontracts_
                                                          select item
-                                                        ).Take((isLocal) ? tblcontracts_.Count() : count).ToList();
+                                                        ).Take(IsLocalDB ? tblcontracts_.Count() : count).ToList();
                             }, cts.Token);
 
-                SetLogMessage(string.Format("Started pulling {0} entities from {1} TBLDAILYCONTRACTSETTLEMENT table", (isLocal) ? tbldailycontractsettlements_.Count() : count, locRem));
+                LogMessage(string.Format("Started pulling {0} entities from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", IsLocalDB ? tbldailycontractsettlements_.Count() : count, DatabaseName, TablesPrefix));
 
                 await Task.Run(() =>
                                 {
                                     bsDailyContractSettlement.DataSource = (from item in tbldailycontractsettlements_
                                                                             select item
-                                                                            ).Take((isLocal) ? tbldailycontractsettlements_.Count() : count).ToList();
+                                                                            ).Take(IsLocalDB ? tbldailycontractsettlements_.Count() : count).ToList();
                                 }, cts.Token);
 
                 //int count = tbloptions_.Where(item => item.cqgsymbol == "somesymbol").Count();
-                SetLogMessage(string.Format("Started pulling {0} entities from {1} TBLOPTIONS table", (isLocal) ? tbloptions_.Count() : count, locRem));
+                LogMessage(string.Format("Started pulling {0} entities from {1} {2}TBLOPTIONS table", IsLocalDB ? tbloptions_.Count() : count, DatabaseName, TablesPrefix));
                 try
                 {
                     await Task.Run(() =>
@@ -83,42 +83,42 @@ namespace ICE_Import
                         listOption = (from item in tbloptions_
                                           //where item.cqgsymbol == "somesymbol"
                                       select item
-                                              ).Take((isLocal) ? tbloptions_.Count() : count).ToList();
+                                              ).Take(IsLocalDB ? tbloptions_.Count() : count).ToList();
                     }, cts.Token);
                 }
                 catch (Exception ex)
                 {
-                    SetLogMessage(ex.Message);
+                    LogMessage(ex.Message);
                 }
                 finally
                 {
                     bsOption.DataSource = listOption;
                 }
 
-                SetLogMessage(string.Format("Started pulling {0} entities from {1} TBLOPTIONDATAS table", (isLocal) ? tbloptiondatas_.Count() : count, locRem));
+                LogMessage(string.Format("Started pulling {0} entities from {1} {2}TBLOPTIONDATAS table", IsLocalDB ? tbloptiondatas_.Count() : count, DatabaseName, TablesPrefix));
                 await Task.Run(() =>
                                     {
                                         bsOptionData.DataSource = (from item in tbloptiondatas_
                                                                    select item
-                                                                  ).Take((isLocal) ? tbloptiondatas_.Count() : count).ToList();
+                                                                  ).Take(IsLocalDB ? tbloptiondatas_.Count() : count).ToList();
                                     }, cts.Token);
 
             }
             catch (OperationCanceledException cancel)
             {
-                SetLogMessage(cancel.Message);
+                LogMessage(cancel.Message);
             }
             catch (Exception ex)
             {
-                SetLogMessage("ERROR");
-                SetLogMessage(ex.Message);
+                LogMessage("ERROR");
+                LogMessage(ex.Message);
             }
             finally
             {
                 EnableDisable(false);
 
                 int totalCount =
-                    isLocal ?
+                    IsLocalDB ?
                     tblcontracts_.Count() +
                     tbldailycontractsettlements_.Count() +
                     tbloptions_.Count() +
@@ -126,7 +126,7 @@ namespace ICE_Import
                     :
                     4 * count;
 
-                SetLogMessage(string.Format("Pulled: {0} entities from {1} DB", totalCount, locRem));
+                LogMessage(string.Format("Pulled: {0} entities from {1} DB", totalCount, DatabaseName));
             }
 
             dataGridViewOption.DataSource = bsOption;

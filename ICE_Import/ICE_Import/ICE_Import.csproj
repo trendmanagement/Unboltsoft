@@ -69,6 +69,11 @@
     <Compile Include="BgWorkerFutures.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="DataClassesTMLDB.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataClassesTMLDB.dbml</DependentUpon>
+    </Compile>
     <Compile Include="MonthCodes.cs" />
     <Compile Include="BgWorkerOptions.cs">
       <SubType>Form</SubType>
@@ -82,11 +87,6 @@
       <DependentUpon>FormDB.cs</DependentUpon>
     </Compile>
     <Compile Include="EntityNames.cs" />
-    <Compile Include="OF.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>OF.dbml</DependentUpon>
-    </Compile>
     <Compile Include="OptionCalcs.cs" />
     <Compile Include="ParsedData.cs" />
     <Compile Include="PullDataFromDB.cs">
@@ -114,12 +114,10 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestOF.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TestOF.dbml</DependentUpon>
-    </Compile>
     <Compile Include="Utilities.cs" />
+    <None Include="DataClassesTMLDB.dbml.layout">
+      <DependentUpon>DataClassesTMLDB.dbml</DependentUpon>
+    </None>
     <EmbeddedResource Include="FormDB.resx">
       <DependentUpon>FormDB.cs</DependentUpon>
     </EmbeddedResource>
@@ -127,12 +125,6 @@
       <DependentUpon>FormCSV.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="TestOF.dbml.layout">
-      <DependentUpon>TestOF.dbml</DependentUpon>
-    </None>
-    <None Include="OF.dbml.layout">
-      <DependentUpon>OF.dbml</DependentUpon>
-    </None>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -142,9 +134,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="OF.dbml">
+    <None Include="DataClassesTMLDB.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>OF.designer.cs</LastGenOutput>
+      <LastGenOutput>DataClassesTMLDB.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
@@ -157,22 +149,19 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="TestOF.dbml">
-      <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>TestOF.designer.cs</LastGenOutput>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Database1.mdf">
+    <Content Include="DatabaseLocal.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Database1_log.ldf">
+    <Content Include="DatabaseLocal_log.ldf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>Database1.mdf</DependentUpon>
+      <DependentUpon>DatabaseLocal.mdf</DependentUpon>
     </Content>
     <Content Include="PullDataFromDB.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

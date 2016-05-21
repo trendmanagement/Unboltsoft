@@ -30,17 +30,17 @@ namespace ICE_Import
             EnableDisable(true);
             DateTime start = DateTime.Now;
             await Task.Run(() => PushFutures(globalCount, utilites, ct), ct);
-            SetLogMessage("Time with Stored Procedures - " + (DateTime.Now - start));
+            LogMessage("Time with Stored Procedures - " + (DateTime.Now - start));
             await Task.Run(() => PushDailyFutures(globalCount, utilites, ct), ct);
-            SetLogMessage("Time with Stored Procedures - " + (DateTime.Now - start));
+            LogMessage("Time with Stored Procedures - " + (DateTime.Now - start));
 
             if (!ParsedData.FuturesOnly)
             {
                 await Task.Run(() => PushOptions(globalCount, utilites, ct), ct);
             }
             DateTime stop = DateTime.Now;
-            SetLogMessage("Pushed to DB: " + globalCount.ToString() + " entities");
-            SetLogMessage("Time with Stored Procedures - " + (stop - start));
+            LogMessage("Pushed to DB: " + globalCount.ToString() + " entities");
+            LogMessage("Time with Stored Procedures - " + (stop - start));
 
             EnableDisable(false);
         }
@@ -51,7 +51,7 @@ namespace ICE_Import
         /// <param name="globalCount"></param>
         /// <param name="utilites"></param>
         /// <param name="ct"></param>
-        void PushFutures(int globalCount,  Utilities utilites, CancellationToken ct)
+        void PushFutures(int globalCount, Utilities utilites, CancellationToken ct)
         {
             foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
             {
@@ -65,7 +65,7 @@ namespace ICE_Import
                 string log = String.Empty;
                 try
                 {
-                    TestContext.test_sp_updateContractTblFromSpanUpsert(contractName, 
+                    Context.test_sp_updateContractTblFromSpanUpsert(contractName, 
                                                                monthchar, 
                                                                future.StripName.Month, 
                                                                future.StripName.Year, 
@@ -73,20 +73,20 @@ namespace ICE_Import
                                                                future.Date, 
                                                                contractName);
 
-                    test_tblcontract contract = TestContext.test_tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
+                    test_tblcontract contract = Context.test_tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
 
-                    TestContext.test_sp_updateOrInsertContractSettlementsFromSpanUpsert((int)contract.idcontract, 
+                    Context.test_sp_updateOrInsertContractSettlementsFromSpanUpsert((int)contract.idcontract, 
                                                                                        future.StripName, 
                                                                                        (future.SettlementPrice != null)? future.SettlementPrice : 0);
                 }
                 catch (OperationCanceledException cancel)
                 {
-                    log += string.Format("Cancel message from {0} pushing TBLCONTRACT table \n", locRem);
+                    log += string.Format("Cancel message from {0} pushing {1}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
                     log += cancel.Message + "\n";
                 }
                 catch (Exception ex)
                 {
-                    log += string.Format("ERROR message from {0} pushing TBLCONTRACT table \n", locRem);
+                    log += string.Format("ERROR message from {0} pushing {2}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
                     log += ex.Message + "\n";
                 }
                 finally
@@ -94,7 +94,7 @@ namespace ICE_Import
                     globalCount ++;
                     if (globalCount == ParsedData.FutureRecords.Length)
                     {
-                        log += string.Format("Pushed {0} entities to {1} TBLCONTRACT table", globalCount, locRem);
+                        log += string.Format("Pushed {0} entities to {1} {2}TBLCONTRACT table", globalCount, DatabaseName, TablesPrefix);
                     }
                     Invoke(new Action(() => ValuesFromTask(log, globalCount)));
                     log = String.Empty;
@@ -122,20 +122,20 @@ namespace ICE_Import
                 try
                 {
 
-                    test_tblcontract contract = TestContext.test_tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
+                    test_tblcontract contract = Context.test_tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
 
-                    TestContext.test_sp_updateOrInsertContractSettlementsFromSpanUpsert((int)contract.idcontract,
+                    Context.test_sp_updateOrInsertContractSettlementsFromSpanUpsert((int)contract.idcontract,
                                                                                        future.StripName,
                                                                                        (future.SettlementPrice != null) ? future.SettlementPrice : 0);
                 }
                 catch (OperationCanceledException cancel)
                 {
-                    log += string.Format("Cancel message from {0} pushing TBLDAILYCONTRACTSETTLEMENT table \n", locRem);
+                    log += string.Format("Cancel message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
                     log += cancel.Message + "\n";
                 }
                 catch (Exception ex)
                 {
-                    log += string.Format("ERROR message from {0} pushing TBLDAILYCONTRACTSETTLEMENT table \n", locRem);
+                    log += string.Format("ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
                     log += ex.Message + "\n";
                 }
                 finally
@@ -143,7 +143,7 @@ namespace ICE_Import
                     globalCount++;
                     if (globalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length)
                     {
-                        log += string.Format("Pushed {0} entities to {1} TBLDAILYCONTRACTSETTLEMENT table", globalCount - ParsedData.FutureRecords.Length, locRem);
+                        log += string.Format("Pushed {0} entities to {1} {2}TBLDAILYCONTRACTSETTLEMENT table", globalCount - ParsedData.FutureRecords.Length, DatabaseName, TablesPrefix);
                     }
                     Invoke(new Action(() => ValuesFromTask(log, globalCount)));
                     log = String.Empty;
@@ -179,7 +179,7 @@ namespace ICE_Import
 
                     string optionName = utilites.generateOptionCQGSymbolFromSpan(option.OptionType, "CCE", monthchar, option.StripName.Year, (option.StrikePrice != null) ? (double)option.StrikePrice : 0, 0, 0, idinstrument);
 
-                    long idContract = TestContext.test_tblcontracts.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToList()[0].idcontract;
+                    long idContract = Context.test_tblcontracts.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToList()[0].idcontract;
 
 
                     // callPutFlag                      - tableOption.callorput
@@ -189,44 +189,45 @@ namespace ICE_Import
                     // r - risk-free interest rate      - r(f) = 0.08, foreign risk-free interest rate in the U.S. is 8% per annum
                     // currentOptionPrice               - option.SettlementPrice 
 
-                    double impliedvol = OptionCalcs.calculateOptionVolatility(option.OptionType,
-                                                                            1.56,
-                                                                            (option.StrikePrice != null) ? (double)option.StrikePrice : 0,
-                                                                            0.5,
-                                                                            0.08,
-                                                                            (option.SettlementPrice != null) ? (double)option.SettlementPrice : 0);
+                    double impliedvol = OptionCalcs.calculateOptionVolatility(
+                        option.OptionType,
+                        1.56,
+                        (option.StrikePrice != null) ? (double)option.StrikePrice : 0,
+                        0.5,
+                        0.08,
+                        (option.SettlementPrice != null) ? (double)option.SettlementPrice : 0);
 
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                     double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
 
-                    TestContext.test_sp_updateOrInsertTbloptionsInfoAndDataUpsert(optionName,
-                                                                                 monthchar,
-                                                                                 option.StripName.Month,
-                                                                                 option.StripName.Year,
-                                                                                 option.StrikePrice,
-                                                                                 option.OptionType,
-                                                                                 idinstrument,
-                                                                                 option.Date,
-                                                                                 idContract,
-                                                                                 optionName,
-                                                                                 option.StripName,
-                                                                                 option.StrikePrice,
-                                                                                 impliedvol,
-                                                                                 futureYear - expiranteYear
-                                                                                 );
+                    Context.test_sp_updateOrInsertTbloptionsInfoAndDataUpsert(
+                        optionName,
+                        monthchar,
+                        option.StripName.Month,
+                        option.StripName.Year,
+                        option.StrikePrice,
+                        option.OptionType,
+                        idinstrument,
+                        option.Date,
+                        idContract,
+                        optionName,
+                        option.StripName,
+                        option.StrikePrice,
+                        impliedvol,
+                        futureYear - expiranteYear);
                 }
                 catch (OperationCanceledException cancel)
                 {
-                    log += string.Format("Cancel message from {0} pushing TBLOPTIONS and TBLOPTIONDATAS table \n", locRem);
+                    log += string.Format("Cancel message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n", DatabaseName, TablesPrefix);
                     log += cancel.Message + "\n";
                 }
                 catch (Exception ex)
                 {
                     int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
                     log += string.Format(
-                        "ERROR message from {0} pushing TBLOPTIONS and TBLOPTIONDATAS tables \n" +
-                        "Can't push entity N: {1}\n",
-                        locRem, erc);
+                        "ERROR message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n" +
+                        "Can't push entity N: {2}\n",
+                        DatabaseName, TablesPrefix, erc);
                     log += ex.Message + "\n";
                     continue;
                 }
@@ -235,7 +236,7 @@ namespace ICE_Import
                     globalCount++;
                     if (globalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
                     {
-                        log += string.Format("Pushed {0} entities to {1} TBLOPTIONS and TBLOPTIONDATAS tables", globalCount, locRem);
+                        log += string.Format("Pushed {0} entities to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", globalCount, DatabaseName, TablesPrefix);
                     }
                     Invoke(new Action(() => ValuesFromTask(log, globalCount)));
                     log = String.Empty;
