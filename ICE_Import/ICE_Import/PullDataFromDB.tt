@@ -33,7 +33,7 @@ namespace ICE_Import
 <# string TblDailyContractSettlement = tableClassPrefix[i] + "tbldailycontractsettlement"; #>
 <# string TblOption = tableClassPrefix[i] + "tbloption"; #>
 <# string TblOptionData = tableClassPrefix[i] + "tbloptiondata"; #>
-        private async void PullDataFromDB<# Write(methodNameSuffix[i]); #>()
+        async void PullDataFromDB<# Write(methodNameSuffix[i]); #>()
         {
             cts = new CancellationTokenSource();
 

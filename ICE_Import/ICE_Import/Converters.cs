@@ -29,17 +29,44 @@ namespace ICE_Import
 
     class CharConverter : TrimmingConverter
     {
+        bool capitalizing = false;
+
+        /// <summary>
+        /// Constructs the CharConverter object.
+        /// </summary>
+        public CharConverter()
+        {
+        }
+
+        /// <summary>
+        /// Constructs the CharConverter object with capitalizing option.
+        /// </summary>
+        /// <param name="capitalizing">Indicates whether to capitalize the character.</param>
+        public CharConverter(bool capitalizing)
+        {
+            this.capitalizing = capitalizing;
+        }
+
         public override object Parse(string from)
         {
+            char c;
+
             try
             {
-                return Convert.ToChar(from);
+                c = Convert.ToChar(from);
             }
             catch (FormatException)
             {
                 ThrowConvertException(from, "Failed to convert to Char.");
                 return null;
             }
+
+            if (this.capitalizing)
+            {
+                c = char.ToUpper(c);
+            }
+
+            return c;
         }
     }
 
@@ -77,7 +104,7 @@ namespace ICE_Import
         }
     }
 
-    class FloatConverter : TrimmingConverter
+    class DoubleConverter : TrimmingConverter
     {
         NumberFormatInfo provider = new NumberFormatInfo();
 
@@ -86,12 +113,12 @@ namespace ICE_Import
             provider.NumberDecimalSeparator = ".";
             try
             {
-                return Convert.ToSingle(from, provider); 
+                return Convert.ToDouble(from, provider); 
             }
             catch (Exception)
             {
                 // FormatException, OverflowException
-                ThrowConvertException(from, "Failed to convert to Float.");
+                ThrowConvertException(from, "Failed to convert to Double.");
                 return null;
             }
         }

@@ -167,6 +167,16 @@ namespace ICE_Import
             progressBar_ParsingOption.Visible = !isChecked;
             label_ParsedOption.Visible = !isChecked;
             label_InputOption.Visible = !isChecked;
+
+            if (isChecked)
+            {
+                ParsedData.OptionRecords = null;
+            }
+
+            if (ParsedData.IsReady)
+            {
+                ParsedData.OnParseComplete();
+            }
         }
     }
 }

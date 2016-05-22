@@ -119,33 +119,28 @@ namespace ICE_Import
             }
             else
             {
-                string pat = "{0} entries count: {1} (ready for pushing to DB)";
-                string msg = string.Format(
-                    pat,
-                    ParsedData.FutureRecords.GetType().Name.Trim('[', ']'),
-                    ParsedData.FutureRecords.Length);
-                LogMessage(msg);
-                if (!ParsedData.FuturesOnly)
-                {
-                    msg = string.Format(
-                        pat,
-                        ParsedData.OptionRecords.GetType().Name.Trim('[', ']'),
-                        ParsedData.OptionRecords.Length);
-                    LogMessage(msg);
-                }
-
-                buttonPush.Enabled = true;
+                ParsedData_ParseComplete();
             }
         }
 
         private void ParsedData_ParseComplete()
         {
-            if (buttonPush.Enabled != true)
+            string pat = "{0} entries count: {1} (ready for pushing to DB)";
+            string msg = string.Format(
+                pat,
+                ParsedData.FutureRecords.GetType().Name.Trim('[', ']'),
+                ParsedData.FutureRecords.Length);
+            LogMessage(msg);
+            if (!ParsedData.FuturesOnly)
             {
-                LogMessage("Entries count: " + ParsedData.OptionRecords.Length.ToString());
-                LogMessage("Type of entry: " + ParsedData.OptionRecords.GetType().Name.Trim('[', ']'));
-                buttonPush.Enabled = true;
+                msg = string.Format(
+                    pat,
+                    ParsedData.OptionRecords.GetType().Name.Trim('[', ']'),
+                    ParsedData.OptionRecords.Length);
+                LogMessage(msg);
             }
+
+            buttonPush.Enabled = true;
         }
         
         private async void buttonPush_Click(object sender, EventArgs e)

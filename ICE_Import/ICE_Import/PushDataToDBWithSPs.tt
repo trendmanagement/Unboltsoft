@@ -83,19 +83,27 @@ namespace ICE_Import
                 {
                     break;
                 }
+
                 int idinstrument = 36;
-                char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
-                string contractName = Utilities.generateCQGSymbolFromSpan('F', "CCE", monthchar, future.StripName.Year);
+
+                string contractName = Utilities.GenerateCQGSymbolFromSpan(
+                    'F',
+                    "CCE",
+                    future.Date.Month,
+                    future.Date.Year);
+
                 string log = string.Empty;
                 try
                 {
+                    char monthchar = Utilities.MonthToMonthCode(future.Date.Month);
+
                     Context.<# Write(spProcNamePrefix[i]); #>sp_updateContractTblFromSpanUpsert(
                         contractName, 
                         monthchar, 
-                        future.StripName.Month, 
-                        future.StripName.Year, 
+                        future.Date.Month, 
+                        future.Date.Year, 
                         idinstrument, 
-                        future.Date, 
+                        future.StripName, 
                         contractName);
 
                     var contract = Context.<# Write(tableNamePrefix[i]); #>tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
@@ -103,7 +111,7 @@ namespace ICE_Import
                     Context.<# Write(spProcNamePrefix[i]); #>sp_updateOrInsertContractSettlementsFromSpanUpsert(
                         (int)contract.idcontract, 
                         future.StripName, 
-                        (future.SettlementPrice != null)? future.SettlementPrice : 0);
+                        future.SettlementPrice.GetValueOrDefault());
                 }
                 catch (OperationCanceledException cancel)
                 {
@@ -121,7 +129,9 @@ namespace ICE_Import
                     spGlobalCount++;
                     if (spGlobalCount == ParsedData.FutureRecords.Length)
                     {
-                        log += string.Format("Pushed {0} entries to {1} {2}TBLCONTRACT table", spGlobalCount, DatabaseName, TablesPrefix);
+                        log += string.Format(
+                            "Pushed {0} entries to {1} {2}TBLCONTRACT table",
+                            spGlobalCount, DatabaseName, TablesPrefix);
                     }
                     Invoke(new Action(() => ValuesFromTask(log, spGlobalCount)));
                     log = string.Empty;
@@ -143,16 +153,16 @@ namespace ICE_Import
                 {
                     break;
                 }
-                char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+
                 string log = string.Empty;
                 try
                 {
-                    var contract = Context.<# Write(tableNamePrefix[i]); #>tblcontracts.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
+                    var contract = Context.<# Write(tableNamePrefix[i]); #>tblcontracts.Where(item => item.expirationdate == future.StripName).ToArray()[0];
 
                     Context.<# Write(spProcNamePrefix[i]); #>sp_updateOrInsertContractSettlementsFromSpanUpsert(
                         (int)contract.idcontract,
-                        future.StripName,
-                        (future.SettlementPrice != null) ? future.SettlementPrice : 0);
+                        future.Date,
+                        future.SettlementPrice.GetValueOrDefault());
                 }
                 catch (OperationCanceledException cancel)
                 {
@@ -200,10 +210,17 @@ namespace ICE_Import
                     //idinstrument for description = Cocoa is 36
                     int idinstrument = 36;
 
-                    char monthchar = Convert.ToChar(((MonthCodes)option.StripName.Month).ToString());
+                    string optionName = Utilities.GenerateOptionCQGSymbolFromSpan(
+                        option.OptionType,
+                        "CCE",
+                        option.Date.Month,
+                        option.Date.Year,
+                        option.StrikePrice.GetValueOrDefault(),
+                        0,
+                        0,
+                        idinstrument);
 
-                    string optionName = Utilities.generateOptionCQGSymbolFromSpan(option.OptionType, "CCE", monthchar, option.StripName.Year, (option.StrikePrice != null) ? (double)option.StrikePrice : 0, 0, 0, idinstrument);
-
+                    char monthchar = Utilities.MonthToMonthCode(option.Date.Month);
                     long idContract = Context.<# Write(spProcNamePrefix[i]); #>tblcontracts.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToList()[0].idcontract;
 
 
@@ -214,13 +231,13 @@ namespace ICE_Import
                     // r - risk-free interest rate      - r(f) = 0.08, foreign risk-free interest rate in the U.S. is 8% per annum
                     // currentOptionPrice               - option.SettlementPrice 
 
-                    double impliedvol = OptionCalcs.calculateOptionVolatility(
+                    double impliedvol = OptionCalcs.CalculateOptionVolatility(
                         option.OptionType,
                         1.56,
-                        (option.StrikePrice != null) ? (double)option.StrikePrice : 0,
+                        option.StrikePrice.GetValueOrDefault(),
                         0.5,
                         0.08,
-                        (option.SettlementPrice != null) ? (double)option.SettlementPrice : 0);
+                        option.SettlementPrice.GetValueOrDefault());
 
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                     double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
@@ -228,8 +245,8 @@ namespace ICE_Import
                     Context.<# Write(spProcNamePrefix[i]); #>sp_updateOrInsertTbloptionsInfoAndDataUpsert(
                         optionName,
                         monthchar,
-                        option.StripName.Month,
-                        option.StripName.Year,
+                        option.Date.Month,
+                        option.Date.Year,
                         option.StrikePrice,
                         option.OptionType,
                         idinstrument,

@@ -29,20 +29,20 @@ namespace ICE_Import
         [FieldConverter(typeof(CharConverter))]
         public char Type;
 
-        [FieldConverter(typeof(FloatConverter))]
-        public float? FirstPrice;
+        [FieldConverter(typeof(DoubleConverter))]
+        public double? FirstPrice;
 
-        [FieldConverter(typeof(FloatConverter))]
-        public float? HighPrice;
+        [FieldConverter(typeof(DoubleConverter))]
+        public double? HighPrice;
 
-        [FieldConverter(typeof(FloatConverter))]
-        public float? LowPrice;
+        [FieldConverter(typeof(DoubleConverter))]
+        public double? LowPrice;
 
-        [FieldConverter(typeof(FloatConverter))]
-        public float? SettlementPrice;
+        [FieldConverter(typeof(DoubleConverter))]
+        public double? SettlementPrice;
 
-        [FieldConverter(typeof(FloatConverter))]
-        public float? SettlementPriceChange;
+        [FieldConverter(typeof(DoubleConverter))]
+        public double? SettlementPriceChange;
 
         [FieldConverter(typeof(UInt64Converter))]
         public ulong? Volume;
@@ -56,8 +56,8 @@ namespace ICE_Import
         [FieldConverter(typeof(UInt64Converter))]
         public ulong? BlockVolume;
 
-        [FieldConverter(typeof(FloatConverter))]
-        public float? WeightedAveragePrice;
+        [FieldConverter(typeof(DoubleConverter))]
+        public double? WeightedAveragePrice;
 
         [FieldConverter(typeof(UInt64Converter))]
         public ulong? OpenInterest;
@@ -75,8 +75,8 @@ namespace ICE_Import
         public string HubName;
 
         [FieldOptional]
-        [FieldConverter(typeof(FloatConverter))]
-        public float? ClosePrice;
+        [FieldConverter(typeof(DoubleConverter))]
+        public double? ClosePrice;
 
         [FieldOptional]
         [FieldConverter(typeof(Int64Converter))]
