@@ -83,10 +83,12 @@ namespace ICE_Import
                                               ).Take(IsLocalDB ? tbloptions_.Count() : count).ToList();
                     }, cts.Token);
                 }
+#if !DEBUG
                 catch (Exception ex)
                 {
                     LogMessage(ex.Message);
                 }
+#endif
                 finally
                 {
                     bsOption.DataSource = listOption;
@@ -105,11 +107,13 @@ namespace ICE_Import
             {
                 LogMessage(cancel.Message);
             }
+#if !DEBUG
             catch (Exception ex)
             {
                 LogMessage("ERROR");
                 LogMessage(ex.Message);
             }
+#endif
             finally
             {
                 int totalCount =
