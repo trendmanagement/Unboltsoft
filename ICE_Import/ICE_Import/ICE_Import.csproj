@@ -69,6 +69,10 @@
     <Compile Include="BgWorkerFutures.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="PushDataToDBWithSPs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StoredProcsSwitch.cs" />
     <Compile Include="DataClassesTMLDB.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -99,12 +103,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PushDataToDB.tt</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PushDataToDBWithSPs.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PushDataToDBWithSPs.tt</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PushToDB.cs">
@@ -176,10 +174,6 @@
     <Content Include="PushDataToDB.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PushDataToDB.cs</LastGenOutput>
-    </Content>
-    <Content Include="PushDataToDBWithSPs.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>PushDataToDBWithSPs.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

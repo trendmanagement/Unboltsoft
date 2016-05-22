@@ -93,5 +93,10 @@ namespace ICE_Import
                 Console.WriteLine(e.Message);
             }
         }
+
+        void LogElapsedTime(TimeSpan timeSpan)
+        {
+            LogMessage("Elapsed time: " + timeSpan);
+        }
     }
 }

@@ -51,17 +51,6 @@ namespace ICE_Import
             richTextBoxLog.ScrollToCaret();
         }
 
-        private void ValuesFromTask(string message, int count)
-        {
-            if (message != string.Empty)
-            {
-                richTextBoxLog.Text += message + "\n";
-                richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
-                richTextBoxLog.ScrollToCaret();
-            }
-            progressBarLoad.Value = count;
-        }
-
         private void FormDB_Resize(object sender, EventArgs e)
         {
             tabControl.Size = new Size()
@@ -145,7 +134,7 @@ namespace ICE_Import
         
         private async void buttonPush_Click(object sender, EventArgs e)
         {
-            if (!ValidateOptions())
+            if (!ValidateOptions(true))
             {
                 return;
             }
@@ -172,28 +161,25 @@ namespace ICE_Import
 
             try
             {
-                if (IsTestTables)
+                if (IsStoredProcs)
                 {
-                    if (IsStoredProcs)
-                    {
-                        await PushDataToDBWithSPsTest(cts.Token);
-                    }
-                    else
-                    {
-                        await PushDataToDBTest(cts.Token);
-                    }
+                    // Push all data to DB with stored procedures. Update either test and non-test tables.
+                    await PushDataToDBWithSPs(cts.Token);
                 }
                 else
                 {
-                    if (IsStoredProcs)
+                    if (IsTestTables)
                     {
-                        await PushDataToDBWithSPs(cts.Token);
+                        await PushDataToDBTest(cts.Token);
                     }
                     else
                     {
                         await PushDataToDB(cts.Token);
                     }
                 }
+            }
+            catch (OperationCanceledException)
+            {
             }
             catch (ObjectDisposedException)
             {
@@ -225,6 +211,9 @@ namespace ICE_Import
                 {
                     PullDataFromDB();
                 }
+            }
+            catch (OperationCanceledException)
+            {
             }
             catch (ObjectDisposedException)
             {
@@ -321,6 +310,7 @@ Connection Timeout=30;";
 
             // Change DB context
             Context = new DataClassesTMLDBDataContext(ConnectionString);
+            StoredProcsSwitch.Update(Context, IsTestTables);
 
             LogMessage(string.Format("You selected {0} database", DatabaseName));
         }
@@ -350,6 +340,9 @@ Connection Timeout=30;";
             tabPageOption.Text = prefix + "tbloption";
             tabPageOptionData.Text = prefix + "tbloptiondata";
 
+            // Update stored procs switch
+            StoredProcsSwitch.Update(Context, IsTestTables);
+
             LogMessage(string.Format("You selected {0} tables", testNonTest));
         }
 
@@ -361,9 +354,26 @@ Connection Timeout=30;";
             LogMessage(string.Format("You selected {0} procedures", storedCoded));
         }
 
-        private bool ValidateOptions()
+        private void UpdateTextBoxAndProgressBarFromAsyncTask(string message, int progress)
         {
-            if (DatabaseName == "TMLDB" && IsTestTables && IsStoredProcs)
+            Action action = new Action(
+                () =>
+                {
+                    if (message != string.Empty)
+                    {
+                        richTextBoxLog.Text += message + "\n";
+                        richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
+                        richTextBoxLog.ScrollToCaret();
+                    }
+                    progressBarLoad.Value = progress;
+                });
+
+            Invoke(action);
+        }
+
+        private bool ValidateOptions(bool isPush = false)
+        {
+            if (isPush && DatabaseName == "TMLDB" && IsTestTables && IsStoredProcs)
             {
                 MessageBox.Show(
                     "TMLDB does not have stored procedures for working with test tables.",

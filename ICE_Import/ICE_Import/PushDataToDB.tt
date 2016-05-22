@@ -43,7 +43,7 @@ namespace ICE_Import
             int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
             //currentPercent = 0;
             progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length;
+            progressBarLoad.Maximum = 2 * ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
             {
                 progressBarLoad.Maximum += ParsedData.OptionRecords.Length;
@@ -54,15 +54,15 @@ namespace ICE_Import
             try
             {
                 await Task.Run(() => PushFuturesToDB<# Write(methodNameSuffix[i]); #>(ct), ct);
-                LogMessage("Elapsed time: " + (DateTime.Now - start));
+                LogElapsedTime(DateTime.Now - start);
 
                 await Task.Run(() => PushDailyFuturesToDB<# Write(methodNameSuffix[i]); #>(ct), ct);
-                LogMessage("Elapsed time: " + (DateTime.Now - start));
+                LogElapsedTime(DateTime.Now - start);
 
                 if (!ParsedData.FuturesOnly)
                 {
                     await Task.Run(() => PushOptionsToDB<# Write(methodNameSuffix[i]); #>(ct), ct);
-                    LogMessage("Elapsed time: " + (DateTime.Now - start));
+                    LogElapsedTime(DateTime.Now - start);
                 }
             }
 #if !DEBUG
@@ -206,7 +206,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    Invoke(new Action(() => ValuesFromTask(log, globalCount)));
+                    UpdateTextBoxAndProgressBarFromAsyncTask(log, globalCount);
                     log = string.Empty;
                 }
             }
@@ -296,7 +296,7 @@ namespace ICE_Import
                 finally
                 {
                     globalCount++;
-                    if (globalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length)
+                    if (globalCount == 2 * ParsedData.FutureRecords.Length)
                     {
                         log += string.Format("Pushed {0} entries to {1} {2}TBLDAILYCONTRACTSETTLEMENT table", count, DatabaseName, TablesPrefix);
                     }
@@ -306,7 +306,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    Invoke(new Action(() => ValuesFromTask(log, globalCount)));
+                    UpdateTextBoxAndProgressBarFromAsyncTask(log, globalCount);
                     log = string.Empty;
                 }
             }
@@ -563,7 +563,7 @@ namespace ICE_Import
                 finally
                 {
                     globalCount++;
-                    if (globalCount == ParsedData.FutureRecords.Length + ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
+                    if (globalCount == 2 * ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
                     {
                         log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", count, DatabaseName, TablesPrefix);
                     }
@@ -573,7 +573,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    Invoke(new Action(() => ValuesFromTask(log, globalCount)));
+                    UpdateTextBoxAndProgressBarFromAsyncTask(log, globalCount);
                     log = string.Empty;
                 }
             }
