@@ -230,7 +230,7 @@ namespace ICE_Import
                 }
                 try
                 {
-				    char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+                    char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
 
                     var contract = tblcontracts_.Where(item => item.expirationdate == future.StripName).ToArray()[0];
 
