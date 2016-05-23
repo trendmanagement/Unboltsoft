@@ -60,7 +60,7 @@ namespace ICE_Import
 
                 int idinstrument = 36;
 
-                char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+                char monthchar = Utilities.MonthToMonthCode(future.StripName.Month);
 
                 string contractname = Utilities.GenerateCQGSymbolFromSpan(
                     'F',
@@ -136,14 +136,14 @@ namespace ICE_Import
                     //idinstrument for description = Cocoa is 36
                     int idinstrument = 36;
 
-                    char monthchar = Convert.ToChar(((MonthCodes)option.StripName.Month).ToString());
+                    char monthchar = Utilities.MonthToMonthCode(option.StripName.Month);
 
                     string optionName = Utilities.GenerateOptionCQGSymbolFromSpan(
                         option.OptionType,
                         "CCE",
                         monthchar,
                         option.StripName.Year,
-                        (option.StrikePrice != null) ? (double)option.StrikePrice : 0,
+                        option.StrikePrice.GetValueOrDefault(),
                         0,
                         0,
                         idinstrument);
