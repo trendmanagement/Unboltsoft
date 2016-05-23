@@ -17,7 +17,7 @@ namespace ICE_Import
         async Task PushDataToDBWithSPs(CancellationToken ct)
         {
             progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = 2 * ParsedData.FutureRecords.Length;
+            progressBarLoad.Maximum = ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
             {
                 progressBarLoad.Maximum += ParsedData.OptionRecords.Length;
@@ -30,8 +30,8 @@ namespace ICE_Import
                 await Task.Run(() => PushFuturesToDBWithSP(spGlobalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
-                await Task.Run(() => PushDailyFuturesToDBWithSP(spGlobalCount, ct), ct);
-                LogElapsedTime(DateTime.Now - start);
+                //await Task.Run(() => PushDailyFuturesToDBWithSP(spGlobalCount, ct), ct);
+                //LogElapsedTime(DateTime.Now - start);
 
                 if (!ParsedData.FuturesOnly)
                 {
@@ -65,25 +65,32 @@ namespace ICE_Import
 
                 int idinstrument = 36;
 
+                char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+
                 string contractname = Utilities.GenerateCQGSymbolFromSpan(
                     'F',
                     "CCE",
-                    future.Date.Month,
-                    future.Date.Year);
+                    monthchar,
+                    future.StripName.Year);
 
                 string log = string.Empty;
                 try
                 {
-                    char monthchar = Utilities.MonthToMonthCode(future.Date.Month);
-
-                    StoredProcsSwitch.sp_updateContractTblFromSpanUpsert(
+                    Context.test_SPF(
                         contractname,
                         monthchar,
-                        future.Date.Month,
-                        future.Date.Year,
+                        future.StripName.Month,
+                        future.StripName.Year,
                         idinstrument,
-                        future.StripName,
+                        future.Date,
                         contractname);
+
+                    Context.test_SPDF(
+                        future.Date,
+                        (future.SettlementPrice != null) ? future.SettlementPrice : 0,
+                        monthchar,
+                        future.StripName.Year);
+
                 }
                 catch (OperationCanceledException cancel)
                 {
@@ -114,60 +121,11 @@ namespace ICE_Import
         }
 
         /// <summary>
-        /// Push dailyfutures to DB with stored procedures.
-        /// </summary>
-        void PushDailyFuturesToDBWithSP(int spGlobalCount, CancellationToken ct)
-        {
-            spGlobalCount += ParsedData.FutureRecords.Length;
-            foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
-            {
-                if (ct.IsCancellationRequested)
-                {
-                    break;
-                }
-
-                string log = string.Empty;
-                try
-                {
-                    int idcontract = GetIdContract1(future.StripName);
-
-                    StoredProcsSwitch.sp_updateOrInsertContractSettlementsFromSpanUpsert(
-                        idcontract,
-                        future.Date,
-                        future.SettlementPrice.GetValueOrDefault());
-                }
-                catch (OperationCanceledException cancel)
-                {
-                    log += string.Format("Cancel message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
-                    log += cancel.Message + "\n";
-                    break;
-                }
-#if !DEBUG
-                catch (Exception ex)
-                {
-                    log += string.Format("ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
-                    log += ex.Message + "\n";
-                }
-#endif
-                finally
-                {
-                    spGlobalCount++;
-                    if (spGlobalCount == 2 * ParsedData.FutureRecords.Length)
-                    {
-                        log += string.Format("Pushed {0} entries to {1} {2}TBLDAILYCONTRACTSETTLEMENT table", spGlobalCount - ParsedData.FutureRecords.Length, DatabaseName, TablesPrefix);
-                    }
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, spGlobalCount);
-                    log = string.Empty;
-                }
-            }
-        }
-
-        /// <summary>
         /// Push options and optionsdata to DB with stored procedures.
         /// </summary>
         void PushOptionsToDBWithSP(int spGlobalCount, CancellationToken ct)
         {
-            spGlobalCount += 2 * ParsedData.FutureRecords.Length;
+            spGlobalCount += ParsedData.FutureRecords.Length;
 
             string log = string.Empty;
             foreach (EOD_Options_578 option in ParsedData.OptionRecords)
@@ -183,18 +141,17 @@ namespace ICE_Import
                     //idinstrument for description = Cocoa is 36
                     int idinstrument = 36;
 
+                    char monthchar = Convert.ToChar(((MonthCodes)option.StripName.Month).ToString());
+
                     string optionName = Utilities.GenerateOptionCQGSymbolFromSpan(
                         option.OptionType,
                         "CCE",
-                        option.Date.Month,
-                        option.Date.Year,
-                        option.StrikePrice.GetValueOrDefault(),
+                        monthchar,
+                        option.StripName.Year,
+                        (option.StrikePrice != null) ? (double)option.StrikePrice : 0,
                         0,
                         0,
                         idinstrument);
-
-                    char monthchar = Utilities.MonthToMonthCode(option.Date.Month);
-                    long idcontract = GetIdContract2(monthchar, option.StripName.Year);
 
                     // callPutFlag                      - tableOption.callorput
                     // S - stock price                  - 1.56
@@ -213,19 +170,23 @@ namespace ICE_Import
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                     double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
 
-                    StoredProcsSwitch.sp_updateOrInsertTbloptionsInfoAndDataUpsert(
+
+                    Context.test_SPO(
                         optionName,
                         monthchar,
-                        option.Date.Month,
-                        option.Date.Year,
-                        option.StrikePrice,
+                        option.StripName.Month,
+                        option.StripName.Year,
+                        option.StrikePrice.GetValueOrDefault(),
                         option.OptionType,
                         idinstrument,
                         option.Date,
-                        idcontract,
-                        optionName,
-                        option.StripName,
-                        option.StrikePrice,
+                        optionName);
+
+                    Context.test_SPOD(
+                        monthchar,
+                        option.StripName.Year,
+                        option.Date,
+                        option.StrikePrice.GetValueOrDefault(),
                         impliedvol,
                         futureYear - expiranteYear);
                 }
@@ -257,30 +218,6 @@ namespace ICE_Import
                     UpdateTextBoxAndProgressBarFromAsyncTask(log, spGlobalCount);
                     log = string.Empty;
                 }
-            }
-        }
-
-        int GetIdContract1(DateTime futureStripName)
-        {
-            if (IsTestTables)
-            {
-                return (int)Context.test_tblcontracts.Where(item => item.expirationdate == futureStripName).First().idcontract;
-            }
-            else
-            {
-                return (int)Context.tblcontracts.Where(item => item.expirationdate == futureStripName).First().idcontract;
-            }
-        }
-
-        long GetIdContract2(char monthchar, int optionStripNameYear)
-        {
-            if (IsTestTables)
-            {
-                return Context.test_tblcontracts.Where(item => item.month == monthchar && item.year == optionStripNameYear).First().idcontract;
-            }
-            else
-            {
-                return Context.tblcontracts.Where(item => item.month == monthchar && item.year == optionStripNameYear).First().idcontract;
             }
         }
     }

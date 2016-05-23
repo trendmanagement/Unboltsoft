@@ -292,6 +292,8 @@
             // cb_TestTables
             // 
             this.cb_TestTables.AutoSize = true;
+            this.cb_TestTables.Checked = true;
+            this.cb_TestTables.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cb_TestTables.Location = new System.Drawing.Point(6, 21);
             this.cb_TestTables.Name = "cb_TestTables";
             this.cb_TestTables.Size = new System.Drawing.Size(116, 17);
