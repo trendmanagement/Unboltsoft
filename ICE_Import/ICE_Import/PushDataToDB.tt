@@ -115,10 +115,12 @@ namespace ICE_Import
                         //idinstrument for description = Cocoa is 36
                         int idinstrument = 36;
 
+                        char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+
                         string contractName = Utilities.GenerateCQGSymbolFromSpan(
                             'F',
                             "CCE",
-                            future.Date.Month,
+                            monthchar, 
                             future.Date.Year);
 
                         #region Find data in DB like pushed
@@ -164,11 +166,11 @@ namespace ICE_Import
                             //TODO: Create query to get cqgsymbol by description from tblinstruments
                             //cqgsymbol for description = Cocoa is CCE
                             contractname = contractName,
-                            month = Utilities.MonthToMonthCode(future.Date.Month),
-                            monthint = (short)future.Date.Month,
-                            year = (long)future.Date.Year,
+                            month = monthchar,
+                            monthint = (short)future.StripName.Month,
+                            year = (long)future.StripName.Year,
                             idinstrument = idinstrument,
-                            expirationdate = future.StripName.Date,
+                            expirationdate = future.Date,
                             cqgsymbol = contractName
                         };
                         tblcontracts_.InsertOnSubmit(tableFuture);
@@ -228,7 +230,8 @@ namespace ICE_Import
                 }
                 try
                 {
-                    char monthchar = Utilities.MonthToMonthCode(future.Date.Month);
+				    char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+
                     var contract = tblcontracts_.Where(item => item.expirationdate == future.StripName).ToArray()[0];
 
                     #region Find data in DB like pushed
@@ -333,11 +336,13 @@ namespace ICE_Import
                     //idinstrument for description = Cocoa is 36
                     int idinstrument = 36;
 
+                    char monthchar = Convert.ToChar(((MonthCodes)option.StripName.Month).ToString());
+
                     string optionName = Utilities.GenerateOptionCQGSymbolFromSpan(
                         option.OptionType,
                         "CCE",
-                        option.Date.Month,
-                        option.Date.Year,
+                        monthchar,
+                        option.StripName.Year,
                         option.StrikePrice.GetValueOrDefault(),
                         0,
                         0,
@@ -346,8 +351,6 @@ namespace ICE_Import
                     bool isOptionCreated = false;
 
                     var TO = new <# Write(TblOption); #>();
-
-                    char monthchar = Utilities.MonthToMonthCode(option.Date.Month);
 
                     #region Find data in DB like pushed
                     var tbloptions = new List<<# Write(TblOption); #>>();
@@ -422,12 +425,12 @@ namespace ICE_Import
                             //idoption must generate by DB
                             optionname = optionName,
                             optionmonth = monthchar,
-                            optionmonthint = option.Date.Month,
-                            optionyear = option.Date.Year,
+                            optionmonthint = option.StripName.Month,
+                            optionyear = option.StripName.Year,
                             strikeprice = option.StrikePrice.GetValueOrDefault(),
                             callorput = option.OptionType,
                             idinstrument = idinstrument,
-                            expirationdate = option.StripName,
+                            expirationdate = option.Date,
                             idcontract = idContract,
                             cqgsymbol = optionName
                         };

@@ -20,7 +20,7 @@ namespace ICE_Import
         public static string GenerateCQGSymbolFromSpan(
             char contractType,
             string underlyingSymbol,
-            int month,
+            char month,
             int year)
         {
             Debug.Assert(ContractTypes.Contains(contractType));
@@ -33,7 +33,7 @@ namespace ICE_Import
 
             cqgSymbol.Append(underlyingSymbol);
 
-            cqgSymbol.Append(MonthToMonthCode(month));
+            cqgSymbol.Append(month);
 
             cqgSymbol.Append(year % 100);
 
@@ -55,7 +55,7 @@ namespace ICE_Import
         public static string GenerateOptionCQGSymbolFromSpan(
             char contractType,
             string underlyingSymbol,
-            int month,
+            char month,
             int year, 
             double optionStrikePrice,
             double optionStrikeIncrement,
@@ -72,7 +72,7 @@ namespace ICE_Import
 
             cqgSymbol.Append(underlyingSymbol);
 
-            cqgSymbol.Append(MonthToMonthCode(month));
+            cqgSymbol.Append(month);
 
             cqgSymbol.Append(year % 100);
 
