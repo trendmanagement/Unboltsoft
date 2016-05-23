@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Data;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -29,9 +27,6 @@ namespace ICE_Import
             {
                 await Task.Run(() => PushFuturesToDBWithSP(spGlobalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
-
-                //await Task.Run(() => PushDailyFuturesToDBWithSP(spGlobalCount, ct), ct);
-                //LogElapsedTime(DateTime.Now - start);
 
                 if (!ParsedData.FuturesOnly)
                 {
@@ -87,7 +82,7 @@ namespace ICE_Import
 
                     Context.test_SPDF(
                         future.Date,
-                        (future.SettlementPrice != null) ? future.SettlementPrice : 0,
+                        future.SettlementPrice.GetValueOrDefault(),
                         monthchar,
                         future.StripName.Year);
 
