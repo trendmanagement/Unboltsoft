@@ -84,7 +84,9 @@ namespace ICE_Import
                         future.Date,
                         future.SettlementPrice.GetValueOrDefault(),
                         monthchar,
-                        future.StripName.Year);
+                        future.StripName.Year,
+                        (long)future.Volume.GetValueOrDefault(),
+                        (long)future.OpenInterest.GetValueOrDefault());
 
                 }
                 catch (OperationCanceledException cancel)
@@ -157,21 +159,20 @@ namespace ICE_Import
                     double impliedvol = OptionCalcs.CalculateOptionVolatility(
                         option.OptionType,
                         1.56,
-                        option.StrikePrice.GetValueOrDefault(),
+                        Utilities.NormalizePrice(option.StrikePrice.GetValueOrDefault()),
                         0.5,
                         0.08,
-                        option.SettlementPrice.GetValueOrDefault());
+                        Utilities.NormalizePrice(option.SettlementPrice.GetValueOrDefault()));
 
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                     double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
-
 
                     Context.test_SPO(
                         optionName,
                         monthchar,
                         option.StripName.Month,
                         option.StripName.Year,
-                        option.StrikePrice.GetValueOrDefault(),
+                        option.SettlementPrice.GetValueOrDefault(),
                         option.OptionType,
                         idinstrument,
                         option.Date,

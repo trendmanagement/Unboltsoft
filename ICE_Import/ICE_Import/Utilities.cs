@@ -89,5 +89,17 @@ namespace ICE_Import
             Debug.Assert(month >= 1 && month <= 12);
             return Convert.ToChar(((MonthCodes)month).ToString());
         }
+
+        public static double NormalizePrice(double price)
+        {
+            if(price == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return price * 0.001;
+            }
+        }
     }
 }
