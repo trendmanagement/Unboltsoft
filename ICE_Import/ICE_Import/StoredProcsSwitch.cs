@@ -50,7 +50,9 @@ namespace ICE_Import
             DateTime? spanDate,
             double? settlementPrice,
             char? monthChar, 
-            int? yearInt);
+            int? yearInt,
+            long? volume,
+            long? openinterest);
 
         public delegate int dt_testSPO(
             string optionname,

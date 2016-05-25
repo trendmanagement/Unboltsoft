@@ -267,4 +267,31 @@
     <Parameter Name="timetoexpinyears" Type="System.Double" DbType="Float" />
     <Return Type="System.Int32" />
   </Function>
+  <Function Name="cqgdb.test_SPDF" Method="test_SPDF1">
+    <Parameter Name="spanDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="settlementPrice" Type="System.Double" DbType="Float" />
+    <Parameter Name="monthChar" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="yearInt" Type="System.Int32" DbType="Int" />
+    <Parameter Name="volume" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="openinterest" Type="System.Int64" DbType="BigInt" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="cqgdb.test_SPDF" Method="test_SPDF2">
+    <Parameter Name="spanDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="settlementPrice" Type="System.Double" DbType="Float" />
+    <Parameter Name="monthChar" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="yearInt" Type="System.Int32" DbType="Int" />
+    <Parameter Name="volume" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="openinterest" Type="System.Int64" DbType="BigInt" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="cqgdb.test_SPDF" Method="test_SPDF3">
+    <Parameter Name="spanDate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="settlementPrice" Type="System.Double" DbType="Float" />
+    <Parameter Name="monthChar" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="yearInt" Type="System.Int32" DbType="Int" />
+    <Parameter Name="volume" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="openinterest" Type="System.Int64" DbType="BigInt" />
+    <Return Type="System.Int32" />
+  </Function>
 </Database>
