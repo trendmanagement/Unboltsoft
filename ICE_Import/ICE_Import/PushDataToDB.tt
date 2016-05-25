@@ -23,9 +23,6 @@ namespace ICE_Import
 {
     public partial class FormDB : Form
     {
-        int globalCount;
-        //int currentPercent;
-
 <# string[] methodNameSuffix = { string.Empty, "Test" }; #>
 <# string[] tableClassPrefix = { string.Empty, "test_" }; #>
 <# string[] tableNamePrefix = { string.Empty, "test_" }; #>
@@ -37,29 +34,28 @@ namespace ICE_Import
 <# string TblOptionData = tableClassPrefix[i] + "tbloptiondata"; #>
         async Task PushDataToDB<# Write(methodNameSuffix[i]); #>(CancellationToken ct)
         {
-            globalCount = 0;
-            int number;
-            int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
-            //currentPercent = 0;
             progressBar.Maximum = 2 * ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
             {
                 progressBar.Maximum += ParsedData.OptionRecords.Length;
             }
 
+            int globalCount = 0;
             DateTime start = DateTime.Now;
+
+            AsyncTaskListener.Init();
 
             try
             {
-                await Task.Run(() => PushFuturesToDB<# Write(methodNameSuffix[i]); #>(ct), ct);
+                await Task.Run(() => PushFuturesToDB<# Write(methodNameSuffix[i]); #>(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
-                await Task.Run(() => PushDailyFuturesToDB<# Write(methodNameSuffix[i]); #>(ct), ct);
+                await Task.Run(() => PushDailyFuturesToDB<# Write(methodNameSuffix[i]); #>(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
                 if (!ParsedData.FuturesOnly)
                 {
-                    await Task.Run(() => PushOptionsToDB<# Write(methodNameSuffix[i]); #>(ct), ct);
+                    await Task.Run(() => PushOptionsToDB<# Write(methodNameSuffix[i]); #>(ref globalCount, ct), ct);
                     LogElapsedTime(DateTime.Now - start);
                 }
             }
@@ -89,7 +85,7 @@ namespace ICE_Import
             }
         }
 
-        void PushFuturesToDB<# Write(methodNameSuffix[i]); #>(CancellationToken ct)
+        void PushFuturesToDB<# Write(methodNameSuffix[i]); #>(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
 
@@ -206,13 +202,13 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateFormFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }
         }    
 
-        void PushDailyFuturesToDB<# Write(methodNameSuffix[i]); #>(CancellationToken ct)
+        void PushDailyFuturesToDB<# Write(methodNameSuffix[i]); #>(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
             var tbldailycontractsettlements_ = Context.<# Write(tableNamePrefix[i]); #>tbldailycontractsettlements;
@@ -307,13 +303,13 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateFormFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }
         }
 
-        void PushOptionsToDB<# Write(methodNameSuffix[i]); #>(CancellationToken ct)
+        void PushOptionsToDB<# Write(methodNameSuffix[i]); #>(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
             var tbloptions_ = Context.<# Write(tableNamePrefix[i]); #>tbloptions;
@@ -574,7 +570,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateFormFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }

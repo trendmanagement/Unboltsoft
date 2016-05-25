@@ -76,7 +76,7 @@
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.ReadOnly = true;
             this.richTextBoxLog.Size = new System.Drawing.Size(664, 90);
-            this.richTextBoxLog.TabIndex = 9;
+            this.richTextBoxLog.TabIndex = 11;
             this.richTextBoxLog.Text = "";
             // 
             // buttonPush
@@ -94,7 +94,7 @@
             this.progressBar.Location = new System.Drawing.Point(12, 358);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(640, 10);
-            this.progressBar.TabIndex = 8;
+            this.progressBar.TabIndex = 10;
             // 
             // buttonCancel
             // 
@@ -325,7 +325,7 @@
             this.label1.Location = new System.Drawing.Point(577, 334);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(32, 13);
-            this.label1.TabIndex = 10;
+            this.label1.TabIndex = 8;
             this.label1.Text = "RPS:";
             // 
             // labelRPS
@@ -334,7 +334,7 @@
             this.labelRPS.Location = new System.Drawing.Point(615, 334);
             this.labelRPS.Name = "labelRPS";
             this.labelRPS.Size = new System.Drawing.Size(0, 13);
-            this.labelRPS.TabIndex = 11;
+            this.labelRPS.TabIndex = 9;
             // 
             // FormDB
             // 

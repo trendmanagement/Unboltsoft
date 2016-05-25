@@ -17,34 +17,30 @@ namespace ICE_Import
 {
     public partial class FormDB : Form
     {
-        int globalCount;
-        //int currentPercent;
-
         async Task PushDataToDB(CancellationToken ct)
         {
-            globalCount = 0;
-            int number;
-            int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
-            //currentPercent = 0;
             progressBar.Maximum = 2 * ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
             {
                 progressBar.Maximum += ParsedData.OptionRecords.Length;
             }
 
+            int globalCount = 0;
             DateTime start = DateTime.Now;
+
+            AsyncTaskListener.Init();
 
             try
             {
-                await Task.Run(() => PushFuturesToDB(ct), ct);
+                await Task.Run(() => PushFuturesToDB(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
-                await Task.Run(() => PushDailyFuturesToDB(ct), ct);
+                await Task.Run(() => PushDailyFuturesToDB(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
                 if (!ParsedData.FuturesOnly)
                 {
-                    await Task.Run(() => PushOptionsToDB(ct), ct);
+                    await Task.Run(() => PushOptionsToDB(ref globalCount, ct), ct);
                     LogElapsedTime(DateTime.Now - start);
                 }
             }
@@ -74,7 +70,7 @@ namespace ICE_Import
             }
         }
 
-        void PushFuturesToDB(CancellationToken ct)
+        void PushFuturesToDB(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.tblcontracts;
 
@@ -190,13 +186,13 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateFormFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }
         }    
 
-        void PushDailyFuturesToDB(CancellationToken ct)
+        void PushDailyFuturesToDB(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.tblcontracts;
             var tbldailycontractsettlements_ = Context.tbldailycontractsettlements;
@@ -290,13 +286,13 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateFormFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }
         }
 
-        void PushOptionsToDB(CancellationToken ct)
+        void PushOptionsToDB(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.tblcontracts;
             var tbloptions_ = Context.tbloptions;
@@ -555,7 +551,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateFormFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }
@@ -563,29 +559,28 @@ namespace ICE_Import
 
         async Task PushDataToDBTest(CancellationToken ct)
         {
-            globalCount = 0;
-            int number;
-            int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
-            //currentPercent = 0;
             progressBar.Maximum = 2 * ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
             {
                 progressBar.Maximum += ParsedData.OptionRecords.Length;
             }
 
+            int globalCount = 0;
             DateTime start = DateTime.Now;
+
+            AsyncTaskListener.Init();
 
             try
             {
-                await Task.Run(() => PushFuturesToDBTest(ct), ct);
+                await Task.Run(() => PushFuturesToDBTest(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
-                await Task.Run(() => PushDailyFuturesToDBTest(ct), ct);
+                await Task.Run(() => PushDailyFuturesToDBTest(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
                 if (!ParsedData.FuturesOnly)
                 {
-                    await Task.Run(() => PushOptionsToDBTest(ct), ct);
+                    await Task.Run(() => PushOptionsToDBTest(ref globalCount, ct), ct);
                     LogElapsedTime(DateTime.Now - start);
                 }
             }
@@ -615,7 +610,7 @@ namespace ICE_Import
             }
         }
 
-        void PushFuturesToDBTest(CancellationToken ct)
+        void PushFuturesToDBTest(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.test_tblcontracts;
 
@@ -731,13 +726,13 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateFormFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }
         }    
 
-        void PushDailyFuturesToDBTest(CancellationToken ct)
+        void PushDailyFuturesToDBTest(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.test_tblcontracts;
             var tbldailycontractsettlements_ = Context.test_tbldailycontractsettlements;
@@ -831,13 +826,13 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateFormFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }
         }
 
-        void PushOptionsToDBTest(CancellationToken ct)
+        void PushOptionsToDBTest(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.test_tblcontracts;
             var tbloptions_ = Context.test_tbloptions;
@@ -1096,7 +1091,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateFormFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }

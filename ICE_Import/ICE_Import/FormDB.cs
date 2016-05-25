@@ -32,10 +32,11 @@ namespace ICE_Import
             InitializeComponent();
 
             this.Resize += FormDB_Resize;
-            ParsedData.ParseComplete += ParsedData_ParseComplete;
             this.LogMessage += FormDB_LogMessage;
             this.FormClosed += FormDB_FormClosed;
-            
+            ParsedData.ParseComplete += ParsedData_ParseComplete;
+            AsyncTaskListener.Updated += AsyncTaskListener_Updated;
+
             rb_DB_CheckedChanged(rb_LocalDB, null);
             cb_TestTables_CheckedChanged(null, null);
             cb_StoredProcs_CheckedChanged(null, null);
@@ -379,7 +380,10 @@ Connection Timeout=30;";
             LogMessage(string.Format("You selected {0} update", asyncSync));
         }
 
-        private void UpdateFormFromAsyncTask(string message, int progress = -1, double rps = double.NaN)
+        private void AsyncTaskListener_Updated(
+            string message = null,
+            int progress = -1,
+            double rps = double.NaN)
         {
             Action action = new Action(
                 () =>

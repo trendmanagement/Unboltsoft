@@ -7,8 +7,6 @@ namespace ICE_Import
 {
     public partial class FormDB : Form
     {
-        int spGlobalCount = 0;
-
         /// <summary>
         /// Push all data to DB with stored procedures. Update either test or non-test tables.
         /// </summary>
@@ -20,16 +18,19 @@ namespace ICE_Import
                 progressBar.Maximum += ParsedData.OptionRecords.Length;
             }
 
+            int globalCount = 0;
             DateTime start = DateTime.Now;
+
+            AsyncTaskListener.Init();
 
             try
             {
-                await Task.Run(() => PushFuturesToDBWithSP(spGlobalCount, ct), ct);
+                await Task.Run(() => PushFuturesToDBWithSP(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
                 if (!ParsedData.FuturesOnly)
                 {
-                    await Task.Run(() => PushOptionsToDBWithSP(spGlobalCount, ct), ct);
+                    await Task.Run(() => PushOptionsToDBWithSP(ref globalCount, ct), ct);
                     LogElapsedTime(DateTime.Now - start);
                 }
             }
@@ -42,13 +43,13 @@ namespace ICE_Import
                 EnableDisable(false);
             }
 
-            LogMessage(string.Format("Pushed to DB: {0} entries", spGlobalCount));
+            LogMessage(string.Format("Pushed to DB: {0} entries", globalCount));
         }
 
         /// <summary>
         /// Push futures to DB with stored procedures.
         /// </summary>
-        void PushFuturesToDBWithSP(int spGlobalCount, CancellationToken ct)
+        void PushFuturesToDBWithSP(ref int globalCount, CancellationToken ct)
         {
             foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
             {
@@ -96,14 +97,14 @@ namespace ICE_Import
 #endif
                 finally
                 {
-                    spGlobalCount++;
-                    if (spGlobalCount == ParsedData.FutureRecords.Length)
+                    globalCount++;
+                    if (globalCount == ParsedData.FutureRecords.Length)
                     {
                         log += string.Format(
                             "Pushed {0} entries to {1} {2}TBLCONTRACT table",
-                            spGlobalCount, DatabaseName, TablesPrefix);
+                            globalCount, DatabaseName, TablesPrefix);
                     }
-                    UpdateFormFromAsyncTask(log, spGlobalCount);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }
@@ -112,10 +113,8 @@ namespace ICE_Import
         /// <summary>
         /// Push options and optionsdata to DB with stored procedures.
         /// </summary>
-        void PushOptionsToDBWithSP(int spGlobalCount, CancellationToken ct)
+        void PushOptionsToDBWithSP(ref int globalCount, CancellationToken ct)
         {
-            spGlobalCount += ParsedData.FutureRecords.Length;
-
             string log = string.Empty;
             foreach (EOD_Options_578 option in ParsedData.OptionRecords)
             {
@@ -181,7 +180,7 @@ namespace ICE_Import
 #if !DEBUG
                 catch (Exception ex)
                 {
-                    int erc = spGlobalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                    int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
                     log += string.Format(
                         "ERROR message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n" +
                         "Can't push entry N: {2}\n",
@@ -192,12 +191,12 @@ namespace ICE_Import
 #endif
                 finally
                 {
-                    spGlobalCount++;
-                    if (spGlobalCount == 2 * ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
+                    globalCount++;
+                    if (globalCount == 2 * ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
                     {
-                        log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", spGlobalCount, DatabaseName, TablesPrefix);
+                        log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", globalCount, DatabaseName, TablesPrefix);
                     }
-                    UpdateFormFromAsyncTask(log, spGlobalCount);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }

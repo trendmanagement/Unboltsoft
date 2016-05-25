@@ -22,19 +22,14 @@ namespace ICE_Import
             }
 
             int globalCount = 0;
-            int intermCount = 0;
 
             var queries = new List<string>(packetSize);
 
             var sb = new StringBuilder();
 
             int idinstrument = 36;
-            double rps = 0;
 
-            UpdateFormFromAsyncTask("Pushing of FUTURES data started", globalCount);
-
-            DateTime start = DateTime.Now;
-            DateTime intermTime = start;
+            AsyncTaskListener.Init("Pushing of FUTURES data started");
 
             foreach (var future in ParsedData.FutureRecords)
             {
@@ -81,18 +76,9 @@ namespace ICE_Import
                     await ConnectDBAndExecuteQueryAsyncWithTransaction(queries);
                 }
 
-                // Update GUI once per 1 second
-                DateTime now = DateTime.Now;
-                TimeSpan delta = now - intermTime;
-                if (delta.Seconds >= 1)
-                {
-                    rps = (globalCount - intermCount) / (delta.Milliseconds / 1000.0);
-                    UpdateFormFromAsyncTask(null, globalCount, rps);
-                    intermTime = now;
-                    intermCount = globalCount;
-                }
-
                 globalCount++;
+
+                AsyncTaskListener.Update(globalCount);
             }
 
             if (queries.Count != 0)
@@ -100,11 +86,9 @@ namespace ICE_Import
                 await ConnectDBAndExecuteQueryAsyncWithTransaction(queries);
             }
 
-            UpdateFormFromAsyncTask("Pushing of FUTURES data complete", globalCount);
+            AsyncTaskListener.Update(msg: "Pushing of FUTURES data complete");
 
-            UpdateFormFromAsyncTask("Pushing of OPTIONS data started", globalCount);
-
-            intermTime = DateTime.Now;
+            AsyncTaskListener.Update(msg: "Pushing of OPTIONS data started");
 
             foreach (var option in ParsedData.OptionRecords)
             {
@@ -174,18 +158,9 @@ namespace ICE_Import
                     await ConnectDBAndExecuteQueryAsyncWithTransaction(queries);
                 }
 
-                // Update GUI once per 1 second
-                DateTime now = DateTime.Now;
-                TimeSpan delta = now - intermTime;
-                if (delta.Seconds >= 1)
-                {
-                    rps = (globalCount - intermCount) / (delta.Milliseconds / 1000.0);
-                    UpdateFormFromAsyncTask(null, globalCount, rps);
-                    intermTime = now;
-                    intermCount = globalCount;
-                }
-
                 globalCount++;
+
+                AsyncTaskListener.Update(globalCount);
             }
 
             if (queries.Count != 0)
@@ -193,7 +168,7 @@ namespace ICE_Import
                 await ConnectDBAndExecuteQueryAsyncWithTransaction(queries);
             }
 
-            UpdateFormFromAsyncTask("Pushing of OPTIONS data complete", globalCount);
+            AsyncTaskListener.Update(msg: "Pushing of OPTIONS data complete");
         }
         
         async Task ConnectDBAndExecuteQueryAsyncWithTransaction(List<string> queryStringToUpdate)
