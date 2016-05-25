@@ -84,6 +84,7 @@
     <Compile Include="PushDataToDBWithSPs.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="AsyncTaskListener.cs" />
     <Compile Include="StoredProcsSwitch.cs" />
     <Compile Include="DataClassesTMLDB.designer.cs">
       <AutoGen>True</AutoGen>
@@ -105,7 +106,7 @@
     <Compile Include="EntityNames.cs" />
     <Compile Include="OptionCalcs.cs" />
     <Compile Include="ParsedData.cs" />
-    <Compile Include="PushToDB.cs">
+    <Compile Include="PushDataToDBWithSPsAsync.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="EOD_Futures_578.cs" />

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -10,30 +8,30 @@ namespace ICE_Import
 {
     public partial class FormDB : Form
     {
-        int spGlobalCount = 0;
-
         /// <summary>
         /// Push all data to DB with stored procedures. Update either test or non-test tables.
         /// </summary>
         async Task PushDataToDBWithSPs(CancellationToken ct)
         {
-            progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = ParsedData.FutureRecords.Length;
+            progressBar.Maximum = ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
             {
-                progressBarLoad.Maximum += ParsedData.OptionRecords.Length;
+                progressBar.Maximum += ParsedData.OptionRecords.Length;
             }
 
+            int globalCount = 0;
             DateTime start = DateTime.Now;
+
+            AsyncTaskListener.Init();
 
             try
             {
-                await Task.Run(() => PushFuturesToDBWithSP(spGlobalCount, ct), ct);
+                await Task.Run(() => PushFuturesToDBWithSP(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
                 if (!ParsedData.FuturesOnly)
                 {
-                    await Task.Run(() => PushOptionsToDBWithSP(spGlobalCount, ct), ct);
+                    await Task.Run(() => PushOptionsToDBWithSP(ref globalCount, ct), ct);
                     LogElapsedTime(DateTime.Now - start);
                 }
             }
@@ -46,13 +44,13 @@ namespace ICE_Import
                 EnableDisable(false);
             }
 
-            LogMessage(string.Format("Pushed to DB: {0} entries", spGlobalCount));
+            LogMessage(string.Format("Pushed to DB: {0} entries", globalCount));
         }
 
         /// <summary>
         /// Push futures to DB with stored procedures.
         /// </summary>
-        void PushFuturesToDBWithSP(int spGlobalCount, CancellationToken ct)
+        void PushFuturesToDBWithSP(ref int globalCount, CancellationToken ct)
         {
             foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
             {
@@ -90,13 +88,6 @@ namespace ICE_Import
                         future.StripName.Year,
                         (long)future.Volume.GetValueOrDefault(),
                         (long)future.OpenInterest.GetValueOrDefault());
-
-                }
-                catch (OperationCanceledException cancel)
-                {
-                    log += string.Format("Cancel message from {0} pushing {1}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
-                    log += cancel.Message + "\n";
-                    break;
                 }
 #if !DEBUG
                 catch (Exception ex)
@@ -107,14 +98,14 @@ namespace ICE_Import
 #endif
                 finally
                 {
-                    spGlobalCount++;
-                    if (spGlobalCount == ParsedData.FutureRecords.Length)
+                    globalCount++;
+                    if (globalCount == ParsedData.FutureRecords.Length)
                     {
                         log += string.Format(
                             "Pushed {0} entries to {1} {2}TBLCONTRACT table",
-                            spGlobalCount, DatabaseName, TablesPrefix);
+                            globalCount, DatabaseName, TablesPrefix);
                     }
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, spGlobalCount);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }
@@ -123,10 +114,8 @@ namespace ICE_Import
         /// <summary>
         /// Push options and optionsdata to DB with stored procedures.
         /// </summary>
-        void PushOptionsToDBWithSP(int spGlobalCount, CancellationToken ct)
+        void PushOptionsToDBWithSP(ref int globalCount, CancellationToken ct)
         {
-            spGlobalCount += ParsedData.FutureRecords.Length;
-
             string log = string.Empty;
 
             foreach (EOD_Options_578 option in ParsedData.OptionRecords)
@@ -154,7 +143,7 @@ namespace ICE_Import
                         0,
                         idinstrument);
 
-                    #region Implied volume
+                    #region Implied Volatility
                     // callPutFlag                      - tableOption.callorput
                     // S - stock price                  - 1.56
                     // X - strike price of option       - option.StrikePrice
@@ -263,16 +252,10 @@ namespace ICE_Import
                         impliedvol,
                         futureYear - expiranteYear);
                 }
-                catch (OperationCanceledException cancel)
-                {
-                    log += string.Format("Cancel message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n", DatabaseName, TablesPrefix);
-                    log += cancel.Message + "\n";
-                    break;
-                }
 #if !DEBUG
                 catch (Exception ex)
                 {
-                    int erc = spGlobalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                    int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
                     log += string.Format(
                         "ERROR message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n" +
                         "Can't push entry N: {2}\n",
@@ -283,12 +266,12 @@ namespace ICE_Import
 #endif
                 finally
                 {
-                    spGlobalCount++;
-                    if (spGlobalCount == 2 * ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
+                    globalCount++;
+                    if (globalCount == 2 * ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
                     {
-                        log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", spGlobalCount, DatabaseName, TablesPrefix);
+                        log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", globalCount, DatabaseName, TablesPrefix);
                     }
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, spGlobalCount);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }
