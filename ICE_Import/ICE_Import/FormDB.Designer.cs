@@ -49,8 +49,8 @@
             this.rb_TMLDBCopy = new System.Windows.Forms.RadioButton();
             this.rb_LocalDB = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.cb_AsyncUpdate = new System.Windows.Forms.CheckBox();
             this.cb_TestTables = new System.Windows.Forms.CheckBox();
+            this.cb_AsyncUpdate = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.labelRPS = new System.Windows.Forms.Label();
             this.tabPageDailyContract.SuspendLayout();
@@ -293,19 +293,6 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Options";
             // 
-            // cb_AsyncUpdate
-            // 
-            this.cb_AsyncUpdate.AutoSize = true;
-            this.cb_AsyncUpdate.Checked = true;
-            this.cb_AsyncUpdate.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cb_AsyncUpdate.Location = new System.Drawing.Point(6, 68);
-            this.cb_AsyncUpdate.Name = "cb_AsyncUpdate";
-            this.cb_AsyncUpdate.Size = new System.Drawing.Size(110, 17);
-            this.cb_AsyncUpdate.TabIndex = 2;
-            this.cb_AsyncUpdate.Text = "Do Async Update";
-            this.cb_AsyncUpdate.UseVisualStyleBackColor = true;
-            this.cb_AsyncUpdate.CheckedChanged += new System.EventHandler(this.cb_AsyncUpdate_CheckedChanged);
-            // 
             // cb_TestTables
             // 
             this.cb_TestTables.AutoSize = true;
@@ -318,6 +305,19 @@
             this.cb_TestTables.Text = "Use \"test_\" Tables";
             this.cb_TestTables.UseVisualStyleBackColor = true;
             this.cb_TestTables.CheckedChanged += new System.EventHandler(this.cb_TestTables_CheckedChanged);
+            // 
+            // cb_AsyncUpdate
+            // 
+            this.cb_AsyncUpdate.AutoSize = true;
+            this.cb_AsyncUpdate.Checked = true;
+            this.cb_AsyncUpdate.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cb_AsyncUpdate.Location = new System.Drawing.Point(6, 67);
+            this.cb_AsyncUpdate.Name = "cb_AsyncUpdate";
+            this.cb_AsyncUpdate.Size = new System.Drawing.Size(110, 17);
+            this.cb_AsyncUpdate.TabIndex = 2;
+            this.cb_AsyncUpdate.Text = "Do Async Update";
+            this.cb_AsyncUpdate.UseVisualStyleBackColor = true;
+            this.cb_AsyncUpdate.CheckedChanged += new System.EventHandler(this.cb_AsyncUpdate_CheckedChanged);
             // 
             // label1
             // 
