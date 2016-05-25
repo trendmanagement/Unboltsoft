@@ -400,7 +400,14 @@ Connection Timeout=30;";
                     }
                 });
 
-            Invoke(action);
+            try
+            {
+                Invoke(action);
+            }
+            catch (ObjectDisposedException)
+            {
+                // User closed the form
+            }
         }
 
         private bool ValidateOptions(bool isPush = false)
