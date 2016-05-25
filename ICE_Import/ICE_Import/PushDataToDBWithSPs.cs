@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Data;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -125,6 +128,7 @@ namespace ICE_Import
             spGlobalCount += ParsedData.FutureRecords.Length;
 
             string log = string.Empty;
+
             foreach (EOD_Options_578 option in ParsedData.OptionRecords)
             {
                 if (ct.IsCancellationRequested)
@@ -150,19 +154,92 @@ namespace ICE_Import
                         0,
                         idinstrument);
 
+                    #region Implied volume
                     // callPutFlag                      - tableOption.callorput
                     // S - stock price                  - 1.56
                     // X - strike price of option       - option.StrikePrice
                     // T - time to expiration in years  - 0.5
-                    // r - risk-free interest rate      - r(f) = 0.08, foreign risk-free interest rate in the U.S. is 8% per annum
+                    // r - risk-free interest rate      - from table tbloptioninputdata
                     // currentOptionPrice               - option.SettlementPrice 
-                    double impliedvol = OptionCalcs.CalculateOptionVolatility(
+                    // tickSize                         - from table tblinstruments (secondaryoptionticksize or optionticksize)
+
+                    double r = 0.08;
+
+                    double tickSize;
+
+                    string conString =
+                        @"Server=tcp:h9ggwlagd1.database.windows.net,1433;
+                        Database=TMLDB;
+                        User ID=dataupdate@h9ggwlagd1;
+                        Password=6dcEpZKSFRNYk^AN;
+                        Encrypt=True;
+                        TrustServerCertificate=False;
+                        Connection Timeout=30;";
+
+                    DataClassesTMLDBDataContext remoteContext = new DataClassesTMLDBDataContext(conString);
+
+                    var secondaryoptionticksize = remoteContext.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].secondaryoptionticksize;
+
+                    if (secondaryoptionticksize > 0)
+                    {
+                        tickSize = secondaryoptionticksize;
+                    }
+                    else
+                    {
+                        tickSize = remoteContext.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].optionticksize;
+                    }
+
+                    double optioninputclose = 0;
+                    try
+                    {
+                        var idoptioninputsymbol = remoteContext.tbloptioninputsymbols.Where(item2 =>
+                            item2.idoptioninputtype == 1).ToArray()[0].idoptioninputsymbol;
+                        tbloptioninputdata [] tbloptioninputdatas = remoteContext.tbloptioninputdatas.Where(item =>
+                            item.idoptioninputsymbol == idoptioninputsymbol).ToArray();
+                        DateTime optioninputdatetime = new DateTime();
+                        for(int i = 0; i < tbloptioninputdatas.Length; i++)
+                        {
+                            if(i != 0)
+                            {
+                                if (optioninputdatetime < tbloptioninputdatas[i].optioninputdatetime)
+                                {
+                                    optioninputdatetime = tbloptioninputdatas[i].optioninputdatetime;
+                                }
+                            }
+                            else
+                            {
+                                optioninputdatetime = tbloptioninputdatas[i].optioninputdatetime;
+                            }
+                        }
+
+                        //--?-- From where this varable in query
+                        var OPTION_INPUT_TYPE_RISK_FREE_RATE = 1;
+
+                        //--?-- What difference between idoptioninputsymbol and idoptioninputsymbol2
+                        var idoptioninputsymbol2 = remoteContext.tbloptioninputsymbols.Where(item2 =>
+                            item2.idoptioninputtype == OPTION_INPUT_TYPE_RISK_FREE_RATE).ToArray()[0].idoptioninputsymbol;
+
+                        optioninputclose = remoteContext.tbloptioninputdatas.Where(item =>
+                            item.idoptioninputsymbol == idoptioninputsymbol2
+                                && item.optioninputdatetime == optioninputdatetime).ToArray()[0].optioninputclose;
+
+                    }
+                    catch(Exception ex)
+                    {
+                        log += ex.Message + "\n";
+                    }
+
+                    r = (optioninputclose != 0) ? optioninputclose : r;
+
+                    double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
                         option.OptionType,
                         1.56,
                         Utilities.NormalizePrice(option.StrikePrice.GetValueOrDefault()),
                         0.5,
-                        0.08,
-                        Utilities.NormalizePrice(option.SettlementPrice.GetValueOrDefault()));
+                        r,
+                        Utilities.NormalizePrice(option.SettlementPrice.GetValueOrDefault()),
+                        tickSize);
+                    #endregion
 
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                     double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;

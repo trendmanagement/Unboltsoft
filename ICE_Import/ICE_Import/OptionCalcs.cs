@@ -75,7 +75,7 @@ namespace ICE_Import
             return tempV;
         }
 
-        private static double calculateOptionVolatilityNR(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice, double tickSize)
+        public static double CalculateOptionVolatilityNR(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice, double tickSize)
         {
             return calculateOptionVolatilityNRCalc(callPutFlag, S, X, T, r, currentOptionPrice,
                 tickSize);

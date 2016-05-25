@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="DatabaseLocal" Class="DataClassesTMLDBDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\DatabaseLocal.mdf;Integrated Security=True" SettingsObjectName="ICE_Import.Properties.Settings" SettingsPropertyName="LocalDatabaseConnectionString" Provider="System.Data.SqlClient" />
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="TMLDB" Class="DataClassesTMLDBDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=h9ggwlagd1.database.windows.net;Initial Catalog=TMLDB;User ID=dataupdate;Encrypt=False;TrustServerCertificate=True" SettingsObjectName="ICE_Import.Properties.Settings" SettingsPropertyName="TMLDBConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="cqgdb.tblinstruments" Member="tblinstruments">
     <Type Name="tblinstrument">
       <Column Name="idinstrument" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -157,6 +157,26 @@
       <Column Name="price" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="impliedvol" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="timetoexpinyears" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="cqgdb.tbloptioninputdata" Member="tbloptioninputdatas">
+    <Type Name="tbloptioninputdata">
+      <Column Name="idoptioninputdata" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="idoptioninputsymbol" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="optioninputdatetime" Type="System.DateTime" DbType="DateTime2 NOT NULL" CanBeNull="false" />
+      <Column Name="optioninputopen" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="optioninputhigh" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="optioninputlow" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="optioninputclose" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="cqgdb.tbloptioninputsymbols" Member="tbloptioninputsymbols">
+    <Type Name="tbloptioninputsymbol">
+      <Column Name="idoptioninputsymbol" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="optioninputcqgsymbol" Type="System.String" DbType="VarChar(45) NOT NULL" CanBeNull="false" />
+      <Column Name="idinstrument" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="idoptioninputtype" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="multiplier" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
   <Function Name="cqgdb.sp_updateContractTblFromSpanUpsert" Method="sp_updateContractTblFromSpanUpsert">
