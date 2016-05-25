@@ -234,7 +234,7 @@ namespace ICE_Import
                     double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
                         option.OptionType,
                         1.56,
-                        Utilities.NormalizePrice(option.StrikePrice.GetValueOrDefault()),
+                        Utilities.NormalizePrice(option.StrikePrice),
                         0.5,
                         r,
                         Utilities.NormalizePrice(option.SettlementPrice.GetValueOrDefault()),
