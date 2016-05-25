@@ -90,10 +90,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DataClassesTMLDB.dbml</DependentUpon>
     </Compile>
-    <Compile Include="PushDataToDBWithSPs.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="StoredProcsSwitch.cs" />
     <Compile Include="MonthCodes.cs" />
     <Compile Include="BgWorkerOptions.cs">
       <SubType>Form</SubType>
@@ -123,7 +119,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities.cs" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="DataClassesTMLDB.dbml.layout">
       <DependentUpon>DataClassesTMLDB.dbml</DependentUpon>
     </None>
@@ -147,7 +142,6 @@
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>DataClassesTMLDB.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-      <LastGenOutput>DataClassesTMLDB.designer.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
