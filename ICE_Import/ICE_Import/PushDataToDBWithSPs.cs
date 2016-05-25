@@ -14,11 +14,10 @@ namespace ICE_Import
         /// </summary>
         async Task PushDataToDBWithSPs(CancellationToken ct)
         {
-            progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = ParsedData.FutureRecords.Length;
+            progressBar.Maximum = ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
             {
-                progressBarLoad.Maximum += ParsedData.OptionRecords.Length;
+                progressBar.Maximum += ParsedData.OptionRecords.Length;
             }
 
             DateTime start = DateTime.Now;
@@ -87,13 +86,6 @@ namespace ICE_Import
                         future.StripName.Year,
                         (long)future.Volume.GetValueOrDefault(),
                         (long)future.OpenInterest.GetValueOrDefault());
-
-                }
-                catch (OperationCanceledException cancel)
-                {
-                    log += string.Format("Cancel message from {0} pushing {1}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
-                    log += cancel.Message + "\n";
-                    break;
                 }
 #if !DEBUG
                 catch (Exception ex)
@@ -111,7 +103,7 @@ namespace ICE_Import
                             "Pushed {0} entries to {1} {2}TBLCONTRACT table",
                             spGlobalCount, DatabaseName, TablesPrefix);
                     }
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, spGlobalCount);
+                    UpdateFormFromAsyncTask(log, spGlobalCount);
                     log = string.Empty;
                 }
             }
@@ -186,12 +178,6 @@ namespace ICE_Import
                         impliedvol,
                         futureYear - expiranteYear);
                 }
-                catch (OperationCanceledException cancel)
-                {
-                    log += string.Format("Cancel message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n", DatabaseName, TablesPrefix);
-                    log += cancel.Message + "\n";
-                    break;
-                }
 #if !DEBUG
                 catch (Exception ex)
                 {
@@ -211,7 +197,7 @@ namespace ICE_Import
                     {
                         log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", spGlobalCount, DatabaseName, TablesPrefix);
                     }
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, spGlobalCount);
+                    UpdateFormFromAsyncTask(log, spGlobalCount);
                     log = string.Empty;
                 }
             }

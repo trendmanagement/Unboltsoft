@@ -105,7 +105,7 @@
     <Compile Include="EntityNames.cs" />
     <Compile Include="OptionCalcs.cs" />
     <Compile Include="ParsedData.cs" />
-    <Compile Include="PushToDB.cs">
+    <Compile Include="PushDataToDBWithSPsAsync.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="EOD_Futures_578.cs" />

@@ -42,11 +42,10 @@ namespace ICE_Import
             int number;
             int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
             //currentPercent = 0;
-            progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = 2 * ParsedData.FutureRecords.Length;
+            progressBar.Maximum = 2 * ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
             {
-                progressBarLoad.Maximum += ParsedData.OptionRecords.Length;
+                progressBar.Maximum += ParsedData.OptionRecords.Length;
             }
 
             DateTime start = DateTime.Now;
@@ -208,7 +207,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, globalCount);
+                    UpdateFormFromAsyncTask(log, globalCount);
                     log = string.Empty;
                 }
             }
@@ -309,7 +308,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, globalCount);
+                    UpdateFormFromAsyncTask(log, globalCount);
                     log = string.Empty;
                 }
             }
@@ -576,7 +575,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, globalCount);
+                    UpdateFormFromAsyncTask(log, globalCount);
                     log = string.Empty;
                 }
             }
