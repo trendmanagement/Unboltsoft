@@ -159,10 +159,10 @@ namespace ICE_Import
                     double impliedvol = OptionCalcs.CalculateOptionVolatility(
                         option.OptionType,
                         1.56,
-                        Utilities.NormalizePrice(option.StrikePrice.GetValueOrDefault()),
+                        Utilities.NormalizePrice(option.StrikePrice),
                         0.5,
                         0.08,
-                        Utilities.NormalizePrice(option.SettlementPrice.GetValueOrDefault()));
+                        Utilities.NormalizePrice(option.SettlementPrice));
 
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                     double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;

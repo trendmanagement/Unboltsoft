@@ -29,7 +29,7 @@
     <classShape Id="6e48ef57-9259-46a2-80cf-9b759d07d7a9" absoluteBounds="11.25, 2, 2, 0.8093896484375">
       <DataClassMoniker Name="/DataClassesTMLDBDataContext/tbloptiondata" />
       <nestedChildShapes>
-        <elementListCompartment Id="8e889062-9efe-4147-8b3a-7225d1a80e07" isExpanded="false" absoluteBounds="11.265, 2.46, 1.9700000000000002, 0.2493896484375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="8e889062-9efe-4147-8b3a-7225d1a80e07" absoluteBounds="11.265, 2.46, 1.9700000000000002, 0.2493896484375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
     <classShape Id="82279e36-fd4a-478d-8cc0-086b7aab3718" absoluteBounds="4.5, 5.25, 2, 2.3478011067708335">
