@@ -1,4 +1,4 @@
-CREATE PROCEDURE [cqgdb].[test_SPO]
+CREATE PROCEDURE [cqgdb].[SPO]
 	@optionname VARCHAR (45), 
 	@optionmonth CHAR (1), 
 	@optionmonthint INT, 
@@ -10,10 +10,10 @@ CREATE PROCEDURE [cqgdb].[test_SPO]
 	@cqgsymbol VARCHAR (45)
 AS
 
-MERGE INTO cqgdb.test_tbloptions as tgt_tbloptions
+MERGE INTO cqgdb.tbloptions as tgt_tbloptions
 USING
 
-	(SELECT * FROM [cqgdb].test_tblcontracts WHERE month = @optionmonth AND year = @optionyear)
+	(SELECT * FROM [cqgdb].tblcontracts WHERE month = @optionmonth AND year = @optionyear)
 	AS src_tbloptions
 	ON tgt_tbloptions.idcontract = src_tbloptions.idcontract
 	AND tgt_tbloptions.optionmonthint = @optionmonthint

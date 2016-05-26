@@ -33,8 +33,8 @@ namespace ICE_Import
         static Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
         static ConnectionStringsSection csSection = config.ConnectionStrings;
         string localConnectionStringPattern = csSection.ConnectionStrings[1].ConnectionString;
-        string remoteConnectionStringPatternTMBLDB_Copy = csSection.ConnectionStrings[2].ConnectionString;
-        string remoteConnectionStringPatternTMBLDB = csSection.ConnectionStrings[3].ConnectionString;
+        string remoteConnectionStringPatternTMLDB_Copy = csSection.ConnectionStrings[2].ConnectionString;
+        string remoteConnectionStringPatternTMLDB = csSection.ConnectionStrings[3].ConnectionString;
 
         //Risk-free interest rate
         double r = 0.08;
@@ -160,7 +160,7 @@ namespace ICE_Import
             DataClassesTMLDBDataContext context;
             if (DatabaseName != "TMLDB")
             {
-                context = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMBLDB);
+                context = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMLDB);
             }
             else
             {
@@ -323,13 +323,13 @@ namespace ICE_Import
                     // TMLDB_Copy
                     DatabaseName = "TMLDB_Copy";
                     IsLocalDB = false;
-                    ConnectionString = remoteConnectionStringPatternTMBLDB_Copy;
+                    ConnectionString = remoteConnectionStringPatternTMLDB_Copy;
                     break;
                 case 3:
                     // TMLDB
                     DatabaseName = "TMLDB";
                     IsLocalDB = false;
-                    ConnectionString = remoteConnectionStringPatternTMBLDB;
+                    ConnectionString = remoteConnectionStringPatternTMLDB;
                     break;
                 default:
                     throw new ArgumentException();

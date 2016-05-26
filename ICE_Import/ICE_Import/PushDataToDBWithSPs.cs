@@ -18,7 +18,7 @@ namespace ICE_Import
         {
             if (DatabaseName != "TMLDB")
             {
-                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMBLDB);
+                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMLDB);
             }
             progressBar.Maximum = ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
@@ -81,7 +81,7 @@ namespace ICE_Import
                 {
                     if (DatabaseName == "TMLDB")
                     {
-                        Context.test_SPF_Mod(
+                        StoredProcsSwitch.SPF_Mod(
                             contractname,
                             monthchar,
                             future.StripName.Month,
@@ -91,20 +91,24 @@ namespace ICE_Import
                     }
                     else
                     {
-                        DateTime expirationtime = new DateTime();
-                        try
+                        var records = remoteContext.tblcontractexpirations.Where(
+                            item =>
+                            item.optionmonthint == future.StripName.Month &&
+                            item.optionyear == future.StripName.Year &&
+                            item.idinstrument == idinstrument).ToArray();
+
+                        DateTime expirationtime;
+                        if (records.Length == 0)
                         {
-                            expirationtime = remoteContext.tblcontractexpirations.Where(item =>
-                                item.optionmonthint == future.StripName.Month 
-                                && item.optionyear == future.StripName.Year 
-                                && item.idinstrument == idinstrument).ToArray()[0].expirationdate;
+                            log += string.Format("Failed to find expiration date for future with month = {0}, year = {1}, idinstrument = {2} in tblcontractexpirations", future.StripName.Month, future.StripName.Year, idinstrument);
+                            expirationtime = new DateTime();
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            log += ex.Message;
+                            expirationtime = records[0].expirationdate;
                         }
 
-                        Context.test_SPF(
+                        StoredProcsSwitch.SPF(
                             contractname,
                             monthchar,
                             future.StripName.Month,
@@ -114,7 +118,7 @@ namespace ICE_Import
                             contractname);
                     }
 
-                    Context.test_SPDF(
+                    StoredProcsSwitch.SPDF(
                         future.Date,
                         future.SettlementPrice.GetValueOrDefault(),
                         monthchar,
@@ -190,14 +194,14 @@ namespace ICE_Import
                         Utilities.NormalizePrice(option.StrikePrice),
                         0.5,
                         r,
-                        Utilities.NormalizePrice(option.SettlementPrice.GetValueOrDefault()),
+                        Utilities.NormalizePrice(option.SettlementPrice),
                         tickSize);
                     #endregion
 
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                     double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
 
-                    Context.test_SPO_Mod(
+                    StoredProcsSwitch.SPO_Mod(
                         optionName,
                         monthchar,
                         option.StripName.Month,
@@ -207,7 +211,7 @@ namespace ICE_Import
                         idinstrument,
                         optionName);
 
-                    Context.test_SPOD(
+                    StoredProcsSwitch.SPOD(
                         monthchar,
                         option.StripName.Year,
                         option.Date,

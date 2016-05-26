@@ -22,7 +22,7 @@ namespace ICE_Import
             progressBar.Maximum = 2 * ParsedData.FutureRecords.Length;
             if (DatabaseName != "TMLDB")
             {
-                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMBLDB);
+                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMLDB);
             }
             if (!ParsedData.FuturesOnly)
             {
@@ -531,7 +531,7 @@ namespace ICE_Import
                         Utilities.NormalizePrice(option.StrikePrice),
                         0.5,
                         r,
-                        Utilities.NormalizePrice(option.SettlementPrice.GetValueOrDefault()),
+                        Utilities.NormalizePrice(option.SettlementPrice),
                         tickSize);
                     #endregion
 
@@ -590,7 +590,7 @@ namespace ICE_Import
             progressBar.Maximum = 2 * ParsedData.FutureRecords.Length;
             if (DatabaseName != "TMLDB")
             {
-                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMBLDB);
+                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMLDB);
             }
             if (!ParsedData.FuturesOnly)
             {
@@ -1099,7 +1099,7 @@ namespace ICE_Import
                         Utilities.NormalizePrice(option.StrikePrice),
                         0.5,
                         r,
-                        Utilities.NormalizePrice(option.SettlementPrice.GetValueOrDefault()),
+                        Utilities.NormalizePrice(option.SettlementPrice),
                         tickSize);
                     #endregion
 

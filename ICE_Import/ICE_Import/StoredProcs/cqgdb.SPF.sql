@@ -1,4 +1,4 @@
-CREATE PROCEDURE [cqgdb].[test_SPF]
+CREATE PROCEDURE [cqgdb].[SPF]
 	@contractname varchar(45),
 	@month char,
 	@monthint int,
@@ -10,7 +10,7 @@ AS
 
 SET NOCOUNT ON;	
 
-MERGE INTO cqgdb.test_tblcontracts as tgt_tblcontracts
+MERGE INTO cqgdb.tblcontracts as tgt_tblcontracts
 
 USING
 	(SELECT @month, @year, @idinstrument)

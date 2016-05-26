@@ -129,7 +129,7 @@ namespace ICE_Import
                     Utilities.NormalizePrice(option.StrikePrice),
                     0.5,
                     r,
-                    Utilities.NormalizePrice(option.SettlementPrice.GetValueOrDefault()),
+                    Utilities.NormalizePrice(option.SettlementPrice),
                     tickSize);
                 #endregion
 
