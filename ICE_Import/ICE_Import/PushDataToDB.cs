@@ -26,15 +26,15 @@ namespace ICE_Import
             globalCount = 0;
             int number;
             int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
-            progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = 2 * ParsedData.FutureRecords.Length;
+            progressBar.Minimum = 0;
+            progressBar.Maximum = 2 * ParsedData.FutureRecords.Length;
 			if (DatabaseName != "TMLDB")
             {
                 remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMBLDB);
             }
             if (!ParsedData.FuturesOnly)
             {
-                progressBarLoad.Maximum += ParsedData.OptionRecords.Length;
+                progressBar.Maximum += ParsedData.OptionRecords.Length;
             }
 
             DateTime start = DateTime.Now;
@@ -595,15 +595,15 @@ namespace ICE_Import
             globalCount = 0;
             int number;
             int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
-            progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = 2 * ParsedData.FutureRecords.Length;
+            progressBar.Minimum = 0;
+            progressBar.Maximum = 2 * ParsedData.FutureRecords.Length;
 			if (DatabaseName != "TMLDB")
             {
                 remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMBLDB);
             }
             if (!ParsedData.FuturesOnly)
             {
-                progressBarLoad.Maximum += ParsedData.OptionRecords.Length;
+                progressBar.Maximum += ParsedData.OptionRecords.Length;
             }
 
             DateTime start = DateTime.Now;
