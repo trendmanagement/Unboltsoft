@@ -23,6 +23,8 @@ namespace ICE_Import
 
         bool IsStoredProcs;
 
+        bool IsAsyncUpdate;
+
         string ConnectionString;
         DataClassesTMLDBDataContext Context;
         DataClassesTMLDBDataContext remoteContext;
@@ -43,13 +45,15 @@ namespace ICE_Import
             InitializeComponent();
 
             this.Resize += FormDB_Resize;
-            ParsedData.ParseComplete += ParsedData_ParseComplete;
             this.LogMessage += FormDB_LogMessage;
             this.FormClosed += FormDB_FormClosed;
-            
+            ParsedData.ParseComplete += ParsedData_ParseComplete;
+            AsyncTaskListener.Updated += AsyncTaskListener_Updated;
+
             rb_DB_CheckedChanged(rb_LocalDB, null);
             cb_TestTables_CheckedChanged(null, null);
             cb_StoredProcs_CheckedChanged(null, null);
+            cb_AsyncUpdate_CheckedChanged(null, null);
         }
 
         private void FormDB_FormClosed(object sender, FormClosedEventArgs e)
@@ -96,12 +100,12 @@ namespace ICE_Import
                 X = buttonCancel.Location.X,
                 Y = this.Height - 175
             };
-            progressBarLoad.Location = new Point()
+            progressBar.Location = new Point()
             {
-                X = progressBarLoad.Location.X,
+                X = progressBar.Location.X,
                 Y = this.Height - 146
             };
-            progressBarLoad.Width = this.Width - 40;
+            progressBar.Width = this.Width - 40;
             buttonToCSV.Location = new Point()
             {
                 X = this.Width - 25 - buttonToCSV.Width,
@@ -188,8 +192,15 @@ namespace ICE_Import
             {
                 if (IsStoredProcs)
                 {
-                    // Push all data to DB with stored procedures. Update either test and non-test tables.
-                    await PushDataToDBWithSPs(cts.Token);
+                    if (IsAsyncUpdate)
+                    {
+                        await PushDataToDBWithSPsAsync(cts.Token);
+                    }
+                    else
+                    {
+                        // Update either test and non-test tables
+                        await PushDataToDBWithSPs(cts.Token);
+                    }
                 }
                 else
                 {
@@ -223,8 +234,6 @@ namespace ICE_Import
             }
 
             EnableDisable(true);
-
-            progressBarLoad.Value = 0;
 
             try
             {
@@ -265,8 +274,9 @@ namespace ICE_Import
             rb_LocalDB.Enabled = !start;
             rb_TMLDBCopy.Enabled = !start;
             rb_TMLDB.Enabled = !start;
-            cb_StoredProcs.Enabled = !start;
             cb_TestTables.Enabled = !start;
+            cb_StoredProcs.Enabled = !start;
+            cb_AsyncUpdate.Enabled = !start;
             if (start)
             {
                 buttonPush.Enabled = false;
@@ -277,10 +287,12 @@ namespace ICE_Import
                 {
                     buttonPush.Enabled = true;
                 }
+                labelRPS.Text = string.Empty;
             }
             buttonPull.Enabled = !start;
             buttonCancel.Enabled = start;
             buttonToCSV.Enabled = !start;
+            progressBar.Value = 0;
         }
 
         private void rb_DB_CheckedChanged(object sender, EventArgs e)
@@ -360,25 +372,56 @@ namespace ICE_Import
         {
             IsStoredProcs = cb_StoredProcs.Checked;
 
+            cb_AsyncUpdate.Enabled = IsStoredProcs;
+            if (!IsStoredProcs)
+            {
+                cb_AsyncUpdate.Checked = false;
+            }
+
             string storedCoded = IsStoredProcs ? "STORED" : "CODED";
             LogMessage(string.Format("You selected {0} procedures", storedCoded));
         }
 
-        private void UpdateTextBoxAndProgressBarFromAsyncTask(string message, int progress)
+        private void cb_AsyncUpdate_CheckedChanged(object sender, EventArgs e)
+        {
+            IsAsyncUpdate = cb_AsyncUpdate.Checked;
+
+            string asyncSync = IsAsyncUpdate ? "ASYNCHRONOUS" : "SYNCHRONOUS";
+            LogMessage(string.Format("You selected {0} update", asyncSync));
+        }
+
+        private void AsyncTaskListener_Updated(
+            string message = null,
+            int progress = -1,
+            double rps = double.NaN)
         {
             Action action = new Action(
                 () =>
                 {
-                    if (message != string.Empty)
+                    if (!string.IsNullOrWhiteSpace(message))
                     {
                         richTextBoxLog.Text += message + "\n";
                         richTextBoxLog.Select(richTextBoxLog.Text.Length, richTextBoxLog.Text.Length);
                         richTextBoxLog.ScrollToCaret();
                     }
-                    progressBarLoad.Value = progress;
+                    if (progress != -1)
+                    {
+                        progressBar.Value = progress;
+                    }
+                    if (!double.IsNaN(rps))
+                    {
+                        labelRPS.Text = Math.Round(rps).ToString();
+                    }
                 });
 
-            Invoke(action);
+            try
+            {
+                Invoke(action);
+            }
+            catch (ObjectDisposedException)
+            {
+                // User closed the form
+            }
         }
 
         private bool ValidateOptions(bool isPush = false)
@@ -407,5 +450,9 @@ namespace ICE_Import
             }
         }
 
+        private void LogElapsedTime(TimeSpan timeSpan)
+        {
+            LogMessage("Elapsed time: " + timeSpan);
+        }
     }
 }

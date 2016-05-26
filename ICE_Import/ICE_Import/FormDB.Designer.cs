@@ -30,7 +30,7 @@
         {
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.buttonPush = new System.Windows.Forms.Button();
-            this.progressBarLoad = new System.Windows.Forms.ProgressBar();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonPull = new System.Windows.Forms.Button();
             this.tabPageDailyContract = new System.Windows.Forms.TabPage();
@@ -50,6 +50,9 @@
             this.rb_LocalDB = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.cb_TestTables = new System.Windows.Forms.CheckBox();
+            this.cb_AsyncUpdate = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.labelRPS = new System.Windows.Forms.Label();
             this.tabPageDailyContract.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDailyContract)).BeginInit();
             this.tabPageContract.SuspendLayout();
@@ -73,7 +76,7 @@
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.ReadOnly = true;
             this.richTextBoxLog.Size = new System.Drawing.Size(664, 90);
-            this.richTextBoxLog.TabIndex = 9;
+            this.richTextBoxLog.TabIndex = 11;
             this.richTextBoxLog.Text = "";
             // 
             // buttonPush
@@ -86,12 +89,12 @@
             this.buttonPush.UseVisualStyleBackColor = true;
             this.buttonPush.Click += new System.EventHandler(this.buttonPush_Click);
             // 
-            // progressBarLoad
+            // progressBar
             // 
-            this.progressBarLoad.Location = new System.Drawing.Point(12, 358);
-            this.progressBarLoad.Name = "progressBarLoad";
-            this.progressBarLoad.Size = new System.Drawing.Size(640, 10);
-            this.progressBarLoad.TabIndex = 8;
+            this.progressBar.Location = new System.Drawing.Point(12, 358);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(640, 10);
+            this.progressBar.TabIndex = 10;
             // 
             // buttonCancel
             // 
@@ -282,6 +285,7 @@
             // 
             this.groupBox2.Controls.Add(this.cb_TestTables);
             this.groupBox2.Controls.Add(this.cb_StoredProcs);
+            this.groupBox2.Controls.Add(this.cb_AsyncUpdate);
             this.groupBox2.Location = new System.Drawing.Point(122, 257);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(148, 95);
@@ -302,17 +306,49 @@
             this.cb_TestTables.UseVisualStyleBackColor = true;
             this.cb_TestTables.CheckedChanged += new System.EventHandler(this.cb_TestTables_CheckedChanged);
             // 
+            // cb_AsyncUpdate
+            // 
+            this.cb_AsyncUpdate.AutoSize = true;
+            this.cb_AsyncUpdate.Checked = true;
+            this.cb_AsyncUpdate.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cb_AsyncUpdate.Location = new System.Drawing.Point(6, 67);
+            this.cb_AsyncUpdate.Name = "cb_AsyncUpdate";
+            this.cb_AsyncUpdate.Size = new System.Drawing.Size(110, 17);
+            this.cb_AsyncUpdate.TabIndex = 2;
+            this.cb_AsyncUpdate.Text = "Do Async Update";
+            this.cb_AsyncUpdate.UseVisualStyleBackColor = true;
+            this.cb_AsyncUpdate.CheckedChanged += new System.EventHandler(this.cb_AsyncUpdate_CheckedChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(577, 334);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(32, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "RPS:";
+            // 
+            // labelRPS
+            // 
+            this.labelRPS.AutoSize = true;
+            this.labelRPS.Location = new System.Drawing.Point(615, 334);
+            this.labelRPS.Name = "labelRPS";
+            this.labelRPS.Size = new System.Drawing.Size(0, 13);
+            this.labelRPS.TabIndex = 9;
+            // 
             // FormDB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 465);
+            this.Controls.Add(this.labelRPS);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.buttonToCSV);
             this.Controls.Add(this.buttonPull);
             this.Controls.Add(this.buttonCancel);
-            this.Controls.Add(this.progressBarLoad);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.buttonPush);
             this.Controls.Add(this.richTextBoxLog);
             this.Controls.Add(this.tabControl);
@@ -335,13 +371,14 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
         private System.Windows.Forms.RichTextBox richTextBoxLog;
         private System.Windows.Forms.Button buttonPush;
-        private System.Windows.Forms.ProgressBar progressBarLoad;
+        private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonPull;
         private System.Windows.Forms.TabPage tabPageDailyContract;
@@ -361,5 +398,8 @@
         private System.Windows.Forms.RadioButton rb_LocalDB;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox cb_TestTables;
+        private System.Windows.Forms.CheckBox cb_AsyncUpdate;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelRPS;
     }
 }
