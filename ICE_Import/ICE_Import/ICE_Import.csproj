@@ -53,6 +53,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml.Linq" />
@@ -67,12 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BgWorkerFutures.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PullDataFromDB.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PullDataFromDB.tt</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PushDataToDB.cs">

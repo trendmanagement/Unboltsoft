@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Configuration;
 
 namespace ICE_Import
 {
@@ -163,73 +164,9 @@ namespace ICE_Import
                     // currentOptionPrice               - option.SettlementPrice 
                     // tickSize                         - from table tblinstruments (secondaryoptionticksize or optionticksize)
 
-                    double r = 0.08;
 
-                    double tickSize;
 
-                    string conString =
-                        @"Server=tcp:h9ggwlagd1.database.windows.net,1433;
-                        Database=TMLDB;
-                        User ID=dataupdate@h9ggwlagd1;
-                        Password=6dcEpZKSFRNYk^AN;
-                        Encrypt=True;
-                        TrustServerCertificate=False;
-                        Connection Timeout=30;";
-
-                    DataClassesTMLDBDataContext remoteContext = new DataClassesTMLDBDataContext(conString);
-
-                    var secondaryoptionticksize = remoteContext.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].secondaryoptionticksize;
-
-                    if (secondaryoptionticksize > 0)
-                    {
-                        tickSize = secondaryoptionticksize;
-                    }
-                    else
-                    {
-                        tickSize = remoteContext.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].optionticksize;
-                    }
-
-                    double optioninputclose = 0;
-                    try
-                    {
-                        var idoptioninputsymbol = remoteContext.tbloptioninputsymbols.Where(item2 =>
-                            item2.idoptioninputtype == 1).ToArray()[0].idoptioninputsymbol;
-                        tbloptioninputdata [] tbloptioninputdatas = remoteContext.tbloptioninputdatas.Where(item =>
-                            item.idoptioninputsymbol == idoptioninputsymbol).ToArray();
-                        DateTime optioninputdatetime = new DateTime();
-                        for(int i = 0; i < tbloptioninputdatas.Length; i++)
-                        {
-                            if(i != 0)
-                            {
-                                if (optioninputdatetime < tbloptioninputdatas[i].optioninputdatetime)
-                                {
-                                    optioninputdatetime = tbloptioninputdatas[i].optioninputdatetime;
-                                }
-                            }
-                            else
-                            {
-                                optioninputdatetime = tbloptioninputdatas[i].optioninputdatetime;
-                            }
-                        }
-
-                        //--?-- From where this varable in query
-                        var OPTION_INPUT_TYPE_RISK_FREE_RATE = 1;
-
-                        //--?-- What difference between idoptioninputsymbol and idoptioninputsymbol2
-                        var idoptioninputsymbol2 = remoteContext.tbloptioninputsymbols.Where(item2 =>
-                            item2.idoptioninputtype == OPTION_INPUT_TYPE_RISK_FREE_RATE).ToArray()[0].idoptioninputsymbol;
-
-                        optioninputclose = remoteContext.tbloptioninputdatas.Where(item =>
-                            item.idoptioninputsymbol == idoptioninputsymbol2
-                                && item.optioninputdatetime == optioninputdatetime).ToArray()[0].optioninputclose;
-
-                    }
-                    catch(Exception ex)
-                    {
-                        log += ex.Message + "\n";
-                    }
-
-                    r = (optioninputclose != 0) ? optioninputclose : r;
+                    //r = (optioninputclose != 0) ? optioninputclose : r;
 
                     double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
                         option.OptionType,
@@ -293,5 +230,82 @@ namespace ICE_Import
                 }
             }
         }
+
+        private double R(DataClassesTMLDBDataContext context)
+        {
+            double optioninputclose = 0;
+            try
+            {
+                var idoptioninputsymbol = context.tbloptioninputsymbols.Where(item2 =>
+                    item2.idoptioninputtype == 1).ToArray()[0].idoptioninputsymbol;
+                tbloptioninputdata[] tbloptioninputdatas = context.tbloptioninputdatas.Where(item =>
+                   item.idoptioninputsymbol == idoptioninputsymbol).ToArray();
+                DateTime optioninputdatetime = new DateTime();
+                for (int i = 0; i < tbloptioninputdatas.Length; i++)
+                {
+                    if (i != 0)
+                    {
+                        if (optioninputdatetime < tbloptioninputdatas[i].optioninputdatetime)
+                        {
+                            optioninputdatetime = tbloptioninputdatas[i].optioninputdatetime;
+                        }
+                    }
+                    else
+                    {
+                        optioninputdatetime = tbloptioninputdatas[i].optioninputdatetime;
+                    }
+                }
+
+                //--?-- From where this varable in query
+                var OPTION_INPUT_TYPE_RISK_FREE_RATE = 1;
+
+                //--?-- What difference between idoptioninputsymbol and idoptioninputsymbol2
+                var idoptioninputsymbol2 = context.tbloptioninputsymbols.Where(item2 =>
+                    item2.idoptioninputtype == OPTION_INPUT_TYPE_RISK_FREE_RATE).ToArray()[0].idoptioninputsymbol;
+
+                optioninputclose = context.tbloptioninputdatas.Where(item =>
+                    item.idoptioninputsymbol == idoptioninputsymbol2
+                        && item.optioninputdatetime == optioninputdatetime).ToArray()[0].optioninputclose;
+
+            }
+            catch (Exception ex)
+            {
+                LogMessage(ex.Message);
+            }
+            finally
+            {
+                LogMessage(string.Format("Risk = {0}", optioninputclose));
+            }
+
+            return optioninputclose;
+        }
+
+        private double TickSize(DataClassesTMLDBDataContext context)
+        {
+            try
+            {
+                var secondaryoptionticksize = context.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].secondaryoptionticksize;
+
+                if (secondaryoptionticksize > 0)
+                {
+                    tickSize = secondaryoptionticksize;
+                }
+                else
+                {
+                    tickSize = context.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].optionticksize;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogMessage(ex.Message);
+            }
+            finally
+            {
+                LogMessage(string.Format("Tick size = {0}", tickSize));
+            }
+
+            return tickSize;
+        }
+
     }
 }

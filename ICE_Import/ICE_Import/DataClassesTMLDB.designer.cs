@@ -63,6 +63,9 @@ namespace ICE_Import
     partial void Inserttbloptioninputsymbol(tbloptioninputsymbol instance);
     partial void Updatetbloptioninputsymbol(tbloptioninputsymbol instance);
     partial void Deletetbloptioninputsymbol(tbloptioninputsymbol instance);
+    partial void Inserttblcontractexpiration(tblcontractexpiration instance);
+    partial void Updatetblcontractexpiration(tblcontractexpiration instance);
+    partial void Deletetblcontractexpiration(tblcontractexpiration instance);
     #endregion
 		
 		public DataClassesTMLDBDataContext() : 
@@ -183,6 +186,14 @@ namespace ICE_Import
 			}
 		}
 		
+		public System.Data.Linq.Table<tblcontractexpiration> tblcontractexpirations
+		{
+			get
+			{
+				return this.GetTable<tblcontractexpiration>();
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.sp_updateContractTblFromSpanUpsert")]
 		public ISingleResult<sp_updateContractTblFromSpanUpsertResult> sp_updateContractTblFromSpanUpsert([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
 		{
@@ -231,15 +242,8 @@ namespace ICE_Import
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, expirationdate, cqgsymbol);
 			return ((int)(result.ReturnValue));
 		}
-
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name = "cqgdb.test_SPDF")]
-        public int test_SPDF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType = "Date")] System.Nullable<System.DateTime> spanDate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType = "Float")] System.Nullable<double> settlementPrice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType = "Char(1)")] System.Nullable<char> monthChar, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType = "Int")] System.Nullable<int> yearInt, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType = "BigInt")] System.Nullable<long> volume, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType = "BigInt")] System.Nullable<long> openinterest)
-        {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), spanDate, settlementPrice, monthChar, yearInt, volume, openinterest);
-            return ((int)(result.ReturnValue));
-        }
-
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPO")]
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPO")]
 		public int test_SPO([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, expirationdate, cqgsymbol);
@@ -253,7 +257,12 @@ namespace ICE_Import
 			return ((int)(result.ReturnValue));
 		}
 		
-		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPDF")]
+		public int test_SPDF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> spanDate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> settlementPrice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> monthChar, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> yearInt, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> volume, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> openinterest)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), spanDate, settlementPrice, monthChar, yearInt, volume, openinterest);
+			return ((int)(result.ReturnValue));
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tblinstruments")]
@@ -3889,6 +3898,188 @@ namespace ICE_Import
 					this._multiplier = value;
 					this.SendPropertyChanged("multiplier");
 					this.OnmultiplierChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tblcontractexpirations")]
+	public partial class tblcontractexpiration : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private long _idoptionexpirationdates;
+		
+		private short _contracttype;
+		
+		private long _idinstrument;
+		
+		private int _optionyear;
+		
+		private int _optionmonthint;
+		
+		private System.DateTime _expirationdate;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnidoptionexpirationdatesChanging(long value);
+    partial void OnidoptionexpirationdatesChanged();
+    partial void OncontracttypeChanging(short value);
+    partial void OncontracttypeChanged();
+    partial void OnidinstrumentChanging(long value);
+    partial void OnidinstrumentChanged();
+    partial void OnoptionyearChanging(int value);
+    partial void OnoptionyearChanged();
+    partial void OnoptionmonthintChanging(int value);
+    partial void OnoptionmonthintChanged();
+    partial void OnexpirationdateChanging(System.DateTime value);
+    partial void OnexpirationdateChanged();
+    #endregion
+		
+		public tblcontractexpiration()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptionexpirationdates", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public long idoptionexpirationdates
+		{
+			get
+			{
+				return this._idoptionexpirationdates;
+			}
+			set
+			{
+				if ((this._idoptionexpirationdates != value))
+				{
+					this.OnidoptionexpirationdatesChanging(value);
+					this.SendPropertyChanging();
+					this._idoptionexpirationdates = value;
+					this.SendPropertyChanged("idoptionexpirationdates");
+					this.OnidoptionexpirationdatesChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_contracttype", DbType="SmallInt NOT NULL")]
+		public short contracttype
+		{
+			get
+			{
+				return this._contracttype;
+			}
+			set
+			{
+				if ((this._contracttype != value))
+				{
+					this.OncontracttypeChanging(value);
+					this.SendPropertyChanging();
+					this._contracttype = value;
+					this.SendPropertyChanged("contracttype");
+					this.OncontracttypeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL")]
+		public long idinstrument
+		{
+			get
+			{
+				return this._idinstrument;
+			}
+			set
+			{
+				if ((this._idinstrument != value))
+				{
+					this.OnidinstrumentChanging(value);
+					this.SendPropertyChanging();
+					this._idinstrument = value;
+					this.SendPropertyChanged("idinstrument");
+					this.OnidinstrumentChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionyear", DbType="Int NOT NULL")]
+		public int optionyear
+		{
+			get
+			{
+				return this._optionyear;
+			}
+			set
+			{
+				if ((this._optionyear != value))
+				{
+					this.OnoptionyearChanging(value);
+					this.SendPropertyChanging();
+					this._optionyear = value;
+					this.SendPropertyChanged("optionyear");
+					this.OnoptionyearChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmonthint", DbType="Int NOT NULL")]
+		public int optionmonthint
+		{
+			get
+			{
+				return this._optionmonthint;
+			}
+			set
+			{
+				if ((this._optionmonthint != value))
+				{
+					this.OnoptionmonthintChanging(value);
+					this.SendPropertyChanging();
+					this._optionmonthint = value;
+					this.SendPropertyChanged("optionmonthint");
+					this.OnoptionmonthintChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_expirationdate", DbType="Date NOT NULL")]
+		public System.DateTime expirationdate
+		{
+			get
+			{
+				return this._expirationdate;
+			}
+			set
+			{
+				if ((this._expirationdate != value))
+				{
+					this.OnexpirationdateChanging(value);
+					this.SendPropertyChanging();
+					this._expirationdate = value;
+					this.SendPropertyChanged("expirationdate");
+					this.OnexpirationdateChanged();
 				}
 			}
 		}

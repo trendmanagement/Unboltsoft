@@ -179,6 +179,16 @@
       <Column Name="multiplier" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
+  <Table Name="cqgdb.tblcontractexpirations" Member="tblcontractexpirations">
+    <Type Name="tblcontractexpiration">
+      <Column Name="idoptionexpirationdates" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="contracttype" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
+      <Column Name="idinstrument" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="optionyear" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="optionmonthint" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="expirationdate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
   <Function Name="cqgdb.sp_updateContractTblFromSpanUpsert" Method="sp_updateContractTblFromSpanUpsert">
     <Parameter Name="contractname" Type="System.String" DbType="VarChar(45)" />
     <Parameter Name="month" Type="System.Char" DbType="Char(1)" />
