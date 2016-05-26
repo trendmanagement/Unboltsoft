@@ -1,4 +1,9 @@
-CREATE PROCEDURE [cqgdb].[test_SPF]
+<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension=".sql" #>
+<#@ include file="MultipleOutputHelper.ttinclude" #>
+<# string content =
+@"CREATE PROCEDURE [cqgdb].[{0}SPF]
 	@contractname varchar(45),
 	@month char,
 	@monthint int,
@@ -10,7 +15,7 @@ AS
 
 SET NOCOUNT ON;	
 
-MERGE INTO cqgdb.test_tblcontracts as tgt_tblcontracts
+MERGE INTO cqgdb.{0}tblcontracts as tgt_tblcontracts
 
 USING
 	(SELECT @month, @year, @idinstrument)
@@ -41,4 +46,13 @@ WHEN NOT MATCHED THEN
 			@expirationdate,
 			@cqgsymbol);
 
-SET NOCOUNT OFF;
+SET NOCOUNT OFF;"; #>
+<# var manager = Manager.Create(Host, GenerationEnvironment); #>
+<# manager.StartNewFile("cqgdb.test_SPF.sql"); #>
+<# Write(string.Format(content, "test_")); #>
+<# manager.EndBlock(); #>
+<# manager.Process(true); #>
+<# manager.StartNewFile("cqgdb.SPF.sql"); #>
+<# Write(string.Format(content, string.Empty)); #>
+<# manager.EndBlock(); #>
+<# manager.Process(false); #>

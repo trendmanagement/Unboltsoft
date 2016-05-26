@@ -114,22 +114,27 @@ namespace ICE_Import
                     0,
                     idinstrument);
 
+                #region Implied Volatility
                 // callPutFlag                      - tableOption.callorput
                 // S - stock price                  - 1.56
                 // X - strike price of option       - option.StrikePrice
                 // T - time to expiration in years  - 0.5
-                // r - risk-free interest rate      - r(f) = 0.08, foreign risk-free interest rate in the U.S. is 8% per annum
+                // r - risk-free interest rate      - from table tbloptioninputdata
                 // currentOptionPrice               - option.SettlementPrice 
-                double impliedvol = OptionCalcs.CalculateOptionVolatility(
+                // tickSize                         - from table tblinstruments (secondaryoptionticksize or optionticksize)
+
+                double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
                     option.OptionType,
                     1.56,
                     Utilities.NormalizePrice(option.StrikePrice),
                     0.5,
-                    0.08,
-                    Utilities.NormalizePrice(option.SettlementPrice));
+                    r,
+                    Utilities.NormalizePrice(option.SettlementPrice),
+                    tickSize);
+                #endregion
 
                 double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
-                double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
+                double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
 
                 sb.Append("cqgdb.test_SPO ");
                 Utilities.AppendHelper(sb, optionName);
@@ -152,7 +157,7 @@ namespace ICE_Import
                 Utilities.AppendHelper(sb, option.Date);
                 Utilities.AppendHelper(sb, option.StrikePrice.GetValueOrDefault());
                 Utilities.AppendHelper(sb, impliedvol);
-                Utilities.AppendHelper(sb, futureYear - expiranteYear, true);
+                Utilities.AppendHelper(sb, futureYear - expirateYear, true);
 
                 queries.Add(sb.ToString());
 

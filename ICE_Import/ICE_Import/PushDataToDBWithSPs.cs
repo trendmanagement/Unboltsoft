@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Data;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Configuration;
 
 namespace ICE_Import
 {
@@ -12,6 +16,10 @@ namespace ICE_Import
         /// </summary>
         async Task PushDataToDBWithSPs(CancellationToken ct)
         {
+            if (DatabaseName != "TMLDB")
+            {
+                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMLDB);
+            }
             progressBar.Maximum = ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
             {
@@ -71,16 +79,46 @@ namespace ICE_Import
                 string log = string.Empty;
                 try
                 {
-                    Context.test_SPF(
-                        contractname,
-                        monthchar,
-                        future.StripName.Month,
-                        future.StripName.Year,
-                        idinstrument,
-                        future.Date,
-                        contractname);
+                    if (DatabaseName == "TMLDB")
+                    {
+                        StoredProcsSwitch.SPF_Mod(
+                            contractname,
+                            monthchar,
+                            future.StripName.Month,
+                            future.StripName.Year,
+                            idinstrument,
+                            contractname);
+                    }
+                    else
+                    {
+                        var records = remoteContext.tblcontractexpirations.Where(
+                            item =>
+                            item.optionmonthint == future.StripName.Month &&
+                            item.optionyear == future.StripName.Year &&
+                            item.idinstrument == idinstrument).ToArray();
 
-                    Context.test_SPDF(
+                        DateTime expirationtime;
+                        if (records.Length == 0)
+                        {
+                            log += string.Format("Failed to find expiration date for future with month = {0}, year = {1}, idinstrument = {2} in tblcontractexpirations", future.StripName.Month, future.StripName.Year, idinstrument);
+                            expirationtime = new DateTime();
+                        }
+                        else
+                        {
+                            expirationtime = records[0].expirationdate;
+                        }
+
+                        StoredProcsSwitch.SPF(
+                            contractname,
+                            monthchar,
+                            future.StripName.Month,
+                            future.StripName.Year,
+                            idinstrument,
+                            expirationtime,
+                            contractname);
+                    }
+
+                    StoredProcsSwitch.SPDF(
                         future.Date,
                         future.SettlementPrice.GetValueOrDefault(),
                         monthchar,
@@ -141,24 +179,29 @@ namespace ICE_Import
                         0,
                         idinstrument);
 
+                    #region Implied Volatility
                     // callPutFlag                      - tableOption.callorput
                     // S - stock price                  - 1.56
                     // X - strike price of option       - option.StrikePrice
                     // T - time to expiration in years  - 0.5
-                    // r - risk-free interest rate      - r(f) = 0.08, foreign risk-free interest rate in the U.S. is 8% per annum
+                    // r - risk-free interest rate      - from table tbloptioninputdata
                     // currentOptionPrice               - option.SettlementPrice 
-                    double impliedvol = OptionCalcs.CalculateOptionVolatility(
+                    // tickSize                         - from table tblinstruments (secondaryoptionticksize or optionticksize)
+
+                    double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
                         option.OptionType,
                         1.56,
                         Utilities.NormalizePrice(option.StrikePrice),
                         0.5,
-                        0.08,
-                        Utilities.NormalizePrice(option.SettlementPrice));
+                        r,
+                        Utilities.NormalizePrice(option.SettlementPrice),
+                        tickSize);
+                    #endregion
 
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
-                    double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
+                    double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
 
-                    Context.test_SPO(
+                    StoredProcsSwitch.SPO_Mod(
                         optionName,
                         monthchar,
                         option.StripName.Month,
@@ -166,16 +209,15 @@ namespace ICE_Import
                         option.SettlementPrice.GetValueOrDefault(),
                         option.OptionType,
                         idinstrument,
-                        option.Date,
                         optionName);
 
-                    Context.test_SPOD(
+                    StoredProcsSwitch.SPOD(
                         monthchar,
                         option.StripName.Year,
                         option.Date,
                         option.StrikePrice.GetValueOrDefault(),
                         impliedvol,
-                        futureYear - expiranteYear);
+                        futureYear - expirateYear);
                 }
 #if !DEBUG
                 catch (Exception ex)
@@ -201,5 +243,82 @@ namespace ICE_Import
                 }
             }
         }
+
+        private double R(DataClassesTMLDBDataContext context)
+        {
+            double optioninputclose = 0;
+            try
+            {
+                var idoptioninputsymbol = context.tbloptioninputsymbols.Where(item2 =>
+                    item2.idoptioninputtype == 1).ToArray()[0].idoptioninputsymbol;
+                tbloptioninputdata[] tbloptioninputdatas = context.tbloptioninputdatas.Where(item =>
+                   item.idoptioninputsymbol == idoptioninputsymbol).ToArray();
+                DateTime optioninputdatetime = new DateTime();
+                for (int i = 0; i < tbloptioninputdatas.Length; i++)
+                {
+                    if (i != 0)
+                    {
+                        if (optioninputdatetime < tbloptioninputdatas[i].optioninputdatetime)
+                        {
+                            optioninputdatetime = tbloptioninputdatas[i].optioninputdatetime;
+                        }
+                    }
+                    else
+                    {
+                        optioninputdatetime = tbloptioninputdatas[i].optioninputdatetime;
+                    }
+                }
+
+                //--?-- From where this varable in query
+                var OPTION_INPUT_TYPE_RISK_FREE_RATE = 1;
+
+                //--?-- What difference between idoptioninputsymbol and idoptioninputsymbol2
+                var idoptioninputsymbol2 = context.tbloptioninputsymbols.Where(item2 =>
+                    item2.idoptioninputtype == OPTION_INPUT_TYPE_RISK_FREE_RATE).ToArray()[0].idoptioninputsymbol;
+
+                optioninputclose = context.tbloptioninputdatas.Where(item =>
+                    item.idoptioninputsymbol == idoptioninputsymbol2
+                        && item.optioninputdatetime == optioninputdatetime).ToArray()[0].optioninputclose;
+
+            }
+            catch (Exception ex)
+            {
+                LogMessage(ex.Message);
+            }
+            finally
+            {
+                LogMessage(string.Format("Risk = {0}", optioninputclose));
+            }
+
+            return optioninputclose;
+        }
+
+        private double TickSize(DataClassesTMLDBDataContext context)
+        {
+            try
+            {
+                var secondaryoptionticksize = context.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].secondaryoptionticksize;
+
+                if (secondaryoptionticksize > 0)
+                {
+                    tickSize = secondaryoptionticksize;
+                }
+                else
+                {
+                    tickSize = context.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].optionticksize;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage(ex.Message);
+            }
+            finally
+            {
+                LogMessage(string.Format("Tick size = {0}", tickSize));
+            }
+
+            return tickSize;
+        }
+
     }
 }

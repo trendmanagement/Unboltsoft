@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -27,6 +28,18 @@ namespace ICE_Import
 
         string ConnectionString;
         DataClassesTMLDBDataContext Context;
+        DataClassesTMLDBDataContext remoteContext;
+
+        static Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+        static ConnectionStringsSection csSection = config.ConnectionStrings;
+        string localConnectionStringPattern = csSection.ConnectionStrings[1].ConnectionString;
+        string remoteConnectionStringPatternTMLDB_Copy = csSection.ConnectionStrings[2].ConnectionString;
+        string remoteConnectionStringPatternTMLDB = csSection.ConnectionStrings[3].ConnectionString;
+
+        //Risk-free interest rate
+        double r = 0.08;
+        //Tick size 
+        double tickSize = 0;
 
         public FormDB()
         {
@@ -143,6 +156,18 @@ namespace ICE_Import
             {
                 return;
             }
+
+            DataClassesTMLDBDataContext context;
+            if (DatabaseName != "TMLDB")
+            {
+                context = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMLDB);
+            }
+            else
+            {
+                context = Context;
+            }
+            r = R(context);
+            tickSize = TickSize(context);
 
             EnableDisable(true);
 
@@ -285,41 +310,26 @@ namespace ICE_Import
 
             int tag = int.Parse((string)rb.Tag);
 
-            string localConnectionStringPattern =
-@"Data Source=(localdb)\MSSQLLocalDB;
-Integrated Security=True;
-AttachDbFileName={0};";
-
-            string remoteConnectionStringPattern =
-@"Server=tcp:h9ggwlagd1.database.windows.net,1433;
-Database={0};
-User ID=dataupdate@h9ggwlagd1;
-Password=6dcEpZKSFRNYk^AN;
-Encrypt=True;
-TrustServerCertificate=False;
-Connection Timeout=30;";
-
             // Prepare the connection string
             switch (tag)
             {
                 case 1:
                     // Local DB
-                    DatabaseName = "LOCAL";
+                    DatabaseName = "Local";
                     IsLocalDB = true;
-                    string filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "DatabaseLocal.mdf");
-                    ConnectionString = string.Format(localConnectionStringPattern, filePath);
+                    ConnectionString = localConnectionStringPattern;
                     break;
                 case 2:
                     // TMLDB_Copy
                     DatabaseName = "TMLDB_Copy";
                     IsLocalDB = false;
-                    ConnectionString = string.Format(remoteConnectionStringPattern, "TMLDB_Copy");
+                    ConnectionString = remoteConnectionStringPatternTMLDB_Copy;
                     break;
                 case 3:
                     // TMLDB
                     DatabaseName = "TMLDB";
                     IsLocalDB = false;
-                    ConnectionString = string.Format(remoteConnectionStringPattern, "TMLDB");
+                    ConnectionString = remoteConnectionStringPatternTMLDB;
                     break;
                 default:
                     throw new ArgumentException();

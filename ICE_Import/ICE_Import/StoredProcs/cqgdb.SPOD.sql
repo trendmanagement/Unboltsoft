@@ -1,4 +1,4 @@
-CREATE PROCEDURE [cqgdb].[test_SPOD]
+CREATE PROCEDURE [cqgdb].[SPOD]
 	@optionmonth CHAR (1),
 	@optionyear INT, 
 	@datetime DATE,
@@ -9,9 +9,9 @@ AS
 
 SET NOCOUNT ON;
 
-MERGE INTO cqgdb.test_tbloptiondata as tgt_tbloptiondata
+MERGE INTO cqgdb.tbloptiondata as tgt_tbloptiondata
 USING
-	(SELECT * FROM [cqgdb].test_tbloptions WHERE optionmonth = @optionmonth AND optionyear = @optionyear)
+	(SELECT * FROM [cqgdb].tbloptions WHERE optionmonth = @optionmonth AND optionyear = @optionyear)
 	AS src_tbloptiondata
 	ON tgt_tbloptiondata.idoption = src_tbloptiondata.idoption
 	AND tgt_tbloptiondata.datetime = @datetime

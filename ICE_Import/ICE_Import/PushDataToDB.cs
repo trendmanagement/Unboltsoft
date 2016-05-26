@@ -20,6 +20,10 @@ namespace ICE_Import
         async Task PushDataToDB(CancellationToken ct)
         {
             progressBar.Maximum = 2 * ParsedData.FutureRecords.Length;
+            if (DatabaseName != "TMLDB")
+            {
+                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMLDB);
+            }
             if (!ParsedData.FuturesOnly)
             {
                 progressBar.Maximum += ParsedData.OptionRecords.Length;
@@ -138,6 +142,16 @@ namespace ICE_Import
                         }
                         #endregion
 
+                        DateTime expirationtime;
+                        if (DatabaseName != "TMLBD")
+                        {
+                            expirationtime = ExpirationTime(remoteContext, future.StripName.Year, future.StripName.Month, idinstrument);
+                        }
+                        else
+                        {
+                            expirationtime = ExpirationTime(Context, future.StripName.Year, future.StripName.Month, idinstrument);
+                        }
+
                         var tableFuture = new tblcontract                        {
                             //idcontract must generete by DB
 
@@ -148,7 +162,7 @@ namespace ICE_Import
                             monthint = (short)future.StripName.Month,
                             year = (long)future.StripName.Year,
                             idinstrument = idinstrument,
-                            expirationdate = future.Date,
+                            expirationdate = expirationtime,
                             cqgsymbol = contractName
                         };
                         tblcontracts_.InsertOnSubmit(tableFuture);
@@ -397,6 +411,16 @@ namespace ICE_Import
                         }
                         #endregion
 
+                        DateTime expirationtime;
+                        if (DatabaseName != "TMLBD")
+                        {
+                            expirationtime = ExpirationTime(remoteContext, option.StripName.Year, option.StripName.Month, idinstrument);
+                        }
+                        else
+                        {
+                            expirationtime = ExpirationTime(Context, option.StripName.Year, option.StripName.Month, idinstrument);
+                        }
+
                         var tableOption = new tbloption                        {
                             //idoption must generate by DB
                             optionname = optionName,
@@ -406,7 +430,7 @@ namespace ICE_Import
                             strikeprice = option.StrikePrice.GetValueOrDefault(),
                             callorput = option.OptionType,
                             idinstrument = idinstrument,
-                            expirationdate = option.Date,
+                            expirationdate = expirationtime,
                             idcontract = idContract,
                             cqgsymbol = optionName
                         };
@@ -455,13 +479,13 @@ namespace ICE_Import
                     }
 
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
-                    double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
+                    double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
 
                     #region Find data in DB like pushed
                     var tdcs = new List<tbloptiondata>();
                     try
                     {
-                        foreach (var item in tbloptiondatas_.Where(item => item.timetoexpinyears == (futureYear - expiranteYear) && item.datetime == option.Date && item.idoption == TO.idoption).ToList())
+                        foreach (var item in tbloptiondatas_.Where(item => item.timetoexpinyears == (futureYear - expirateYear) && item.datetime == option.Date && item.idoption == TO.idoption).ToList())
                         {
                             tdcs.Add(item);
                         }
@@ -492,20 +516,24 @@ namespace ICE_Import
                     }
                     #endregion
 
+                    #region Implied Volatility
                     // callPutFlag                      - tableOption.callorput
                     // S - stock price                  - 1.56
                     // X - strike price of option       - option.StrikePrice
                     // T - time to expiration in years  - 0.5
-                    // r - risk-free interest rate      - r(f) = 0.08, foreign risk-free interest rate in the U.S. is 8% per annum
+                    // r - risk-free interest rate      - from table tbloptioninputdata
                     // currentOptionPrice               - option.SettlementPrice 
-
-                    double impliedvol = OptionCalcs.CalculateOptionVolatility(
-                        TO.callorput,
+                    // tickSize                         - from table tblinstruments (secondaryoptionticksize or optionticksize)
+					 
+                    double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
+                        option.OptionType,
                         1.56,
                         Utilities.NormalizePrice(option.StrikePrice),
                         0.5,
-                        0.08,
-                        Utilities.NormalizePrice(option.SettlementPrice));
+                        r,
+                        Utilities.NormalizePrice(option.SettlementPrice),
+                        tickSize);
+                    #endregion
 
                     var tableOptionData = new tbloptiondata                    {
                         //idoptiondata must generate by DB
@@ -513,7 +541,7 @@ namespace ICE_Import
                         datetime = option.Date,
                         price = option.StrikePrice.GetValueOrDefault(1),
                         impliedvol = impliedvol,
-                        timetoexpinyears = futureYear - expiranteYear
+                        timetoexpinyears = futureYear - expirateYear
                     };
 
                     tbloptiondatas_.InsertOnSubmit(tableOptionData);
@@ -560,6 +588,10 @@ namespace ICE_Import
         async Task PushDataToDBTest(CancellationToken ct)
         {
             progressBar.Maximum = 2 * ParsedData.FutureRecords.Length;
+            if (DatabaseName != "TMLDB")
+            {
+                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMLDB);
+            }
             if (!ParsedData.FuturesOnly)
             {
                 progressBar.Maximum += ParsedData.OptionRecords.Length;
@@ -678,6 +710,16 @@ namespace ICE_Import
                         }
                         #endregion
 
+                        DateTime expirationtime;
+                        if (DatabaseName != "TMLBD")
+                        {
+                            expirationtime = ExpirationTime(remoteContext, future.StripName.Year, future.StripName.Month, idinstrument);
+                        }
+                        else
+                        {
+                            expirationtime = ExpirationTime(Context, future.StripName.Year, future.StripName.Month, idinstrument);
+                        }
+
                         var tableFuture = new test_tblcontract                        {
                             //idcontract must generete by DB
 
@@ -688,7 +730,7 @@ namespace ICE_Import
                             monthint = (short)future.StripName.Month,
                             year = (long)future.StripName.Year,
                             idinstrument = idinstrument,
-                            expirationdate = future.Date,
+                            expirationdate = expirationtime,
                             cqgsymbol = contractName
                         };
                         tblcontracts_.InsertOnSubmit(tableFuture);
@@ -937,6 +979,16 @@ namespace ICE_Import
                         }
                         #endregion
 
+                        DateTime expirationtime;
+                        if (DatabaseName != "TMLBD")
+                        {
+                            expirationtime = ExpirationTime(remoteContext, option.StripName.Year, option.StripName.Month, idinstrument);
+                        }
+                        else
+                        {
+                            expirationtime = ExpirationTime(Context, option.StripName.Year, option.StripName.Month, idinstrument);
+                        }
+
                         var tableOption = new test_tbloption                        {
                             //idoption must generate by DB
                             optionname = optionName,
@@ -946,7 +998,7 @@ namespace ICE_Import
                             strikeprice = option.StrikePrice.GetValueOrDefault(),
                             callorput = option.OptionType,
                             idinstrument = idinstrument,
-                            expirationdate = option.Date,
+                            expirationdate = expirationtime,
                             idcontract = idContract,
                             cqgsymbol = optionName
                         };
@@ -995,13 +1047,13 @@ namespace ICE_Import
                     }
 
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
-                    double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
+                    double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
 
                     #region Find data in DB like pushed
                     var tdcs = new List<test_tbloptiondata>();
                     try
                     {
-                        foreach (var item in tbloptiondatas_.Where(item => item.timetoexpinyears == (futureYear - expiranteYear) && item.datetime == option.Date && item.idoption == TO.idoption).ToList())
+                        foreach (var item in tbloptiondatas_.Where(item => item.timetoexpinyears == (futureYear - expirateYear) && item.datetime == option.Date && item.idoption == TO.idoption).ToList())
                         {
                             tdcs.Add(item);
                         }
@@ -1032,20 +1084,24 @@ namespace ICE_Import
                     }
                     #endregion
 
+                    #region Implied Volatility
                     // callPutFlag                      - tableOption.callorput
                     // S - stock price                  - 1.56
                     // X - strike price of option       - option.StrikePrice
                     // T - time to expiration in years  - 0.5
-                    // r - risk-free interest rate      - r(f) = 0.08, foreign risk-free interest rate in the U.S. is 8% per annum
+                    // r - risk-free interest rate      - from table tbloptioninputdata
                     // currentOptionPrice               - option.SettlementPrice 
-
-                    double impliedvol = OptionCalcs.CalculateOptionVolatility(
-                        TO.callorput,
+                    // tickSize                         - from table tblinstruments (secondaryoptionticksize or optionticksize)
+					 
+                    double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
+                        option.OptionType,
                         1.56,
                         Utilities.NormalizePrice(option.StrikePrice),
                         0.5,
-                        0.08,
-                        Utilities.NormalizePrice(option.SettlementPrice));
+                        r,
+                        Utilities.NormalizePrice(option.SettlementPrice),
+                        tickSize);
+                    #endregion
 
                     var tableOptionData = new test_tbloptiondata                    {
                         //idoptiondata must generate by DB
@@ -1053,7 +1109,7 @@ namespace ICE_Import
                         datetime = option.Date,
                         price = option.StrikePrice.GetValueOrDefault(1),
                         impliedvol = impliedvol,
-                        timetoexpinyears = futureYear - expiranteYear
+                        timetoexpinyears = futureYear - expirateYear
                     };
 
                     tbloptiondatas_.InsertOnSubmit(tableOptionData);
@@ -1097,5 +1153,13 @@ namespace ICE_Import
             }
         }
 
+        private DateTime ExpirationTime(DataClassesTMLDBDataContext context, int year, int month, int idinstrument)
+        {
+            DateTime expirationdate = context.tblcontractexpirations.Where(item =>
+                item.optionmonthint == month
+                && item.optionyear == year
+                && item.idinstrument == idinstrument).ToArray()[0].expirationdate;
+            return expirationdate;
+        }
     }
 }

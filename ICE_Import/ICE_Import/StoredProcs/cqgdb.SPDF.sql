@@ -1,4 +1,4 @@
-CREATE PROCEDURE [cqgdb].[test_SPDF]
+﻿CREATE PROCEDURE [cqgdb].[SPDF]
 	@spanDate date,
 	@settlementPrice float,
 	@monthChar char,
@@ -8,10 +8,10 @@ CREATE PROCEDURE [cqgdb].[test_SPDF]
 AS
 SET NOCOUNT ON;
 
-MERGE INTO 	cqgdb.test_tbldailycontractsettlements AS tgt_tbldailycontractsettlements 
+MERGE INTO 	cqgdb.tbldailycontractsettlements AS tgt_tbldailycontractsettlements 
 
 USING
-	(SELECT * FROM [cqgdb].test_tblcontracts WHERE month = @monthChar AND year = @yearInt)
+	(SELECT * FROM [cqgdb].tblcontracts WHERE month = @monthChar AND year = @yearInt)
 	AS src_tbldailycontractsettlements
 	ON tgt_tbldailycontractsettlements.idcontract = src_tbldailycontractsettlements.idcontract 
 	and tgt_tbldailycontractsettlements.date = @spanDate 

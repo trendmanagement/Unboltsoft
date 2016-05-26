@@ -1,4 +1,4 @@
-CREATE PROCEDURE [cqgdb].[test_SPO]
+CREATE PROCEDURE [cqgdb].[SPO_Mod]
 	@optionname VARCHAR (45), 
 	@optionmonth CHAR (1), 
 	@optionmonthint INT, 
@@ -6,28 +6,28 @@ CREATE PROCEDURE [cqgdb].[test_SPO]
 	@strikeprice FLOAT (53), 
 	@callorput CHAR (1), 
 	@idinstrument BIGINT, 
-	@expirationdate DATE,
 	@cqgsymbol VARCHAR (45)
 AS
 
-MERGE INTO cqgdb.test_tbloptions as tgt_tbloptions
+MERGE INTO cqgdb.tbloptions as tgt_tbloptions
 USING
+	(SELECT * FROM [cqgdb].tblcontracts WHERE monthint = @optionmonthint  AND year = @optionyear)
+	AS src_tblcontract
 
-	(SELECT * FROM [cqgdb].test_tblcontracts WHERE month = @optionmonth AND year = @optionyear)
-	AS src_tbloptions
-	ON tgt_tbloptions.idcontract = src_tbloptions.idcontract
+	ON tgt_tbloptions.idcontract = src_tblcontract.idcontract
 	AND tgt_tbloptions.optionmonthint = @optionmonthint
 	AND tgt_tbloptions.optionyear = @optionyear
 	AND tgt_tbloptions.strikeprice = @strikeprice
 	AND tgt_tbloptions.callorput = @callorput
 	AND tgt_tbloptions.idinstrument = @idinstrument 
+	AND tgt_tbloptions.expirationdate = src_tblcontract.expirationdate
 
 WHEN MATCHED THEN
 UPDATE
 	SET 
 	optionname = @optionname,
 	cqgsymbol = @cqgsymbol,
-	expirationdate = @expirationdate
+	expirationdate = src_tblcontract.expirationdate
 
 WHEN NOT MATCHED THEN
 	INSERT 	
@@ -41,14 +41,15 @@ WHEN NOT MATCHED THEN
 	expirationdate,
 	idcontract,
 	cqgsymbol)
-	VALUES (@optionname, 
+	VALUES 
+	(@optionname, 
 	@optionmonth, 
 	@optionmonthint,
 	@optionyear, 
 	@strikeprice, 
 	@callorput,
 	@idinstrument, 
-	@expirationdate,
-	src_tbloptions.idcontract, 
+	src_tblcontract.expirationdate,
+	src_tblcontract.idcontract,
 	@cqgsymbol);
 SET NOCOUNT ON;

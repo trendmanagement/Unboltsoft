@@ -37,7 +37,7 @@ namespace ICE_Import
             double? impliedvol,
             double? timetoexpinyears);
 
-        public delegate int dt_testSPF(
+        public delegate int d_SPF(
             string contractname,
             char? month,
             int? monthint,
@@ -46,7 +46,15 @@ namespace ICE_Import
             DateTime? expirationdate, 
             string cqgsymbol);
 
-        public delegate int dt_testSPDF(
+        public delegate int d_SPF_Mod(
+            string contractname,
+            char? month,
+            int? monthint,
+            int? year,
+            int? idinstrument,
+            string cqgsymbol);
+
+        public delegate int d_SPDF(
             DateTime? spanDate,
             double? settlementPrice,
             char? monthChar, 
@@ -54,7 +62,7 @@ namespace ICE_Import
             long? volume,
             long? openinterest);
 
-        public delegate int dt_testSPO(
+        public delegate int d_SPO(
             string optionname,
             char? optionmonth,
             int? optionmonthint,
@@ -65,7 +73,17 @@ namespace ICE_Import
             DateTime? expirationdate, 
             string cqgsymbol);
 
-        public delegate int dt_testSPOD(
+        public delegate int d_SPO_Mod(
+            string optionname,
+            char? optionmonth,
+            int? optionmonthint,
+            int? optionyear,
+            double? strikeprice,
+            char? callorput,
+            long? idinstrument,
+            string cqgsymbol);
+
+        public delegate int d_SPOD(
             char? optionmonth,
             int? optionyear,
             DateTime? datetime,
@@ -73,10 +91,12 @@ namespace ICE_Import
             double? impliedvol,
             double? timetoexpinyears);
 
-        public static dt_testSPF testSPF;
-        public static dt_testSPDF testSPDF;
-        public static dt_testSPO testSPO;
-        public static dt_testSPOD testSPOD;
+        public static d_SPF SPF;
+        public static d_SPF_Mod SPF_Mod;
+        public static d_SPDF SPDF;
+        public static d_SPO SPO;
+        public static d_SPO_Mod SPO_Mod;
+        public static d_SPOD SPOD;
         public static d_sp_updateContractTblFromSpanUpsert sp_updateContractTblFromSpanUpsert;
         public static d_sp_updateOrInsertContractSettlementsFromSpanUpsert sp_updateOrInsertContractSettlementsFromSpanUpsert;
         public static d_sp_updateOrInsertTbloptionsInfoAndDataUpsert sp_updateOrInsertTbloptionsInfoAndDataUpsert;
@@ -85,16 +105,24 @@ namespace ICE_Import
         {
             if (isTestTables)
             {
-                testSPF = context.test_SPF;
-                testSPDF = context.test_SPDF;
-                testSPO = context.test_SPO;
-                testSPOD = context.test_SPOD;
+                SPF = context.test_SPF;
+                SPF_Mod = context.test_SPF_Mod;
+                SPDF = context.test_SPDF;
+                SPO = context.test_SPO;
+                SPO_Mod = context.test_SPO_Mod;
+                SPOD = context.test_SPOD;
                 sp_updateContractTblFromSpanUpsert = context.test_sp_updateContractTblFromSpanUpsert;
                 sp_updateOrInsertContractSettlementsFromSpanUpsert = context.test_sp_updateOrInsertContractSettlementsFromSpanUpsert;
                 sp_updateOrInsertTbloptionsInfoAndDataUpsert = context.test_sp_updateOrInsertTbloptionsInfoAndDataUpsert;
             }
             else
             {
+                SPF = context.SPF;
+                SPF_Mod = context.SPF_Mod;
+                SPDF = context.SPDF;
+                SPO = context.SPO;
+                SPO_Mod = context.SPO_Mod;
+                SPOD = context.SPOD;
                 sp_updateContractTblFromSpanUpsert = context.sp_updateContractTblFromSpanUpsert;
                 sp_updateOrInsertContractSettlementsFromSpanUpsert = context.sp_updateOrInsertContractSettlementsFromSpanUpsert;
                 sp_updateOrInsertTbloptionsInfoAndDataUpsert = context.sp_updateOrInsertTbloptionsInfoAndDataUpsert;

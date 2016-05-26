@@ -159,6 +159,36 @@
       <Column Name="timetoexpinyears" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
+  <Table Name="cqgdb.tbloptioninputdata" Member="tbloptioninputdatas">
+    <Type Name="tbloptioninputdata">
+      <Column Name="idoptioninputdata" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="idoptioninputsymbol" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="optioninputdatetime" Type="System.DateTime" DbType="DateTime2 NOT NULL" CanBeNull="false" />
+      <Column Name="optioninputopen" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="optioninputhigh" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="optioninputlow" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="optioninputclose" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="cqgdb.tbloptioninputsymbols" Member="tbloptioninputsymbols">
+    <Type Name="tbloptioninputsymbol">
+      <Column Name="idoptioninputsymbol" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="optioninputcqgsymbol" Type="System.String" DbType="VarChar(45) NOT NULL" CanBeNull="false" />
+      <Column Name="idinstrument" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="idoptioninputtype" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="multiplier" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="cqgdb.tblcontractexpirations" Member="tblcontractexpirations">
+    <Type Name="tblcontractexpiration">
+      <Column Name="idoptionexpirationdates" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="contracttype" Type="System.Int16" DbType="SmallInt NOT NULL" CanBeNull="false" />
+      <Column Name="idinstrument" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="optionyear" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="optionmonthint" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="expirationdate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
   <Function Name="cqgdb.sp_updateContractTblFromSpanUpsert" Method="sp_updateContractTblFromSpanUpsert">
     <Parameter Name="contractname" Type="System.String" DbType="VarChar(45)" />
     <Parameter Name="month" Type="System.Char" DbType="Char(1)" />
@@ -244,6 +274,8 @@
     <Parameter Name="settlementPrice" Type="System.Double" DbType="Float" />
     <Parameter Name="monthChar" Type="System.Char" DbType="Char(1)" />
     <Parameter Name="yearInt" Type="System.Int32" DbType="Int" />
+    <Parameter Name="volume" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="openinterest" Type="System.Int64" DbType="BigInt" />
     <Return Type="System.Int32" />
   </Function>
   <Function Name="cqgdb.test_SPO" Method="test_SPO">
@@ -267,7 +299,37 @@
     <Parameter Name="timetoexpinyears" Type="System.Double" DbType="Float" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="cqgdb.test_SPDF" Method="test_SPDF1">
+  <Function Name="cqgdb.test_SPF_Mod" Method="test_SPF_Mod">
+    <Parameter Name="contractname" Type="System.String" DbType="VarChar(45)" />
+    <Parameter Name="month" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="monthint" Type="System.Int32" DbType="Int" />
+    <Parameter Name="year" Type="System.Int32" DbType="Int" />
+    <Parameter Name="idinstrument" Type="System.Int32" DbType="Int" />
+    <Parameter Name="cqgsymbol" Type="System.String" DbType="VarChar(45)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="cqgdb.test_SPO_Mod" Method="test_SPO_Mod">
+    <Parameter Name="optionname" Type="System.String" DbType="VarChar(45)" />
+    <Parameter Name="optionmonth" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="optionmonthint" Type="System.Int32" DbType="Int" />
+    <Parameter Name="optionyear" Type="System.Int32" DbType="Int" />
+    <Parameter Name="strikeprice" Type="System.Double" DbType="Float" />
+    <Parameter Name="callorput" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="idinstrument" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="cqgsymbol" Type="System.String" DbType="VarChar(45)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="cqgdb.SPF" Method="SPF">
+    <Parameter Name="contractname" Type="System.String" DbType="VarChar(45)" />
+    <Parameter Name="month" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="monthint" Type="System.Int32" DbType="Int" />
+    <Parameter Name="year" Type="System.Int32" DbType="Int" />
+    <Parameter Name="idinstrument" Type="System.Int32" DbType="Int" />
+    <Parameter Name="expirationdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="cqgsymbol" Type="System.String" DbType="VarChar(45)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="cqgdb.SPDF" Method="SPDF">
     <Parameter Name="spanDate" Type="System.DateTime" DbType="Date" />
     <Parameter Name="settlementPrice" Type="System.Double" DbType="Float" />
     <Parameter Name="monthChar" Type="System.Char" DbType="Char(1)" />
@@ -276,22 +338,45 @@
     <Parameter Name="openinterest" Type="System.Int64" DbType="BigInt" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="cqgdb.test_SPDF" Method="test_SPDF2">
-    <Parameter Name="spanDate" Type="System.DateTime" DbType="Date" />
-    <Parameter Name="settlementPrice" Type="System.Double" DbType="Float" />
-    <Parameter Name="monthChar" Type="System.Char" DbType="Char(1)" />
-    <Parameter Name="yearInt" Type="System.Int32" DbType="Int" />
-    <Parameter Name="volume" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="openinterest" Type="System.Int64" DbType="BigInt" />
+  <Function Name="cqgdb.SPO" Method="SPO">
+    <Parameter Name="optionname" Type="System.String" DbType="VarChar(45)" />
+    <Parameter Name="optionmonth" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="optionmonthint" Type="System.Int32" DbType="Int" />
+    <Parameter Name="optionyear" Type="System.Int32" DbType="Int" />
+    <Parameter Name="strikeprice" Type="System.Double" DbType="Float" />
+    <Parameter Name="callorput" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="idinstrument" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="expirationdate" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="cqgsymbol" Type="System.String" DbType="VarChar(45)" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="cqgdb.test_SPDF" Method="test_SPDF3">
-    <Parameter Name="spanDate" Type="System.DateTime" DbType="Date" />
-    <Parameter Name="settlementPrice" Type="System.Double" DbType="Float" />
-    <Parameter Name="monthChar" Type="System.Char" DbType="Char(1)" />
-    <Parameter Name="yearInt" Type="System.Int32" DbType="Int" />
-    <Parameter Name="volume" Type="System.Int64" DbType="BigInt" />
-    <Parameter Name="openinterest" Type="System.Int64" DbType="BigInt" />
+  <Function Name="cqgdb.SPOD" Method="SPOD">
+    <Parameter Name="optionmonth" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="optionyear" Type="System.Int32" DbType="Int" />
+    <Parameter Name="datetime" Type="System.DateTime" DbType="Date" />
+    <Parameter Name="price" Type="System.Double" DbType="Float" />
+    <Parameter Name="impliedvol" Type="System.Double" DbType="Float" />
+    <Parameter Name="timetoexpinyears" Type="System.Double" DbType="Float" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="cqgdb.SPF_Mod" Method="SPF_Mod">
+    <Parameter Name="contractname" Type="System.String" DbType="VarChar(45)" />
+    <Parameter Name="month" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="monthint" Type="System.Int32" DbType="Int" />
+    <Parameter Name="year" Type="System.Int32" DbType="Int" />
+    <Parameter Name="idinstrument" Type="System.Int32" DbType="Int" />
+    <Parameter Name="cqgsymbol" Type="System.String" DbType="VarChar(45)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="cqgdb.SPO_Mod" Method="SPO_Mod">
+    <Parameter Name="optionname" Type="System.String" DbType="VarChar(45)" />
+    <Parameter Name="optionmonth" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="optionmonthint" Type="System.Int32" DbType="Int" />
+    <Parameter Name="optionyear" Type="System.Int32" DbType="Int" />
+    <Parameter Name="strikeprice" Type="System.Double" DbType="Float" />
+    <Parameter Name="callorput" Type="System.Char" DbType="Char(1)" />
+    <Parameter Name="idinstrument" Type="System.Int64" DbType="BigInt" />
+    <Parameter Name="cqgsymbol" Type="System.String" DbType="VarChar(45)" />
     <Return Type="System.Int32" />
   </Function>
 </Database>
