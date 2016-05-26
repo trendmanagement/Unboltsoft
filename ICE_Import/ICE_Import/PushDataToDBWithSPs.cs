@@ -22,11 +22,11 @@ namespace ICE_Import
             {
                 remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMBLDB);
             }
-            progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = ParsedData.FutureRecords.Length;
+            progressBar.Minimum = 0;
+            progressBar.Maximum = ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
             {
-                progressBarLoad.Maximum += ParsedData.OptionRecords.Length;
+                progressBar.Maximum += ParsedData.OptionRecords.Length;
             }
 
             DateTime start = DateTime.Now;
@@ -145,7 +145,7 @@ namespace ICE_Import
                             "Pushed {0} entries to {1} {2}TBLCONTRACT table",
                             spGlobalCount, DatabaseName, TablesPrefix);
                     }
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, spGlobalCount);
+                    AsyncTaskListener.Update(spGlobalCount, log);
                     log = string.Empty;
                 }
             }
@@ -250,7 +250,7 @@ namespace ICE_Import
                     {
                         log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", spGlobalCount, DatabaseName, TablesPrefix);
                     }
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, spGlobalCount);
+                    AsyncTaskListener.Update(spGlobalCount, log);
                     log = string.Empty;
                 }
             }

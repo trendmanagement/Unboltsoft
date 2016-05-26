@@ -205,7 +205,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(spGlobalCount, log);
                     log = string.Empty;
                 }
             }
@@ -305,7 +305,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(spGlobalCount, log);
                     log = string.Empty;
                 }
             }
@@ -584,7 +584,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(spGlobalCount, log);
                     log = string.Empty;
                 }
             }
@@ -774,7 +774,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(spGlobalCount, log);
                     log = string.Empty;
                 }
             }
@@ -874,7 +874,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(spGlobalCount, log);
                     log = string.Empty;
                 }
             }
@@ -1153,7 +1153,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    UpdateTextBoxAndProgressBarFromAsyncTask(log, globalCount);
+                    AsyncTaskListener.Update(spGlobalCount, log);
                     log = string.Empty;
                 }
             }
