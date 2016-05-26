@@ -86,9 +86,14 @@ namespace ICE_Import
                 await ConnectDBAndExecuteQueryAsyncWithTransaction(queries);
             }
 
-            AsyncTaskListener.Update(msg: "Pushing of FUTURES data complete");
+            AsyncTaskListener.LogMessage("Pushing of FUTURES data complete");
 
-            AsyncTaskListener.Update(msg: "Pushing of OPTIONS data started");
+            if (ParsedData.FuturesOnly)
+            {
+                return;
+            }
+
+            AsyncTaskListener.LogMessage("Pushing of OPTIONS data started");
 
             foreach (var option in ParsedData.OptionRecords)
             {
@@ -168,7 +173,7 @@ namespace ICE_Import
                 await ConnectDBAndExecuteQueryAsyncWithTransaction(queries);
             }
 
-            AsyncTaskListener.Update(msg: "Pushing of OPTIONS data complete");
+            AsyncTaskListener.LogMessage("Pushing of OPTIONS data complete");
         }
         
         async Task ConnectDBAndExecuteQueryAsyncWithTransaction(List<string> queryStringToUpdate)

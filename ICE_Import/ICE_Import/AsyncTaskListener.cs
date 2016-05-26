@@ -27,6 +27,7 @@ namespace ICE_Import
 
             if (msg != null)
             {
+                // Update text box
                 Updated.Invoke(msg);
             }
         }
@@ -60,6 +61,12 @@ namespace ICE_Import
                 // Update text box
                 Updated.Invoke(msg);
             }
+        }
+
+        public static void LogMessage(string msg)
+        {
+            // Update text box
+            Updated.Invoke(msg);
         }
     }
 }
