@@ -26,9 +26,12 @@ namespace ICE_Import
             globalCount = 0;
             int number;
             int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
-            //currentPercent = 0;
             progressBarLoad.Minimum = 0;
             progressBarLoad.Maximum = 2 * ParsedData.FutureRecords.Length;
+			if (DatabaseName != "TMLDB")
+            {
+                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMBLDB);
+            }
             if (!ParsedData.FuturesOnly)
             {
                 progressBarLoad.Maximum += ParsedData.OptionRecords.Length;
@@ -144,6 +147,16 @@ namespace ICE_Import
                         }
                         #endregion
 
+						DateTime expirationtime;
+                        if (DatabaseName != "TMLBD")
+                        {
+                            expirationtime = ExpirationTime(remoteContext, future.StripName.Year, future.StripName.Month, idinstrument);
+                        }
+                        else
+                        {
+                            expirationtime = ExpirationTime(Context, future.StripName.Year, future.StripName.Month, idinstrument);
+                        }
+
                         var tableFuture = new tblcontract                        {
                             //idcontract must generete by DB
 
@@ -154,7 +167,7 @@ namespace ICE_Import
                             monthint = (short)future.StripName.Month,
                             year = (long)future.StripName.Year,
                             idinstrument = idinstrument,
-                            expirationdate = future.Date,
+                            expirationdate = expirationtime,
                             cqgsymbol = contractName
                         };
                         tblcontracts_.InsertOnSubmit(tableFuture);
@@ -403,6 +416,16 @@ namespace ICE_Import
                         }
                         #endregion
 
+						DateTime expirationtime;
+                        if (DatabaseName != "TMLBD")
+                        {
+                            expirationtime = ExpirationTime(remoteContext, option.StripName.Year, option.StripName.Month, idinstrument);
+                        }
+                        else
+                        {
+                            expirationtime = ExpirationTime(Context, option.StripName.Year, option.StripName.Month, idinstrument);
+                        }
+
                         var tableOption = new tbloption                        {
                             //idoption must generate by DB
                             optionname = optionName,
@@ -412,7 +435,7 @@ namespace ICE_Import
                             strikeprice = option.StrikePrice.GetValueOrDefault(),
                             callorput = option.OptionType,
                             idinstrument = idinstrument,
-                            expirationdate = option.Date,
+                            expirationdate = expirationtime,
                             idcontract = idContract,
                             cqgsymbol = optionName
                         };
@@ -506,7 +529,7 @@ namespace ICE_Import
                     // r - risk-free interest rate      - from table tbloptioninputdata
                     // currentOptionPrice               - option.SettlementPrice 
                     // tickSize                         - from table tblinstruments (secondaryoptionticksize or optionticksize)
-
+					 
                     double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
                         option.OptionType,
                         1.56,
@@ -572,9 +595,12 @@ namespace ICE_Import
             globalCount = 0;
             int number;
             int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
-            //currentPercent = 0;
             progressBarLoad.Minimum = 0;
             progressBarLoad.Maximum = 2 * ParsedData.FutureRecords.Length;
+			if (DatabaseName != "TMLDB")
+            {
+                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMBLDB);
+            }
             if (!ParsedData.FuturesOnly)
             {
                 progressBarLoad.Maximum += ParsedData.OptionRecords.Length;
@@ -690,6 +716,16 @@ namespace ICE_Import
                         }
                         #endregion
 
+						DateTime expirationtime;
+                        if (DatabaseName != "TMLBD")
+                        {
+                            expirationtime = ExpirationTime(remoteContext, future.StripName.Year, future.StripName.Month, idinstrument);
+                        }
+                        else
+                        {
+                            expirationtime = ExpirationTime(Context, future.StripName.Year, future.StripName.Month, idinstrument);
+                        }
+
                         var tableFuture = new test_tblcontract                        {
                             //idcontract must generete by DB
 
@@ -700,7 +736,7 @@ namespace ICE_Import
                             monthint = (short)future.StripName.Month,
                             year = (long)future.StripName.Year,
                             idinstrument = idinstrument,
-                            expirationdate = future.Date,
+                            expirationdate = expirationtime,
                             cqgsymbol = contractName
                         };
                         tblcontracts_.InsertOnSubmit(tableFuture);
@@ -949,6 +985,16 @@ namespace ICE_Import
                         }
                         #endregion
 
+						DateTime expirationtime;
+                        if (DatabaseName != "TMLBD")
+                        {
+                            expirationtime = ExpirationTime(remoteContext, option.StripName.Year, option.StripName.Month, idinstrument);
+                        }
+                        else
+                        {
+                            expirationtime = ExpirationTime(Context, option.StripName.Year, option.StripName.Month, idinstrument);
+                        }
+
                         var tableOption = new test_tbloption                        {
                             //idoption must generate by DB
                             optionname = optionName,
@@ -958,7 +1004,7 @@ namespace ICE_Import
                             strikeprice = option.StrikePrice.GetValueOrDefault(),
                             callorput = option.OptionType,
                             idinstrument = idinstrument,
-                            expirationdate = option.Date,
+                            expirationdate = expirationtime,
                             idcontract = idContract,
                             cqgsymbol = optionName
                         };
@@ -1052,7 +1098,7 @@ namespace ICE_Import
                     // r - risk-free interest rate      - from table tbloptioninputdata
                     // currentOptionPrice               - option.SettlementPrice 
                     // tickSize                         - from table tblinstruments (secondaryoptionticksize or optionticksize)
-
+					 
                     double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
                         option.OptionType,
                         1.56,
@@ -1113,5 +1159,13 @@ namespace ICE_Import
             }
         }
 
-    }
+        private DateTime ExpirationTime(DataClassesTMLDBDataContext context, int year, int month, int idinstrument)
+        {
+            DateTime expirationdate = context.tblcontractexpirations.Where(item =>
+                item.optionmonthint == month
+                && item.optionyear == year
+                && item.idinstrument == idinstrument).ToArray()[0].expirationdate;
+            return expirationdate;
+        }
+	}
 }

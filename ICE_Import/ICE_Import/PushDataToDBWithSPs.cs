@@ -18,6 +18,10 @@ namespace ICE_Import
         /// </summary>
         async Task PushDataToDBWithSPs(CancellationToken ct)
         {
+            if (DatabaseName != "TMLDB")
+            {
+                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMBLDB);
+            }
             progressBarLoad.Minimum = 0;
             progressBarLoad.Maximum = ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
@@ -75,14 +79,40 @@ namespace ICE_Import
                 string log = string.Empty;
                 try
                 {
-                    Context.test_SPF(
-                        contractname,
-                        monthchar,
-                        future.StripName.Month,
-                        future.StripName.Year,
-                        idinstrument,
-                        future.Date,
-                        contractname);
+                    if(DatabaseName == "TMLDB")
+                    {
+                        Context.test_SPF_Mod(
+                            contractname,
+                            monthchar,
+                            future.StripName.Month,
+                            future.StripName.Year,
+                            idinstrument,
+                            contractname);
+                    }
+                    else
+                    {
+                        DateTime expirationtime = new DateTime();
+                        try
+                        {
+                            expirationtime = remoteContext.tblcontractexpirations.Where(item =>
+                                item.optionmonthint == future.StripName.Month 
+                                && item.optionyear == future.StripName.Year 
+                                && item.idinstrument == idinstrument).ToArray()[0].expirationdate;
+                        }
+                        catch(Exception ex)
+                        {
+                            log += ex.Message;
+                        }
+
+                        Context.test_SPF(
+                            contractname,
+                            monthchar,
+                            future.StripName.Month,
+                            future.StripName.Year,
+                            idinstrument,
+                            expirationtime,
+                            contractname);
+                    }
 
                     Context.test_SPDF(
                         future.Date,
@@ -164,10 +194,6 @@ namespace ICE_Import
                     // currentOptionPrice               - option.SettlementPrice 
                     // tickSize                         - from table tblinstruments (secondaryoptionticksize or optionticksize)
 
-
-
-                    //r = (optioninputclose != 0) ? optioninputclose : r;
-
                     double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
                         option.OptionType,
                         1.56,
@@ -181,7 +207,7 @@ namespace ICE_Import
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                     double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
 
-                    Context.test_SPO(
+                    Context.test_SPO_Mod(
                         optionName,
                         monthchar,
                         option.StripName.Month,
@@ -189,7 +215,6 @@ namespace ICE_Import
                         option.SettlementPrice.GetValueOrDefault(),
                         option.OptionType,
                         idinstrument,
-                        option.Date,
                         optionName);
 
                     Context.test_SPOD(

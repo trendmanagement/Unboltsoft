@@ -70,6 +70,12 @@
     <Compile Include="BgWorkerFutures.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="PullDataFromDB.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PullDataFromDB.tt</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PushDataToDB.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
