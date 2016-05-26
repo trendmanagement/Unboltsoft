@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ICE_Import
@@ -192,6 +193,10 @@ namespace ICE_Import
             {
                 if (IsStoredProcs)
                 {
+                    // Install stored procedures from SQL files into DB
+                    await Task.Run(() =>
+                        StoredProcsInstallator.Install(ConnectionString, IsTestTables, cts.Token));
+
                     if (IsAsyncUpdate)
                     {
                         await PushDataToDBWithSPsAsync(cts.Token);

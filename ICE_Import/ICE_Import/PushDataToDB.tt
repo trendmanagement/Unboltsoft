@@ -8,7 +8,6 @@
 // WARNING                                                                         WARNING
 // WARNING    DO NOT EDIT THIS .CS FILE, BECAUSE ALL YOUR CHANGES WILL BE LOST!    WARNING
 // WARNING    EDIT CORRESPONDING .TT FILE INSTEAD!                                 WARNING
-// WARNING    ALSO, DO NOT COMMIT THIS .CS FILE!                                   WARNING
 // WARNING                                                                         WARNING
 // WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
 
@@ -24,9 +23,6 @@ namespace ICE_Import
 {
     public partial class FormDB : Form
     {
-        int globalCount;
-        //int currentPercent;
-
 <# string[] methodNameSuffix = { string.Empty, "Test" }; #>
 <# string[] tableClassPrefix = { string.Empty, "test_" }; #>
 <# string[] tableNamePrefix = { string.Empty, "test_" }; #>
@@ -38,33 +34,32 @@ namespace ICE_Import
 <# string TblOptionData = tableClassPrefix[i] + "tbloptiondata"; #>
         async Task PushDataToDB<# Write(methodNameSuffix[i]); #>(CancellationToken ct)
         {
-            globalCount = 0;
-            int number;
-            int percent = (int.TryParse((ParsedData.FutureRecords.Length / 100).ToString(), out number)) ? number : 0;
-            progressBarLoad.Minimum = 0;
-            progressBarLoad.Maximum = 2 * ParsedData.FutureRecords.Length;
-			if (DatabaseName != "TMLDB")
+            progressBar.Maximum = 2 * ParsedData.FutureRecords.Length;
+            if (DatabaseName != "TMLDB")
             {
                 remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMBLDB);
             }
             if (!ParsedData.FuturesOnly)
             {
-                progressBarLoad.Maximum += ParsedData.OptionRecords.Length;
+                progressBar.Maximum += ParsedData.OptionRecords.Length;
             }
 
+            int globalCount = 0;
             DateTime start = DateTime.Now;
+
+            AsyncTaskListener.Init();
 
             try
             {
-                await Task.Run(() => PushFuturesToDB<# Write(methodNameSuffix[i]); #>(ct), ct);
+                await Task.Run(() => PushFuturesToDB<# Write(methodNameSuffix[i]); #>(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
-                await Task.Run(() => PushDailyFuturesToDB<# Write(methodNameSuffix[i]); #>(ct), ct);
+                await Task.Run(() => PushDailyFuturesToDB<# Write(methodNameSuffix[i]); #>(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
                 if (!ParsedData.FuturesOnly)
                 {
-                    await Task.Run(() => PushOptionsToDB<# Write(methodNameSuffix[i]); #>(ct), ct);
+                    await Task.Run(() => PushOptionsToDB<# Write(methodNameSuffix[i]); #>(ref globalCount, ct), ct);
                     LogElapsedTime(DateTime.Now - start);
                 }
             }
@@ -94,7 +89,7 @@ namespace ICE_Import
             }
         }
 
-        void PushFuturesToDB<# Write(methodNameSuffix[i]); #>(CancellationToken ct)
+        void PushFuturesToDB<# Write(methodNameSuffix[i]); #>(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
 
@@ -162,7 +157,7 @@ namespace ICE_Import
                         }
                         #endregion
 
-						DateTime expirationtime;
+                        DateTime expirationtime;
                         if (DatabaseName != "TMLBD")
                         {
                             expirationtime = ExpirationTime(remoteContext, future.StripName.Year, future.StripName.Month, idinstrument);
@@ -221,13 +216,13 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    AsyncTaskListener.Update(spGlobalCount, log);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }
         }    
 
-        void PushDailyFuturesToDB<# Write(methodNameSuffix[i]); #>(CancellationToken ct)
+        void PushDailyFuturesToDB<# Write(methodNameSuffix[i]); #>(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
             var tbldailycontractsettlements_ = Context.<# Write(tableNamePrefix[i]); #>tbldailycontractsettlements;
@@ -322,13 +317,13 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    AsyncTaskListener.Update(spGlobalCount, log);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }
         }
 
-        void PushOptionsToDB<# Write(methodNameSuffix[i]); #>(CancellationToken ct)
+        void PushOptionsToDB<# Write(methodNameSuffix[i]); #>(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
             var tbloptions_ = Context.<# Write(tableNamePrefix[i]); #>tbloptions;
@@ -433,7 +428,7 @@ namespace ICE_Import
                         }
                         #endregion
 
-						DateTime expirationtime;
+                        DateTime expirationtime;
                         if (DatabaseName != "TMLBD")
                         {
                             expirationtime = ExpirationTime(remoteContext, option.StripName.Year, option.StripName.Month, idinstrument);
@@ -502,13 +497,13 @@ namespace ICE_Import
                     }
 
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
-                    double expiranteYear = option.Date.Year + option.Date.Month * 0.0833333;
+                    double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
 
                     #region Find data in DB like pushed
                     var tdcs = new List<<# Write(TblOptionData); #>>();
                     try
                     {
-                        foreach (var item in tbloptiondatas_.Where(item => item.timetoexpinyears == (futureYear - expiranteYear) && item.datetime == option.Date && item.idoption == TO.idoption).ToList())
+                        foreach (var item in tbloptiondatas_.Where(item => item.timetoexpinyears == (futureYear - expirateYear) && item.datetime == option.Date && item.idoption == TO.idoption).ToList())
                         {
                             tdcs.Add(item);
                         }
@@ -539,7 +534,7 @@ namespace ICE_Import
                     }
                     #endregion
 
-                    #region Implied volume
+                    #region Implied Volatility
                     // callPutFlag                      - tableOption.callorput
                     // S - stock price                  - 1.56
                     // X - strike price of option       - option.StrikePrice
@@ -565,7 +560,7 @@ namespace ICE_Import
                         datetime = option.Date,
                         price = option.StrikePrice.GetValueOrDefault(1),
                         impliedvol = impliedvol,
-                        timetoexpinyears = futureYear - expiranteYear
+                        timetoexpinyears = futureYear - expirateYear
                     };
 
                     tbloptiondatas_.InsertOnSubmit(tableOptionData);
@@ -603,7 +598,7 @@ namespace ICE_Import
                     //    currentPercent += 10;
                     //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
                     //}
-                    AsyncTaskListener.Update(spGlobalCount, log);
+                    AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
             }
@@ -618,5 +613,5 @@ namespace ICE_Import
                 && item.idinstrument == idinstrument).ToArray()[0].expirationdate;
             return expirationdate;
         }
-	}
+    }
 }

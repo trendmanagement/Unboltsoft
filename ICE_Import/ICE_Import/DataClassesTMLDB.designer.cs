@@ -22,7 +22,7 @@ namespace ICE_Import
 	using System;
 	
 	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="DatabaseLocal")]
+	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="TMLDB")]
 	public partial class DataClassesTMLDBDataContext : System.Data.Linq.DataContext
 	{
 		
@@ -69,7 +69,7 @@ namespace ICE_Import
     #endregion
 		
 		public DataClassesTMLDBDataContext() : 
-				base(global::ICE_Import.Properties.Settings.Default.LocalDatabaseConnectionString, mappingSource)
+				base(global::ICE_Import.Properties.Settings.Default.TMLDBConnectionString, mappingSource)
 		{
 			OnCreated();
 		}

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="DatabaseLocal" Class="DataClassesTMLDBDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="TMLDB" Class="DataClassesTMLDBDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="AppSettings" ConnectionString="Data Source=h9ggwlagd1.database.windows.net;Initial Catalog=TMLDB;User ID=dataupdate;Encrypt=False;TrustServerCertificate=True" SettingsObjectName="ICE_Import.Properties.Settings" SettingsPropertyName="TMLDBConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="cqgdb.tblinstruments" Member="tblinstruments">
     <Type Name="tblinstrument">

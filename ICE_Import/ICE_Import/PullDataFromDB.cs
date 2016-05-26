@@ -2,7 +2,6 @@
 // WARNING                                                                         WARNING
 // WARNING    DO NOT EDIT THIS .CS FILE, BECAUSE ALL YOUR CHANGES WILL BE LOST!    WARNING
 // WARNING    EDIT CORRESPONDING .TT FILE INSTEAD!                                 WARNING
-// WARNING    ALSO, DO NOT COMMIT THIS .CS FILE!                                   WARNING
 // WARNING                                                                         WARNING
 // WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
 

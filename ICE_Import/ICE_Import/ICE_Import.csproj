@@ -53,7 +53,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml.Linq" />
@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StoredProcsInstallator.cs" />
     <Compile Include="BgWorkerFutures.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -176,6 +177,24 @@
     <Content Include="PushDataToDB.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PushDataToDB.cs</LastGenOutput>
+    </Content>
+    <Content Include="StoredProcs\cqgdb.test_SPDF.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\cqgdb.test_SPF.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\cqgdb.test_SPF_Mod.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\cqgdb.test_SPO.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\cqgdb.test_SPOD.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\cqgdb.test_SPO_Mod.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
