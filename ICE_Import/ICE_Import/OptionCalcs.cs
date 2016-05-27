@@ -27,7 +27,7 @@ namespace ICE_Import
         //    v = 0.12, volatility is 12% per annum
         //    c = 0.0291
 
-        public static double CalculateOptionVolatility(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice)
+        private static double calculateOptionVolatility(char callPutFlag, double S, double X, double T, double r, double currentOptionPrice)
         {
             double tempV = 0.5;
             try
