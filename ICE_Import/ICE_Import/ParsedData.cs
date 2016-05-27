@@ -1,14 +1,22 @@
-﻿namespace ICE_Import
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using System.Linq;
+
+namespace ICE_Import
 {
     internal static class ParsedData
     {
         public delegate void ParseEventHandler();
-        public static event ParseEventHandler ParseComplete;
+        public static event ParseEventHandler ParseSucceeded;
+        public static event ParseEventHandler ParseFailed;
         public static EOD_Futures_578[] FutureRecords;
         public static EOD_Options_578[] OptionRecords;
         public static bool FuturesOnly;
 
-        public static bool IsReady
+        private static bool IsConform;
+
+        public static bool IsParsed
         {
             get
             {
@@ -23,37 +31,58 @@
             }
         }
 
-        public static void OnParseComplete()
+        public static bool IsReady
         {
-            Program.csvf.Hide();
-            if (Program.dbf == null)
+            get
             {
-                Program.dbf = new FormDB();
+                if (FuturesOnly)
+                {
+                    return FutureRecords != null;
+                }
+                else
+                {
+                    return OptionRecords != null && FutureRecords != null && IsConform;
+                }
             }
-            Program.dbf.Show();
-
-            // Raise event
-            ParseComplete();
         }
 
+        public static void OnParseComplete()
+        {
+            if (IsParsed)
+            {
+                if (FuturesOnly || ConformityCheck())
+                {
+                    Program.csvf.Hide();
+                    if (Program.dbf == null)
+                    {
+                        Program.dbf = new FormDB();
+                    }
+                    Program.dbf.Show();
+
+                    // Raise event
+                    ParseSucceeded();
+                }
+                else
+                {
+                    MessageBox.Show("The selected Future CSV Files(s) and Option CSV File(s) do not conform to each other.", "ICE Import (DB Form)", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    // Raise event
+                    ParseFailed();
+                }
+            }
+            else
+            {
+                // Raise event
+                ParseFailed();
+            }
+        }
+        
         private static bool ConformityCheck()
         {
-            if (IsReady)
-            {
-                foreach (EOD_Futures_578 f in FutureRecords)
-                {
-                    foreach (EOD_Options_578 o in OptionRecords)
-                    {
-                        if (f.StripName == o.StripName)
-                        {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-            return false;
-
+            var futureStripNames = new HashSet<DateTime>(FutureRecords.Select(item => item.StripName));
+            var optionStripNames = new HashSet<DateTime>(OptionRecords.Select(item => item.StripName));
+            IsConform = optionStripNames.IsSubsetOf(futureStripNames);
+            return IsConform;
         }
     }
 }
