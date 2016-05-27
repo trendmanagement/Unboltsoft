@@ -46,7 +46,7 @@ namespace ICE_Import
                     monthchar,
                     future.StripName.Year);
 
-                sb.Append("cqgdb.test_SPF ");
+                sb.AppendFormat("cqgdb.{0}SPF ", StoredProcPrefix);
                 Utilities.AppendHelper(sb, contractname);
                 Utilities.AppendHelper(sb, monthchar);
                 Utilities.AppendHelper(sb, future.StripName.Month);
@@ -59,7 +59,7 @@ namespace ICE_Import
 
                 sb.Clear();
 
-                sb.Append("cqgdb.test_SPDF ");
+                sb.AppendFormat("cqgdb.{0}SPDF ", StoredProcPrefix);
                 Utilities.AppendHelper(sb, future.Date);
                 Utilities.AppendHelper(sb, future.SettlementPrice.GetValueOrDefault());
                 Utilities.AppendHelper(sb, monthchar);
@@ -128,15 +128,15 @@ namespace ICE_Import
                     1.56,
                     Utilities.NormalizePrice(option.StrikePrice),
                     0.5,
-                    r,
+                    RiskFreeInterestRate,
                     Utilities.NormalizePrice(option.SettlementPrice),
-                    tickSize);
+                    TickSize);
                 #endregion
 
                 double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                 double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
 
-                sb.Append("cqgdb.test_SPO ");
+                sb.AppendFormat("cqgdb.{0}SPO ", StoredProcPrefix);
                 Utilities.AppendHelper(sb, optionName);
                 Utilities.AppendHelper(sb, monthchar);
                 Utilities.AppendHelper(sb, option.StripName.Month);
@@ -151,7 +151,7 @@ namespace ICE_Import
 
                 sb.Clear();
 
-                sb.Append("cqgdb.test_SPOD ");
+                sb.AppendFormat("cqgdb.{0}SPOD ", StoredProcPrefix);
                 Utilities.AppendHelper(sb, monthchar);
                 Utilities.AppendHelper(sb, option.StripName.Year);
                 Utilities.AppendHelper(sb, option.Date);
