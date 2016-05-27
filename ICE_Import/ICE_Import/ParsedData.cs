@@ -1,4 +1,6 @@
-﻿namespace ICE_Import
+﻿using System.Windows.Forms;
+
+namespace ICE_Import
 {
     internal static class ParsedData
     {
@@ -25,15 +27,22 @@
 
         public static void OnParseComplete()
         {
-            Program.csvf.Hide();
-            if (Program.dbf == null)
+            if (ConformityCheck())
             {
-                Program.dbf = new FormDB();
-            }
-            Program.dbf.Show();
+                Program.csvf.Hide();
+                if (Program.dbf == null)
+                {
+                    Program.dbf = new FormDB();
+                }
+                Program.dbf.Show();
 
-            // Raise event
-            ParseComplete();
+                // Raise event
+                ParseComplete();
+            }
+            else
+            {
+                MessageBox.Show("Check the input data files correspond to each other!");
+            }
         }
 
         private static bool ConformityCheck()
