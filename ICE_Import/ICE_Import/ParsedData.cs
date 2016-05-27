@@ -27,7 +27,19 @@ namespace ICE_Import
 
         public static void OnParseComplete()
         {
-            if (ConformityCheck())
+            if (ConformityCheck() && !FuturesOnly)
+            {
+                Program.csvf.Hide();
+                if (Program.dbf == null)
+                {
+                    Program.dbf = new FormDB();
+                }
+                Program.dbf.Show();
+
+                // Raise event
+                ParseComplete();
+            }
+            else if (FuturesOnly)
             {
                 Program.csvf.Hide();
                 if (Program.dbf == null)
@@ -47,7 +59,7 @@ namespace ICE_Import
 
         private static bool ConformityCheck()
         {
-            if (IsReady)
+            if (IsReady && !FuturesOnly)
             {
                 foreach (EOD_Futures_578 f in FutureRecords)
                 {
