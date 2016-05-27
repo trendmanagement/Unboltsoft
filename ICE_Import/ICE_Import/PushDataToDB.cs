@@ -519,7 +519,7 @@ namespace ICE_Import
                         //idoptiondata must generate by DB
                         idoption = TO.idoption,
                         datetime = option.Date,
-                        price = option.StrikePrice.GetValueOrDefault(1),
+                        price = option.SettlementPrice.GetValueOrDefault(),
                         impliedvol = impliedvol,
                         timetoexpinyears = futureYear - expirateYear
                     };
@@ -1067,7 +1067,7 @@ namespace ICE_Import
                         //idoptiondata must generate by DB
                         idoption = TO.idoption,
                         datetime = option.Date,
-                        price = option.StrikePrice.GetValueOrDefault(1),
+                        price = option.SettlementPrice.GetValueOrDefault(),
                         impliedvol = impliedvol,
                         timetoexpinyears = futureYear - expirateYear
                     };

@@ -141,7 +141,7 @@ namespace ICE_Import
                 Utilities.AppendHelper(sb, monthchar);
                 Utilities.AppendHelper(sb, option.StripName.Month);
                 Utilities.AppendHelper(sb, option.StripName.Year);
-                Utilities.AppendHelper(sb, option.SettlementPrice.GetValueOrDefault());
+                Utilities.AppendHelper(sb, option.StrikePrice.GetValueOrDefault());
                 Utilities.AppendHelper(sb, option.OptionType);
                 Utilities.AppendHelper(sb, idinstrument);
                 Utilities.AppendHelper(sb, option.Date);
@@ -155,7 +155,7 @@ namespace ICE_Import
                 Utilities.AppendHelper(sb, monthchar);
                 Utilities.AppendHelper(sb, option.StripName.Year);
                 Utilities.AppendHelper(sb, option.Date);
-                Utilities.AppendHelper(sb, option.StrikePrice.GetValueOrDefault());
+                Utilities.AppendHelper(sb, option.SettlementPrice.GetValueOrDefault());
                 Utilities.AppendHelper(sb, impliedvol);
                 Utilities.AppendHelper(sb, futureYear - expirateYear, true);
 
