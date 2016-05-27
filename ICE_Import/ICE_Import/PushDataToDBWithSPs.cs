@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Configuration;
 
 namespace ICE_Import
 {
@@ -16,10 +14,6 @@ namespace ICE_Import
         /// </summary>
         async Task PushDataToDBWithSPs(CancellationToken ct)
         {
-            if (DatabaseName != "TMLDB")
-            {
-                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMLDB);
-            }
             progressBar.Maximum = ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
             {
@@ -91,7 +85,7 @@ namespace ICE_Import
                     }
                     else
                     {
-                        var records = remoteContext.tblcontractexpirations.Where(
+                        var records = ContextTMLDB.tblcontractexpirations.Where(
                             item =>
                             item.optionmonthint == future.StripName.Month &&
                             item.optionyear == future.StripName.Year &&
@@ -193,9 +187,9 @@ namespace ICE_Import
                         1.56,
                         Utilities.NormalizePrice(option.StrikePrice),
                         0.5,
-                        r,
+                        RiskFreeInterestRate,
                         Utilities.NormalizePrice(option.SettlementPrice),
-                        tickSize);
+                        TickSize);
                     #endregion
 
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
@@ -244,14 +238,14 @@ namespace ICE_Import
             }
         }
 
-        private double R(DataClassesTMLDBDataContext context)
+        private double GetRiskFreeInterestRate()
         {
-            double optioninputclose = 0;
+            double optioninputclose;
             try
             {
-                var idoptioninputsymbol = context.tbloptioninputsymbols.Where(item2 =>
+                var idoptioninputsymbol = ContextTMLDB.tbloptioninputsymbols.Where(item2 =>
                     item2.idoptioninputtype == 1).ToArray()[0].idoptioninputsymbol;
-                tbloptioninputdata[] tbloptioninputdatas = context.tbloptioninputdatas.Where(item =>
+                tbloptioninputdata[] tbloptioninputdatas = ContextTMLDB.tbloptioninputdatas.Where(item =>
                    item.idoptioninputsymbol == idoptioninputsymbol).ToArray();
                 DateTime optioninputdatetime = new DateTime();
                 for (int i = 0; i < tbloptioninputdatas.Length; i++)
@@ -273,10 +267,10 @@ namespace ICE_Import
                 var OPTION_INPUT_TYPE_RISK_FREE_RATE = 1;
 
                 //--?-- What difference between idoptioninputsymbol and idoptioninputsymbol2
-                var idoptioninputsymbol2 = context.tbloptioninputsymbols.Where(item2 =>
+                var idoptioninputsymbol2 = ContextTMLDB.tbloptioninputsymbols.Where(item2 =>
                     item2.idoptioninputtype == OPTION_INPUT_TYPE_RISK_FREE_RATE).ToArray()[0].idoptioninputsymbol;
 
-                optioninputclose = context.tbloptioninputdatas.Where(item =>
+                optioninputclose = ContextTMLDB.tbloptioninputdatas.Where(item =>
                     item.idoptioninputsymbol == idoptioninputsymbol2
                         && item.optioninputdatetime == optioninputdatetime).ToArray()[0].optioninputclose;
 
@@ -284,20 +278,21 @@ namespace ICE_Import
             catch (Exception ex)
             {
                 LogMessage(ex.Message);
+                throw ex;
             }
-            finally
-            {
-                LogMessage(string.Format("Risk = {0}", optioninputclose));
-            }
+
+            LogMessage(string.Format("Risk = {0}", optioninputclose));
 
             return optioninputclose;
         }
 
-        private double TickSize(DataClassesTMLDBDataContext context)
+        private double GetTickSize()
         {
+            double tickSize;
+
             try
             {
-                var secondaryoptionticksize = context.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].secondaryoptionticksize;
+                var secondaryoptionticksize = ContextTMLDB.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].secondaryoptionticksize;
 
                 if (secondaryoptionticksize > 0)
                 {
@@ -305,20 +300,18 @@ namespace ICE_Import
                 }
                 else
                 {
-                    tickSize = context.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].optionticksize;
+                    tickSize = ContextTMLDB.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].optionticksize;
                 }
             }
             catch (Exception ex)
             {
                 LogMessage(ex.Message);
+                throw ex;
             }
-            finally
-            {
-                LogMessage(string.Format("Tick size = {0}", tickSize));
-            }
+
+            LogMessage(string.Format("Tick size = {0}", tickSize));
 
             return tickSize;
         }
-
     }
 }
