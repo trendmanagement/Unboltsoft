@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.Drawing;
-using System.IO;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -48,7 +46,8 @@ namespace ICE_Import
             this.Resize += FormDB_Resize;
             this.LogMessage += FormDB_LogMessage;
             this.FormClosed += FormDB_FormClosed;
-            ParsedData.ParseComplete += ParsedData_ParseComplete;
+            ParsedData.ParseSucceeded += ParsedData_ParseSucceeded;
+            ParsedData.ParseFailed += ParsedData_ParseFailed;
             AsyncTaskListener.Updated += AsyncTaskListener_Updated;
 
             rb_DB_CheckedChanged(rb_LocalDB, null);
@@ -120,17 +119,17 @@ namespace ICE_Import
 
             FormDB_Resize(sender, e);
 
-            if (!ParsedData.IsReady)
+            if (ParsedData.IsReady)
             {
-                buttonPush.Enabled = false;
+                ParsedData_ParseSucceeded();
             }
             else
             {
-                ParsedData_ParseComplete();
+                ParsedData_ParseFailed();
             }
         }
 
-        private void ParsedData_ParseComplete()
+        private void ParsedData_ParseSucceeded()
         {
             string pat = "{0} entries count: {1} (ready for pushing to DB)";
             string msg = string.Format(
@@ -149,7 +148,12 @@ namespace ICE_Import
 
             buttonPush.Enabled = true;
         }
-        
+
+        private void ParsedData_ParseFailed()
+        {
+            buttonPush.Enabled = false;
+        }
+
         private async void buttonPush_Click(object sender, EventArgs e)
         {
             if (!ValidateOptions(true))
