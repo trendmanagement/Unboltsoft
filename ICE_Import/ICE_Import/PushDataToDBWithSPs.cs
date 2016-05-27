@@ -200,7 +200,7 @@ namespace ICE_Import
                         monthchar,
                         option.StripName.Month,
                         option.StripName.Year,
-                        option.SettlementPrice.GetValueOrDefault(),
+                        option.StrikePrice.GetValueOrDefault(),
                         option.OptionType,
                         idinstrument,
                         optionName);
@@ -209,7 +209,7 @@ namespace ICE_Import
                         monthchar,
                         option.StripName.Year,
                         option.Date,
-                        option.StrikePrice.GetValueOrDefault(),
+                        option.SettlementPrice.GetValueOrDefault(),
                         impliedvol,
                         futureYear - expirateYear);
                 }
