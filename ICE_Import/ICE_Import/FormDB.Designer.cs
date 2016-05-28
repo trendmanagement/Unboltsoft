@@ -51,8 +51,8 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.cb_TestTables = new System.Windows.Forms.CheckBox();
             this.cb_AsyncUpdate = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.labelRPS = new System.Windows.Forms.Label();
+            this.labelRPS1 = new System.Windows.Forms.Label();
+            this.labelRPS2 = new System.Windows.Forms.Label();
             this.tabPageDailyContract.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDailyContract)).BeginInit();
             this.tabPageContract.SuspendLayout();
@@ -319,30 +319,30 @@
             this.cb_AsyncUpdate.UseVisualStyleBackColor = true;
             this.cb_AsyncUpdate.CheckedChanged += new System.EventHandler(this.cb_AsyncUpdate_CheckedChanged);
             // 
-            // label1
+            // labelRPS1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(577, 334);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(32, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "RPS:";
+            this.labelRPS1.AutoSize = true;
+            this.labelRPS1.Location = new System.Drawing.Point(577, 334);
+            this.labelRPS1.Name = "labelRPS1";
+            this.labelRPS1.Size = new System.Drawing.Size(32, 13);
+            this.labelRPS1.TabIndex = 8;
+            this.labelRPS1.Text = "RPS:";
             // 
-            // labelRPS
+            // labelRPS2
             // 
-            this.labelRPS.AutoSize = true;
-            this.labelRPS.Location = new System.Drawing.Point(615, 334);
-            this.labelRPS.Name = "labelRPS";
-            this.labelRPS.Size = new System.Drawing.Size(0, 13);
-            this.labelRPS.TabIndex = 9;
+            this.labelRPS2.AutoSize = true;
+            this.labelRPS2.Location = new System.Drawing.Point(615, 334);
+            this.labelRPS2.Name = "labelRPS2";
+            this.labelRPS2.Size = new System.Drawing.Size(0, 13);
+            this.labelRPS2.TabIndex = 9;
             // 
             // FormDB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 465);
-            this.Controls.Add(this.labelRPS);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.labelRPS1);
+            this.Controls.Add(this.labelRPS2);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.buttonToCSV);
@@ -399,7 +399,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox cb_TestTables;
         private System.Windows.Forms.CheckBox cb_AsyncUpdate;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label labelRPS;
+        private System.Windows.Forms.Label labelRPS1;
+        private System.Windows.Forms.Label labelRPS2;
     }
 }

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 
 namespace ICE_Import
 {
@@ -48,27 +49,24 @@ namespace ICE_Import
 
         public static void OnParseComplete()
         {
-            if (IsParsed)
+            if (!IsParsed)
             {
-                if (FuturesOnly || ConformityCheck())
-                {
-                    Program.csvf.Hide();
-                    if (Program.dbf == null)
-                    {
-                        Program.dbf = new FormDB();
-                    }
-                    Program.dbf.Show();
+                // Raise event
+                ParseFailed();
+                return;
+            }
 
-                    // Raise event
-                    ParseSucceeded();
-                }
-                else
+            if (FuturesOnly || ConformityCheck())
+            {
+                Program.csvf.Hide();
+                if (Program.dbf == null)
                 {
-                    MessageBox.Show("The selected Future CSV Files(s) and Option CSV File(s) do not conform to each other.", "ICE Import (DB Form)", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                    // Raise event
-                    ParseFailed();
+                    Program.dbf = new FormDB();
                 }
+                Program.dbf.Show();
+
+                // Raise event
+                ParseSucceeded();
             }
             else
             {
@@ -81,7 +79,27 @@ namespace ICE_Import
         {
             var futureStripNames = new HashSet<DateTime>(FutureRecords.Select(item => item.StripName));
             var optionStripNames = new HashSet<DateTime>(OptionRecords.Select(item => item.StripName));
-            IsConform = optionStripNames.IsSubsetOf(futureStripNames);
+            foreach (DateTime futureStripName in futureStripNames)
+            {
+                optionStripNames.Remove(futureStripName);
+            }
+            IsConform = optionStripNames.Count == 0;
+
+            if (!IsConform)
+            {
+                var sb = new StringBuilder(
+                    "The selected Future CSV Files(s) and Option CSV File(s) do not conform to each other.\r\n\r\n" +
+                    "Options with the following values of StripName do not have corresponding futures " +
+                    "(only the first 10 values are shown):\r\n\r\n");
+                foreach (DateTime optionStripName in optionStripNames.Take(10))
+                {
+                    sb.Append(optionStripName.ToString("MMMyy") + "\r\n");
+                }
+                sb.Append("\r\nDo you want to proceed anyway?");
+                DialogResult result = MessageBox.Show(sb.ToString(), "ICE Import (DB Form)", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                IsConform = result == DialogResult.Yes;
+            }
+
             return IsConform;
         }
     }

@@ -118,6 +118,16 @@ namespace ICE_Import
                 X = buttonCancel.Location.X,
                 Y = this.Height - 175
             };
+            labelRPS1.Location = new Point()
+            {
+                X = this.Width - 103,
+                Y = this.Height - 170
+            };
+            labelRPS2.Location = new Point()
+            {
+                X = this.Width - 65,
+                Y = this.Height - 170
+            };
             progressBar.Location = new Point()
             {
                 X = progressBar.Location.X,
@@ -302,7 +312,7 @@ namespace ICE_Import
                 {
                     buttonPush.Enabled = true;
                 }
-                labelRPS.Text = string.Empty;
+                labelRPS2.Text = string.Empty;
             }
             buttonPull.Enabled = !start;
             buttonCancel.Enabled = start;
@@ -440,7 +450,7 @@ namespace ICE_Import
                     }
                     if (!double.IsNaN(rps))
                     {
-                        labelRPS.Text = Math.Round(rps).ToString();
+                        labelRPS2.Text = Math.Round(rps).ToString();
                     }
                 });
 
