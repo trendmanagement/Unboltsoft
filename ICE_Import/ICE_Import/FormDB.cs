@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.Drawing;
-using System.IO;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -23,23 +21,36 @@ namespace ICE_Import
         bool IsTestTables;
 
         bool IsStoredProcs;
+        string StoredProcPrefix;
 
         bool IsAsyncUpdate;
 
         string ConnectionString;
         DataClassesTMLDBDataContext Context;
-        DataClassesTMLDBDataContext remoteContext;
 
-        static Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-        static ConnectionStringsSection csSection = config.ConnectionStrings;
-        string localConnectionStringPattern = csSection.ConnectionStrings[1].ConnectionString;
-        string remoteConnectionStringPatternTMLDB_Copy = csSection.ConnectionStrings[2].ConnectionString;
-        string remoteConnectionStringPatternTMLDB = csSection.ConnectionStrings[3].ConnectionString;
+        DataClassesTMLDBDataContext ContextTMLDB;
 
-        //Risk-free interest rate
-        double r = 0.08;
-        //Tick size 
-        double tickSize = 0;
+        static class ConnectionStrings
+        {
+            public static string Local;
+            public static string TMLDB_Copy;
+            public static string TMLDB;
+
+            static ConnectionStrings()
+            {
+                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                ConnectionStringsSection csSection = config.ConnectionStrings;
+                Local = csSection.ConnectionStrings[1].ConnectionString;
+                TMLDB_Copy = csSection.ConnectionStrings[2].ConnectionString;
+                TMLDB = csSection.ConnectionStrings[3].ConnectionString;
+            }
+        }
+
+        // Risk-free interest rate
+        double RiskFreeInterestRate = 0.08;
+
+        // Tick size 
+        double TickSize = 0;
 
         public FormDB()
         {
@@ -48,13 +59,19 @@ namespace ICE_Import
             this.Resize += FormDB_Resize;
             this.LogMessage += FormDB_LogMessage;
             this.FormClosed += FormDB_FormClosed;
-            ParsedData.ParseComplete += ParsedData_ParseComplete;
+            ParsedData.ParseSucceeded += ParsedData_ParseSucceeded;
+            ParsedData.ParseFailed += ParsedData_ParseFailed;
             AsyncTaskListener.Updated += AsyncTaskListener_Updated;
 
             rb_DB_CheckedChanged(rb_LocalDB, null);
             cb_TestTables_CheckedChanged(null, null);
             cb_StoredProcs_CheckedChanged(null, null);
             cb_AsyncUpdate_CheckedChanged(null, null);
+
+            ContextTMLDB = new DataClassesTMLDBDataContext(ConnectionStrings.TMLDB);
+
+            RiskFreeInterestRate = GetRiskFreeInterestRate();
+            TickSize = GetTickSize();
         }
 
         private void FormDB_FormClosed(object sender, FormClosedEventArgs e)
@@ -101,6 +118,16 @@ namespace ICE_Import
                 X = buttonCancel.Location.X,
                 Y = this.Height - 175
             };
+            labelRPS1.Location = new Point()
+            {
+                X = this.Width - 103,
+                Y = this.Height - 170
+            };
+            labelRPS2.Location = new Point()
+            {
+                X = this.Width - 65,
+                Y = this.Height - 170
+            };
             progressBar.Location = new Point()
             {
                 X = progressBar.Location.X,
@@ -120,17 +147,17 @@ namespace ICE_Import
 
             FormDB_Resize(sender, e);
 
-            if (!ParsedData.IsReady)
+            if (ParsedData.IsReady)
             {
-                buttonPush.Enabled = false;
+                ParsedData_ParseSucceeded();
             }
             else
             {
-                ParsedData_ParseComplete();
+                ParsedData_ParseFailed();
             }
         }
 
-        private void ParsedData_ParseComplete()
+        private void ParsedData_ParseSucceeded()
         {
             string pat = "{0} entries count: {1} (ready for pushing to DB)";
             string msg = string.Format(
@@ -149,7 +176,12 @@ namespace ICE_Import
 
             buttonPush.Enabled = true;
         }
-        
+
+        private void ParsedData_ParseFailed()
+        {
+            buttonPush.Enabled = false;
+        }
+
         private async void buttonPush_Click(object sender, EventArgs e)
         {
             if (!ValidateOptions(true))
@@ -185,6 +217,8 @@ namespace ICE_Import
                     return;
                 }
             }
+
+            EnableDisable(true);
 
             LogMessage("Pushing started");
 
@@ -293,7 +327,7 @@ namespace ICE_Import
                 {
                     buttonPush.Enabled = true;
                 }
-                labelRPS.Text = string.Empty;
+                labelRPS2.Text = string.Empty;
             }
             buttonPull.Enabled = !start;
             buttonCancel.Enabled = start;
@@ -318,26 +352,33 @@ namespace ICE_Import
                     // Local DB
                     DatabaseName = "Local";
                     IsLocalDB = true;
-                    ConnectionString = localConnectionStringPattern;
+                    ConnectionString = ConnectionStrings.Local;
                     break;
                 case 2:
                     // TMLDB_Copy
                     DatabaseName = "TMLDB_Copy";
                     IsLocalDB = false;
-                    ConnectionString = remoteConnectionStringPatternTMLDB_Copy;
+                    ConnectionString = ConnectionStrings.TMLDB_Copy;
                     break;
                 case 3:
                     // TMLDB
                     DatabaseName = "TMLDB";
                     IsLocalDB = false;
-                    ConnectionString = remoteConnectionStringPatternTMLDB;
+                    ConnectionString = ConnectionStrings.TMLDB;
                     break;
                 default:
                     throw new ArgumentException();
             }
 
             // Change DB context
-            Context = new DataClassesTMLDBDataContext(ConnectionString);
+            if (tag != 3)
+            {
+                Context = new DataClassesTMLDBDataContext(ConnectionString);
+            }
+            else
+            {
+                Context = ContextTMLDB;
+            }
             StoredProcsSwitch.Update(Context, IsTestTables);
 
             LogMessage(string.Format("You selected {0} database", DatabaseName));
@@ -368,6 +409,8 @@ namespace ICE_Import
             tabPageOption.Text = prefix + "tbloption";
             tabPageOptionData.Text = prefix + "tbloptiondata";
 
+            StoredProcPrefix = prefix;
+
             // Update stored procs switch
             StoredProcsSwitch.Update(Context, IsTestTables);
 
@@ -379,12 +422,18 @@ namespace ICE_Import
             IsStoredProcs = cb_StoredProcs.Checked;
 
             cb_AsyncUpdate.Enabled = IsStoredProcs;
-            if (!IsStoredProcs)
+
+            string storedCoded;
+            if (IsStoredProcs)
+            {
+                storedCoded = "STORED";
+            }
+            else
             {
                 cb_AsyncUpdate.Checked = false;
+                storedCoded = "CODED";
             }
 
-            string storedCoded = IsStoredProcs ? "STORED" : "CODED";
             LogMessage(string.Format("You selected {0} procedures", storedCoded));
         }
 
@@ -416,7 +465,7 @@ namespace ICE_Import
                     }
                     if (!double.IsNaN(rps))
                     {
-                        labelRPS.Text = Math.Round(rps).ToString();
+                        labelRPS2.Text = Math.Round(rps).ToString();
                     }
                 });
 

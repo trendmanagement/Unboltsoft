@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Configuration;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
@@ -20,10 +18,6 @@ namespace ICE_Import
         /// </summary>
         async Task PushDataToDBWithSPs(CancellationToken ct)
         {
-            if (DatabaseName != "TMLDB")
-            {
-                remoteContext = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMLDB);
-            }
             progressBar.Maximum = ParsedData.FutureRecords.Length;
             if (!ParsedData.FuturesOnly)
             {
@@ -213,9 +207,9 @@ namespace ICE_Import
                         1.56,
                         Utilities.NormalizePrice(option.StrikePrice),
                         0.5,
-                        r,
+                        RiskFreeInterestRate,
                         Utilities.NormalizePrice(option.SettlementPrice),
-                        tickSize);
+                        TickSize);
                     #endregion
 
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
@@ -254,7 +248,7 @@ namespace ICE_Import
                         monthchar,
                         option.StripName.Month,
                         option.StripName.Year,
-                        option.SettlementPrice.GetValueOrDefault(),
+                        option.StrikePrice.GetValueOrDefault(),
                         option.OptionType,
                         idinstrument,
                         expirationtime,
@@ -264,7 +258,7 @@ namespace ICE_Import
                         monthchar,
                         option.StripName.Year,
                         option.Date,
-                        option.StrikePrice.GetValueOrDefault(),
+                        option.SettlementPrice.GetValueOrDefault(),
                         impliedvol,
                         futureYear - expirateYear);
                 }
@@ -296,9 +290,9 @@ namespace ICE_Import
             await Task.Run(() => { 
             try
             {
-                var idoptioninputsymbol = context.tbloptioninputsymbols.Where(item2 =>
+                var idoptioninputsymbol = ContextTMLDB.tbloptioninputsymbols.Where(item2 =>
                     item2.idoptioninputtype == 1).ToArray()[0].idoptioninputsymbol;
-                tbloptioninputdata[] tbloptioninputdatas = context.tbloptioninputdatas.Where(item =>
+                tbloptioninputdata[] tbloptioninputdatas = ContextTMLDB.tbloptioninputdatas.Where(item =>
                    item.idoptioninputsymbol == idoptioninputsymbol).ToArray();
                 DateTime optioninputdatetime = new DateTime();
                 for (int i = 0; i < tbloptioninputdatas.Length; i++)
@@ -320,7 +314,7 @@ namespace ICE_Import
                 var OPTION_INPUT_TYPE_RISK_FREE_RATE = 1;
 
                 //--?-- What difference between idoptioninputsymbol and idoptioninputsymbol2
-                var idoptioninputsymbol2 = context.tbloptioninputsymbols.Where(item2 =>
+                var idoptioninputsymbol2 = ContextTMLDB.tbloptioninputsymbols.Where(item2 =>
                     item2.idoptioninputtype == OPTION_INPUT_TYPE_RISK_FREE_RATE).ToArray()[0].idoptioninputsymbol;
 
                 r = context.tbloptioninputdatas.Where(item =>
@@ -331,6 +325,7 @@ namespace ICE_Import
             catch (Exception ex)
             {
                 AsyncTaskListener.LogMessage(ex.Message);
+                throw ex;
             }
             finally
             {
@@ -366,6 +361,5 @@ namespace ICE_Import
                 }
             });
         }
-
     }
 }

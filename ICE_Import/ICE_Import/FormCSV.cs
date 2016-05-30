@@ -20,6 +20,9 @@ namespace ICE_Import
 
         private void button_InputOption_Click(object sender, EventArgs e)
         {
+            ParsedData.OptionRecords = null;
+            ParsedData.OnParseComplete();
+
             OptionFilePaths = SelectFiles(
                 "Options",
                 label_InputOption,
@@ -72,6 +75,9 @@ namespace ICE_Import
 
         private void button_InputFuture_Click(object sender, EventArgs e)
         {
+            ParsedData.FutureRecords = null;
+            ParsedData.OnParseComplete();
+
             FutureFilePaths = SelectFiles(
                 "Futures",
                 label_InputFuture,
@@ -173,10 +179,7 @@ namespace ICE_Import
                 ParsedData.OptionRecords = null;
             }
 
-            if (ParsedData.IsReady)
-            {
-                ParsedData.OnParseComplete();
-            }
+            ParsedData.OnParseComplete();
         }
     }
 }

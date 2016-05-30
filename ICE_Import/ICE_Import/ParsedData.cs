@@ -1,16 +1,23 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 
 namespace ICE_Import
 {
     internal static class ParsedData
     {
         public delegate void ParseEventHandler();
-        public static event ParseEventHandler ParseComplete;
+        public static event ParseEventHandler ParseSucceeded;
+        public static event ParseEventHandler ParseFailed;
         public static EOD_Futures_578[] FutureRecords;
         public static EOD_Options_578[] OptionRecords;
         public static bool FuturesOnly;
 
-        public static bool IsReady
+        private static bool IsConform;
+
+        public static bool IsParsed
         {
             get
             {
@@ -25,56 +32,75 @@ namespace ICE_Import
             }
         }
 
-        public static void OnParseComplete()
+        public static bool IsReady
         {
-            if (ConformityCheck() && !FuturesOnly)
+            get
             {
-                Program.csvf.Hide();
-                if (Program.dbf == null)
+                if (FuturesOnly)
                 {
-                    Program.dbf = new FormDB();
+                    return FutureRecords != null;
                 }
-                Program.dbf.Show();
-
-                // Raise event
-                ParseComplete();
-            }
-            else if (FuturesOnly)
-            {
-                Program.csvf.Hide();
-                if (Program.dbf == null)
+                else
                 {
-                    Program.dbf = new FormDB();
+                    return OptionRecords != null && FutureRecords != null && IsConform;
                 }
-                Program.dbf.Show();
-
-                // Raise event
-                ParseComplete();
-            }
-            else
-            {
-                MessageBox.Show("Check the input data files correspond to each other!");
             }
         }
 
+        public static void OnParseComplete()
+        {
+            if (!IsParsed)
+            {
+                // Raise event
+                ParseFailed();
+                return;
+            }
+
+            if (FuturesOnly || ConformityCheck())
+            {
+                Program.csvf.Hide();
+                if (Program.dbf == null)
+                {
+                    Program.dbf = new FormDB();
+                }
+                Program.dbf.Show();
+
+                // Raise event
+                ParseSucceeded();
+            }
+            else
+            {
+                // Raise event
+                ParseFailed();
+            }
+        }
+        
         private static bool ConformityCheck()
         {
-            if (IsReady && !FuturesOnly)
+            var futureStripNames = new HashSet<DateTime>(FutureRecords.Select(item => item.StripName));
+            var optionStripNames = new HashSet<DateTime>(OptionRecords.Select(item => item.StripName));
+            foreach (DateTime futureStripName in futureStripNames)
             {
-                foreach (EOD_Futures_578 f in FutureRecords)
-                {
-                    foreach (EOD_Options_578 o in OptionRecords)
-                    {
-                        if (f.StripName == o.StripName)
-                        {
-                            return true;
-                        }
-                    }
-                }
-                return false;
+                optionStripNames.Remove(futureStripName);
             }
-            return false;
+            IsConform = optionStripNames.Count == 0;
 
+            if (!IsConform)
+            {
+                var sb = new StringBuilder(
+                    "The selected Future CSV Files(s) and Option CSV File(s) do not conform to each other.\r\n\r\n" +
+                    "Options with the following values of StripName do not have corresponding futures " +
+                    "(only the first 10 values are shown):\r\n\r\n");
+                foreach (DateTime optionStripName in optionStripNames.Take(10))
+                {
+                    sb.Append(optionStripName.ToString("MMMyy") + "\r\n");
+                }
+                sb.Append("\r\nDo you want to proceed anyway?");
+                DialogResult result = MessageBox.Show(sb.ToString(), "ICE Import (DB Form)", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                IsConform = result == DialogResult.Yes;
+            }
+
+            return IsConform;
         }
     }
 }

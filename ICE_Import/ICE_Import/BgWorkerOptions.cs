@@ -45,10 +45,7 @@ namespace ICE_Import
             progressBar_ParsingOption.Value = 0;
             EnableDisableOption(false);
 
-            if (ParsedData.IsReady)
-            {
-                ParsedData.OnParseComplete();
-            }
+            ParsedData.OnParseComplete();
         }
     }
 }
