@@ -6,11 +6,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Configuration;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace ICE_Import
 {
     public partial class FormDB : Form
     {
+        Dictionary<int, DateTime> expirationtimeDictionary = new Dictionary<int, DateTime>();
+
         /// <summary>
         /// Push all data to DB with stored procedures. Update either test or non-test tables.
         /// </summary>
@@ -59,13 +63,15 @@ namespace ICE_Import
         /// </summary>
         void PushFuturesToDBWithSP(ref int globalCount, CancellationToken ct)
         {
+            var stripNameHashSet = new HashSet<DateTime>();
+
             foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
             {
                 if (ct.IsCancellationRequested)
                 {
                     break;
                 }
-
+                bool newFuture = !stripNameHashSet.Contains(future.StripName);
                 int idinstrument = 36;
 
                 char monthchar = Utilities.MonthToMonthCode(future.StripName.Month);
@@ -76,46 +82,60 @@ namespace ICE_Import
                     monthchar,
                     future.StripName.Year);
 
-                string log = string.Empty;
-                try
-                {
-                    if (DatabaseName == "TMLDB")
+                    string log = string.Empty;
+                    try
                     {
-                        StoredProcsSwitch.SPF_Mod(
-                            contractname,
-                            monthchar,
-                            future.StripName.Month,
-                            future.StripName.Year,
-                            idinstrument,
-                            contractname);
-                    }
-                    else
+                    if (newFuture)
                     {
-                        var records = remoteContext.tblcontractexpirations.Where(
-                            item =>
-                            item.optionmonthint == future.StripName.Month &&
-                            item.optionyear == future.StripName.Year &&
-                            item.idinstrument == idinstrument).ToArray();
-
-                        DateTime expirationtime;
-                        if (records.Length == 0)
+                        if (DatabaseName == "TMLDB")
                         {
-                            log += string.Format("Failed to find expiration date for future with month = {0}, year = {1}, idinstrument = {2} in tblcontractexpirations", future.StripName.Month, future.StripName.Year, idinstrument);
-                            expirationtime = new DateTime();
+                            StoredProcsSwitch.SPF_Mod(
+                                contractname,
+                                monthchar,
+                                future.StripName.Month,
+                                future.StripName.Year,
+                                idinstrument,
+                                contractname);
+                            stripNameHashSet.Add(future.StripName);
                         }
                         else
                         {
-                            expirationtime = records[0].expirationdate;
-                        }
+                            DateTime expirationtime;
+                            int key = future.StripName.Month + future.StripName.Year + idinstrument;
+                            if (expirationtimeDictionary.ContainsKey(key))
+                            {
+                                expirationtime = expirationtimeDictionary[key];
+                            }
+                            else
+                            {
+                                var records = remoteContext.tblcontractexpirations.Where(
+                                        item =>
+                                        item.optionmonthint == future.StripName.Month &&
+                                        item.optionyear == future.StripName.Year &&
+                                        item.idinstrument == idinstrument).ToArray();
 
-                        StoredProcsSwitch.SPF(
-                            contractname,
-                            monthchar,
-                            future.StripName.Month,
-                            future.StripName.Year,
-                            idinstrument,
-                            expirationtime,
-                            contractname);
+                                if (records.Length == 0)
+                                {
+                                    log += string.Format("Failed to find expiration date for future with month = {0}, year = {1}, idinstrument = {2} in tblcontractexpirations", future.StripName.Month, future.StripName.Year, idinstrument);
+                                    expirationtime = new DateTime();
+                                }
+                                else
+                                {
+                                    expirationtime = records[0].expirationdate;
+                                    int newKey = future.StripName.Month + future.StripName.Year + idinstrument;
+                                    expirationtimeDictionary.Add(newKey, expirationtime);
+                                }
+                            }
+                            StoredProcsSwitch.SPF(
+                                contractname,
+                                monthchar,
+                                future.StripName.Month,
+                                future.StripName.Year,
+                                idinstrument,
+                                expirationtime,
+                                contractname);
+                            stripNameHashSet.Add(future.StripName);
+                        }
                     }
 
                     StoredProcsSwitch.SPDF(
@@ -201,7 +221,35 @@ namespace ICE_Import
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                     double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
 
-                    StoredProcsSwitch.SPO_Mod(
+
+                    DateTime expirationtime;
+                    int key = option.StripName.Month + option.StripName.Year + idinstrument;
+                    if (expirationtimeDictionary.ContainsKey(key))
+                    {
+                        expirationtime = expirationtimeDictionary[key];
+                    }
+                    else
+                    {
+                        var records = remoteContext.tblcontractexpirations.Where(
+                            item =>
+                            item.optionmonthint == option.StripName.Month &&
+                            item.optionyear == option.StripName.Year &&
+                            item.idinstrument == idinstrument).ToArray();
+
+                        if (records.Length == 0)
+                        {
+                            log += string.Format("Failed to find expiration date for future with month = {0}, year = {1}, idinstrument = {2} in tblcontractexpirations", option.StripName.Month, option.StripName.Year, idinstrument);
+                            expirationtime = new DateTime();
+                        }
+                        else
+                        {
+                            expirationtime = records[0].expirationdate;
+                            int newKey = option.StripName.Month + option.StripName.Year + idinstrument;
+                            expirationtimeDictionary.Add(newKey, expirationtime);
+                        }
+                    }
+
+                    StoredProcsSwitch.SPO(
                         optionName,
                         monthchar,
                         option.StripName.Month,
@@ -209,6 +257,7 @@ namespace ICE_Import
                         option.SettlementPrice.GetValueOrDefault(),
                         option.OptionType,
                         idinstrument,
+                        expirationtime,
                         optionName);
 
                     StoredProcsSwitch.SPOD(
@@ -219,7 +268,6 @@ namespace ICE_Import
                         impliedvol,
                         futureYear - expirateYear);
                 }
-#if !DEBUG
                 catch (Exception ex)
                 {
                     int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -230,7 +278,6 @@ namespace ICE_Import
                     log += ex.Message + "\n";
                     continue;
                 }
-#endif
                 finally
                 {
                     globalCount++;
@@ -244,9 +291,9 @@ namespace ICE_Import
             }
         }
 
-        private double R(DataClassesTMLDBDataContext context)
+        async Task R(DataClassesTMLDBDataContext context)
         {
-            double optioninputclose = 0;
+            await Task.Run(() => { 
             try
             {
                 var idoptioninputsymbol = context.tbloptioninputsymbols.Where(item2 =>
@@ -276,48 +323,48 @@ namespace ICE_Import
                 var idoptioninputsymbol2 = context.tbloptioninputsymbols.Where(item2 =>
                     item2.idoptioninputtype == OPTION_INPUT_TYPE_RISK_FREE_RATE).ToArray()[0].idoptioninputsymbol;
 
-                optioninputclose = context.tbloptioninputdatas.Where(item =>
+                r = context.tbloptioninputdatas.Where(item =>
                     item.idoptioninputsymbol == idoptioninputsymbol2
                         && item.optioninputdatetime == optioninputdatetime).ToArray()[0].optioninputclose;
 
             }
             catch (Exception ex)
             {
-                LogMessage(ex.Message);
+                AsyncTaskListener.LogMessage(ex.Message);
             }
             finally
             {
-                LogMessage(string.Format("Risk = {0}", optioninputclose));
+                AsyncTaskListener.LogMessage(string.Format("Risk = {0}", r));
             }
-
-            return optioninputclose;
+            });
         }
 
-        private double TickSize(DataClassesTMLDBDataContext context)
+        async Task TickSize(DataClassesTMLDBDataContext context)
         {
-            try
+            await Task.Run(() =>
             {
-                var secondaryoptionticksize = context.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].secondaryoptionticksize;
-
-                if (secondaryoptionticksize > 0)
+                try
                 {
-                    tickSize = secondaryoptionticksize;
-                }
-                else
-                {
-                    tickSize = context.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].optionticksize;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogMessage(ex.Message);
-            }
-            finally
-            {
-                LogMessage(string.Format("Tick size = {0}", tickSize));
-            }
+                    var secondaryoptionticksize = context.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].secondaryoptionticksize;
 
-            return tickSize;
+                    if (secondaryoptionticksize > 0)
+                    {
+                        tickSize = secondaryoptionticksize;
+                    }
+                    else
+                    {
+                        tickSize = context.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].optionticksize;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AsyncTaskListener.LogMessage(ex.Message);
+                }
+                finally
+                {
+                    AsyncTaskListener.LogMessage(string.Format("Tick size = {0}", tickSize));
+                }
+            });
         }
 
     }

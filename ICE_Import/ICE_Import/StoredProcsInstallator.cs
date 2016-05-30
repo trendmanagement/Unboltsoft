@@ -63,7 +63,14 @@ namespace ICE_Import
                         string dropProcCommandBody = string.Format(dropProcCommandPattern, procName);
                         using (var dropProcCommand = new SqlCommand(dropProcCommandBody, connection))
                         {
-                            dropProcCommand.ExecuteNonQuery();
+                            try
+                            {
+                                dropProcCommand.ExecuteNonQuery();
+                            }
+                            catch
+                            {
+                                AsyncTaskListener.LogMessage("!!!!" + fileName + " - FAILD");
+                            }
                         }
 
                         // Try again

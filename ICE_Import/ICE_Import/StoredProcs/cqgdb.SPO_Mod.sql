@@ -11,7 +11,7 @@ AS
 
 MERGE INTO cqgdb.tbloptions as tgt_tbloptions
 USING
-	(SELECT * FROM [cqgdb].tblcontracts WHERE monthint = @optionmonthint  AND year = @optionyear)
+	(SELECT * FROM [cqgdb].tblcontracts WHERE month = @optionmonth AND year = @optionyear)
 	AS src_tblcontract
 
 	ON tgt_tbloptions.idcontract = src_tblcontract.idcontract
@@ -20,7 +20,6 @@ USING
 	AND tgt_tbloptions.strikeprice = @strikeprice
 	AND tgt_tbloptions.callorput = @callorput
 	AND tgt_tbloptions.idinstrument = @idinstrument 
-	AND tgt_tbloptions.expirationdate = src_tblcontract.expirationdate
 
 WHEN MATCHED THEN
 UPDATE

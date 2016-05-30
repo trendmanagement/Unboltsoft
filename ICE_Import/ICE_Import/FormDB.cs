@@ -167,8 +167,8 @@ namespace ICE_Import
                 context = Context;
             }
 
-            r = R(context);
-            tickSize = TickSize(context);
+            await R(context);
+            await TickSize(context);
 
             EnableDisable(true);
 

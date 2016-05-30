@@ -11,23 +11,21 @@ AS
 
 MERGE INTO cqgdb.test_tbloptions as tgt_tbloptions
 USING
-	(SELECT * FROM [cqgdb].test_tblcontracts WHERE monthint = @optionmonthint  AND year = @optionyear)
-	AS src_tblcontract
-
-	ON tgt_tbloptions.idcontract = src_tblcontract.idcontract
-	AND tgt_tbloptions.optionmonthint = @optionmonthint
-	AND tgt_tbloptions.optionyear = @optionyear
-	AND tgt_tbloptions.strikeprice = @strikeprice
-	AND tgt_tbloptions.callorput = @callorput
-	AND tgt_tbloptions.idinstrument = @idinstrument 
-	AND tgt_tbloptions.expirationdate = src_tblcontract.expirationdate
+	(SELECT * FROM test_tbloptions
+	WHERE test_tbloptions.idcontract = (SELECT test_tblcontracts.idcontract FROM [cqgdb].test_tblcontracts WHERE month = @optionmonth AND year = @optionyear))
+	AS src_tbl
+	ON  src_tbl.optionmonthint = @optionmonthint
+	AND src_tbl.optionyear = @optionyear
+	AND src_tbl.strikeprice = @strikeprice
+	AND src_tbl.callorput = @callorput
+	AND src_tbl.idinstrument = @idinstrument 
 
 WHEN MATCHED THEN
 UPDATE
 	SET 
 	optionname = @optionname,
 	cqgsymbol = @cqgsymbol,
-	expirationdate = src_tblcontract.expirationdate
+	expirationdate = src_tbl.expirationdate
 
 WHEN NOT MATCHED THEN
 	INSERT 	
@@ -49,7 +47,7 @@ WHEN NOT MATCHED THEN
 	@strikeprice, 
 	@callorput,
 	@idinstrument, 
-	src_tblcontract.expirationdate,
-	src_tblcontract.idcontract,
+	src_tbl.expirationdate,
+	src_tbl.idcontract,
 	@cqgsymbol);
 SET NOCOUNT ON;

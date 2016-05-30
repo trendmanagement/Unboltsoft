@@ -110,7 +110,7 @@ namespace ICE_Import
                         try
                         {
                             var tblcontracts = new List<tblcontract>();
-                            foreach (var item in tblcontracts_.Where(item => item.expirationdate == future.StripName).ToList())
+                            foreach (var item in tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToList())
                             {
                                 tblcontracts.Add(item);
                             }
@@ -125,7 +125,6 @@ namespace ICE_Import
                                 continue;
                             }
                         }
-#if !DEBUG
                         catch (Exception ex)
                         {
                             int erc = globalCount;
@@ -135,10 +134,6 @@ namespace ICE_Import
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
-                        }
-#endif
-                        finally
-                        {
                         }
                         #endregion
 
@@ -224,7 +219,7 @@ namespace ICE_Import
                 {
                     char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
 
-                    var contract = tblcontracts_.Where(item => item.expirationdate == future.StripName).ToArray()[0];
+                    var contract = tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
 
                     #region Find data in DB like pushed
                     try
@@ -244,7 +239,6 @@ namespace ICE_Import
                             continue;
                         }
                     }
-#if !DEBUG
                     catch (Exception ex)
                     {
                         int erc = globalCount - ParsedData.FutureRecords.Length;
@@ -254,10 +248,6 @@ namespace ICE_Import
                             DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
-                    }
-#endif
-                    finally
-                    {
                     }
                     #endregion
 
@@ -347,7 +337,7 @@ namespace ICE_Import
                     var tbloptions = new List<tbloption>();
                     try
                     {
-                        var optlist = tbloptions_.Where(item => item.optionmonth == monthchar && item.optionyear == option.StripName.Year && item.optionname == optionName).ToList();
+                        var optlist = tbloptions_.Where(item => item.optionname == optionName).ToList();
                         foreach (var item in optlist)
                         {
                             tbloptions.Add(item);
@@ -359,7 +349,6 @@ namespace ICE_Import
                             TO = tbloptions[0];
                         }
                     }
-#if !DEBUG
                     catch (Exception ex)
                     {
                         int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -370,10 +359,6 @@ namespace ICE_Import
                         log += ex.Message + "\n";
                         continue;
                     }
-#endif
-                    finally
-                    {
-                    }
                     #endregion
 
                     if (!isOptionCreated)
@@ -382,7 +367,7 @@ namespace ICE_Import
                         long idContract;
                         try
                         {
-                            idContract = tblcontracts_.Where(item => item.expirationdate == option.StripName).ToList()[0].idcontract;
+                            idContract = tblcontracts_.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToList()[0].idcontract;
                         }
                         catch (IndexOutOfRangeException outEx)
                         {
@@ -394,7 +379,6 @@ namespace ICE_Import
                             log += outEx.Message + "\n";
                             continue;
                         }
-#if !DEBUG
                         catch (Exception ex)
                         {
                             int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -404,10 +388,6 @@ namespace ICE_Import
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
-                        }
-#endif
-                        finally
-                        {
                         }
                         #endregion
 
@@ -459,7 +439,6 @@ namespace ICE_Import
                                 TO = tblopt[0];
                             }
                         }
-#if !DEBUG
                         catch (Exception ex)
                         {
                             int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -469,10 +448,6 @@ namespace ICE_Import
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
-                        }
-#endif
-                        finally
-                        {
                         }
                         #endregion
 
@@ -499,7 +474,6 @@ namespace ICE_Import
                             continue;
                         }
                     }
-#if !DEBUG
                     catch (Exception ex)
                     {
                         int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -509,10 +483,6 @@ namespace ICE_Import
                             DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
-                    }
-#endif
-                    finally
-                    {
                     }
                     #endregion
 
@@ -539,7 +509,7 @@ namespace ICE_Import
                         //idoptiondata must generate by DB
                         idoption = TO.idoption,
                         datetime = option.Date,
-                        price = option.StrikePrice.GetValueOrDefault(1),
+                        price = option.SettlementPrice.GetValueOrDefault(),
                         impliedvol = impliedvol,
                         timetoexpinyears = futureYear - expirateYear
                     };
@@ -554,7 +524,6 @@ namespace ICE_Import
                     log += cancel.Message + "\n";
                     break;
                 }
-#if !DEBUG
                 catch (Exception ex)
                 {
                     int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -565,7 +534,6 @@ namespace ICE_Import
                     log += ex.Message + "\n";
                     continue;
                 }
-#endif
                 finally
                 {
                     globalCount++;
@@ -678,7 +646,7 @@ namespace ICE_Import
                         try
                         {
                             var tblcontracts = new List<test_tblcontract>();
-                            foreach (var item in tblcontracts_.Where(item => item.expirationdate == future.StripName).ToList())
+                            foreach (var item in tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToList())
                             {
                                 tblcontracts.Add(item);
                             }
@@ -693,7 +661,6 @@ namespace ICE_Import
                                 continue;
                             }
                         }
-#if !DEBUG
                         catch (Exception ex)
                         {
                             int erc = globalCount;
@@ -703,10 +670,6 @@ namespace ICE_Import
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
-                        }
-#endif
-                        finally
-                        {
                         }
                         #endregion
 
@@ -792,7 +755,7 @@ namespace ICE_Import
                 {
                     char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
 
-                    var contract = tblcontracts_.Where(item => item.expirationdate == future.StripName).ToArray()[0];
+                    var contract = tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
 
                     #region Find data in DB like pushed
                     try
@@ -812,7 +775,6 @@ namespace ICE_Import
                             continue;
                         }
                     }
-#if !DEBUG
                     catch (Exception ex)
                     {
                         int erc = globalCount - ParsedData.FutureRecords.Length;
@@ -822,10 +784,6 @@ namespace ICE_Import
                             DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
-                    }
-#endif
-                    finally
-                    {
                     }
                     #endregion
 
@@ -915,7 +873,7 @@ namespace ICE_Import
                     var tbloptions = new List<test_tbloption>();
                     try
                     {
-                        var optlist = tbloptions_.Where(item => item.optionmonth == monthchar && item.optionyear == option.StripName.Year && item.optionname == optionName).ToList();
+                        var optlist = tbloptions_.Where(item => item.optionname == optionName).ToList();
                         foreach (var item in optlist)
                         {
                             tbloptions.Add(item);
@@ -927,7 +885,6 @@ namespace ICE_Import
                             TO = tbloptions[0];
                         }
                     }
-#if !DEBUG
                     catch (Exception ex)
                     {
                         int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -938,10 +895,6 @@ namespace ICE_Import
                         log += ex.Message + "\n";
                         continue;
                     }
-#endif
-                    finally
-                    {
-                    }
                     #endregion
 
                     if (!isOptionCreated)
@@ -950,7 +903,7 @@ namespace ICE_Import
                         long idContract;
                         try
                         {
-                            idContract = tblcontracts_.Where(item => item.expirationdate == option.StripName).ToList()[0].idcontract;
+                            idContract = tblcontracts_.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToList()[0].idcontract;
                         }
                         catch (IndexOutOfRangeException outEx)
                         {
@@ -962,7 +915,6 @@ namespace ICE_Import
                             log += outEx.Message + "\n";
                             continue;
                         }
-#if !DEBUG
                         catch (Exception ex)
                         {
                             int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -972,10 +924,6 @@ namespace ICE_Import
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
-                        }
-#endif
-                        finally
-                        {
                         }
                         #endregion
 
@@ -1027,7 +975,6 @@ namespace ICE_Import
                                 TO = tblopt[0];
                             }
                         }
-#if !DEBUG
                         catch (Exception ex)
                         {
                             int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -1037,10 +984,6 @@ namespace ICE_Import
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
-                        }
-#endif
-                        finally
-                        {
                         }
                         #endregion
 
@@ -1067,7 +1010,6 @@ namespace ICE_Import
                             continue;
                         }
                     }
-#if !DEBUG
                     catch (Exception ex)
                     {
                         int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -1077,10 +1019,6 @@ namespace ICE_Import
                             DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
-                    }
-#endif
-                    finally
-                    {
                     }
                     #endregion
 
@@ -1107,7 +1045,7 @@ namespace ICE_Import
                         //idoptiondata must generate by DB
                         idoption = TO.idoption,
                         datetime = option.Date,
-                        price = option.StrikePrice.GetValueOrDefault(1),
+                        price = option.SettlementPrice.GetValueOrDefault(),
                         impliedvol = impliedvol,
                         timetoexpinyears = futureYear - expirateYear
                     };
@@ -1122,7 +1060,6 @@ namespace ICE_Import
                     log += cancel.Message + "\n";
                     break;
                 }
-#if !DEBUG
                 catch (Exception ex)
                 {
                     int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -1133,7 +1070,6 @@ namespace ICE_Import
                     log += ex.Message + "\n";
                     continue;
                 }
-#endif
                 finally
                 {
                     globalCount++;
