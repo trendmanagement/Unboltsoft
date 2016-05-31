@@ -14,29 +14,28 @@ namespace ICE_Import
 
         CancellationTokenSource cts;
 
-        string DatabaseName;
-        bool IsLocalDB;
+        string databaseName;
+        bool isLocalDB;
 
-        string TablesPrefix;
-        bool IsTestTables;
+        string tablesPrefix;
+        bool isTestTables;
 
-        bool IsStoredProcs;
-        string StoredProcPrefix;
+        bool isStoredProcs;
+        string storedProcPrefix;
 
-        bool IsAsyncUpdate;
+        bool isAsyncUpdate;
 
-        string ConnectionString;
-        DataClassesTMLDBDataContext Context;
+        string connectionString;
+        DataClassesTMLDBDataContext context;
+        DataClassesTMLDBDataContext contextTMLDB;
 
-        DataClassesTMLDBDataContext ContextTMLDB;
-
-        static class ConnectionStrings
+        static class ConnStrings
         {
             public static string Local;
             public static string TMLDB_Copy;
             public static string TMLDB;
 
-            static ConnectionStrings()
+            static ConnStrings()
             {
                 Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 ConnectionStringsSection csSection = config.ConnectionStrings;
@@ -47,10 +46,10 @@ namespace ICE_Import
         }
 
         // Risk-free interest rate
-        double RiskFreeInterestRate = 0.08;
+        double riskFreeInterestRate = 0.08;
 
         // Tick size 
-        double TickSize = 0;
+        double tickSize = 0;
 
         public FormDB()
         {
@@ -68,10 +67,8 @@ namespace ICE_Import
             cb_StoredProcs_CheckedChanged(null, null);
             cb_AsyncUpdate_CheckedChanged(null, null);
 
-            ContextTMLDB = new DataClassesTMLDBDataContext(ConnectionStrings.TMLDB);
+            contextTMLDB = new DataClassesTMLDBDataContext(ConnStrings.TMLDB);
 
-            RiskFreeInterestRate = GetRiskFreeInterestRate();
-            TickSize = GetTickSize();
         }
 
         private void FormDB_FormClosed(object sender, FormClosedEventArgs e)
@@ -189,81 +186,88 @@ namespace ICE_Import
                 return;
             }
 
-            DataClassesTMLDBDataContext context;
-            if (DatabaseName != "TMLDB")
+            DataClassesTMLDBDataContext contextNew;
+            if (databaseName != "TMLDB")
             {
-                context = new DataClassesTMLDBDataContext(remoteConnectionStringPatternTMLDB);
+                contextNew = new DataClassesTMLDBDataContext(ConnStrings.TMLDB);
             }
             else
             {
-                context = Context;
+                contextNew = context;
             }
 
-            await R(context);
-            await TickSize(context);
+            await Risk(contextNew);
+            await TickSize(contextNew);
 
-            EnableDisable(true);
-
-            if (DatabaseName == "TMLDB" && !IsTestTables)
+            if (!isRiskUpdate || !isTickSizeUpdate)
             {
-                // Ask confirmation
-                var result = MessageBox.Show(
-                    "Are you about to update NON-TEST tables of NON-TEST database.\n\nAre you sure?",
-                    Text,
-                    MessageBoxButtons.YesNoCancel,
-                    MessageBoxIcon.Question);
-                if (result != DialogResult.Yes)
-                {
-                    return;
-                }
+                MessageBox.Show("Can't get risk interest and tick size values.\nTry one more time.");
             }
-
-            EnableDisable(true);
-
-            LogMessage("Pushing started");
-
-            cts = new CancellationTokenSource();
-
-            try
+            else
             {
-                if (IsStoredProcs)
-                {
-                    // Install stored procedures from SQL files into DB
-                    await Task.Run(() =>
-                        StoredProcsInstallator.Install(ConnectionString, IsTestTables, cts.Token));
+                EnableDisable(true);
 
-                    if (IsAsyncUpdate)
+                if (databaseName == "TMLDB" && !isTestTables)
+                {
+                    // Ask confirmation
+                    var result = MessageBox.Show(
+                        "Are you about to update NON-TEST tables of NON-TEST database.\n\nAre you sure?",
+                        Text,
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Question);
+                    if (result != DialogResult.Yes)
                     {
-                        await PushDataToDBWithSPsAsync(cts.Token);
+                        return;
+                    }
+                }
+
+                EnableDisable(true);
+
+                LogMessage("Pushing started");
+
+                cts = new CancellationTokenSource();
+
+                try
+                {
+                    if (isStoredProcs)
+                    {
+                        // Install stored procedures from SQL files into DB
+                        await Task.Run(() =>
+                            StoredProcsInstallator.Install(connectionString, isTestTables, cts.Token));
+
+                        if (isAsyncUpdate)
+                        {
+                            await PushDataToDBWithSPsAsync(cts.Token);
+                        }
+                        else
+                        {
+                            // Update either test and non-test tables
+                            await PushDataToDBWithSPs(cts.Token);
+                        }
                     }
                     else
                     {
-                        // Update either test and non-test tables
-                        await PushDataToDBWithSPs(cts.Token);
+                        if (isTestTables)
+                        {
+                            await PushDataToDBTest(cts.Token);
+                        }
+                        else
+                        {
+                            await PushDataToDB(cts.Token);
+                        }
                     }
                 }
-                else
+                catch (OperationCanceledException)
                 {
-                    if (IsTestTables)
-                    {
-                        await PushDataToDBTest(cts.Token);
-                    }
-                    else
-                    {
-                        await PushDataToDB(cts.Token);
-                    }
                 }
-            }
-            catch (OperationCanceledException)
-            {
-            }
-            catch (ObjectDisposedException)
-            {
-                // The form was closed during the process
-            }
+                catch (ObjectDisposedException)
+                {
+                    // The form was closed during the process
+                }
 
-            // Update the data grid
-            buttonPull_Click(sender, e);
+                // Update the data grid
+                buttonPull_Click(sender, e);
+            }
         }
 
         private void buttonPull_Click(object sender, EventArgs e)
@@ -277,7 +281,7 @@ namespace ICE_Import
 
             try
             {
-                if (IsTestTables)
+                if (isTestTables)
                 {
                     PullDataFromDBTest();
                 }
@@ -350,21 +354,21 @@ namespace ICE_Import
             {
                 case 1:
                     // Local DB
-                    DatabaseName = "Local";
-                    IsLocalDB = true;
-                    ConnectionString = ConnectionStrings.Local;
+                    databaseName = "Local";
+                    isLocalDB = true;
+                    connectionString = ConnStrings.Local;
                     break;
                 case 2:
                     // TMLDB_Copy
-                    DatabaseName = "TMLDB_Copy";
-                    IsLocalDB = false;
-                    ConnectionString = ConnectionStrings.TMLDB_Copy;
+                    databaseName = "TMLDB_Copy";
+                    isLocalDB = false;
+                    connectionString = ConnStrings.TMLDB_Copy;
                     break;
                 case 3:
                     // TMLDB
-                    DatabaseName = "TMLDB";
-                    IsLocalDB = false;
-                    ConnectionString = ConnectionStrings.TMLDB;
+                    databaseName = "TMLDB";
+                    isLocalDB = false;
+                    connectionString = ConnStrings.TMLDB;
                     break;
                 default:
                     throw new ArgumentException();
@@ -373,32 +377,32 @@ namespace ICE_Import
             // Change DB context
             if (tag != 3)
             {
-                Context = new DataClassesTMLDBDataContext(ConnectionString);
+                context = new DataClassesTMLDBDataContext(connectionString);
             }
             else
             {
-                Context = ContextTMLDB;
+                context = contextTMLDB;
             }
-            StoredProcsSwitch.Update(Context, IsTestTables);
+            StoredProcsSwitch.Update(context, isTestTables);
 
-            LogMessage(string.Format("You selected {0} database", DatabaseName));
+            LogMessage(string.Format("You selected {0} database", databaseName));
         }
 
         private void cb_TestTables_CheckedChanged(object sender, EventArgs e)
         {
-            IsTestTables = cb_TestTables.Checked;
+            isTestTables = cb_TestTables.Checked;
 
             string prefix;
             string testNonTest;
-            if (IsTestTables)
+            if (isTestTables)
             {
-                TablesPrefix = "TEST_";
+                tablesPrefix = "TEST_";
                 prefix = "test_";
                 testNonTest = "TEST";
             }
             else
             {
-                TablesPrefix = string.Empty;
+                tablesPrefix = string.Empty;
                 prefix = string.Empty;
                 testNonTest = "NON-TEST";
             }
@@ -409,22 +413,22 @@ namespace ICE_Import
             tabPageOption.Text = prefix + "tbloption";
             tabPageOptionData.Text = prefix + "tbloptiondata";
 
-            StoredProcPrefix = prefix;
+            storedProcPrefix = prefix;
 
             // Update stored procs switch
-            StoredProcsSwitch.Update(Context, IsTestTables);
+            StoredProcsSwitch.Update(context, isTestTables);
 
             LogMessage(string.Format("You selected {0} tables", testNonTest));
         }
 
         private void cb_StoredProcs_CheckedChanged(object sender, EventArgs e)
         {
-            IsStoredProcs = cb_StoredProcs.Checked;
+            isStoredProcs = cb_StoredProcs.Checked;
 
-            cb_AsyncUpdate.Enabled = IsStoredProcs;
+            cb_AsyncUpdate.Enabled = isStoredProcs;
 
             string storedCoded;
-            if (IsStoredProcs)
+            if (isStoredProcs)
             {
                 storedCoded = "STORED";
             }
@@ -439,9 +443,9 @@ namespace ICE_Import
 
         private void cb_AsyncUpdate_CheckedChanged(object sender, EventArgs e)
         {
-            IsAsyncUpdate = cb_AsyncUpdate.Checked;
+            isAsyncUpdate = cb_AsyncUpdate.Checked;
 
-            string asyncSync = IsAsyncUpdate ? "ASYNCHRONOUS" : "SYNCHRONOUS";
+            string asyncSync = isAsyncUpdate ? "ASYNCHRONOUS" : "SYNCHRONOUS";
             LogMessage(string.Format("You selected {0} update", asyncSync));
         }
 
@@ -481,7 +485,7 @@ namespace ICE_Import
 
         private bool ValidateOptions(bool isPush = false)
         {
-            if (isPush && DatabaseName == "TMLDB" && IsTestTables && IsStoredProcs)
+            if (isPush && databaseName == "TMLDB" && isTestTables && isStoredProcs)
             {
                 MessageBox.Show(
                     "TMLDB does not have stored procedures for working with test tables.",
@@ -490,7 +494,7 @@ namespace ICE_Import
                     MessageBoxIcon.Error);
                 return false;
             }
-            else if (DatabaseName == "TMLDB_Copy" && IsTestTables)
+            else if (databaseName == "TMLDB_Copy" && isTestTables)
             {
                 MessageBox.Show(
                     "TMLDB_Copy does not have test tables.",

@@ -46,7 +46,7 @@ namespace ICE_Import
                     monthchar,
                     future.StripName.Year);
 
-                sb.AppendFormat("cqgdb.{0}SPF ", StoredProcPrefix);
+                sb.AppendFormat("cqgdb.{0}SPF ", storedProcPrefix);
                 Utilities.AppendHelper(sb, contractname);
                 Utilities.AppendHelper(sb, monthchar);
                 Utilities.AppendHelper(sb, future.StripName.Month);
@@ -59,7 +59,7 @@ namespace ICE_Import
 
                 sb.Clear();
 
-                sb.AppendFormat("cqgdb.{0}SPDF ", StoredProcPrefix);
+                sb.AppendFormat("cqgdb.{0}SPDF ", storedProcPrefix);
                 Utilities.AppendHelper(sb, future.Date);
                 Utilities.AppendHelper(sb, future.SettlementPrice.GetValueOrDefault());
                 Utilities.AppendHelper(sb, monthchar);
@@ -128,15 +128,15 @@ namespace ICE_Import
                     1.56,
                     Utilities.NormalizePrice(option.StrikePrice),
                     0.5,
-                    RiskFreeInterestRate,
+                    riskFreeInterestRate,
                     Utilities.NormalizePrice(option.SettlementPrice),
-                    TickSize);
+                    tickSize);
                 #endregion
 
                 double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                 double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
 
-                sb.AppendFormat("cqgdb.{0}SPO ", StoredProcPrefix);
+                sb.AppendFormat("cqgdb.{0}SPO ", storedProcPrefix);
                 Utilities.AppendHelper(sb, optionName);
                 Utilities.AppendHelper(sb, monthchar);
                 Utilities.AppendHelper(sb, option.StripName.Month);
@@ -151,7 +151,7 @@ namespace ICE_Import
 
                 sb.Clear();
 
-                sb.AppendFormat("cqgdb.{0}SPOD ", StoredProcPrefix);
+                sb.AppendFormat("cqgdb.{0}SPOD ", storedProcPrefix);
                 Utilities.AppendHelper(sb, monthchar);
                 Utilities.AppendHelper(sb, option.StripName.Year);
                 Utilities.AppendHelper(sb, option.Date);
@@ -185,7 +185,7 @@ namespace ICE_Import
         {
             try
             {
-                using (var connection = new SqlConnection(ConnectionString))
+                using (var connection = new SqlConnection(connectionString))
                 {
                     await connection.OpenAsync();
 

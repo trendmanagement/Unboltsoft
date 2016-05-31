@@ -21,10 +21,10 @@ namespace ICE_Import
         {
             cts = new CancellationTokenSource();
 
-            var tblcontracts_ = Context.tblcontracts;
-            var tbldailycontractsettlements_ = Context.tbldailycontractsettlements;
-            var tbloptions_ = Context.tbloptions;
-            var tbloptiondatas_ = Context.tbloptiondatas;
+            var tblcontracts_ = context.tblcontracts;
+            var tbldailycontractsettlements_ = context.tbldailycontractsettlements;
+            var tbloptions_ = context.tbloptions;
+            var tbloptiondatas_ = context.tbloptiondatas;
 
             BindingSource bsOption = new BindingSource();
             BindingSource bsOptionData = new BindingSource();
@@ -37,26 +37,26 @@ namespace ICE_Import
 
             try
             {
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLCONTRACT table", IsLocalDB ? tblcontracts_.Count() : count, DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLCONTRACT table", isLocalDB ? tblcontracts_.Count() : count, databaseName, tablesPrefix));
 
                 await Task.Run(() =>
                             {
                                 bsContract.DataSource = (from item in tblcontracts_
                                                          select item
-                                                        ).Take(IsLocalDB ? tblcontracts_.Count() : count).ToList();
+                                                        ).Take(isLocalDB ? tblcontracts_.Count() : count).ToList();
                             }, cts.Token);
 
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", IsLocalDB ? tbldailycontractsettlements_.Count() : count, DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", isLocalDB ? tbldailycontractsettlements_.Count() : count, databaseName, tablesPrefix));
 
                 await Task.Run(() =>
                                 {
                                     bsDailyContractSettlement.DataSource = (from item in tbldailycontractsettlements_
                                                                             select item
-                                                                            ).Take(IsLocalDB ? tbldailycontractsettlements_.Count() : count).ToList();
+                                                                            ).Take(isLocalDB ? tbldailycontractsettlements_.Count() : count).ToList();
                                 }, cts.Token);
 
                 //int count = tbloptions_.Where(item => item.cqgsymbol == "somesymbol").Count();
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONS table", IsLocalDB ? tbloptions_.Count() : count, DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONS table", isLocalDB ? tbloptions_.Count() : count, databaseName, tablesPrefix));
                 try
                 {
                     await Task.Run(() =>
@@ -64,7 +64,7 @@ namespace ICE_Import
                         listOption = (from item in tbloptions_
                                           //where item.cqgsymbol == "somesymbol"
                                       select item
-                                              ).Take(IsLocalDB ? tbloptions_.Count() : count).ToList();
+                                              ).Take(isLocalDB ? tbloptions_.Count() : count).ToList();
                     }, cts.Token);
                 }
 #if !DEBUG
@@ -78,12 +78,12 @@ namespace ICE_Import
                     bsOption.DataSource = listOption;
                 }
 
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONDATAS table", IsLocalDB ? tbloptiondatas_.Count() : count, DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONDATAS table", isLocalDB ? tbloptiondatas_.Count() : count, databaseName, tablesPrefix));
                 await Task.Run(() =>
                                     {
                                         bsOptionData.DataSource = (from item in tbloptiondatas_
                                                                    select item
-                                                                  ).Take(IsLocalDB ? tbloptiondatas_.Count() : count).ToList();
+                                                                  ).Take(isLocalDB ? tbloptiondatas_.Count() : count).ToList();
                                     }, cts.Token);
 
             }
@@ -101,7 +101,7 @@ namespace ICE_Import
             finally
             {
                 int totalCount =
-                    IsLocalDB ?
+                    isLocalDB ?
                     tblcontracts_.Count() +
                     tbldailycontractsettlements_.Count() +
                     tbloptions_.Count() +
@@ -109,7 +109,7 @@ namespace ICE_Import
                     :
                     4 * count;
 
-                LogMessage(string.Format("Pulled: {0} entries from {1} DB", totalCount, DatabaseName));
+                LogMessage(string.Format("Pulled: {0} entries from {1} DB", totalCount, databaseName));
 
                 EnableDisable(false);
             }
@@ -124,10 +124,10 @@ namespace ICE_Import
         {
             cts = new CancellationTokenSource();
 
-            var tblcontracts_ = Context.test_tblcontracts;
-            var tbldailycontractsettlements_ = Context.test_tbldailycontractsettlements;
-            var tbloptions_ = Context.test_tbloptions;
-            var tbloptiondatas_ = Context.test_tbloptiondatas;
+            var tblcontracts_ = context.test_tblcontracts;
+            var tbldailycontractsettlements_ = context.test_tbldailycontractsettlements;
+            var tbloptions_ = context.test_tbloptions;
+            var tbloptiondatas_ = context.test_tbloptiondatas;
 
             BindingSource bsOption = new BindingSource();
             BindingSource bsOptionData = new BindingSource();
@@ -140,26 +140,26 @@ namespace ICE_Import
 
             try
             {
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLCONTRACT table", IsLocalDB ? tblcontracts_.Count() : count, DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLCONTRACT table", isLocalDB ? tblcontracts_.Count() : count, databaseName, tablesPrefix));
 
                 await Task.Run(() =>
                             {
                                 bsContract.DataSource = (from item in tblcontracts_
                                                          select item
-                                                        ).Take(IsLocalDB ? tblcontracts_.Count() : count).ToList();
+                                                        ).Take(isLocalDB ? tblcontracts_.Count() : count).ToList();
                             }, cts.Token);
 
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", IsLocalDB ? tbldailycontractsettlements_.Count() : count, DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", isLocalDB ? tbldailycontractsettlements_.Count() : count, databaseName, tablesPrefix));
 
                 await Task.Run(() =>
                                 {
                                     bsDailyContractSettlement.DataSource = (from item in tbldailycontractsettlements_
                                                                             select item
-                                                                            ).Take(IsLocalDB ? tbldailycontractsettlements_.Count() : count).ToList();
+                                                                            ).Take(isLocalDB ? tbldailycontractsettlements_.Count() : count).ToList();
                                 }, cts.Token);
 
                 //int count = tbloptions_.Where(item => item.cqgsymbol == "somesymbol").Count();
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONS table", IsLocalDB ? tbloptions_.Count() : count, DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONS table", isLocalDB ? tbloptions_.Count() : count, databaseName, tablesPrefix));
                 try
                 {
                     await Task.Run(() =>
@@ -167,7 +167,7 @@ namespace ICE_Import
                         listOption = (from item in tbloptions_
                                           //where item.cqgsymbol == "somesymbol"
                                       select item
-                                              ).Take(IsLocalDB ? tbloptions_.Count() : count).ToList();
+                                              ).Take(isLocalDB ? tbloptions_.Count() : count).ToList();
                     }, cts.Token);
                 }
 #if !DEBUG
@@ -181,12 +181,12 @@ namespace ICE_Import
                     bsOption.DataSource = listOption;
                 }
 
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONDATAS table", IsLocalDB ? tbloptiondatas_.Count() : count, DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONDATAS table", isLocalDB ? tbloptiondatas_.Count() : count, databaseName, tablesPrefix));
                 await Task.Run(() =>
                                     {
                                         bsOptionData.DataSource = (from item in tbloptiondatas_
                                                                    select item
-                                                                  ).Take(IsLocalDB ? tbloptiondatas_.Count() : count).ToList();
+                                                                  ).Take(isLocalDB ? tbloptiondatas_.Count() : count).ToList();
                                     }, cts.Token);
 
             }
@@ -204,7 +204,7 @@ namespace ICE_Import
             finally
             {
                 int totalCount =
-                    IsLocalDB ?
+                    isLocalDB ?
                     tblcontracts_.Count() +
                     tbldailycontractsettlements_.Count() +
                     tbloptions_.Count() +
@@ -212,7 +212,7 @@ namespace ICE_Import
                     :
                     4 * count;
 
-                LogMessage(string.Format("Pulled: {0} entries from {1} DB", totalCount, DatabaseName));
+                LogMessage(string.Format("Pulled: {0} entries from {1} DB", totalCount, databaseName));
 
                 EnableDisable(false);
             }
