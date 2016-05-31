@@ -106,7 +106,7 @@ namespace ICE_Import
                         try
                         {
                             var tblcontracts = new List<tblcontract>();
-                            foreach (var item in tblcontracts_.Where(item => item.expirationdate == future.StripName).ToList())
+                            foreach (var item in tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToList())
                             {
                                 tblcontracts.Add(item);
                             }
@@ -212,7 +212,7 @@ namespace ICE_Import
                 {
                     char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
 
-                    var contract = tblcontracts_.Where(item => item.expirationdate == future.StripName).ToArray()[0];
+                    var contract = tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
 
                     #region Find data in DB like pushed
                     try
@@ -335,7 +335,7 @@ namespace ICE_Import
                     var tbloptions = new List<tbloption>();
                     try
                     {
-                        var optlist = tbloptions_.Where(item => item.optionmonth == monthchar && item.optionyear == option.StripName.Year && item.optionname == optionName).ToList();
+                        var optlist = tbloptions_.Where(item => item.optionname == optionName).ToList();
                         foreach (var item in optlist)
                         {
                             tbloptions.Add(item);
@@ -370,7 +370,7 @@ namespace ICE_Import
                         long idContract;
                         try
                         {
-                            idContract = tblcontracts_.Where(item => item.expirationdate == option.StripName).ToList()[0].idcontract;
+                            idContract = tblcontracts_.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToList()[0].idcontract;
                         }
                         catch (IndexOutOfRangeException outEx)
                         {
@@ -654,7 +654,7 @@ namespace ICE_Import
                         try
                         {
                             var tblcontracts = new List<test_tblcontract>();
-                            foreach (var item in tblcontracts_.Where(item => item.expirationdate == future.StripName).ToList())
+                            foreach (var item in tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToList())
                             {
                                 tblcontracts.Add(item);
                             }
@@ -760,7 +760,7 @@ namespace ICE_Import
                 {
                     char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
 
-                    var contract = tblcontracts_.Where(item => item.expirationdate == future.StripName).ToArray()[0];
+                    var contract = tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToArray()[0];
 
                     #region Find data in DB like pushed
                     try
@@ -883,7 +883,7 @@ namespace ICE_Import
                     var tbloptions = new List<test_tbloption>();
                     try
                     {
-                        var optlist = tbloptions_.Where(item => item.optionmonth == monthchar && item.optionyear == option.StripName.Year && item.optionname == optionName).ToList();
+                        var optlist = tbloptions_.Where(item => item.optionname == optionName).ToList();
                         foreach (var item in optlist)
                         {
                             tbloptions.Add(item);
@@ -918,7 +918,7 @@ namespace ICE_Import
                         long idContract;
                         try
                         {
-                            idContract = tblcontracts_.Where(item => item.expirationdate == option.StripName).ToList()[0].idcontract;
+                            idContract = tblcontracts_.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToList()[0].idcontract;
                         }
                         catch (IndexOutOfRangeException outEx)
                         {
