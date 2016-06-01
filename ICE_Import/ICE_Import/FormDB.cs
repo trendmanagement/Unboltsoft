@@ -174,21 +174,6 @@ namespace ICE_Import
                 return;
             }
 
-            bool isRiskFound = await Task.Run(() => GetRisk());
-            bool isTickSizeFound = await Task.Run(() => GetTickSize());
-
-            if (!isRiskFound || !isTickSizeFound)
-            {
-                MessageBox.Show(
-                    "Couldn't find the risk interest value or the tick size value in TMLDB.",
-                    Text,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-                return;
-            }
-            
-            EnableDisable(true);
-
             if (DatabaseName == "TMLDB" && !IsTestTables)
             {
                 // Ask confirmation
@@ -204,6 +189,20 @@ namespace ICE_Import
             }
 
             EnableDisable(true);
+
+            bool isRiskFound = await Task.Run(() => GetRisk());
+            bool isTickSizeFound = await Task.Run(() => GetTickSize());
+
+            if (!isRiskFound || !isTickSizeFound)
+            {
+                MessageBox.Show(
+                    "Couldn't find the risk interest value or the tick size value in TMLDB.",
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                EnableDisable(false);
+                return;
+            }
 
             LogMessage("Pushing started");
 
