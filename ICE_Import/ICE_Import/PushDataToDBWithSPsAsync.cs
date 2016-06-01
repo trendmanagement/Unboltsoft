@@ -68,7 +68,7 @@ namespace ICE_Import
                     }
                     #endregion
 
-                    sb.AppendFormat("cqgdb.{0}SPF ", storedProcPrefix);
+                    sb.AppendFormat("cqgdb.{0}SPF ", StoredProcPrefix);
                     Utilities.AppendHelper(sb, contractname);
                     Utilities.AppendHelper(sb, monthchar);
                     Utilities.AppendHelper(sb, future.StripName.Month);
@@ -84,7 +84,7 @@ namespace ICE_Import
                     sb.Clear();
                 }
 
-                sb.AppendFormat("cqgdb.{0}SPDF ", storedProcPrefix);
+                sb.AppendFormat("cqgdb.{0}SPDF ", StoredProcPrefix);
                 Utilities.AppendHelper(sb, future.Date);
                 Utilities.AppendHelper(sb, future.SettlementPrice.GetValueOrDefault());
                 Utilities.AppendHelper(sb, monthchar);
@@ -168,15 +168,15 @@ namespace ICE_Import
                     1.56,
                     Utilities.NormalizePrice(option.StrikePrice),
                     0.5,
-                    riskFreeInterestRate,
+                    RiskFreeInterestRate,
                     Utilities.NormalizePrice(option.SettlementPrice),
-                    tickSize);
+                    TickSize);
                 #endregion
 
                 double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                 double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
 
-                sb.AppendFormat("cqgdb.{0}SPO ", storedProcPrefix);
+                sb.AppendFormat("cqgdb.{0}SPO ", StoredProcPrefix);
                 Utilities.AppendHelper(sb, optionName);
                 Utilities.AppendHelper(sb, monthchar);
                 Utilities.AppendHelper(sb, option.StripName.Month);
@@ -200,7 +200,7 @@ namespace ICE_Import
                     try
                     {
                         //var optlist = context.tbloptions.Where(item => item.optionname == optionName).ToList();
-                        var test_optlist = context.test_tbloptions.Where(item => item.optionname == optionName).ToList();
+                        var test_optlist = Context.test_tbloptions.Where(item => item.optionname == optionName).ToList();
 
                         foreach (var item in test_optlist)
                         {
@@ -219,7 +219,7 @@ namespace ICE_Import
                             string.Format(
                             "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
                             "Can't read N: {2} from DB\n",
-                            databaseName, tablesPrefix, erc));
+                            DatabaseName, TablesPrefix, erc));
                         AsyncTaskListener.LogMessage(ex.Message + "\n");
                         continue;
                     }
@@ -230,7 +230,7 @@ namespace ICE_Import
                     try
                     {
                         //var optlist = context.tbloptions.Where(item => item.optionname == optionName).ToList();
-                        var optlist = context.tbloptions.Where(item => item.optionname == optionName).ToList();
+                        var optlist = Context.tbloptions.Where(item => item.optionname == optionName).ToList();
 
                         foreach (var item in optlist)
                         {
@@ -249,14 +249,14 @@ namespace ICE_Import
                             string.Format(
                             "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
                             "Can't read N: {2} from DB\n",
-                            databaseName, tablesPrefix, erc));
+                            DatabaseName, TablesPrefix, erc));
                         AsyncTaskListener.LogMessage(ex.Message + "\n");
                         continue;
                     }
                 }
                 #endregion
 
-                sb.AppendFormat("cqgdb.{0}SPOD ", storedProcPrefix);
+                sb.AppendFormat("cqgdb.{0}SPOD ", StoredProcPrefix);
                 Utilities.AppendHelper(sb, idoption);
                 Utilities.AppendHelper(sb, option.Date);
                 Utilities.AppendHelper(sb, option.SettlementPrice.GetValueOrDefault());
@@ -289,7 +289,7 @@ namespace ICE_Import
         {
             try
             {
-                using (var connection = new SqlConnection(connectionString))
+                using (var connection = new SqlConnection(ConnectionString))
                 {
                     await connection.OpenAsync();
 

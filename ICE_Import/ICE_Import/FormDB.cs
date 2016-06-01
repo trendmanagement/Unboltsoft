@@ -17,20 +17,20 @@ namespace ICE_Import
 
         CancellationTokenSource cts;
 
-        string databaseName;
-        bool isLocalDB;
+        string DatabaseName;
+        bool IsLocalDB;
 
-        string tablesPrefix;
-        bool isTestTables;
+        string TablesPrefix;
+        bool IsTestTables;
 
-        bool isStoredProcs;
-        string storedProcPrefix;
+        bool IsStoredProcs;
+        string StoredProcPrefix;
 
-        bool isAsyncUpdate;
+        bool IsAsyncUpdate;
 
-        string connectionString;
-        DataClassesTMLDBDataContext context;
-        DataClassesTMLDBDataContext contextTMLDB;
+        string ConnectionString;
+        DataClassesTMLDBDataContext Context;
+        DataClassesTMLDBDataContext ContextTMLDB;
 
         static class ConnStrings
         {
@@ -49,10 +49,10 @@ namespace ICE_Import
         }
 
         // Risk-free interest rate
-        double riskFreeInterestRate = 0.08;
+        double RiskFreeInterestRate = 0.08;
 
         // Tick size 
-        double tickSize = 0;
+        double TickSize = 0;
 
         public FormDB()
         {
@@ -70,7 +70,7 @@ namespace ICE_Import
             cb_StoredProcs_CheckedChanged(null, null);
             cb_AsyncUpdate_CheckedChanged(null, null);
 
-            contextTMLDB = new DataClassesTMLDBDataContext(ConnStrings.TMLDB);
+            ContextTMLDB = new DataClassesTMLDBDataContext(ConnStrings.TMLDB);
 
         }
 
@@ -191,17 +191,17 @@ namespace ICE_Import
             }
 
             DataClassesTMLDBDataContext contextNew;
-            if (databaseName != "TMLDB")
+            if (DatabaseName != "TMLDB")
             {
                 contextNew = new DataClassesTMLDBDataContext(ConnStrings.TMLDB);
             }
             else
             {
-                contextNew = context;
+                contextNew = Context;
             }
 
             await Risk(contextNew);
-            await TickSize(contextNew);
+            await GetTickSize(contextNew);
 
             if (!isRiskUpdate || !isTickSizeUpdate)
             {
@@ -211,7 +211,7 @@ namespace ICE_Import
             {
                 EnableDisable(true);
 
-                if (databaseName == "TMLDB" && !isTestTables)
+                if (DatabaseName == "TMLDB" && !IsTestTables)
                 {
                     // Ask confirmation
                     var result = MessageBox.Show(
@@ -233,13 +233,13 @@ namespace ICE_Import
 
                 try
                 {
-                    if (isStoredProcs)
+                    if (IsStoredProcs)
                     {
                         // Install stored procedures from SQL files into DB
                         await Task.Run(() =>
-                            StoredProcsInstallator.Install(connectionString, isTestTables, cts.Token));
+                            StoredProcsInstallator.Install(ConnectionString, IsTestTables, cts.Token));
 
-                        if (isAsyncUpdate)
+                        if (IsAsyncUpdate)
                         {
                             await PushDataToDBWithSPsAsync(cts.Token);
                         }
@@ -251,7 +251,7 @@ namespace ICE_Import
                     }
                     else
                     {
-                        if (isTestTables)
+                        if (IsTestTables)
                         {
                             await PushDataToDBTest(cts.Token);
                         }
@@ -285,7 +285,7 @@ namespace ICE_Import
 
             try
             {
-                if (isTestTables)
+                if (IsTestTables)
                 {
                     PullDataFromDBTest();
                 }
@@ -359,21 +359,21 @@ namespace ICE_Import
             {
                 case 1:
                     // Local DB
-                    databaseName = "Local";
-                    isLocalDB = true;
-                    connectionString = ConnStrings.Local;
+                    DatabaseName = "Local";
+                    IsLocalDB = true;
+                    ConnectionString = ConnStrings.Local;
                     break;
                 case 2:
                     // TMLDB_Copy
-                    databaseName = "TMLDB_Copy";
-                    isLocalDB = false;
-                    connectionString = ConnStrings.TMLDB_Copy;
+                    DatabaseName = "TMLDB_Copy";
+                    IsLocalDB = false;
+                    ConnectionString = ConnStrings.TMLDB_Copy;
                     break;
                 case 3:
                     // TMLDB
-                    databaseName = "TMLDB";
-                    isLocalDB = false;
-                    connectionString = ConnStrings.TMLDB;
+                    DatabaseName = "TMLDB";
+                    IsLocalDB = false;
+                    ConnectionString = ConnStrings.TMLDB;
                     break;
                 default:
                     throw new ArgumentException();
@@ -382,32 +382,32 @@ namespace ICE_Import
             // Change DB context
             if (tag != 3)
             {
-                context = new DataClassesTMLDBDataContext(connectionString);
+                Context = new DataClassesTMLDBDataContext(ConnectionString);
             }
             else
             {
-                context = contextTMLDB;
+                Context = ContextTMLDB;
             }
-            StoredProcsSwitch.Update(context, isTestTables);
+            StoredProcsSwitch.Update(Context, IsTestTables);
 
-            LogMessage(string.Format("You selected {0} database", databaseName));
+            LogMessage(string.Format("You selected {0} database", DatabaseName));
         }
 
         private void cb_TestTables_CheckedChanged(object sender, EventArgs e)
         {
-            isTestTables = cb_TestTables.Checked;
+            IsTestTables = cb_TestTables.Checked;
 
             string prefix;
             string testNonTest;
-            if (isTestTables)
+            if (IsTestTables)
             {
-                tablesPrefix = "TEST_";
+                TablesPrefix = "TEST_";
                 prefix = "test_";
                 testNonTest = "TEST";
             }
             else
             {
-                tablesPrefix = string.Empty;
+                TablesPrefix = string.Empty;
                 prefix = string.Empty;
                 testNonTest = "NON-TEST";
             }
@@ -418,22 +418,22 @@ namespace ICE_Import
             tabPageOption.Text = prefix + "tbloption";
             tabPageOptionData.Text = prefix + "tbloptiondata";
 
-            storedProcPrefix = prefix;
+            StoredProcPrefix = prefix;
 
             // Update stored procs switch
-            StoredProcsSwitch.Update(context, isTestTables);
+            StoredProcsSwitch.Update(Context, IsTestTables);
 
             LogMessage(string.Format("You selected {0} tables", testNonTest));
         }
 
         private void cb_StoredProcs_CheckedChanged(object sender, EventArgs e)
         {
-            isStoredProcs = cb_StoredProcs.Checked;
+            IsStoredProcs = cb_StoredProcs.Checked;
 
-            cb_AsyncUpdate.Enabled = isStoredProcs;
+            cb_AsyncUpdate.Enabled = IsStoredProcs;
 
             string storedCoded;
-            if (isStoredProcs)
+            if (IsStoredProcs)
             {
                 storedCoded = "STORED";
             }
@@ -448,9 +448,9 @@ namespace ICE_Import
 
         private void cb_AsyncUpdate_CheckedChanged(object sender, EventArgs e)
         {
-            isAsyncUpdate = cb_AsyncUpdate.Checked;
+            IsAsyncUpdate = cb_AsyncUpdate.Checked;
 
-            string asyncSync = isAsyncUpdate ? "ASYNCHRONOUS" : "SYNCHRONOUS";
+            string asyncSync = IsAsyncUpdate ? "ASYNCHRONOUS" : "SYNCHRONOUS";
             LogMessage(string.Format("You selected {0} update", asyncSync));
         }
 
@@ -490,7 +490,7 @@ namespace ICE_Import
 
         private bool ValidateOptions(bool isPush = false)
         {
-            if (isPush && databaseName == "TMLDB" && isTestTables && isStoredProcs)
+            if (isPush && DatabaseName == "TMLDB" && IsTestTables && IsStoredProcs)
             {
                 MessageBox.Show(
                     "TMLDB does not have stored procedures for working with test tables.",
@@ -499,7 +499,7 @@ namespace ICE_Import
                     MessageBoxIcon.Error);
                 return false;
             }
-            else if (databaseName == "TMLDB_Copy" && isTestTables)
+            else if (DatabaseName == "TMLDB_Copy" && IsTestTables)
             {
                 MessageBox.Show(
                     "TMLDB_Copy does not have test tables.",

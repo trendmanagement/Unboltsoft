@@ -72,7 +72,7 @@ namespace ICE_Import
 
         void PushFuturesToDB(ref int globalCount, CancellationToken ct)
         {
-            var tblcontracts_ = context.tblcontracts;
+            var tblcontracts_ = Context.tblcontracts;
 
             int count = 0;
 
@@ -117,7 +117,7 @@ namespace ICE_Import
                                 log += string.Format(
                                     "Message from {0} pushing {1}TBLCONTRACTS tables \n" +
                                     "We already have entry with id: {2}\n",
-                                    databaseName, tablesPrefix, id);
+                                    DatabaseName, TablesPrefix, id);
                                 continue;
                             }
                         }
@@ -127,7 +127,7 @@ namespace ICE_Import
                             log += string.Format(
                                 "ERROR message from {0} pushing {1}TBLCONTRACTS tables \n" +
                                 "Can't check idcontract for entry N: {2}\n",
-                                databaseName, tablesPrefix, erc);
+                                DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
                         }
@@ -149,7 +149,7 @@ namespace ICE_Import
                             cqgsymbol = contractName
                         };
                         tblcontracts_.InsertOnSubmit(tableFuture);
-                        context.SubmitChanges();
+                        Context.SubmitChanges();
 
                         count++;
                         stripNameHashSet.Add(future.StripName);
@@ -157,14 +157,14 @@ namespace ICE_Import
                 }
                 catch (OperationCanceledException cancel)
                 {
-                    log += string.Format("Cancel message from {0} pushing {1}TBLCONTRACT table \n", databaseName, tablesPrefix);
+                    log += string.Format("Cancel message from {0} pushing {1}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
                     log += cancel.Message + "\n";
                     break;
                 }
 #if !DEBUG
                 catch (Exception ex)
                 {
-                    log += string.Format("ERROR message from {0} pushing {1}TBLCONTRACT table \n", databaseName, tablesPrefix);
+                    log += string.Format("ERROR message from {0} pushing {1}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
                     log += ex.Message + "\n";
                 }
 #endif
@@ -175,7 +175,7 @@ namespace ICE_Import
                     {
                         log += string.Format(
                             "Pushed {0} entries to {1} {2}TBLCONTRACT table",
-                            count, databaseName, tablesPrefix);
+                            count, DatabaseName, TablesPrefix);
                     }
                     //TODO: Fix this
                     //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
@@ -191,8 +191,8 @@ namespace ICE_Import
 
         void PushDailyFuturesToDB(ref int globalCount, CancellationToken ct)
         {
-            var tblcontracts_ = context.tblcontracts;
-            var tbldailycontractsettlements_ = context.tbldailycontractsettlements;
+            var tblcontracts_ = Context.tblcontracts;
+            var tbldailycontractsettlements_ = Context.tbldailycontractsettlements;
 
             int count = 0;
 
@@ -223,7 +223,7 @@ namespace ICE_Import
                             log += string.Format(
                                 "Message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
                                 "We already have entry with id: {2}\n",
-                                databaseName, tablesPrefix, id);
+                                DatabaseName, TablesPrefix, id);
                             continue;
                         }
                     }
@@ -233,7 +233,7 @@ namespace ICE_Import
                         log += string.Format(
                             "ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
                             "Can't check idcontract for entry N: {2}\n",
-                            databaseName, tablesPrefix, erc);
+                            DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
                     }
@@ -249,19 +249,19 @@ namespace ICE_Import
                     };
 
                     tbldailycontractsettlements_.InsertOnSubmit(tableDCS);
-                    context.SubmitChanges();
+                    Context.SubmitChanges();
                     count++;
                 }
                 catch (OperationCanceledException cancel)
                 {
-                    log += string.Format("Cancel message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", databaseName, tablesPrefix);
+                    log += string.Format("Cancel message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
                     log += cancel.Message + "\n";
                     break;
                 }
 #if !DEBUG
                 catch (Exception ex)
                 {
-                    log += string.Format("ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", databaseName, tablesPrefix);
+                    log += string.Format("ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
                     log += ex.Message + "\n";
                 }
 #endif
@@ -270,7 +270,7 @@ namespace ICE_Import
                     globalCount++;
                     if (globalCount == 2 * ParsedData.FutureRecords.Length)
                     {
-                        log += string.Format("Pushed {0} entries to {1} {2}TBLDAILYCONTRACTSETTLEMENT table", count, databaseName, tablesPrefix);
+                        log += string.Format("Pushed {0} entries to {1} {2}TBLDAILYCONTRACTSETTLEMENT table", count, DatabaseName, TablesPrefix);
                     }
                     //TODO: Fix this
                     //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
@@ -286,9 +286,9 @@ namespace ICE_Import
 
         void PushOptionsToDB(ref int globalCount, CancellationToken ct)
         {
-            var tblcontracts_ = context.tblcontracts;
-            var tbloptions_ = context.tbloptions;
-            var tbloptiondatas_ = context.tbloptiondatas;
+            var tblcontracts_ = Context.tblcontracts;
+            var tbloptions_ = Context.tbloptions;
+            var tbloptiondatas_ = Context.tbloptiondatas;
 
             int count = 0;
 
@@ -343,7 +343,7 @@ namespace ICE_Import
                         log += string.Format(
                             "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
                             "Can't read N: {2} from DB\n",
-                            databaseName, tablesPrefix, erc);
+                            DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
                     }
@@ -363,7 +363,7 @@ namespace ICE_Import
                             log += string.Format(
                                 "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
                                 "We dont have contract for option entry N: {2}\n",
-                                databaseName, tablesPrefix, erc);
+                                DatabaseName, TablesPrefix, erc);
                             log += outEx.Message + "\n";
                             continue;
                         }
@@ -373,7 +373,7 @@ namespace ICE_Import
                             log += string.Format(
                                 "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
                                 "Can't find contract for option entry N: {2}\n",
-                                databaseName, tablesPrefix, erc);
+                                DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
                         }
@@ -395,7 +395,7 @@ namespace ICE_Import
                             cqgsymbol = optionName
                         };
                         tbloptions_.InsertOnSubmit(tableOption);
-                        context.SubmitChanges();
+                        Context.SubmitChanges();
 
                         #region Find id for fist time pushed option
                         var tblopt = new List<tbloption>();
@@ -411,7 +411,7 @@ namespace ICE_Import
                                 log += string.Format(
                                     "Message from {0} pushing {1}TBLOPTIONDATAS table\n" +
                                     "Can't check idoption for entry with N: {2}, Second query\n",
-                                    databaseName, tablesPrefix, id);
+                                    DatabaseName, TablesPrefix, id);
                                 continue;
                             }
                             else
@@ -425,7 +425,7 @@ namespace ICE_Import
                             log += string.Format(
                                 "ERROR message from {0} pushing {1}TBLOPTIONDATAS table\n" +
                                 "Connection error - can't check idoption for entry N: {2}\n",
-                                databaseName, tablesPrefix, erc);
+                                DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
                         }
@@ -450,7 +450,7 @@ namespace ICE_Import
                             log += string.Format(
                                 "Message from {0} pushing {1}TBLOPTIONDATAS table\n" +
                                 "We already have entry with id: {2}\n",
-                                databaseName, tablesPrefix, id);
+                                DatabaseName, TablesPrefix, id);
                             continue;
                         }
                     }
@@ -460,7 +460,7 @@ namespace ICE_Import
                         log += string.Format(
                             "ERROR message from {0} pushing TBLOPTIONDATAS{1} tables\n" +
                             "Connection error - can't check idcontract for entry N: {2}\n",
-                            databaseName, tablesPrefix, erc);
+                            DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
                     }
@@ -480,9 +480,9 @@ namespace ICE_Import
                         1.56,
                         Utilities.NormalizePrice(option.StrikePrice),
                         0.5,
-                        riskFreeInterestRate,
+                        RiskFreeInterestRate,
                         Utilities.NormalizePrice(option.SettlementPrice),
-                        tickSize);
+                        TickSize);
                     #endregion
 
                     var tableOptionData = new tbloptiondata                    {
@@ -495,12 +495,12 @@ namespace ICE_Import
                     };
 
                     tbloptiondatas_.InsertOnSubmit(tableOptionData);
-                    context.SubmitChanges();
+                    Context.SubmitChanges();
                     count++;
                 }
                 catch (OperationCanceledException cancel)
                 {
-                    log += string.Format("Cancel message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n", databaseName, tablesPrefix);
+                    log += string.Format("Cancel message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n", DatabaseName, TablesPrefix);
                     log += cancel.Message + "\n";
                     break;
                 }
@@ -510,7 +510,7 @@ namespace ICE_Import
                     log += string.Format(
                         "ERROR message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n" +
                         "Can't push entry N: {2}\n",
-                        databaseName, tablesPrefix, erc);
+                        DatabaseName, TablesPrefix, erc);
                     log += ex.Message + "\n";
                     continue;
                 }
@@ -519,7 +519,7 @@ namespace ICE_Import
                     globalCount++;
                     if (globalCount == 2 * ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
                     {
-                        log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", count, databaseName, tablesPrefix);
+                        log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", count, DatabaseName, TablesPrefix);
                     }
                     //TODO: Fix this
                     //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
@@ -588,7 +588,7 @@ namespace ICE_Import
 
         void PushFuturesToDBTest(ref int globalCount, CancellationToken ct)
         {
-            var tblcontracts_ = context.test_tblcontracts;
+            var tblcontracts_ = Context.test_tblcontracts;
 
             int count = 0;
 
@@ -633,7 +633,7 @@ namespace ICE_Import
                                 log += string.Format(
                                     "Message from {0} pushing {1}TBLCONTRACTS tables \n" +
                                     "We already have entry with id: {2}\n",
-                                    databaseName, tablesPrefix, id);
+                                    DatabaseName, TablesPrefix, id);
                                 continue;
                             }
                         }
@@ -643,24 +643,13 @@ namespace ICE_Import
                             log += string.Format(
                                 "ERROR message from {0} pushing {1}TBLCONTRACTS tables \n" +
                                 "Can't check idcontract for entry N: {2}\n",
-                                databaseName, tablesPrefix, erc);
+                                DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
                         }
                         #endregion
 
-                        DateTime expirationtime;
-                        int key = future.StripName.Month + future.StripName.Year + idinstrument;
-                        if (expirationtimeDictionary.ContainsKey(key))
-                        {
-                            expirationtime = expirationtimeDictionary[key];
-                        }
-                        else
-                        {
-                            expirationtime = GetExpirationTime(future.StripName.Year, future.StripName.Month, idinstrument);
-                            int newKey = future.StripName.Month + future.StripName.Year + idinstrument;
-                            expirationtimeDictionary.Add(newKey, expirationtime);
-                        }
+                        DateTime expirationtime = GetExpirationTime(future.StripName.Year, future.StripName.Month, idinstrument);
 
                         var tableFuture = new test_tblcontract                        {
                             //idcontract must generete by DB
@@ -676,7 +665,7 @@ namespace ICE_Import
                             cqgsymbol = contractName
                         };
                         tblcontracts_.InsertOnSubmit(tableFuture);
-                        context.SubmitChanges();
+                        Context.SubmitChanges();
 
                         count++;
                         stripNameHashSet.Add(future.StripName);
@@ -684,14 +673,14 @@ namespace ICE_Import
                 }
                 catch (OperationCanceledException cancel)
                 {
-                    log += string.Format("Cancel message from {0} pushing {1}TBLCONTRACT table \n", databaseName, tablesPrefix);
+                    log += string.Format("Cancel message from {0} pushing {1}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
                     log += cancel.Message + "\n";
                     break;
                 }
 #if !DEBUG
                 catch (Exception ex)
                 {
-                    log += string.Format("ERROR message from {0} pushing {1}TBLCONTRACT table \n", databaseName, tablesPrefix);
+                    log += string.Format("ERROR message from {0} pushing {1}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
                     log += ex.Message + "\n";
                 }
 #endif
@@ -702,7 +691,7 @@ namespace ICE_Import
                     {
                         log += string.Format(
                             "Pushed {0} entries to {1} {2}TBLCONTRACT table",
-                            count, databaseName, tablesPrefix);
+                            count, DatabaseName, TablesPrefix);
                     }
                     //TODO: Fix this
                     //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
@@ -718,8 +707,8 @@ namespace ICE_Import
 
         void PushDailyFuturesToDBTest(ref int globalCount, CancellationToken ct)
         {
-            var tblcontracts_ = context.test_tblcontracts;
-            var tbldailycontractsettlements_ = context.test_tbldailycontractsettlements;
+            var tblcontracts_ = Context.test_tblcontracts;
+            var tbldailycontractsettlements_ = Context.test_tbldailycontractsettlements;
 
             int count = 0;
 
@@ -750,7 +739,7 @@ namespace ICE_Import
                             log += string.Format(
                                 "Message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
                                 "We already have entry with id: {2}\n",
-                                databaseName, tablesPrefix, id);
+                                DatabaseName, TablesPrefix, id);
                             continue;
                         }
                     }
@@ -760,7 +749,7 @@ namespace ICE_Import
                         log += string.Format(
                             "ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
                             "Can't check idcontract for entry N: {2}\n",
-                            databaseName, tablesPrefix, erc);
+                            DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
                     }
@@ -776,19 +765,19 @@ namespace ICE_Import
                     };
 
                     tbldailycontractsettlements_.InsertOnSubmit(tableDCS);
-                    context.SubmitChanges();
+                    Context.SubmitChanges();
                     count++;
                 }
                 catch (OperationCanceledException cancel)
                 {
-                    log += string.Format("Cancel message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", databaseName, tablesPrefix);
+                    log += string.Format("Cancel message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
                     log += cancel.Message + "\n";
                     break;
                 }
 #if !DEBUG
                 catch (Exception ex)
                 {
-                    log += string.Format("ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", databaseName, tablesPrefix);
+                    log += string.Format("ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
                     log += ex.Message + "\n";
                 }
 #endif
@@ -797,7 +786,7 @@ namespace ICE_Import
                     globalCount++;
                     if (globalCount == 2 * ParsedData.FutureRecords.Length)
                     {
-                        log += string.Format("Pushed {0} entries to {1} {2}TBLDAILYCONTRACTSETTLEMENT table", count, databaseName, tablesPrefix);
+                        log += string.Format("Pushed {0} entries to {1} {2}TBLDAILYCONTRACTSETTLEMENT table", count, DatabaseName, TablesPrefix);
                     }
                     //TODO: Fix this
                     //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
@@ -813,9 +802,9 @@ namespace ICE_Import
 
         void PushOptionsToDBTest(ref int globalCount, CancellationToken ct)
         {
-            var tblcontracts_ = context.test_tblcontracts;
-            var tbloptions_ = context.test_tbloptions;
-            var tbloptiondatas_ = context.test_tbloptiondatas;
+            var tblcontracts_ = Context.test_tblcontracts;
+            var tbloptions_ = Context.test_tbloptions;
+            var tbloptiondatas_ = Context.test_tbloptiondatas;
 
             int count = 0;
 
@@ -870,7 +859,7 @@ namespace ICE_Import
                         log += string.Format(
                             "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
                             "Can't read N: {2} from DB\n",
-                            databaseName, tablesPrefix, erc);
+                            DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
                     }
@@ -890,7 +879,7 @@ namespace ICE_Import
                             log += string.Format(
                                 "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
                                 "We dont have contract for option entry N: {2}\n",
-                                databaseName, tablesPrefix, erc);
+                                DatabaseName, TablesPrefix, erc);
                             log += outEx.Message + "\n";
                             continue;
                         }
@@ -900,27 +889,15 @@ namespace ICE_Import
                             log += string.Format(
                                 "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
                                 "Can't find contract for option entry N: {2}\n",
-                                databaseName, tablesPrefix, erc);
+                                DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
                         }
                         #endregion
 
-                        DateTime expirationtime;
-                        int key = option.StripName.Month + option.StripName.Year + idinstrument;
-                        if (expirationtimeDictionary.ContainsKey(key))
-                        {
-                            expirationtime = expirationtimeDictionary[key];
-                        }
-                        else
-                        {
-                            expirationtime = GetExpirationTime(option.StripName.Year, option.StripName.Month, idinstrument);
-                            int newKey = option.StripName.Month + option.StripName.Year + idinstrument;
-                            expirationtimeDictionary.Add(newKey, expirationtime);
-                        }
+                        DateTime expirationtime = GetExpirationTime(option.StripName.Year, option.StripName.Month, idinstrument);
 
-                        var tableOption = new test_tbloption
-                        {
+                        var tableOption = new test_tbloption                        {
                             //idoption must generate by DB
                             optionname = optionName,
                             optionmonth = monthchar,
@@ -934,7 +911,7 @@ namespace ICE_Import
                             cqgsymbol = optionName
                         };
                         tbloptions_.InsertOnSubmit(tableOption);
-                        context.SubmitChanges();
+                        Context.SubmitChanges();
 
                         #region Find id for fist time pushed option
                         var tblopt = new List<test_tbloption>();
@@ -950,7 +927,7 @@ namespace ICE_Import
                                 log += string.Format(
                                     "Message from {0} pushing {1}TBLOPTIONDATAS table\n" +
                                     "Can't check idoption for entry with N: {2}, Second query\n",
-                                    databaseName, tablesPrefix, id);
+                                    DatabaseName, TablesPrefix, id);
                                 continue;
                             }
                             else
@@ -964,7 +941,7 @@ namespace ICE_Import
                             log += string.Format(
                                 "ERROR message from {0} pushing {1}TBLOPTIONDATAS table\n" +
                                 "Connection error - can't check idoption for entry N: {2}\n",
-                                databaseName, tablesPrefix, erc);
+                                DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
                         }
@@ -979,7 +956,7 @@ namespace ICE_Import
                     var tdcs = new List<test_tbloptiondata>();
                     try
                     {
-                        foreach (var item in tbloptiondatas_.Where(item => item.datetime == option.Date && item.idoption == TO.idoption).ToList())
+                        foreach (var item in tbloptiondatas_.Where(item => item.timetoexpinyears == (futureYear - expirateYear) && item.datetime == option.Date && item.idoption == TO.idoption).ToList())
                         {
                             tdcs.Add(item);
                         }
@@ -989,7 +966,7 @@ namespace ICE_Import
                             log += string.Format(
                                 "Message from {0} pushing {1}TBLOPTIONDATAS table\n" +
                                 "We already have entry with id: {2}\n",
-                                databaseName, tablesPrefix, id);
+                                DatabaseName, TablesPrefix, id);
                             continue;
                         }
                     }
@@ -999,7 +976,7 @@ namespace ICE_Import
                         log += string.Format(
                             "ERROR message from {0} pushing TBLOPTIONDATAS{1} tables\n" +
                             "Connection error - can't check idcontract for entry N: {2}\n",
-                            databaseName, tablesPrefix, erc);
+                            DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
                     }
@@ -1019,13 +996,12 @@ namespace ICE_Import
                         1.56,
                         Utilities.NormalizePrice(option.StrikePrice),
                         0.5,
-                        riskFreeInterestRate,
+                        RiskFreeInterestRate,
                         Utilities.NormalizePrice(option.SettlementPrice),
-                        tickSize);
+                        TickSize);
                     #endregion
 
-                    var tableOptionData = new test_tbloptiondata
-                    {
+                    var tableOptionData = new test_tbloptiondata                    {
                         //idoptiondata must generate by DB
                         idoption = TO.idoption,
                         datetime = option.Date,
@@ -1035,12 +1011,12 @@ namespace ICE_Import
                     };
 
                     tbloptiondatas_.InsertOnSubmit(tableOptionData);
-                    context.SubmitChanges();
+                    Context.SubmitChanges();
                     count++;
                 }
                 catch (OperationCanceledException cancel)
                 {
-                    log += string.Format("Cancel message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n", databaseName, tablesPrefix);
+                    log += string.Format("Cancel message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n", DatabaseName, TablesPrefix);
                     log += cancel.Message + "\n";
                     break;
                 }
@@ -1050,7 +1026,7 @@ namespace ICE_Import
                     log += string.Format(
                         "ERROR message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n" +
                         "Can't push entry N: {2}\n",
-                        databaseName, tablesPrefix, erc);
+                        DatabaseName, TablesPrefix, erc);
                     log += ex.Message + "\n";
                     continue;
                 }
@@ -1059,7 +1035,7 @@ namespace ICE_Import
                     globalCount++;
                     if (globalCount == 2 * ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
                     {
-                        log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", count, databaseName, tablesPrefix);
+                        log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", count, DatabaseName, TablesPrefix);
                     }
                     //TODO: Fix this
                     //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
@@ -1075,7 +1051,7 @@ namespace ICE_Import
 
         private DateTime GetExpirationTime(int year, int month, int idinstrument)
         {
-            DateTime expirationdate = contextTMLDB.tblcontractexpirations.Where(
+            DateTime expirationdate = ContextTMLDB.tblcontractexpirations.Where(
                 item =>
                 item.optionmonthint == month &&
                 item.optionyear == year &&
