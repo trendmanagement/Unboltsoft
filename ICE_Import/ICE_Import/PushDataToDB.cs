@@ -121,6 +121,7 @@ namespace ICE_Import
                                 continue;
                             }
                         }
+#if !DEBUG
                         catch (Exception ex)
                         {
                             int erc = globalCount;
@@ -130,6 +131,10 @@ namespace ICE_Import
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
+                        }
+#endif
+                        finally
+                        {
                         }
                         #endregion
 
@@ -227,6 +232,7 @@ namespace ICE_Import
                             continue;
                         }
                     }
+#if !DEBUG
                     catch (Exception ex)
                     {
                         int erc = globalCount - ParsedData.FutureRecords.Length;
@@ -236,6 +242,10 @@ namespace ICE_Import
                             DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
+                    }
+#endif
+                    finally
+                    {
                     }
                     #endregion
 
@@ -337,6 +347,7 @@ namespace ICE_Import
                             TO = tbloptions[0];
                         }
                     }
+#if !DEBUG
                     catch (Exception ex)
                     {
                         int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -346,6 +357,10 @@ namespace ICE_Import
                             DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
+                    }
+#endif
+                    finally
+                    {
                     }
                     #endregion
 
@@ -367,6 +382,7 @@ namespace ICE_Import
                             log += outEx.Message + "\n";
                             continue;
                         }
+#if !DEBUG
                         catch (Exception ex)
                         {
                             int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -376,6 +392,10 @@ namespace ICE_Import
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
+                        }
+#endif
+                        finally
+                        {
                         }
                         #endregion
 
@@ -419,6 +439,7 @@ namespace ICE_Import
                                 TO = tblopt[0];
                             }
                         }
+#if !DEBUG
                         catch (Exception ex)
                         {
                             int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -428,6 +449,10 @@ namespace ICE_Import
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
+                        }
+#endif
+                        finally
+                        {
                         }
                         #endregion
 
@@ -454,6 +479,7 @@ namespace ICE_Import
                             continue;
                         }
                     }
+#if !DEBUG
                     catch (Exception ex)
                     {
                         int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -463,6 +489,10 @@ namespace ICE_Import
                             DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
+                    }
+#endif
+                    finally
+                    {
                     }
                     #endregion
 
@@ -504,6 +534,7 @@ namespace ICE_Import
                     log += cancel.Message + "\n";
                     break;
                 }
+#if !DEBUG
                 catch (Exception ex)
                 {
                     int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -514,6 +545,7 @@ namespace ICE_Import
                     log += ex.Message + "\n";
                     continue;
                 }
+#endif
                 finally
                 {
                     globalCount++;
@@ -637,6 +669,7 @@ namespace ICE_Import
                                 continue;
                             }
                         }
+#if !DEBUG
                         catch (Exception ex)
                         {
                             int erc = globalCount;
@@ -646,6 +679,10 @@ namespace ICE_Import
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
+                        }
+#endif
+                        finally
+                        {
                         }
                         #endregion
 
@@ -743,6 +780,7 @@ namespace ICE_Import
                             continue;
                         }
                     }
+#if !DEBUG
                     catch (Exception ex)
                     {
                         int erc = globalCount - ParsedData.FutureRecords.Length;
@@ -752,6 +790,10 @@ namespace ICE_Import
                             DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
+                    }
+#endif
+                    finally
+                    {
                     }
                     #endregion
 
@@ -853,6 +895,7 @@ namespace ICE_Import
                             TO = tbloptions[0];
                         }
                     }
+#if !DEBUG
                     catch (Exception ex)
                     {
                         int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -862,6 +905,10 @@ namespace ICE_Import
                             DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
+                    }
+#endif
+                    finally
+                    {
                     }
                     #endregion
 
@@ -883,6 +930,7 @@ namespace ICE_Import
                             log += outEx.Message + "\n";
                             continue;
                         }
+#if !DEBUG
                         catch (Exception ex)
                         {
                             int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -892,6 +940,10 @@ namespace ICE_Import
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
+                        }
+#endif
+                        finally
+                        {
                         }
                         #endregion
 
@@ -935,6 +987,7 @@ namespace ICE_Import
                                 TO = tblopt[0];
                             }
                         }
+#if !DEBUG
                         catch (Exception ex)
                         {
                             int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -944,6 +997,10 @@ namespace ICE_Import
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
                             continue;
+                        }
+#endif
+                        finally
+                        {
                         }
                         #endregion
 
@@ -970,6 +1027,7 @@ namespace ICE_Import
                             continue;
                         }
                     }
+#if !DEBUG
                     catch (Exception ex)
                     {
                         int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -979,6 +1037,10 @@ namespace ICE_Import
                             DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
                         continue;
+                    }
+#endif
+                    finally
+                    {
                     }
                     #endregion
 
@@ -1020,6 +1082,7 @@ namespace ICE_Import
                     log += cancel.Message + "\n";
                     break;
                 }
+#if !DEBUG
                 catch (Exception ex)
                 {
                     int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -1030,6 +1093,7 @@ namespace ICE_Import
                     log += ex.Message + "\n";
                     continue;
                 }
+#endif
                 finally
                 {
                     globalCount++;

@@ -230,14 +230,15 @@
       <DependentUpon>cqgdb.SPOD.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="StoredProcs\cqgdb.SPO_Mod.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>cqgdb.SPO_Mod.sql</LastGenOutput>
+    </Content>
     <Content Include="StoredProcs\cqgdb.SPO_Mod.sql">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>cqgdb.SPO_Mod.tt</DependentUpon>
-    </Content>
-    <Content Include="StoredProcs\cqgdb.SPO_Mod.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>cqgdb.SPO_Mod.sql</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\cqgdb.test_SPDF.sql">
       <DependentUpon>cqgdb.SPDF.tt</DependentUpon>
@@ -261,6 +262,7 @@
     </Content>
     <Content Include="StoredProcs\cqgdb.test_SPO_Mod.sql">
       <DependentUpon>cqgdb.SPO_Mod.tt</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
