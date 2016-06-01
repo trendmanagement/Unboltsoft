@@ -906,7 +906,6 @@ namespace ICE_Import
                         }
                         #endregion
 
-
                         DateTime expirationtime;
                         int key = option.StripName.Month + option.StripName.Year + idinstrument;
                         if (expirationtimeDictionary.ContainsKey(key))

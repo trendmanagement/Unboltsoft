@@ -53,6 +53,7 @@
             this.cb_AsyncUpdate = new System.Windows.Forms.CheckBox();
             this.labelRPS1 = new System.Windows.Forms.Label();
             this.labelRPS2 = new System.Windows.Forms.Label();
+            this.buttonChecking = new System.Windows.Forms.Button();
             this.tabPageDailyContract.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDailyContract)).BeginInit();
             this.tabPageContract.SuspendLayout();
@@ -336,11 +337,22 @@
             this.labelRPS2.Size = new System.Drawing.Size(0, 13);
             this.labelRPS2.TabIndex = 9;
             // 
+            // buttonChecking
+            // 
+            this.buttonChecking.Location = new System.Drawing.Point(367, 286);
+            this.buttonChecking.Name = "buttonChecking";
+            this.buttonChecking.Size = new System.Drawing.Size(72, 23);
+            this.buttonChecking.TabIndex = 12;
+            this.buttonChecking.Text = "Check data";
+            this.buttonChecking.UseVisualStyleBackColor = true;
+            this.buttonChecking.Click += new System.EventHandler(this.buttonChecking_Click);
+            // 
             // FormDB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 465);
+            this.Controls.Add(this.buttonChecking);
             this.Controls.Add(this.labelRPS1);
             this.Controls.Add(this.labelRPS2);
             this.Controls.Add(this.groupBox2);
@@ -401,5 +413,6 @@
         private System.Windows.Forms.CheckBox cb_AsyncUpdate;
         private System.Windows.Forms.Label labelRPS1;
         private System.Windows.Forms.Label labelRPS2;
+        private System.Windows.Forms.Button buttonChecking;
     }
 }

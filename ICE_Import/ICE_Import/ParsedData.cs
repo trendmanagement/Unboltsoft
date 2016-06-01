@@ -99,7 +99,6 @@ namespace ICE_Import
                 DialogResult result = MessageBox.Show(sb.ToString(), "ICE Import (DB Form)", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                 IsConform = result == DialogResult.Yes;
             }
-
             return IsConform;
         }
     }

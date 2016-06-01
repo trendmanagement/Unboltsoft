@@ -112,6 +112,7 @@ namespace ICE_Import
                 LogMessage(string.Format("Pulled: {0} entries from {1} DB", totalCount, databaseName));
 
                 EnableDisable(false);
+
             }
 
             dataGridViewOption.DataSource = bsOption;
@@ -214,14 +215,13 @@ namespace ICE_Import
 
                 LogMessage(string.Format("Pulled: {0} entries from {1} DB", totalCount, databaseName));
 
-                EnableDisable(false);
             }
 
             dataGridViewOption.DataSource = bsOption;
             dataGridViewOptionData.DataSource = bsOptionData;
             dataGridViewContract.DataSource = bsContract;
             dataGridViewDailyContract.DataSource = bsDailyContractSettlement;
+            EnableDisable(false);
         }
-
     }
 }

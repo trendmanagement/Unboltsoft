@@ -84,6 +84,7 @@ namespace ICE_Import
                     {
                     if (newFuture)
                     {
+                        #region Get expirationtime
                         if (databaseName == "TMLDB")
                         {
                             StoredProcsSwitch.SPF_Mod(
@@ -123,7 +124,9 @@ namespace ICE_Import
                                     expirationtimeDictionary.Add(newKey, expirationtime);
                                 }
                             }
-                            context.test_SPF(
+                            #endregion
+
+                            StoredProcsSwitch.SPF(
                                 contractname,
                                 monthchar,
                                 future.StripName.Month,
@@ -218,7 +221,7 @@ namespace ICE_Import
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                     double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
 
-
+                    #region Get expirationtime
                     DateTime expirationtime;
                     int key = option.StripName.Month + option.StripName.Year + idinstrument;
                     if (expirationtimeDictionary.ContainsKey(key))
@@ -245,6 +248,7 @@ namespace ICE_Import
                             expirationtimeDictionary.Add(newKey, expirationtime);
                         }
                     }
+                    #endregion
 
                     StoredProcsSwitch.SPO(
                         optionName,
@@ -259,29 +263,59 @@ namespace ICE_Import
 
                     #region Get idoption
                     long idoption = 0;
-                    var tbloptions = new List<test_tbloption>();
-                    try
+                    if (cb_TestTables.Checked)
                     {
-                        var optlist = context.test_tbloptions.Where(item => item.optionname == optionName).ToList();
-                        foreach (var item in optlist)
+                        var tbloptions = new List<test_tbloption>();
+                        try
                         {
-                            tbloptions.Add(item);
+                            var optlist = context.test_tbloptions.Where(item => item.optionname == optionName).ToList();
+                            foreach (var item in optlist)
+                            {
+                                tbloptions.Add(item);
+                            }
+                            int countContracts = tbloptions.Count;
+                            if (countContracts > 0)
+                            {
+                                idoption = tbloptions[0].idoption;
+                            }
                         }
-                        int countContracts = tbloptions.Count;
-                        if (countContracts > 0)
+                        catch (Exception ex)
                         {
-                            idoption = tbloptions[0].idoption;
+                            int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                            log += string.Format(
+                                "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
+                                "Can't read N: {2} from DB\n",
+                                databaseName, tablesPrefix, erc);
+                            log += ex.Message + "\n";
+                            continue;
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
-                        log += string.Format(
-                            "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
-                            "Can't read N: {2} from DB\n",
-                            databaseName, tablesPrefix, erc);
-                        log += ex.Message + "\n";
-                        continue;
+                        var tbloptions = new List<tbloption>();
+                        try
+                        {
+                            var optlist = context.tbloptions.Where(item => item.optionname == optionName).ToList();
+                            foreach (var item in optlist)
+                            {
+                                tbloptions.Add(item);
+                            }
+                            int countContracts = tbloptions.Count;
+                            if (countContracts > 0)
+                            {
+                                idoption = tbloptions[0].idoption;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                            log += string.Format(
+                                "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
+                                "Can't read N: {2} from DB\n",
+                                databaseName, tablesPrefix, erc);
+                            log += ex.Message + "\n";
+                            continue;
+                        }
                     }
                     #endregion
 

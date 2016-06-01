@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
@@ -141,6 +144,7 @@ namespace ICE_Import
         private void FormDB_Load(object sender, EventArgs e)
         {
             buttonCancel.Enabled = false;
+            buttonChecking.Enabled = false;
 
             FormDB_Resize(sender, e);
 
@@ -336,6 +340,7 @@ namespace ICE_Import
             buttonPull.Enabled = !start;
             buttonCancel.Enabled = start;
             buttonToCSV.Enabled = !start;
+            buttonChecking.Enabled = (dataGridViewContract.Rows.Count == 0)? false : !start;
             progressBar.Value = 0;
         }
 
@@ -512,6 +517,68 @@ namespace ICE_Import
         private void LogElapsedTime(TimeSpan timeSpan)
         {
             LogMessage("Elapsed time: " + timeSpan);
+        }
+
+        public void ValidationFutureData()
+        {
+            HashSet<DateTime> futureHash = new HashSet<DateTime>(ParsedData.FutureRecords.Select(item => item.StripName));
+
+
+            for (int i = 0; i < dataGridViewContract.Rows.Count - 1; i ++)
+            {
+                string month = dataGridViewContract[3, i].Value.ToString();
+                string year = dataGridViewContract[4, i].Value.ToString();
+                string stripName = month + "." + year;
+                DateTime itemDT = Convert.ToDateTime(stripName);
+                futureHash.Remove(itemDT);
+            }
+            if (futureHash.Count == 0)
+            {
+                AsyncTaskListener.LogMessage("Futures was pushed success in tblcontract");
+            }
+            else
+            {
+                AsyncTaskListener.LogMessage(string.Format("{0} futures was failed push in tbloptions:", futureHash.Count));
+                List<DateTime> residueList = futureHash.ToList();
+                foreach (DateTime dt in residueList)
+                {
+                    AsyncTaskListener.LogMessage(" - " + dt.Month.ToString() + "." + dt.Year.ToString());
+                }
+            }
+        }
+
+        public void ValidationOptionData()
+        {
+            HashSet<DateTime> optionHash = new HashSet<DateTime>(ParsedData.OptionRecords.Select(item => item.StripName));
+
+            for (int i = 0; i < dataGridViewContract.Rows.Count - 1; i++)
+            {
+                string month = dataGridViewContract[3, i].Value.ToString();
+                string year = dataGridViewContract[4, i].Value.ToString();
+                string stripName = month + "." + year;
+                DateTime itemDT = Convert.ToDateTime(stripName);
+                optionHash.Remove(itemDT);
+            }
+            if (optionHash.Count == 0)
+            {
+                AsyncTaskListener.LogMessage("Options was pushed success in tbloptions");
+            }
+            else
+            {
+                AsyncTaskListener.LogMessage(string.Format("{0} options was failed push in tbloptions:", optionHash.Count));
+                List<DateTime> residueList = optionHash.ToList();
+                foreach(DateTime dt in residueList)
+                {
+                    AsyncTaskListener.LogMessage(" - " + dt.Month.ToString() + "." + dt.Year.ToString());
+                }
+            }
+        }
+
+        private void buttonChecking_Click(object sender, EventArgs e)
+        {
+            ValidationFutureData();
+            ValidationOptionData();
+            buttonChecking.Enabled = false;
         }
     }
 }
