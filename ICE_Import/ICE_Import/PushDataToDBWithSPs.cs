@@ -4,11 +4,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace ICE_Import
 {
     public partial class FormDB : Form
     {
+        Dictionary<int, DateTime> expirationtimeDictionary = new Dictionary<int, DateTime>();
+
         /// <summary>
         /// Push all data to DB with stored procedures. Update either test or non-test tables.
         /// </summary>
@@ -53,13 +57,15 @@ namespace ICE_Import
         /// </summary>
         void PushFuturesToDBWithSP(ref int globalCount, CancellationToken ct)
         {
+            var stripNameHashSet = new HashSet<DateTime>();
+
             foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
             {
                 if (ct.IsCancellationRequested)
                 {
                     break;
                 }
-
+                bool newFuture = !stripNameHashSet.Contains(future.StripName);
                 int idinstrument = 36;
 
                 char monthchar = Utilities.MonthToMonthCode(future.StripName.Month);
@@ -70,46 +76,63 @@ namespace ICE_Import
                     monthchar,
                     future.StripName.Year);
 
-                string log = string.Empty;
-                try
-                {
-                    if (DatabaseName == "TMLDB")
+                    string log = string.Empty;
+                    try
                     {
-                        StoredProcsSwitch.SPF_Mod(
-                            contractname,
-                            monthchar,
-                            future.StripName.Month,
-                            future.StripName.Year,
-                            idinstrument,
-                            contractname);
-                    }
-                    else
+                    if (newFuture)
                     {
-                        var records = ContextTMLDB.tblcontractexpirations.Where(
-                            item =>
-                            item.optionmonthint == future.StripName.Month &&
-                            item.optionyear == future.StripName.Year &&
-                            item.idinstrument == idinstrument).ToArray();
-
-                        DateTime expirationtime;
-                        if (records.Length == 0)
+                        #region Get expirationtime
+                        if (DatabaseName == "TMLDB")
                         {
-                            log += string.Format("Failed to find expiration date for future with month = {0}, year = {1}, idinstrument = {2} in tblcontractexpirations", future.StripName.Month, future.StripName.Year, idinstrument);
-                            expirationtime = new DateTime();
+                            StoredProcsSwitch.SPF_Mod(
+                                contractname,
+                                monthchar,
+                                future.StripName.Month,
+                                future.StripName.Year,
+                                idinstrument,
+                                contractname);
+                            stripNameHashSet.Add(future.StripName);
                         }
                         else
                         {
-                            expirationtime = records[0].expirationdate;
-                        }
+                            DateTime expirationtime;
+                            int key = future.StripName.Month + future.StripName.Year + idinstrument;
+                            if (expirationtimeDictionary.ContainsKey(key))
+                            {
+                                expirationtime = expirationtimeDictionary[key];
+                            }
+                            else
+                            {
+                                var records = ContextTMLDB.tblcontractexpirations.Where(
+                                        item =>
+                                        item.optionmonthint == future.StripName.Month &&
+                                        item.optionyear == future.StripName.Year &&
+                                        item.idinstrument == idinstrument).ToArray();
 
-                        StoredProcsSwitch.SPF(
-                            contractname,
-                            monthchar,
-                            future.StripName.Month,
-                            future.StripName.Year,
-                            idinstrument,
-                            expirationtime,
-                            contractname);
+                                if (records.Length == 0)
+                                {
+                                    log += string.Format("Failed to find expiration date for future with month = {0}, year = {1}, idinstrument = {2} in tblcontractexpirations", future.StripName.Month, future.StripName.Year, idinstrument);
+                                    expirationtime = new DateTime();
+                                }
+                                else
+                                {
+                                    expirationtime = records[0].expirationdate;
+                                    int newKey = future.StripName.Month + future.StripName.Year + idinstrument;
+                                    expirationtimeDictionary.Add(newKey, expirationtime);
+                                }
+                            }
+                            #endregion
+
+                            StoredProcsSwitch.SPF(
+                                contractname,
+                                monthchar,
+                                future.StripName.Month,
+                                future.StripName.Year,
+                                idinstrument,
+                                expirationtime,
+                                contractname);
+                            stripNameHashSet.Add(future.StripName);
+                        }
                     }
 
                     StoredProcsSwitch.SPDF(
@@ -195,7 +218,36 @@ namespace ICE_Import
                     double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
                     double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
 
-                    StoredProcsSwitch.SPO_Mod(
+                    #region Get expirationtime
+                    DateTime expirationtime;
+                    int key = option.StripName.Month + option.StripName.Year + idinstrument;
+                    if (expirationtimeDictionary.ContainsKey(key))
+                    {
+                        expirationtime = expirationtimeDictionary[key];
+                    }
+                    else
+                    {
+                        var records = ContextTMLDB.tblcontractexpirations.Where(
+                            item =>
+                            item.optionmonthint == option.StripName.Month &&
+                            item.optionyear == option.StripName.Year &&
+                            item.idinstrument == idinstrument).ToArray();
+
+                        if (records.Length == 0)
+                        {
+                            log += string.Format("Failed to find expiration date for future with month = {0}, year = {1}, idinstrument = {2} in tblcontractexpirations", option.StripName.Month, option.StripName.Year, idinstrument);
+                            expirationtime = new DateTime();
+                        }
+                        else
+                        {
+                            expirationtime = records[0].expirationdate;
+                            int newKey = option.StripName.Month + option.StripName.Year + idinstrument;
+                            expirationtimeDictionary.Add(newKey, expirationtime);
+                        }
+                    }
+                    #endregion
+
+                    StoredProcsSwitch.SPO(
                         optionName,
                         monthchar,
                         option.StripName.Month,
@@ -203,17 +255,74 @@ namespace ICE_Import
                         option.StrikePrice.GetValueOrDefault(),
                         option.OptionType,
                         idinstrument,
+                        expirationtime,
                         optionName);
 
+                    #region Get idoption
+                    long idoption = 0;
+                    if (cb_TestTables.Checked)
+                    {
+                        var tbloptions = new List<test_tbloption>();
+                        try
+                        {
+                            var optlist = Context.test_tbloptions.Where(item => item.optionname == optionName).ToList();
+                            foreach (var item in optlist)
+                            {
+                                tbloptions.Add(item);
+                            }
+                            int countContracts = tbloptions.Count;
+                            if (countContracts > 0)
+                            {
+                                idoption = tbloptions[0].idoption;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                            log += string.Format(
+                                "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
+                                "Can't read N: {2} from DB\n",
+                                DatabaseName, TablesPrefix, erc);
+                            log += ex.Message + "\n";
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        var tbloptions = new List<tbloption>();
+                        try
+                        {
+                            var optlist = Context.tbloptions.Where(item => item.optionname == optionName).ToList();
+                            foreach (var item in optlist)
+                            {
+                                tbloptions.Add(item);
+                            }
+                            int countContracts = tbloptions.Count;
+                            if (countContracts > 0)
+                            {
+                                idoption = tbloptions[0].idoption;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                            log += string.Format(
+                                "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
+                                "Can't read N: {2} from DB\n",
+                                DatabaseName, TablesPrefix, erc);
+                            log += ex.Message + "\n";
+                            continue;
+                        }
+                    }
+                    #endregion
+
                     StoredProcsSwitch.SPOD(
-                        monthchar,
-                        option.StripName.Year,
+                        (int)idoption,
                         option.Date,
                         option.SettlementPrice.GetValueOrDefault(),
                         impliedvol,
                         futureYear - expirateYear);
                 }
-#if !DEBUG
                 catch (Exception ex)
                 {
                     int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
@@ -224,7 +333,6 @@ namespace ICE_Import
                     log += ex.Message + "\n";
                     continue;
                 }
-#endif
                 finally
                 {
                     globalCount++;
@@ -238,9 +346,10 @@ namespace ICE_Import
             }
         }
 
-        private double GetRiskFreeInterestRate()
+        bool GetRisk()
         {
-            double optioninputclose;
+            AsyncTaskListener.LogMessage("Reading Risk...");
+
             try
             {
                 var idoptioninputsymbol = ContextTMLDB.tbloptioninputsymbols.Where(item2 =>
@@ -270,25 +379,23 @@ namespace ICE_Import
                 var idoptioninputsymbol2 = ContextTMLDB.tbloptioninputsymbols.Where(item2 =>
                     item2.idoptioninputtype == OPTION_INPUT_TYPE_RISK_FREE_RATE).ToArray()[0].idoptioninputsymbol;
 
-                optioninputclose = ContextTMLDB.tbloptioninputdatas.Where(item =>
+                RiskFreeInterestRate = ContextTMLDB.tbloptioninputdatas.Where(item =>
                     item.idoptioninputsymbol == idoptioninputsymbol2
                         && item.optioninputdatetime == optioninputdatetime).ToArray()[0].optioninputclose;
 
+                AsyncTaskListener.LogMessage(string.Format("Risk = {0}", RiskFreeInterestRate));
+
+                return true;
             }
-            catch (Exception ex)
+            catch
             {
-                LogMessage(ex.Message);
-                throw ex;
+                return false;
             }
-
-            LogMessage(string.Format("Risk = {0}", optioninputclose));
-
-            return optioninputclose;
         }
 
-        private double GetTickSize()
+        bool GetTickSize()
         {
-            double tickSize;
+            AsyncTaskListener.LogMessage("Reading Tick size...");
 
             try
             {
@@ -296,22 +403,21 @@ namespace ICE_Import
 
                 if (secondaryoptionticksize > 0)
                 {
-                    tickSize = secondaryoptionticksize;
+                    TickSize = secondaryoptionticksize;
                 }
                 else
                 {
-                    tickSize = ContextTMLDB.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].optionticksize;
+                    TickSize = ContextTMLDB.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].optionticksize;
                 }
+
+                AsyncTaskListener.LogMessage(string.Format("Tick size = {0}", TickSize));
+
+                return true;
             }
-            catch (Exception ex)
+            catch
             {
-                LogMessage(ex.Message);
-                throw ex;
+                return false;
             }
-
-            LogMessage(string.Format("Tick size = {0}", tickSize));
-
-            return tickSize;
         }
     }
 }

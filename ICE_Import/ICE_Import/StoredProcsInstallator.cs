@@ -15,7 +15,7 @@ namespace ICE_Import
         /// <summary>
         /// Install stored procedures from SQL files into DB
         /// </summary>
-        public static void Install(
+        public static bool Install(
             string connectionString,
             bool isTestTables,
             CancellationToken ct)
@@ -63,7 +63,15 @@ namespace ICE_Import
                         string dropProcCommandBody = string.Format(dropProcCommandPattern, procName);
                         using (var dropProcCommand = new SqlCommand(dropProcCommandBody, connection))
                         {
-                            dropProcCommand.ExecuteNonQuery();
+                            try
+                            {
+                                dropProcCommand.ExecuteNonQuery();
+                            }
+                            catch (SqlException)
+                            {
+                                AsyncTaskListener.LogMessage("    " + fileName + " - FAILED");
+                                return false;
+                            }
                         }
 
                         // Try again
@@ -75,7 +83,10 @@ namespace ICE_Import
 
                 connection.Close();
             }
+
             AsyncTaskListener.LogMessage("Completed installing stored procedures");
+
+            return true;
         }
     }
 }

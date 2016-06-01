@@ -1,6 +1,8 @@
 ﻿using System;
-using System.Configuration;
+using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -25,26 +27,11 @@ namespace ICE_Import
 
         bool IsAsyncUpdate;
 
+        ConnectionStrings ConnectionStrings = new ConnectionStrings();
+
         string ConnectionString;
         DataClassesTMLDBDataContext Context;
-
         DataClassesTMLDBDataContext ContextTMLDB;
-
-        static class ConnectionStrings
-        {
-            public static string Local;
-            public static string TMLDB_Copy;
-            public static string TMLDB;
-
-            static ConnectionStrings()
-            {
-                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                ConnectionStringsSection csSection = config.ConnectionStrings;
-                Local = csSection.ConnectionStrings[1].ConnectionString;
-                TMLDB_Copy = csSection.ConnectionStrings[2].ConnectionString;
-                TMLDB = csSection.ConnectionStrings[3].ConnectionString;
-            }
-        }
 
         // Risk-free interest rate
         double RiskFreeInterestRate = 0.08;
@@ -69,9 +56,6 @@ namespace ICE_Import
             cb_AsyncUpdate_CheckedChanged(null, null);
 
             ContextTMLDB = new DataClassesTMLDBDataContext(ConnectionStrings.TMLDB);
-
-            RiskFreeInterestRate = GetRiskFreeInterestRate();
-            TickSize = GetTickSize();
         }
 
         private void FormDB_FormClosed(object sender, FormClosedEventArgs e)
@@ -144,6 +128,7 @@ namespace ICE_Import
         private void FormDB_Load(object sender, EventArgs e)
         {
             buttonCancel.Enabled = false;
+            buttonCheckPushedData.Enabled = false;
 
             FormDB_Resize(sender, e);
 
@@ -189,11 +174,26 @@ namespace ICE_Import
                 return;
             }
 
+            bool isRiskFound = await Task.Run(() => GetRisk());
+            bool isTickSizeFound = await Task.Run(() => GetTickSize());
+
+            if (!isRiskFound || !isTickSizeFound)
+            {
+                MessageBox.Show(
+                    "Couldn't find the risk interest value or the tick size value in TMLDB.",
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+            
+            EnableDisable(true);
+
             if (DatabaseName == "TMLDB" && !IsTestTables)
             {
                 // Ask confirmation
                 var result = MessageBox.Show(
-                    "Are you about to update NON-TEST tables of NON-TEST database.\n\nAre you sure?",
+                    "You are about to update NON-TEST tables of NON-TEST database.\n\nAre you sure?",
                     Text,
                     MessageBoxButtons.YesNoCancel,
                     MessageBoxIcon.Question);
@@ -214,8 +214,13 @@ namespace ICE_Import
                 if (IsStoredProcs)
                 {
                     // Install stored procedures from SQL files into DB
-                    await Task.Run(() =>
+                    bool success = await Task.Run(() =>
                         StoredProcsInstallator.Install(ConnectionString, IsTestTables, cts.Token));
+                    if (!success)
+                    {
+                        EnableDisable(false);
+                        return;
+                    }
 
                     if (IsAsyncUpdate)
                     {
@@ -317,6 +322,8 @@ namespace ICE_Import
             buttonPull.Enabled = !start;
             buttonCancel.Enabled = start;
             buttonToCSV.Enabled = !start;
+            // buttonCheckPushedData.Enabled = start ? false : (dataGridViewContract.DataSource != null);
+            buttonCheckPushedData.Enabled = false;
             progressBar.Value = 0;
         }
 
@@ -430,6 +437,13 @@ namespace ICE_Import
             LogMessage(string.Format("You selected {0} update", asyncSync));
         }
 
+        private void buttonCheckPushedData_Click(object sender, EventArgs e)
+        {
+            ValidatePushedFutureData();
+            ValidatePushedOptionData();
+            buttonCheckPushedData.Enabled = false;
+        }
+
         private void AsyncTaskListener_Updated(
             string message = null,
             int progress = -1,
@@ -493,6 +507,60 @@ namespace ICE_Import
         private void LogElapsedTime(TimeSpan timeSpan)
         {
             LogMessage("Elapsed time: " + timeSpan);
+        }
+
+        public void ValidatePushedFutureData()
+        {
+            HashSet<DateTime> futureHash = new HashSet<DateTime>(ParsedData.FutureRecords.Select(item => item.StripName));
+
+            for (int i = 0; i < dataGridViewContract.Rows.Count - 1; i++)
+            {
+                string month = dataGridViewContract[3, i].Value.ToString();
+                string year = dataGridViewContract[4, i].Value.ToString();
+                string stripName = month + "." + year;
+                DateTime itemDT = Convert.ToDateTime(stripName);
+                futureHash.Remove(itemDT);
+            }
+            if (futureHash.Count == 0)
+            {
+                AsyncTaskListener.LogMessage("Futures was pushed success in tblcontract");
+            }
+            else
+            {
+                AsyncTaskListener.LogMessage(string.Format("{0} futures was failed push in tbloptions:", futureHash.Count));
+                List<DateTime> residueList = futureHash.ToList();
+                foreach (DateTime dt in residueList)
+                {
+                    AsyncTaskListener.LogMessage(" - " + dt.Month.ToString() + "." + dt.Year.ToString());
+                }
+            }
+        }
+
+        public void ValidatePushedOptionData()
+        {
+            HashSet<DateTime> optionHash = new HashSet<DateTime>(ParsedData.OptionRecords.Select(item => item.StripName));
+
+            for (int i = 0; i < dataGridViewContract.Rows.Count - 1; i++)
+            {
+                string month = dataGridViewContract[3, i].Value.ToString();
+                string year = dataGridViewContract[4, i].Value.ToString();
+                string stripName = month + "." + year;
+                DateTime itemDT = Convert.ToDateTime(stripName);
+                optionHash.Remove(itemDT);
+            }
+            if (optionHash.Count == 0)
+            {
+                AsyncTaskListener.LogMessage("Options was pushed success in tbloptions");
+            }
+            else
+            {
+                AsyncTaskListener.LogMessage(string.Format("{0} options was failed push in tbloptions:", optionHash.Count));
+                List<DateTime> residueList = optionHash.ToList();
+                foreach (DateTime dt in residueList)
+                {
+                    AsyncTaskListener.LogMessage(" - " + dt.Month.ToString() + "." + dt.Year.ToString());
+                }
+            }
         }
     }
 }

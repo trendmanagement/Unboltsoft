@@ -88,18 +88,17 @@ namespace ICE_Import
             if (!IsConform)
             {
                 var sb = new StringBuilder(
-                    "The selected Future CSV Files(s) and Option CSV File(s) do not conform to each other.\r\n\r\n" +
+                    "The selected Future CSV Files(s) and Option CSV File(s) do not conform to each other.\n\n" +
                     "Options with the following values of StripName do not have corresponding futures " +
-                    "(only the first 10 values are shown):\r\n\r\n");
+                    "(only the first 10 values are shown):\n\n");
                 foreach (DateTime optionStripName in optionStripNames.Take(10))
                 {
-                    sb.Append(optionStripName.ToString("MMMyy") + "\r\n");
+                    sb.Append(optionStripName.ToString("MMMyy") + "\n");
                 }
-                sb.Append("\r\nDo you want to proceed anyway?");
+                sb.Append("\nDo you want to proceed anyway?");
                 DialogResult result = MessageBox.Show(sb.ToString(), "ICE Import (DB Form)", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                 IsConform = result == DialogResult.Yes;
             }
-
             return IsConform;
         }
     }

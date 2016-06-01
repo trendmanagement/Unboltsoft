@@ -15,7 +15,7 @@ namespace ICE_Import
         public static event UpdateDelegate Updated;
 
         // The period of RPS calculation and reporting (in seconds)
-        const int period = 1;
+        static TimeSpan period = new TimeSpan(0, 0, 1);
 
         static DateTime notchTime;
         static int notchCount;
@@ -38,10 +38,10 @@ namespace ICE_Import
             {
                 DateTime now = DateTime.Now;
                 TimeSpan delta = now - notchTime;
-                if (delta.Seconds >= period)
+                if (delta >= period)
                 {
                     // It's time to calculate RPS
-                    double rps = (count - notchCount) / (delta.Milliseconds / 1000.0);
+                    double rps = (count - notchCount) / delta.TotalSeconds;
 
                     // Update text box, progress bar and RPS indicator
                     Updated.Invoke(msg, count, rps);
