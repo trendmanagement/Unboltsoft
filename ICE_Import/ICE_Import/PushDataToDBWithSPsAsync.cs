@@ -199,7 +199,6 @@ namespace ICE_Import
                     var test_tbloptions = new List<test_tbloption>();
                     try
                     {
-                        //var optlist = context.tbloptions.Where(item => item.optionname == optionName).ToList();
                         var test_optlist = Context.test_tbloptions.Where(item => item.optionname == optionName).ToList();
 
                         foreach (var item in test_optlist)
@@ -229,7 +228,6 @@ namespace ICE_Import
                     var tbloptions = new List<tbloption>();
                     try
                     {
-                        //var optlist = context.tbloptions.Where(item => item.optionname == optionName).ToList();
                         var optlist = Context.tbloptions.Where(item => item.optionname == optionName).ToList();
 
                         foreach (var item in optlist)

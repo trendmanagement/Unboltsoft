@@ -11,9 +11,6 @@ namespace ICE_Import
 {
     public partial class FormDB : Form
     {
-        bool isRiskUpdate;
-        bool isTickSizeUpdate;
-
         Dictionary<int, DateTime> expirationtimeDictionary = new Dictionary<int, DateTime>();
 
         /// <summary>
@@ -349,9 +346,10 @@ namespace ICE_Import
             }
         }
 
-        async Task Risk(DataClassesTMLDBDataContext context)
+        bool GetRisk()
         {
-            await Task.Run(() => { 
+            AsyncTaskListener.LogMessage("Reading Risk...");
+
             try
             {
                 var idoptioninputsymbol = ContextTMLDB.tbloptioninputsymbols.Where(item2 =>
@@ -381,50 +379,45 @@ namespace ICE_Import
                 var idoptioninputsymbol2 = ContextTMLDB.tbloptioninputsymbols.Where(item2 =>
                     item2.idoptioninputtype == OPTION_INPUT_TYPE_RISK_FREE_RATE).ToArray()[0].idoptioninputsymbol;
 
-                RiskFreeInterestRate = context.tbloptioninputdatas.Where(item =>
+                RiskFreeInterestRate = ContextTMLDB.tbloptioninputdatas.Where(item =>
                     item.idoptioninputsymbol == idoptioninputsymbol2
                         && item.optioninputdatetime == optioninputdatetime).ToArray()[0].optioninputclose;
-                isRiskUpdate = true;
+
+                AsyncTaskListener.LogMessage(string.Format("Risk = {0}", RiskFreeInterestRate));
+
+                return true;
             }
             catch
             {
-                isRiskUpdate = false;
+                return false;
             }
-            finally
-            {
-                AsyncTaskListener.LogMessage(string.Format("Risk = {0}", RiskFreeInterestRate));
-            }
-            });
         }
 
-        async Task GetTickSize(DataClassesTMLDBDataContext context)
+        bool GetTickSize()
         {
-            await Task.Run((Action)(() =>
-            {
-                try
-                {
-                    var secondaryoptionticksize = context.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].secondaryoptionticksize;
+            AsyncTaskListener.LogMessage("Reading Tick size...");
 
-                    if (secondaryoptionticksize > 0)
-                    {
-                        this.TickSize = secondaryoptionticksize;
-                        isTickSizeUpdate = true;
-                    }
-                    else
-                    {
-                        this.TickSize = context.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].optionticksize;
-                        isTickSizeUpdate = true;
-                    }
-                }
-                catch
+            try
+            {
+                var secondaryoptionticksize = ContextTMLDB.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].secondaryoptionticksize;
+
+                if (secondaryoptionticksize > 0)
                 {
-                    isTickSizeUpdate = false;
+                    TickSize = secondaryoptionticksize;
                 }
-                finally
+                else
                 {
-                    AsyncTaskListener.LogMessage(string.Format("Tick size = {0}", (object)this.TickSize));
+                    TickSize = ContextTMLDB.tblinstruments.Where(item => item.idinstrument == 36).ToArray()[0].optionticksize;
                 }
-            }));
+
+                AsyncTaskListener.LogMessage(string.Format("Tick size = {0}", TickSize));
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

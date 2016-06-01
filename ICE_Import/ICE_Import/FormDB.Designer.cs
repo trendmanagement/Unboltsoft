@@ -53,7 +53,7 @@
             this.cb_AsyncUpdate = new System.Windows.Forms.CheckBox();
             this.labelRPS1 = new System.Windows.Forms.Label();
             this.labelRPS2 = new System.Windows.Forms.Label();
-            this.buttonChecking = new System.Windows.Forms.Button();
+            this.buttonCheckPushedData = new System.Windows.Forms.Button();
             this.tabPageDailyContract.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDailyContract)).BeginInit();
             this.tabPageContract.SuspendLayout();
@@ -77,7 +77,7 @@
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.ReadOnly = true;
             this.richTextBoxLog.Size = new System.Drawing.Size(664, 90);
-            this.richTextBoxLog.TabIndex = 11;
+            this.richTextBoxLog.TabIndex = 12;
             this.richTextBoxLog.Text = "";
             // 
             // buttonPush
@@ -95,7 +95,7 @@
             this.progressBar.Location = new System.Drawing.Point(12, 358);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(640, 10);
-            this.progressBar.TabIndex = 10;
+            this.progressBar.TabIndex = 11;
             // 
             // buttonCancel
             // 
@@ -214,7 +214,7 @@
             this.buttonToCSV.Location = new System.Drawing.Point(567, 257);
             this.buttonToCSV.Name = "buttonToCSV";
             this.buttonToCSV.Size = new System.Drawing.Size(85, 23);
-            this.buttonToCSV.TabIndex = 7;
+            this.buttonToCSV.TabIndex = 8;
             this.buttonToCSV.Text = "To CSV Form";
             this.buttonToCSV.UseVisualStyleBackColor = true;
             this.buttonToCSV.Click += new System.EventHandler(this.buttonToCSV_Click);
@@ -326,7 +326,7 @@
             this.labelRPS1.Location = new System.Drawing.Point(577, 334);
             this.labelRPS1.Name = "labelRPS1";
             this.labelRPS1.Size = new System.Drawing.Size(32, 13);
-            this.labelRPS1.TabIndex = 8;
+            this.labelRPS1.TabIndex = 9;
             this.labelRPS1.Text = "RPS:";
             // 
             // labelRPS2
@@ -335,24 +335,24 @@
             this.labelRPS2.Location = new System.Drawing.Point(615, 334);
             this.labelRPS2.Name = "labelRPS2";
             this.labelRPS2.Size = new System.Drawing.Size(0, 13);
-            this.labelRPS2.TabIndex = 9;
+            this.labelRPS2.TabIndex = 10;
             // 
-            // buttonChecking
+            // buttonCheckPushedData
             // 
-            this.buttonChecking.Location = new System.Drawing.Point(367, 286);
-            this.buttonChecking.Name = "buttonChecking";
-            this.buttonChecking.Size = new System.Drawing.Size(72, 23);
-            this.buttonChecking.TabIndex = 12;
-            this.buttonChecking.Text = "Check data";
-            this.buttonChecking.UseVisualStyleBackColor = true;
-            this.buttonChecking.Click += new System.EventHandler(this.buttonChecking_Click);
+            this.buttonCheckPushedData.Location = new System.Drawing.Point(367, 257);
+            this.buttonCheckPushedData.Name = "buttonCheckPushedData";
+            this.buttonCheckPushedData.Size = new System.Drawing.Size(115, 23);
+            this.buttonCheckPushedData.TabIndex = 7;
+            this.buttonCheckPushedData.Text = "Check Pushed Data";
+            this.buttonCheckPushedData.UseVisualStyleBackColor = true;
+            this.buttonCheckPushedData.Click += new System.EventHandler(this.buttonCheckPushedData_Click);
             // 
             // FormDB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 465);
-            this.Controls.Add(this.buttonChecking);
+            this.Controls.Add(this.buttonCheckPushedData);
             this.Controls.Add(this.labelRPS1);
             this.Controls.Add(this.labelRPS2);
             this.Controls.Add(this.groupBox2);
@@ -413,6 +413,6 @@
         private System.Windows.Forms.CheckBox cb_AsyncUpdate;
         private System.Windows.Forms.Label labelRPS1;
         private System.Windows.Forms.Label labelRPS2;
-        private System.Windows.Forms.Button buttonChecking;
+        private System.Windows.Forms.Button buttonCheckPushedData;
     }
 }

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -28,25 +27,11 @@ namespace ICE_Import
 
         bool IsAsyncUpdate;
 
+        ConnectionStrings ConnectionStrings = new ConnectionStrings();
+
         string ConnectionString;
         DataClassesTMLDBDataContext Context;
         DataClassesTMLDBDataContext ContextTMLDB;
-
-        static class ConnStrings
-        {
-            public static string Local;
-            public static string TMLDB_Copy;
-            public static string TMLDB;
-
-            static ConnStrings()
-            {
-                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                ConnectionStringsSection csSection = config.ConnectionStrings;
-                Local = csSection.ConnectionStrings[1].ConnectionString;
-                TMLDB_Copy = csSection.ConnectionStrings[2].ConnectionString;
-                TMLDB = csSection.ConnectionStrings[3].ConnectionString;
-            }
-        }
 
         // Risk-free interest rate
         double RiskFreeInterestRate = 0.08;
@@ -70,8 +55,7 @@ namespace ICE_Import
             cb_StoredProcs_CheckedChanged(null, null);
             cb_AsyncUpdate_CheckedChanged(null, null);
 
-            ContextTMLDB = new DataClassesTMLDBDataContext(ConnStrings.TMLDB);
-
+            ContextTMLDB = new DataClassesTMLDBDataContext(ConnectionStrings.TMLDB);
         }
 
         private void FormDB_FormClosed(object sender, FormClosedEventArgs e)
@@ -144,7 +128,7 @@ namespace ICE_Import
         private void FormDB_Load(object sender, EventArgs e)
         {
             buttonCancel.Enabled = false;
-            buttonChecking.Enabled = false;
+            buttonCheckPushedData.Enabled = false;
 
             FormDB_Resize(sender, e);
 
@@ -190,88 +174,86 @@ namespace ICE_Import
                 return;
             }
 
-            DataClassesTMLDBDataContext contextNew;
-            if (DatabaseName != "TMLDB")
-            {
-                contextNew = new DataClassesTMLDBDataContext(ConnStrings.TMLDB);
-            }
-            else
-            {
-                contextNew = Context;
-            }
+            bool isRiskFound = await Task.Run(() => GetRisk());
+            bool isTickSizeFound = await Task.Run(() => GetTickSize());
 
-            await Risk(contextNew);
-            await GetTickSize(contextNew);
-
-            if (!isRiskUpdate || !isTickSizeUpdate)
+            if (!isRiskFound || !isTickSizeFound)
             {
-                MessageBox.Show("Can't get risk interest and tick size values.\nTry one more time.");
+                MessageBox.Show(
+                    "Couldn't find the risk interest value or the tick size value in TMLDB.",
+                    Text,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
             }
-            else
-            {
-                EnableDisable(true);
+            
+            EnableDisable(true);
 
-                if (DatabaseName == "TMLDB" && !IsTestTables)
+            if (DatabaseName == "TMLDB" && !IsTestTables)
+            {
+                // Ask confirmation
+                var result = MessageBox.Show(
+                    "You are about to update NON-TEST tables of NON-TEST database.\n\nAre you sure?",
+                    Text,
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question);
+                if (result != DialogResult.Yes)
                 {
-                    // Ask confirmation
-                    var result = MessageBox.Show(
-                        "Are you about to update NON-TEST tables of NON-TEST database.\n\nAre you sure?",
-                        Text,
-                        MessageBoxButtons.YesNoCancel,
-                        MessageBoxIcon.Question);
-                    if (result != DialogResult.Yes)
+                    return;
+                }
+            }
+
+            EnableDisable(true);
+
+            LogMessage("Pushing started");
+
+            cts = new CancellationTokenSource();
+
+            try
+            {
+                if (IsStoredProcs)
+                {
+                    // Install stored procedures from SQL files into DB
+                    bool success = await Task.Run(() =>
+                        StoredProcsInstallator.Install(ConnectionString, IsTestTables, cts.Token));
+                    if (!success)
                     {
+                        EnableDisable(false);
                         return;
                     }
-                }
 
-                EnableDisable(true);
-
-                LogMessage("Pushing started");
-
-                cts = new CancellationTokenSource();
-
-                try
-                {
-                    if (IsStoredProcs)
+                    if (IsAsyncUpdate)
                     {
-                        // Install stored procedures from SQL files into DB
-                        await Task.Run(() =>
-                            StoredProcsInstallator.Install(ConnectionString, IsTestTables, cts.Token));
-
-                        if (IsAsyncUpdate)
-                        {
-                            await PushDataToDBWithSPsAsync(cts.Token);
-                        }
-                        else
-                        {
-                            // Update either test and non-test tables
-                            await PushDataToDBWithSPs(cts.Token);
-                        }
+                        await PushDataToDBWithSPsAsync(cts.Token);
                     }
                     else
                     {
-                        if (IsTestTables)
-                        {
-                            await PushDataToDBTest(cts.Token);
-                        }
-                        else
-                        {
-                            await PushDataToDB(cts.Token);
-                        }
+                        // Update either test and non-test tables
+                        await PushDataToDBWithSPs(cts.Token);
                     }
                 }
-                catch (OperationCanceledException)
+                else
                 {
+                    if (IsTestTables)
+                    {
+                        await PushDataToDBTest(cts.Token);
+                    }
+                    else
+                    {
+                        await PushDataToDB(cts.Token);
+                    }
                 }
-                catch (ObjectDisposedException)
-                {
-                    // The form was closed during the process
-                }
-
-                // Update the data grid
-                buttonPull_Click(sender, e);
             }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (ObjectDisposedException)
+            {
+                // The form was closed during the process
+            }
+
+            // Update the data grid
+            buttonPull_Click(sender, e);
         }
 
         private void buttonPull_Click(object sender, EventArgs e)
@@ -340,7 +322,8 @@ namespace ICE_Import
             buttonPull.Enabled = !start;
             buttonCancel.Enabled = start;
             buttonToCSV.Enabled = !start;
-            buttonChecking.Enabled = (dataGridViewContract.Rows.Count == 0)? false : !start;
+            // buttonCheckPushedData.Enabled = start ? false : (dataGridViewContract.DataSource != null);
+            buttonCheckPushedData.Enabled = false;
             progressBar.Value = 0;
         }
 
@@ -361,19 +344,19 @@ namespace ICE_Import
                     // Local DB
                     DatabaseName = "Local";
                     IsLocalDB = true;
-                    ConnectionString = ConnStrings.Local;
+                    ConnectionString = ConnectionStrings.Local;
                     break;
                 case 2:
                     // TMLDB_Copy
                     DatabaseName = "TMLDB_Copy";
                     IsLocalDB = false;
-                    ConnectionString = ConnStrings.TMLDB_Copy;
+                    ConnectionString = ConnectionStrings.TMLDB_Copy;
                     break;
                 case 3:
                     // TMLDB
                     DatabaseName = "TMLDB";
                     IsLocalDB = false;
-                    ConnectionString = ConnStrings.TMLDB;
+                    ConnectionString = ConnectionStrings.TMLDB;
                     break;
                 default:
                     throw new ArgumentException();
@@ -454,6 +437,13 @@ namespace ICE_Import
             LogMessage(string.Format("You selected {0} update", asyncSync));
         }
 
+        private void buttonCheckPushedData_Click(object sender, EventArgs e)
+        {
+            ValidatePushedFutureData();
+            ValidatePushedOptionData();
+            buttonCheckPushedData.Enabled = false;
+        }
+
         private void AsyncTaskListener_Updated(
             string message = null,
             int progress = -1,
@@ -519,12 +509,11 @@ namespace ICE_Import
             LogMessage("Elapsed time: " + timeSpan);
         }
 
-        public void ValidationFutureData()
+        public void ValidatePushedFutureData()
         {
             HashSet<DateTime> futureHash = new HashSet<DateTime>(ParsedData.FutureRecords.Select(item => item.StripName));
 
-
-            for (int i = 0; i < dataGridViewContract.Rows.Count - 1; i ++)
+            for (int i = 0; i < dataGridViewContract.Rows.Count - 1; i++)
             {
                 string month = dataGridViewContract[3, i].Value.ToString();
                 string year = dataGridViewContract[4, i].Value.ToString();
@@ -547,7 +536,7 @@ namespace ICE_Import
             }
         }
 
-        public void ValidationOptionData()
+        public void ValidatePushedOptionData()
         {
             HashSet<DateTime> optionHash = new HashSet<DateTime>(ParsedData.OptionRecords.Select(item => item.StripName));
 
@@ -567,18 +556,11 @@ namespace ICE_Import
             {
                 AsyncTaskListener.LogMessage(string.Format("{0} options was failed push in tbloptions:", optionHash.Count));
                 List<DateTime> residueList = optionHash.ToList();
-                foreach(DateTime dt in residueList)
+                foreach (DateTime dt in residueList)
                 {
                     AsyncTaskListener.LogMessage(" - " + dt.Month.ToString() + "." + dt.Year.ToString());
                 }
             }
-        }
-
-        private void buttonChecking_Click(object sender, EventArgs e)
-        {
-            ValidationFutureData();
-            ValidationOptionData();
-            buttonChecking.Enabled = false;
         }
     }
 }
