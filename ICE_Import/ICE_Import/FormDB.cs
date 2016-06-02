@@ -123,6 +123,11 @@ namespace ICE_Import
                 X = this.Width - 25 - buttonToCSV.Width,
                 Y = this.Height - 247
             };
+            buttonCheckPushedData.Location = new Point()
+            {
+                X = buttonCheckPushedData.Location.X,
+                Y = this.Height - 218
+            };
         }
 
         private void FormDB_Load(object sender, EventArgs e)
@@ -321,8 +326,8 @@ namespace ICE_Import
             buttonPull.Enabled = !start;
             buttonCancel.Enabled = start;
             buttonToCSV.Enabled = !start;
-            // buttonCheckPushedData.Enabled = start ? false : (dataGridViewContract.DataSource != null);
-            buttonCheckPushedData.Enabled = false;
+            buttonCheckPushedData.Enabled = start ? false : (dataGridViewContract.DataSource != null);
+            //buttonCheckPushedData.Enabled = false;
             progressBar.Value = 0;
         }
 
