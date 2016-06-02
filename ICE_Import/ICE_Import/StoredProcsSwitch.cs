@@ -7,36 +7,6 @@ namespace ICE_Import
     /// </summary>
     static class StoredProcsSwitch
     {
-        public delegate object d_sp_updateContractTblFromSpanUpsert(
-            string contractname,
-            char? month,
-            int? monthint,
-            int? year,
-            int? idinstrument,
-            DateTime? expirationdate,
-            string cqgsymbol);
-
-        public delegate int d_sp_updateOrInsertContractSettlementsFromSpanUpsert(
-            int? futureContractID,
-            DateTime? spanDate,
-            double? settlementPrice);
-
-        public delegate int d_sp_updateOrInsertTbloptionsInfoAndDataUpsert(
-            string optionname,
-            char? optionmonth,
-            int? optionmonthint,
-            int? optionyear,
-            double? strikeprice,
-            char? callorput,
-            long? idinstrument,
-            DateTime? expirationdate,
-            long? idcontract,
-            string cqgsymbol,
-            DateTime? datetime,
-            double? price,
-            double? impliedvol,
-            double? timetoexpinyears);
-
         public delegate int d_SPF(
             string contractname,
             char? month,
@@ -96,9 +66,6 @@ namespace ICE_Import
         public static d_SPO SPO;
         public static d_SPO_Mod SPO_Mod;
         public static d_SPOD SPOD;
-        public static d_sp_updateContractTblFromSpanUpsert sp_updateContractTblFromSpanUpsert;
-        public static d_sp_updateOrInsertContractSettlementsFromSpanUpsert sp_updateOrInsertContractSettlementsFromSpanUpsert;
-        public static d_sp_updateOrInsertTbloptionsInfoAndDataUpsert sp_updateOrInsertTbloptionsInfoAndDataUpsert;
 
         public static void Update(DataClassesTMLDBDataContext context, bool isTestTables)
         {
@@ -110,9 +77,6 @@ namespace ICE_Import
                 SPO = context.test_SPO;
                 SPO_Mod = context.test_SPO_Mod;
                 SPOD = context.test_SPOD;
-                sp_updateContractTblFromSpanUpsert = context.test_sp_updateContractTblFromSpanUpsert;
-                sp_updateOrInsertContractSettlementsFromSpanUpsert = context.test_sp_updateOrInsertContractSettlementsFromSpanUpsert;
-                sp_updateOrInsertTbloptionsInfoAndDataUpsert = context.test_sp_updateOrInsertTbloptionsInfoAndDataUpsert;
             }
             else
             {
@@ -122,9 +86,6 @@ namespace ICE_Import
                 SPO = context.SPO;
                 SPO_Mod = context.SPO_Mod;
                 SPOD = context.SPOD;
-                sp_updateContractTblFromSpanUpsert = context.sp_updateContractTblFromSpanUpsert;
-                sp_updateOrInsertContractSettlementsFromSpanUpsert = context.sp_updateOrInsertContractSettlementsFromSpanUpsert;
-                sp_updateOrInsertTbloptionsInfoAndDataUpsert = context.sp_updateOrInsertTbloptionsInfoAndDataUpsert;
             }
         }
     }
