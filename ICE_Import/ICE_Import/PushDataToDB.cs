@@ -73,7 +73,7 @@ namespace ICE_Import
         void PushFuturesToDB(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.tblcontracts;
-			List<tblcontract> tblContractList = new List<tblcontract>();
+            List<tblcontract> tblContractList = new List<tblcontract>();
 
             int count = 0;
 
@@ -136,16 +136,16 @@ namespace ICE_Import
                         }
                         #endregion
 
-						DateTime expirationtime;
-						int key = future.StripName.Month + future.StripName.Year + idinstrument;
+                        DateTime expirationtime;
+                        int key = future.StripName.Month + future.StripName.Year + idinstrument;
                         if (expirationtimeDictionary.ContainsKey(key))
                         {
                             expirationtime = expirationtimeDictionary[key];
                         }
-						else
-						{
-							expirationtime = GetExpirationTime(future.StripName.Year, future.StripName.Month, idinstrument);
-						}
+                        else
+                        {
+                            expirationtime = GetExpirationTime(future.StripName.Year, future.StripName.Month, idinstrument);
+                        }
 
                         var tableFuture = new tblcontract                        {
                             //idcontract must generete by DB
@@ -205,8 +205,8 @@ namespace ICE_Import
         {
             var tblcontracts_ = Context.tblcontracts;
             var tbldailycontractsettlements_ = Context.tbldailycontractsettlements;
-			List<tbldailycontractsettlement> tblDailyContractList = new List<tbldailycontractsettlement>();
-			List<tblcontract> tblContractList = new List<tblcontract>();
+            List<tbldailycontractsettlement> tblDailyContractList = new List<tbldailycontractsettlement>();
+            List<tblcontract> tblContractList = new List<tblcontract>();
 
             int count = 0;
 
@@ -222,20 +222,20 @@ namespace ICE_Import
                     char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
 
                     #region Find contract
-					try
-					{
-                    	tblContractList = tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToList();
+                    try
+                    {
+                        tblContractList = tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToList();
 
-						if(tblContractList.Count == 0)
-						{
-							var stripName = monthchar + future.StripName.Year.ToString();
-							log += string.Format(
-	                                "Message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
-	                                "Can't find contract for: {2}\n",
-	                                DatabaseName, TablesPrefix, stripName);
-	                            continue;
-						}
-					}
+                        if(tblContractList.Count == 0)
+                        {
+                            var stripName = monthchar + future.StripName.Year.ToString();
+                            log += string.Format(
+                                    "Message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
+                                    "Can't find contract for: {2}\n",
+                                    DatabaseName, TablesPrefix, stripName);
+                                continue;
+                        }
+                    }
 #if !DEBUG
                     catch (Exception ex)
                     {
@@ -249,13 +249,16 @@ namespace ICE_Import
                     }
 
 #endif
+                    finally
+                    {
+                    }
                     #endregion
 
                     #region Find data in DB like pushed
                     try
                     {
                         tblDailyContractList = tbldailycontractsettlements_.Where(item => item.idcontract == tblContractList[0].idcontract && item.date == future.Date).ToList();
-						if (tblDailyContractList.Count > 0)
+                        if (tblDailyContractList.Count > 0)
                         {
                             long id = tblDailyContractList[0].iddailycontractsettlements;
                             log += string.Format(
@@ -332,9 +335,9 @@ namespace ICE_Import
             var tblcontracts_ = Context.tblcontracts;
             var tbloptions_ = Context.tbloptions;
             var tbloptiondatas_ = Context.tbloptiondatas;
-			List<tblcontract> tblContractList = new List<tblcontract>();
-			List<tbloption> tblOptionList = new List<tbloption>();
-			List<tbloptiondata> tblOptionDataList = new List<tbloptiondata>();
+            List<tblcontract> tblContractList = new List<tblcontract>();
+            List<tbloption> tblOptionList = new List<tbloption>();
+            List<tbloptiondata> tblOptionDataList = new List<tbloptiondata>();
 
             int count = 0;
 
@@ -371,7 +374,7 @@ namespace ICE_Import
                     try
                     {
                         tblOptionList = tbloptions_.Where(item => item.optionname == optionName).ToList();
-               			int countContracts = tblOptionList.Count;
+                           int countContracts = tblOptionList.Count;
                         if (countContracts > 0)
                         {
                             isOptionCreated = true;
@@ -431,15 +434,15 @@ namespace ICE_Import
                         #endregion
 
                         DateTime expirationtime;
-						int key = option.StripName.Month + option.StripName.Year + idinstrument;
+                        int key = option.StripName.Month + option.StripName.Year + idinstrument;
                         if (expirationtimeDictionary.ContainsKey(key))
                         {
                             expirationtime = expirationtimeDictionary[key];
                         }
-						else
-						{
-							expirationtime = GetExpirationTime(option.StripName.Year, option.StripName.Month, idinstrument);
-						}
+                        else
+                        {
+                            expirationtime = GetExpirationTime(option.StripName.Year, option.StripName.Month, idinstrument);
+                        }
 
 
                         var tableOption = new tbloption                        {
@@ -461,8 +464,8 @@ namespace ICE_Import
                         #region Find id for fist time pushed option
                         try
                         {
-							tblOptionList = new List<tbloption>();
-                        	tblOptionList = tbloptions_.Where(item => item == tableOption).ToList();
+                            tblOptionList = new List<tbloption>();
+                            tblOptionList = tbloptions_.Where(item => item == tableOption).ToList();
                             if (tblOptionList.Count == 0)
                             {
                                 long id = count;
@@ -502,8 +505,8 @@ namespace ICE_Import
                     #region Find data in DB like pushed
                     try
                     {
-                    	tblOptionDataList = tbloptiondatas_.Where(item => item.timetoexpinyears == (futureYear - expirateYear) && item.datetime == option.Date && item.idoption == TO.idoption).ToList();
-			            if (tblOptionDataList.Count > 0)
+                        tblOptionDataList = tbloptiondatas_.Where(item => item.timetoexpinyears == (futureYear - expirateYear) && item.datetime == option.Date && item.idoption == TO.idoption).ToList();
+                        if (tblOptionDataList.Count > 0)
                         {
                             long id = tblOptionDataList[0].idoptiondata;
                             log += string.Format(
@@ -655,7 +658,7 @@ namespace ICE_Import
         void PushFuturesToDBTest(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.test_tblcontracts;
-			List<test_tblcontract> tblContractList = new List<test_tblcontract>();
+            List<test_tblcontract> tblContractList = new List<test_tblcontract>();
 
             int count = 0;
 
@@ -718,16 +721,16 @@ namespace ICE_Import
                         }
                         #endregion
 
-						DateTime expirationtime;
-						int key = future.StripName.Month + future.StripName.Year + idinstrument;
+                        DateTime expirationtime;
+                        int key = future.StripName.Month + future.StripName.Year + idinstrument;
                         if (expirationtimeDictionary.ContainsKey(key))
                         {
                             expirationtime = expirationtimeDictionary[key];
                         }
-						else
-						{
-							expirationtime = GetExpirationTime(future.StripName.Year, future.StripName.Month, idinstrument);
-						}
+                        else
+                        {
+                            expirationtime = GetExpirationTime(future.StripName.Year, future.StripName.Month, idinstrument);
+                        }
 
                         var tableFuture = new test_tblcontract                        {
                             //idcontract must generete by DB
@@ -787,8 +790,8 @@ namespace ICE_Import
         {
             var tblcontracts_ = Context.test_tblcontracts;
             var tbldailycontractsettlements_ = Context.test_tbldailycontractsettlements;
-			List<test_tbldailycontractsettlement> tblDailyContractList = new List<test_tbldailycontractsettlement>();
-			List<test_tblcontract> tblContractList = new List<test_tblcontract>();
+            List<test_tbldailycontractsettlement> tblDailyContractList = new List<test_tbldailycontractsettlement>();
+            List<test_tblcontract> tblContractList = new List<test_tblcontract>();
 
             int count = 0;
 
@@ -804,20 +807,20 @@ namespace ICE_Import
                     char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
 
                     #region Find contract
-					try
-					{
-                    	tblContractList = tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToList();
+                    try
+                    {
+                        tblContractList = tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToList();
 
-						if(tblContractList.Count == 0)
-						{
-							var stripName = monthchar + future.StripName.Year.ToString();
-							log += string.Format(
-	                                "Message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
-	                                "Can't find contract for: {2}\n",
-	                                DatabaseName, TablesPrefix, stripName);
-	                            continue;
-						}
-					}
+                        if(tblContractList.Count == 0)
+                        {
+                            var stripName = monthchar + future.StripName.Year.ToString();
+                            log += string.Format(
+                                    "Message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
+                                    "Can't find contract for: {2}\n",
+                                    DatabaseName, TablesPrefix, stripName);
+                                continue;
+                        }
+                    }
 #if !DEBUG
                     catch (Exception ex)
                     {
@@ -831,13 +834,16 @@ namespace ICE_Import
                     }
 
 #endif
+                    finally
+                    {
+                    }
                     #endregion
 
                     #region Find data in DB like pushed
                     try
                     {
                         tblDailyContractList = tbldailycontractsettlements_.Where(item => item.idcontract == tblContractList[0].idcontract && item.date == future.Date).ToList();
-						if (tblDailyContractList.Count > 0)
+                        if (tblDailyContractList.Count > 0)
                         {
                             long id = tblDailyContractList[0].iddailycontractsettlements;
                             log += string.Format(
@@ -914,9 +920,9 @@ namespace ICE_Import
             var tblcontracts_ = Context.test_tblcontracts;
             var tbloptions_ = Context.test_tbloptions;
             var tbloptiondatas_ = Context.test_tbloptiondatas;
-			List<test_tblcontract> tblContractList = new List<test_tblcontract>();
-			List<test_tbloption> tblOptionList = new List<test_tbloption>();
-			List<test_tbloptiondata> tblOptionDataList = new List<test_tbloptiondata>();
+            List<test_tblcontract> tblContractList = new List<test_tblcontract>();
+            List<test_tbloption> tblOptionList = new List<test_tbloption>();
+            List<test_tbloptiondata> tblOptionDataList = new List<test_tbloptiondata>();
 
             int count = 0;
 
@@ -953,7 +959,7 @@ namespace ICE_Import
                     try
                     {
                         tblOptionList = tbloptions_.Where(item => item.optionname == optionName).ToList();
-               			int countContracts = tblOptionList.Count;
+                           int countContracts = tblOptionList.Count;
                         if (countContracts > 0)
                         {
                             isOptionCreated = true;
@@ -1013,15 +1019,15 @@ namespace ICE_Import
                         #endregion
 
                         DateTime expirationtime;
-						int key = option.StripName.Month + option.StripName.Year + idinstrument;
+                        int key = option.StripName.Month + option.StripName.Year + idinstrument;
                         if (expirationtimeDictionary.ContainsKey(key))
                         {
                             expirationtime = expirationtimeDictionary[key];
                         }
-						else
-						{
-							expirationtime = GetExpirationTime(option.StripName.Year, option.StripName.Month, idinstrument);
-						}
+                        else
+                        {
+                            expirationtime = GetExpirationTime(option.StripName.Year, option.StripName.Month, idinstrument);
+                        }
 
 
                         var tableOption = new test_tbloption                        {
@@ -1043,8 +1049,8 @@ namespace ICE_Import
                         #region Find id for fist time pushed option
                         try
                         {
-							tblOptionList = new List<test_tbloption>();
-                        	tblOptionList = tbloptions_.Where(item => item == tableOption).ToList();
+                            tblOptionList = new List<test_tbloption>();
+                            tblOptionList = tbloptions_.Where(item => item == tableOption).ToList();
                             if (tblOptionList.Count == 0)
                             {
                                 long id = count;
@@ -1084,8 +1090,8 @@ namespace ICE_Import
                     #region Find data in DB like pushed
                     try
                     {
-                    	tblOptionDataList = tbloptiondatas_.Where(item => item.timetoexpinyears == (futureYear - expirateYear) && item.datetime == option.Date && item.idoption == TO.idoption).ToList();
-			            if (tblOptionDataList.Count > 0)
+                        tblOptionDataList = tbloptiondatas_.Where(item => item.timetoexpinyears == (futureYear - expirateYear) && item.datetime == option.Date && item.idoption == TO.idoption).ToList();
+                        if (tblOptionDataList.Count > 0)
                         {
                             long id = tblOptionDataList[0].idoptiondata;
                             log += string.Format(
@@ -1184,17 +1190,17 @@ namespace ICE_Import
         private DateTime GetExpirationTime(int year, int month, int idinstrument)
         {
             DateTime expirationdate;
-        	try 
-        	{
-    		    var contractexpirations = ContextTMLDB.tblcontractexpirations.Where(
-	                item =>
-	                item.optionmonthint == month &&
-	                item.optionyear == year &&
-	                item.idinstrument == idinstrument).ToList();
-    		    if(contractexpirations.Count > 0)
-    		    {
+            try 
+            {
+                var contractexpirations = ContextTMLDB.tblcontractexpirations.Where(
+                    item =>
+                    item.optionmonthint == month &&
+                    item.optionyear == year &&
+                    item.idinstrument == idinstrument).ToList();
+                if(contractexpirations.Count > 0)
+                {
                     return expirationdate = contractexpirations[0].expirationdate;
-    		    }
+                }
                 return new DateTime(); 
             }
             catch
