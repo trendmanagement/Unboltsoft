@@ -326,8 +326,8 @@ namespace ICE_Import
             buttonPull.Enabled = !start;
             buttonCancel.Enabled = start;
             buttonToCSV.Enabled = !start;
-            // buttonCheckPushedData.Enabled = start ? false : (dataGridViewContract.DataSource != null);
-            buttonCheckPushedData.Enabled = false;
+            buttonCheckPushedData.Enabled = start ? false : (dataGridViewContract.DataSource != null);
+            //buttonCheckPushedData.Enabled = false;
             progressBar.Value = 0;
         }
 
@@ -444,7 +444,9 @@ namespace ICE_Import
         private void buttonCheckPushedData_Click(object sender, EventArgs e)
         {
             ValidatePushedFutureData();
+            ValidatePushedDailyFuturesData();
             ValidatePushedOptionData();
+            ValidatePushedOtionDataData();
             buttonCheckPushedData.Enabled = false;
         }
 
@@ -513,7 +515,7 @@ namespace ICE_Import
             LogMessage("Elapsed time: " + timeSpan);
         }
 
-        public void ValidatePushedFutureData()
+        private void ValidatePushedFutureData()
         {
             HashSet<DateTime> futureHash = new HashSet<DateTime>(ParsedData.FutureRecords.Select(item => item.StripName));
 
@@ -540,7 +542,7 @@ namespace ICE_Import
             }
         }
 
-        public void ValidatePushedOptionData()
+        private void ValidatePushedOptionData()
         {
             HashSet<DateTime> optionHash = new HashSet<DateTime>(ParsedData.OptionRecords.Select(item => item.StripName));
 
@@ -566,5 +568,130 @@ namespace ICE_Import
                 }
             }
         }
+
+        private void ValidatePushedDailyFuturesData()
+        {
+            var futureDailyHash = new HashSet<string>();
+            string id;
+            DateTime stripName;
+            DateTime date;
+            string itemHashSet;
+
+            for (int i = 0; i < ParsedData.FutureRecords.Length; i++)
+            {
+                itemHashSet = GetNameDaylyContractHashSet(ParsedData.FutureRecords[i].StripName, ParsedData.FutureRecords[i].Date);
+                futureDailyHash.Add(itemHashSet);
+            }
+
+            string itemDB;
+            for (int i = 0; i < dataGridViewDailyContract.Rows.Count - 1; i++)
+            {
+                id = dataGridViewDailyContract[1, i].Value.ToString();
+                stripName = GetStripNameContractFromGrid(id, dataGridViewContract);
+                date = (DateTime)dataGridViewDailyContract[2, i].Value;
+                itemDB = GetNameDaylyContractHashSet(stripName, date);
+                futureDailyHash.Remove(itemDB);
+            }
+
+            if (futureDailyHash.Count == 0)
+            {
+                AsyncTaskListener.LogMessage("Futures was pushed success in tbldailycontractsettlements");
+            }
+            else
+            {
+                AsyncTaskListener.LogMessage(string.Format("{0} futures was failed push in tbldailycontractsettlements:", futureDailyHash.Count));
+                List<string> residueList = futureDailyHash.ToList();
+                foreach (string item in residueList)
+                {
+                    AsyncTaskListener.LogMessage(" - " + item);
+                }
+            }
+        }
+
+        private void ValidatePushedOtionDataData()
+        {
+            var optionDataHash = new HashSet<string>();
+            string id;
+            DateTime stripName;
+            DateTime date;
+            string itemHashSet;
+
+            for (int i = 0; i < ParsedData.FutureRecords.Length; i++)
+            {
+                itemHashSet = GetNameOptionDataHashSet(ParsedData.FutureRecords[i].StripName, ParsedData.FutureRecords[i].Date);
+                optionDataHash.Add(itemHashSet);
+            }
+
+            string itemDB;
+            for (int i = 0; i < dataGridViewOptionData.Rows.Count - 1; i++)
+            {
+                id = dataGridViewOptionData[1, i].Value.ToString();
+                stripName = GetStripNameContractFromGrid(id, dataGridViewOption);
+                date = (DateTime)dataGridViewOptionData[2, i].Value;
+                itemDB = GetNameOptionDataHashSet(stripName, date);
+                optionDataHash.Remove(itemDB);
+            }
+
+            if (optionDataHash.Count == 0)
+            {
+                AsyncTaskListener.LogMessage("Options was pushed success in tbloptiondata");
+            }
+            else
+            {
+                AsyncTaskListener.LogMessage(string.Format("{0} options was failed push in tbloptiondata:", optionDataHash.Count));
+                List<string> residueList = optionDataHash.ToList();
+                foreach (string item in residueList)
+                {
+                    AsyncTaskListener.LogMessage(" - " + item);
+                }
+            }
+        }
+
+        private DateTime GetStripNameContractFromGrid(string id, DataGridView dgv)
+        {
+            var itemDT = new DateTime();
+            string month;
+            string year;
+            string stripName;
+
+            for (int i = 0; i < dgv.Rows.Count - 1; i++)
+            {
+                if(id == dgv[0, i].Value.ToString())
+                {
+                    month = Utilities.MonthToStringMonthCode(Convert.ToInt32(dgv[3, i].Value.ToString()));
+                    year = dgv[4, i].Value.ToString();
+                    stripName = month + year;
+                    return itemDT = Convert.ToDateTime(stripName);
+                }
+            }
+            return itemDT;
+        }
+
+        private string GetNameDaylyContractHashSet(DateTime stripName, DateTime date)
+        {
+            string stripNameMonth = stripName.Month.ToString();
+            string stripNameYear = stripName.Year.ToString();
+            string dateDay = date.Day.ToString();
+            string dateMonth = date.Month.ToString();
+            string dateYear = date.Year.ToString();
+            string itemHash = stripNameMonth + "." + stripNameYear + ";" + dateDay + "."+ dateMonth + "." + dateYear;
+            return itemHash;
+        }
+
+        private string GetNameOptionDataHashSet(DateTime stripName, DateTime date)
+        {
+            double futureYear = stripName.Year + stripName.Month * 0.0833333;
+            double expirateYear = date.Year + date.Month * 0.0833333;
+
+            string stripNameMonth = stripName.Month.ToString();
+            string stripNameYear = stripName.Year.ToString();
+            string dateDay = date.Day.ToString();
+            string dateMonth = date.Month.ToString();
+            string dateYear = date.Year.ToString();
+            string timeToExpirationDate = (futureYear - expirateYear).ToString();
+            string itemHash = stripNameMonth + "." + stripNameYear + ";" + dateDay + "." + dateMonth + "." + dateYear + ";" + timeToExpirationDate;
+            return itemHash;
+        }
+
     }
 }
