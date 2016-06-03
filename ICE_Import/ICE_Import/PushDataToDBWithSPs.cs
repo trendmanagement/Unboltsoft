@@ -1,11 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 
 namespace ICE_Import
 {
@@ -14,7 +13,8 @@ namespace ICE_Import
         Dictionary<int, DateTime> expirationtimeDictionary = new Dictionary<int, DateTime>();
 
         /// <summary>
-        /// Push all data to DB with stored procedures. Update either test or non-test tables.
+        /// Push all data to DB with stored procedures.
+        /// Update either test or non-test tables, either synchronously or asynchronously.
         /// </summary>
         async Task PushDataToDBWithSPs(CancellationToken ct)
         {
@@ -31,13 +31,29 @@ namespace ICE_Import
 
             try
             {
+                if (IsAsyncUpdate)
+                {
+                    // Clear commands queue just in case if the previous session was terminated
+                    StoredProcsHelper.InitAsyncHelper();
+                }
+
+                AsyncTaskListener.Init("Pushing of FUTURES data started");
                 await Task.Run(() => PushFuturesToDBWithSP(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
+                AsyncTaskListener.LogMessage("Pushing of FUTURES data complete");
 
                 if (!ParsedData.FuturesOnly)
                 {
+                    AsyncTaskListener.LogMessage("Pushing of OPTIONS data started");
                     await Task.Run(() => PushOptionsToDBWithSP(ref globalCount, ct), ct);
                     LogElapsedTime(DateTime.Now - start);
+                    AsyncTaskListener.LogMessage("Pushing of OPTIONS data complete");
+                }
+
+                if (IsAsyncUpdate)
+                {
+                    // Flush the remaining commands
+                    StoredProcsHelper.FinalizeAsyncHelper();
                 }
             }
             catch (OperationCanceledException)
@@ -84,7 +100,7 @@ namespace ICE_Import
                         #region Get expirationtime
                         if (DatabaseName == "TMLDB")
                         {
-                            StoredProcsSwitch.SPF_Mod(
+                            StoredProcsHelper.SPF_Mod(
                                 contractname,
                                 monthchar,
                                 future.StripName.Month,
@@ -123,7 +139,7 @@ namespace ICE_Import
                             }
                             #endregion
 
-                            StoredProcsSwitch.SPF(
+                            StoredProcsHelper.SPF(
                                 contractname,
                                 monthchar,
                                 future.StripName.Month,
@@ -135,7 +151,7 @@ namespace ICE_Import
                         }
                     }
 
-                    StoredProcsSwitch.SPDF(
+                    StoredProcsHelper.SPDF(
                         future.Date,
                         future.SettlementPrice.GetValueOrDefault(),
                         monthchar,
@@ -247,7 +263,7 @@ namespace ICE_Import
                     }
                     #endregion
 
-                    StoredProcsSwitch.SPO(
+                    StoredProcsHelper.SPO(
                         optionName,
                         monthchar,
                         option.StripName.Month,
@@ -316,7 +332,7 @@ namespace ICE_Import
                     }
                     #endregion
 
-                    StoredProcsSwitch.SPOD(
+                    StoredProcsHelper.SPOD(
                         (int)idoption,
                         option.Date,
                         option.SettlementPrice.GetValueOrDefault(),

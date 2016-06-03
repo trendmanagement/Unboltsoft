@@ -226,15 +226,9 @@ namespace ICE_Import
                         return;
                     }
 
-                    if (IsAsyncUpdate)
-                    {
-                        await PushDataToDBWithSPsAsync(cts.Token);
-                    }
-                    else
-                    {
-                        // Update either test and non-test tables
-                        await PushDataToDBWithSPs(cts.Token);
-                    }
+                    // Update either test or non-test tables,
+                    // either synchronously or asynchronously
+                    await PushDataToDBWithSPs(cts.Token);
                 }
                 else
                 {
@@ -375,7 +369,12 @@ namespace ICE_Import
             {
                 Context = ContextTMLDB;
             }
-            StoredProcsSwitch.Update(Context, IsTestTables);
+
+            if (IsStoredProcs)
+            {
+                // Switch stored procs helper
+                StoredProcsHelper.Switch(Context, IsTestTables, IsAsyncUpdate, ConnectionString);
+            }
 
             LogMessage(string.Format("You selected {0} database", DatabaseName));
         }
@@ -407,8 +406,11 @@ namespace ICE_Import
 
             StoredProcPrefix = prefix;
 
-            // Update stored procs switch
-            StoredProcsSwitch.Update(Context, IsTestTables);
+            if (IsStoredProcs)
+            {
+                // Switch stored procs helper
+                StoredProcsHelper.Switch(Context, IsTestTables, IsAsyncUpdate, ConnectionString);
+            }
 
             LogMessage(string.Format("You selected {0} tables", testNonTest));
         }
@@ -427,7 +429,14 @@ namespace ICE_Import
             else
             {
                 cb_AsyncUpdate.Checked = false;
+                IsAsyncUpdate = false;
                 storedCoded = "CODED";
+            }
+
+            if (IsStoredProcs)
+            {
+                // Switch stored procs helper
+                StoredProcsHelper.Switch(Context, IsTestTables, IsAsyncUpdate, ConnectionString);
             }
 
             LogMessage(string.Format("You selected {0} procedures", storedCoded));
@@ -436,6 +445,9 @@ namespace ICE_Import
         private void cb_AsyncUpdate_CheckedChanged(object sender, EventArgs e)
         {
             IsAsyncUpdate = cb_AsyncUpdate.Checked;
+
+            // Switch stored procs helper
+            StoredProcsHelper.Switch(Context, IsTestTables, IsAsyncUpdate, ConnectionString);
 
             string asyncSync = IsAsyncUpdate ? "ASYNCHRONOUS" : "SYNCHRONOUS";
             LogMessage(string.Format("You selected {0} update", asyncSync));
