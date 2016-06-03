@@ -94,26 +94,5 @@ namespace ICE_Import
         {
             return price.GetValueOrDefault() / 1000;
         }
-
-        public static void AppendHelper(StringBuilder sb, object value, bool last = false)
-        {
-            Type type = value.GetType();
-            if (type == typeof(string) || type == typeof(char))
-            {
-                sb.AppendFormat("'{0}'", value);
-            }
-            else if (type == typeof(DateTime))
-            {
-                sb.AppendFormat("'{0}'", ((DateTime)value).ToString("yyyy-MM-dd"));
-            }
-            else
-            {
-                sb.Append(value);
-            }
-            if (!last)
-            {
-                sb.Append(',');
-            }
-        }
     }
 }
