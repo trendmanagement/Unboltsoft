@@ -85,7 +85,7 @@ namespace ICE_Import
         void PushFuturesToDB<# Write(methodNameSuffix[i]); #>(ref int globalCount, CancellationToken ct)
         {
             var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
-            List<<# Write(tableNamePrefix[i]); #>tblcontract> tblContractList = new List<<# Write(tableNamePrefix[i]); #>tblcontract>();
+            var tblContractList = new List<<# Write(tableNamePrefix[i]); #>tblcontract>();
 
             int count = 0;
 
@@ -218,8 +218,8 @@ namespace ICE_Import
         {
             var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
             var tbldailycontractsettlements_ = Context.<# Write(tableNamePrefix[i]); #>tbldailycontractsettlements;
-            List<<# Write(tableNamePrefix[i]); #>tbldailycontractsettlement> tblDailyContractList = new List<<# Write(tableNamePrefix[i]); #>tbldailycontractsettlement>();
-            List<<# Write(tableNamePrefix[i]); #>tblcontract> tblContractList = new List<<# Write(tableNamePrefix[i]); #>tblcontract>();
+            var tblDailyContractList = new List<<# Write(tableNamePrefix[i]); #>tbldailycontractsettlement>();
+            var tblContractList = new List<<# Write(tableNamePrefix[i]); #>tblcontract>();
 
             int count = 0;
 
@@ -239,14 +239,14 @@ namespace ICE_Import
                     {
                         tblContractList = tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToList();
 
-                        if(tblContractList.Count == 0)
+                        if (tblContractList.Count == 0)
                         {
                             var stripName = monthchar + future.StripName.Year.ToString();
                             log += string.Format(
-                                    "Message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
-                                    "Can't find contract for: {2}\n",
-                                    DatabaseName, TablesPrefix, stripName);
-                                continue;
+                                "Message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
+                                "Can't find contract for: {2}\n",
+                                DatabaseName, TablesPrefix, stripName);
+                            continue;
                         }
                     }
 #if !DEBUG
@@ -349,9 +349,9 @@ namespace ICE_Import
             var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
             var tbloptions_ = Context.<# Write(tableNamePrefix[i]); #>tbloptions;
             var tbloptiondatas_ = Context.<# Write(tableNamePrefix[i]); #>tbloptiondatas;
-            List<<# Write(tableNamePrefix[i]); #>tblcontract> tblContractList = new List<<# Write(tableNamePrefix[i]); #>tblcontract>();
-            List<<# Write(tableNamePrefix[i]); #>tbloption> tblOptionList = new List<<# Write(tableNamePrefix[i]); #>tbloption>();
-            List<<# Write(tableNamePrefix[i]); #>tbloptiondata> tblOptionDataList = new List<<# Write(tableNamePrefix[i]); #>tbloptiondata>();
+            var tblContractList = new List<<# Write(tableNamePrefix[i]); #>tblcontract>();
+            var tblOptionList = new List<<# Write(tableNamePrefix[i]); #>tbloption>();
+            var tblOptionDataList = new List<<# Write(tableNamePrefix[i]); #>tbloptiondata>();
 
             int count = 0;
 
@@ -388,7 +388,7 @@ namespace ICE_Import
                     try
                     {
                         tblOptionList = tbloptions_.Where(item => item.optionname == optionName).ToList();
-                           int countContracts = tblOptionList.Count;
+                        int countContracts = tblOptionList.Count;
                         if (countContracts > 0)
                         {
                             isOptionCreated = true;
@@ -457,7 +457,6 @@ namespace ICE_Import
                         {
                             expirationtime = GetExpirationTime(option.StripName.Year, option.StripName.Month, idinstrument);
                         }
-
 
                         var tableOption = new <# Write(TblOption); #>
                         {
@@ -629,7 +628,7 @@ namespace ICE_Import
                     item.optionmonthint == month &&
                     item.optionyear == year &&
                     item.idinstrument == idinstrument).ToList();
-                if(contractexpirations.Count > 0)
+                if (contractexpirations.Count > 0)
                 {
                     return expirationdate = contractexpirations[0].expirationdate;
                 }
