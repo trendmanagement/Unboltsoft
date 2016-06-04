@@ -138,11 +138,7 @@ namespace ICE_Import
 
             FormDB_Resize(sender, e);
 
-            if (ParsedData.IsReady)
-            {
-                ParsedData_ParseSucceeded();
-            }
-            else
+            if (!ParsedData.IsReady)
             {
                 ParsedData_ParseFailed();
             }
