@@ -58,12 +58,12 @@ namespace ICE_Import
                 return;
             }
 
+            ProductName = FutureRecords[0].ProductName;
+            int i = ProductName.IndexOf(" Futures");
+            ProductName = ProductName.Remove(i);
+
             if (FuturesOnly || ConformityCheck())
             {
-                ProductName = FutureRecords[0].ProductName;
-                int i = ProductName.IndexOf(" Futures");
-                ProductName = ProductName.Remove(i);
-
                 Program.csvf.Hide();
                 if (Program.dbf == null)
                 {
