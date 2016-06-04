@@ -32,16 +32,22 @@ namespace ICE_Import
 
             try
             {
+                AsyncTaskListener.Init("Pushing of FUTURES data started");
+
                 await Task.Run(() => PushFuturesToDB(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
                 await Task.Run(() => PushDailyFuturesToDB(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
+                AsyncTaskListener.LogMessage("Pushing of FUTURES data complete");
+
                 if (!ParsedData.FuturesOnly)
                 {
+                    AsyncTaskListener.LogMessage("Pushing of OPTIONS data started");
                     await Task.Run(() => PushOptionsToDB(ref globalCount, ct), ct);
                     LogElapsedTime(DateTime.Now - start);
+                    AsyncTaskListener.LogMessage("Pushing of OPTIONS data complete");
                 }
             }
 #if !DEBUG
@@ -53,15 +59,12 @@ namespace ICE_Import
 #endif
             finally
             {
-                DateTime stop = DateTime.Now;
-                LogMessage("Timy with clientside checking - " + (stop - start));
-
                 string msg = string.Format("Pushed to DB: {0} entries", globalCount);
                 LogMessage(msg);
                 if (ParsedData.FutureRecords.Count > globalCount)
                 {
-                    msg = string.Format("Was NOT pushed {0} entries from {1} to DB",
-                        (ParsedData.FutureRecords.Count - globalCount),
+                    msg = string.Format("NOT pushed to DB: {0} entries from {1}",
+                        ParsedData.FutureRecords.Count - globalCount,
                         ParsedData.FutureRecords.Count);
                     LogMessage(msg);
                 }
@@ -177,12 +180,6 @@ namespace ICE_Import
                             "Pushed {0} entries to {1} {2}TBLCONTRACT table",
                             count, DatabaseName, TablesPrefix);
                     }
-                    //TODO: Fix this
-                    //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
-                    //{
-                    //    currentPercent += 10;
-                    //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
-                    //}
                     AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
@@ -306,12 +303,6 @@ namespace ICE_Import
                     {
                         log += string.Format("Pushed {0} entries to {1} {2}TBLDAILYCONTRACTSETTLEMENT table", count, DatabaseName, TablesPrefix);
                     }
-                    //TODO: Fix this
-                    //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
-                    //{
-                    //    currentPercent += 10;
-                    //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
-                    //}
                     AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
@@ -390,14 +381,10 @@ namespace ICE_Import
                         {
                             idContract = tblcontracts_.Where(item => item.month == monthChar && item.year == option.StripName.Year).First().idcontract;
                         }
-                        catch (IndexOutOfRangeException outEx)
+                        catch (InvalidOperationException)
                         {
-                            int erc = globalCount - ParsedData.FutureRecords.Count - ParsedData.FutureRecords.Count;
-                            log += string.Format(
-                                "ERROR message from {0} pushing pushing {1}TBLOPTIONS table\n" +
-                                "We dont have contract for option entry N: {2}\n",
-                                DatabaseName, TablesPrefix, erc);
-                            log += outEx.Message + "\n";
+                            // This option does not have corresponding future -- just skip it
+                            // (we already informed user about that)
                             continue;
                         }
 #if !DEBUG
@@ -477,8 +464,8 @@ namespace ICE_Import
 
                     }
 
-                    double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
-                    double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
+                    double futureYear = option.StripName.Year + option.StripName.Month / 12.0;
+                    double expirateYear = option.Date.Year + option.Date.Month / 12.0;
 
                     #region Find data in DB like pushed
                     try
@@ -569,12 +556,6 @@ namespace ICE_Import
                     {
                         log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", count, DatabaseName, TablesPrefix);
                     }
-                    //TODO: Fix this
-                    //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
-                    //{
-                    //    currentPercent += 10;
-                    //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
-                    //}
                     AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
@@ -596,16 +577,22 @@ namespace ICE_Import
 
             try
             {
+                AsyncTaskListener.Init("Pushing of FUTURES data started");
+
                 await Task.Run(() => PushFuturesToDBTest(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
                 await Task.Run(() => PushDailyFuturesToDBTest(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
 
+                AsyncTaskListener.LogMessage("Pushing of FUTURES data complete");
+
                 if (!ParsedData.FuturesOnly)
                 {
+                    AsyncTaskListener.LogMessage("Pushing of OPTIONS data started");
                     await Task.Run(() => PushOptionsToDBTest(ref globalCount, ct), ct);
                     LogElapsedTime(DateTime.Now - start);
+                    AsyncTaskListener.LogMessage("Pushing of OPTIONS data complete");
                 }
             }
 #if !DEBUG
@@ -617,15 +604,12 @@ namespace ICE_Import
 #endif
             finally
             {
-                DateTime stop = DateTime.Now;
-                LogMessage("Timy with clientside checking - " + (stop - start));
-
                 string msg = string.Format("Pushed to DB: {0} entries", globalCount);
                 LogMessage(msg);
                 if (ParsedData.FutureRecords.Count > globalCount)
                 {
-                    msg = string.Format("Was NOT pushed {0} entries from {1} to DB",
-                        (ParsedData.FutureRecords.Count - globalCount),
+                    msg = string.Format("NOT pushed to DB: {0} entries from {1}",
+                        ParsedData.FutureRecords.Count - globalCount,
                         ParsedData.FutureRecords.Count);
                     LogMessage(msg);
                 }
@@ -741,12 +725,6 @@ namespace ICE_Import
                             "Pushed {0} entries to {1} {2}TBLCONTRACT table",
                             count, DatabaseName, TablesPrefix);
                     }
-                    //TODO: Fix this
-                    //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
-                    //{
-                    //    currentPercent += 10;
-                    //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
-                    //}
                     AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
@@ -870,12 +848,6 @@ namespace ICE_Import
                     {
                         log += string.Format("Pushed {0} entries to {1} {2}TBLDAILYCONTRACTSETTLEMENT table", count, DatabaseName, TablesPrefix);
                     }
-                    //TODO: Fix this
-                    //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
-                    //{
-                    //    currentPercent += 10;
-                    //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
-                    //}
                     AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
@@ -954,14 +926,10 @@ namespace ICE_Import
                         {
                             idContract = tblcontracts_.Where(item => item.month == monthChar && item.year == option.StripName.Year).First().idcontract;
                         }
-                        catch (IndexOutOfRangeException outEx)
+                        catch (InvalidOperationException)
                         {
-                            int erc = globalCount - ParsedData.FutureRecords.Count - ParsedData.FutureRecords.Count;
-                            log += string.Format(
-                                "ERROR message from {0} pushing pushing {1}TBLOPTIONS table\n" +
-                                "We dont have contract for option entry N: {2}\n",
-                                DatabaseName, TablesPrefix, erc);
-                            log += outEx.Message + "\n";
+                            // This option does not have corresponding future -- just skip it
+                            // (we already informed user about that)
                             continue;
                         }
 #if !DEBUG
@@ -1041,8 +1009,8 @@ namespace ICE_Import
 
                     }
 
-                    double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
-                    double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
+                    double futureYear = option.StripName.Year + option.StripName.Month / 12.0;
+                    double expirateYear = option.Date.Year + option.Date.Month / 12.0;
 
                     #region Find data in DB like pushed
                     try
@@ -1133,12 +1101,6 @@ namespace ICE_Import
                     {
                         log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", count, DatabaseName, TablesPrefix);
                     }
-                    //TODO: Fix this
-                    //if (count % (10 * percent) > 0 && count % (10 * percent) < 0.5)
-                    //{
-                    //    currentPercent += 10;
-                    //    log += "Current progress: " + currentPercent.ToString() + "% - " + count.ToString() + " entries" + "\n";
-                    //}
                     AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }

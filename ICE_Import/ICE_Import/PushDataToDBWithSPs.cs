@@ -201,8 +201,8 @@ namespace ICE_Import
                         TickSize);
                     #endregion
 
-                    double futureYear = option.StripName.Year + option.StripName.Month * 0.0833333;
-                    double expirateYear = option.Date.Year + option.Date.Month * 0.0833333;
+                    double futureYear = option.StripName.Year + option.StripName.Month / 12.0;
+                    double expirateYear = option.Date.Year + option.Date.Month / 12.0;
 
                     DateTime expirationDate = TMLDBReader.GetExpirationDate(
                         "option",
