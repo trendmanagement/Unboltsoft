@@ -67,7 +67,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BgWorkerCommon.cs" />
     <Compile Include="ConnectionStrings.cs" />
+    <Compile Include="EOD_Futures.cs" />
+    <Compile Include="EOD_Options.cs" />
     <Compile Include="StoredProcsInstallator.cs" />
     <Compile Include="BgWorkerFutures.cs">
       <SubType>Form</SubType>
@@ -107,11 +110,8 @@
     <Compile Include="FormDB.Designer.cs">
       <DependentUpon>FormDB.cs</DependentUpon>
     </Compile>
-    <Compile Include="EntityNames.cs" />
     <Compile Include="OptionCalcs.cs" />
     <Compile Include="ParsedData.cs" />
-    <Compile Include="EOD_Futures_578.cs" />
-    <Compile Include="EOD_Options_578.cs" />
     <Compile Include="FormCSV.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -120,6 +120,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TMLDBReader.cs" />
     <Compile Include="Utilities.cs" />
     <None Include="DataClassesTMLDB.dbml.layout">
       <DependentUpon>DataClassesTMLDB.dbml</DependentUpon>

@@ -31,13 +31,13 @@ namespace ICE_Import
 
         string ConnectionString;
         DataClassesTMLDBDataContext Context;
-        DataClassesTMLDBDataContext ContextTMLDB;
 
-        // Risk-free interest rate
-        double RiskFreeInterestRate = 0.08;
+        TMLDBReader TMLDBReader;
 
-        // Tick size 
-        double TickSize = 0;
+        long IdInstrument = -1;
+        string CqgSymbol;
+        double RiskFreeInterestRate = double.NaN;
+        double TickSize = double.NaN;
 
         public FormDB()
         {
@@ -55,7 +55,8 @@ namespace ICE_Import
             cb_StoredProcs_CheckedChanged(null, null);
             cb_AsyncUpdate_CheckedChanged(null, null);
 
-            ContextTMLDB = new DataClassesTMLDBDataContext(ConnectionStrings.TMLDB);
+            var contextTMLDB = new DataClassesTMLDBDataContext(ConnectionStrings.TMLDB);
+            TMLDBReader = new TMLDBReader(contextTMLDB);
         }
 
         private void FormDB_FormClosed(object sender, FormClosedEventArgs e)
@@ -152,15 +153,15 @@ namespace ICE_Import
             string pat = "{0} entries count: {1} (ready for pushing to DB)";
             string msg = string.Format(
                 pat,
-                ParsedData.FutureRecords.GetType().Name.Trim('[', ']'),
-                ParsedData.FutureRecords.Length);
+                "EOD_Futures",
+                ParsedData.FutureRecords.Count);
             LogMessage(msg);
             if (!ParsedData.FuturesOnly)
             {
                 msg = string.Format(
                     pat,
-                    ParsedData.OptionRecords.GetType().Name.Trim('[', ']'),
-                    ParsedData.OptionRecords.Length);
+                    "EOD_Options",
+                    ParsedData.OptionRecords.Count);
                 LogMessage(msg);
             }
 
@@ -195,21 +196,28 @@ namespace ICE_Import
 
             EnableDisable(true);
 
-            bool isRiskFound = await Task.Run(() => GetRisk());
-            bool isTickSizeFound = await Task.Run(() => GetTickSize());
+            bool areThreeParamsFound = await Task.Run(
+                () => TMLDBReader.GetThreeParams(
+                    ParsedData.GetDescription(),
+                    ref IdInstrument,
+                    ref CqgSymbol,
+                    ref TickSize));
 
-            if (!isRiskFound || !isTickSizeFound)
+            bool isRiskFound = await Task.Run(
+                () => TMLDBReader.GetRisk(
+                    ref RiskFreeInterestRate));
+
+            if (!areThreeParamsFound || !isRiskFound)
             {
                 MessageBox.Show(
-                    "Couldn't find the risk interest value or the tick size value in TMLDB.",
+                    "While looking in TMLDB, a value for at least one of the following parameters was not found:\n\n" +
+                    "ID Instrument\nCQG Symbol\nTick Size\nRisk Free Interest Rate",
                     Text,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 EnableDisable(false);
                 return;
             }
-
-            LogMessage("Pushing started");
 
             cts = new CancellationTokenSource();
 
@@ -367,7 +375,7 @@ namespace ICE_Import
             }
             else
             {
-                Context = ContextTMLDB;
+                Context = TMLDBReader.Context;
             }
 
             if (IsStoredProcs)
@@ -539,11 +547,11 @@ namespace ICE_Import
             }
             if (futureHash.Count == 0)
             {
-                AsyncTaskListener.LogMessage("Futures was pushed success in tblcontract");
+                AsyncTaskListener.LogMessage("All futures were pushed successfully");
             }
             else
             {
-                AsyncTaskListener.LogMessage(string.Format("{0} futures was failed push in tbloptions:", futureHash.Count));
+                AsyncTaskListener.LogMessageFormat("Failed to push {0} futures", futureHash.Count);
                 List<DateTime> residueList = futureHash.ToList();
                 foreach (DateTime dt in residueList)
                 {
@@ -566,11 +574,11 @@ namespace ICE_Import
             }
             if (optionHash.Count == 0)
             {
-                AsyncTaskListener.LogMessage("Options was pushed success in tbloptions");
+                AsyncTaskListener.LogMessage("All options were pushed successfully");
             }
             else
             {
-                AsyncTaskListener.LogMessage(string.Format("{0} options was failed push in tbloptions:", optionHash.Count));
+                AsyncTaskListener.LogMessageFormat("Failed to push {0} options", optionHash.Count);
                 List<DateTime> residueList = optionHash.ToList();
                 foreach (DateTime dt in residueList)
                 {

@@ -31,10 +31,10 @@ namespace ICE_Import
 <# string TblOptionData = tableClassPrefix[i] + "tbloptiondata"; #>
         async Task PushDataToDB<# Write(methodNameSuffix[i]); #>(CancellationToken ct)
         {
-            progressBar.Maximum = 2 * ParsedData.FutureRecords.Length;
+            progressBar.Maximum = 2 * ParsedData.FutureRecords.Count;
             if (!ParsedData.FuturesOnly)
             {
-                progressBar.Maximum += ParsedData.OptionRecords.Length;
+                progressBar.Maximum += ParsedData.OptionRecords.Count;
             }
 
             int globalCount = 0;
@@ -70,11 +70,11 @@ namespace ICE_Import
 
                 string msg = string.Format("Pushed to DB: {0} entries", globalCount);
                 LogMessage(msg);
-                if (ParsedData.FutureRecords.Length > globalCount)
+                if (ParsedData.FutureRecords.Count > globalCount)
                 {
                     msg = string.Format("Was NOT pushed {0} entries from {1} to DB",
-                        (ParsedData.FutureRecords.Length - globalCount),
-                        ParsedData.FutureRecords.Length);
+                        (ParsedData.FutureRecords.Count - globalCount),
+                        ParsedData.FutureRecords.Count);
                     LogMessage(msg);
                 }
 
@@ -92,7 +92,7 @@ namespace ICE_Import
             var stripNameHashSet = new HashSet<DateTime>();
 
             string log = string.Empty;
-            foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
+            foreach (EOD_Futures future in ParsedData.FutureRecords)
             {
                 if (ct.IsCancellationRequested)
                 {
@@ -103,29 +103,25 @@ namespace ICE_Import
                     bool newFuture = !stripNameHashSet.Contains(future.StripName);
                     if (newFuture)
                     {
-                        //TODO: Create query to get idinstrument by description from tblinstruments
-                        //idinstrument for description = Cocoa is 36
-                        int idinstrument = 36;
-
-                        char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+                        char monthChar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
 
                         string contractName = Utilities.GenerateCQGSymbolFromSpan(
                             'F',
-                            "CCE",
-                            monthchar, 
+                            CqgSymbol,
+                            monthChar, 
                             future.Date.Year);
 
                         #region Find data in DB like pushed
                         try
                         {
-                            tblContractList = tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToList();
+                            tblContractList = tblcontracts_.Where(item => item.month == monthChar && item.year == future.StripName.Year).ToList();
 
                             int countContracts = tblContractList.Count;
                             if (countContracts != 0)
                             {
                                 long id = tblContractList[0].idcontract;
                                 log += string.Format(
-                                    "Message from {0} pushing {1}TBLCONTRACTS tables \n" +
+                                    "Message from {0} pushing {1}TBLCONTRACTS tables\n" +
                                     "We already have entry with id: {2}\n",
                                     DatabaseName, TablesPrefix, id);
                                 continue;
@@ -136,7 +132,7 @@ namespace ICE_Import
                         {
                             int erc = globalCount;
                             log += string.Format(
-                                "ERROR message from {0} pushing {1}TBLCONTRACTS tables \n" +
+                                "ERROR message from {0} pushing {1}TBLCONTRACTS tables\n" +
                                 "Can't check idcontract for entry N: {2}\n",
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
@@ -148,33 +144,24 @@ namespace ICE_Import
                         }
                         #endregion
 
-                        DateTime expirationtime;
-                        int key = future.StripName.Month + future.StripName.Year + idinstrument;
-                        if (expirationtimeDictionary.ContainsKey(key))
-                        {
-                            expirationtime = expirationtimeDictionary[key];
-                        }
-                        else
-                        {
-                            expirationtime = GetExpirationTime(future.StripName.Year, future.StripName.Month, idinstrument);
-                        }
+                        DateTime expirationDate = TMLDBReader.GetExpirationDate(
+                            "future",
+                            IdInstrument,
+                            future.StripName,
+                            ref log);
 
-                        var tableFuture = new <# Write(TblContract); #>
+                        var tableFuture = new <# Write(TblContract); #> 
                         {
-                            //idcontract must generete by DB
-
-                            //TODO: Create query to get cqgsymbol by description from tblinstruments
-                            //cqgsymbol for description = Cocoa is CCE
                             contractname = contractName,
-                            month = monthchar,
+                            month = monthChar,
                             monthint = (short)future.StripName.Month,
                             year = (long)future.StripName.Year,
-                            idinstrument = idinstrument,
-                            expirationdate = expirationtime,
+                            idinstrument = IdInstrument,
+                            expirationdate = expirationDate,
                             cqgsymbol = contractName
                         };
                         tblcontracts_.InsertOnSubmit(tableFuture);
-                        Context.SubmitChanges();
+                        Context.SubmitChanges();    // idcontract is generated by DB
 
                         count++;
                         stripNameHashSet.Add(future.StripName);
@@ -182,21 +169,21 @@ namespace ICE_Import
                 }
                 catch (OperationCanceledException cancel)
                 {
-                    log += string.Format("Cancel message from {0} pushing {1}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
+                    log += string.Format("Cancel message from {0} pushing {1}TBLCONTRACT table\n", DatabaseName, TablesPrefix);
                     log += cancel.Message + "\n";
                     break;
                 }
 #if !DEBUG
                 catch (Exception ex)
                 {
-                    log += string.Format("ERROR message from {0} pushing {1}TBLCONTRACT table \n", DatabaseName, TablesPrefix);
+                    log += string.Format("ERROR message from {0} pushing {1}TBLCONTRACT table\n", DatabaseName, TablesPrefix);
                     log += ex.Message + "\n";
                 }
 #endif
                 finally
                 {
                     globalCount++;
-                    if (globalCount == ParsedData.FutureRecords.Length)
+                    if (globalCount == ParsedData.FutureRecords.Count)
                     {
                         log += string.Format(
                             "Pushed {0} entries to {1} {2}TBLCONTRACT table",
@@ -224,7 +211,7 @@ namespace ICE_Import
             int count = 0;
 
             string log = string.Empty;
-            foreach (EOD_Futures_578 future in ParsedData.FutureRecords)
+            foreach (EOD_Futures future in ParsedData.FutureRecords)
             {
                 if (ct.IsCancellationRequested)
                 {
@@ -232,18 +219,18 @@ namespace ICE_Import
                 }
                 try
                 {
-                    char monthchar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
+                    char monthChar = Convert.ToChar(((MonthCodes)future.StripName.Month).ToString());
 
                     #region Find contract
                     try
                     {
-                        tblContractList = tblcontracts_.Where(item => item.month == monthchar && item.year == future.StripName.Year).ToList();
+                        tblContractList = tblcontracts_.Where(item => item.month == monthChar && item.year == future.StripName.Year).ToList();
 
                         if (tblContractList.Count == 0)
                         {
-                            var stripName = monthchar + future.StripName.Year.ToString();
+                            var stripName = monthChar + future.StripName.Year.ToString();
                             log += string.Format(
-                                "Message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
+                                "Message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables\n" +
                                 "Can't find contract for: {2}\n",
                                 DatabaseName, TablesPrefix, stripName);
                             continue;
@@ -252,9 +239,9 @@ namespace ICE_Import
 #if !DEBUG
                     catch (Exception ex)
                     {
-                        int erc = globalCount - ParsedData.FutureRecords.Length;
+                        int erc = globalCount - ParsedData.FutureRecords.Count;
                         log += string.Format(
-                            "ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
+                            "ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables\n" +
                             "Can't check idcontract for entry N: {2}\n",
                             DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
@@ -275,7 +262,7 @@ namespace ICE_Import
                         {
                             long id = tblDailyContractList[0].iddailycontractsettlements;
                             log += string.Format(
-                                "Message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
+                                "Message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables\n" +
                                 "We already have entry with id: {2}\n",
                                 DatabaseName, TablesPrefix, id);
                             continue;
@@ -284,9 +271,9 @@ namespace ICE_Import
 #if !DEBUG
                     catch (Exception ex)
                     {
-                        int erc = globalCount - ParsedData.FutureRecords.Length;
+                        int erc = globalCount - ParsedData.FutureRecords.Count;
                         log += string.Format(
-                            "ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables \n" +
+                            "ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT tables\n" +
                             "Can't check idcontract for entry N: {2}\n",
                             DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
@@ -298,10 +285,9 @@ namespace ICE_Import
                     }
                     #endregion
 
-                    var tableDCS = new <# Write(TblDailyContractSettlement); #>
+                    var tableDCS = new <# Write(TblDailyContractSettlement); #> 
                     {
-                        //idcontract must generete by DB
-                        idcontract = tblContractList[0].idcontract,
+                        idcontract = tblContractList[0].idcontract, // generated by DB
                         date = future.Date,
                         settlement = future.SettlementPrice.GetValueOrDefault(),
                         volume = (long)future.Volume.GetValueOrDefault(),
@@ -314,21 +300,21 @@ namespace ICE_Import
                 }
                 catch (OperationCanceledException cancel)
                 {
-                    log += string.Format("Cancel message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
+                    log += string.Format("Cancel message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table\n", DatabaseName, TablesPrefix);
                     log += cancel.Message + "\n";
                     break;
                 }
 #if !DEBUG
                 catch (Exception ex)
                 {
-                    log += string.Format("ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table \n", DatabaseName, TablesPrefix);
+                    log += string.Format("ERROR message from {0} pushing {1}TBLDAILYCONTRACTSETTLEMENT table\n", DatabaseName, TablesPrefix);
                     log += ex.Message + "\n";
                 }
 #endif
                 finally
                 {
                     globalCount++;
-                    if (globalCount == 2 * ParsedData.FutureRecords.Length)
+                    if (globalCount == 2 * ParsedData.FutureRecords.Count)
                     {
                         log += string.Format("Pushed {0} entries to {1} {2}TBLDAILYCONTRACTSETTLEMENT table", count, DatabaseName, TablesPrefix);
                     }
@@ -356,7 +342,7 @@ namespace ICE_Import
             int count = 0;
 
             string log = string.Empty;
-            foreach (EOD_Options_578 option in ParsedData.OptionRecords)
+            foreach (EOD_Options option in ParsedData.OptionRecords)
             {
                 if (ct.IsCancellationRequested)
                 {
@@ -364,21 +350,17 @@ namespace ICE_Import
                 }
                 try
                 {
-                    //TODO: Create query to get idinstrument by description from tblinstruments
-                    //idinstrument for description = Cocoa is 36
-                    int idinstrument = 36;
-
-                    char monthchar = Convert.ToChar(((MonthCodes)option.StripName.Month).ToString());
+                    char monthChar = Convert.ToChar(((MonthCodes)option.StripName.Month).ToString());
 
                     string optionName = Utilities.GenerateOptionCQGSymbolFromSpan(
                         option.OptionType,
-                        "CCE",
-                        monthchar,
+                        CqgSymbol,
+                        monthChar,
                         option.StripName.Year,
                         option.StrikePrice.GetValueOrDefault(),
                         0,
                         0,
-                        idinstrument);
+                        IdInstrument);
 
                     bool isOptionCreated = false;
 
@@ -398,9 +380,9 @@ namespace ICE_Import
 #if !DEBUG
                     catch (Exception ex)
                     {
-                        int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                        int erc = globalCount - ParsedData.FutureRecords.Count - ParsedData.FutureRecords.Count;
                         log += string.Format(
-                            "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
+                            "ERROR message from {0} pushing pushing {1}TBLOPTIONS table\n" +
                             "Can't read N: {2} from DB\n",
                             DatabaseName, TablesPrefix, erc);
                         log += ex.Message + "\n";
@@ -418,13 +400,13 @@ namespace ICE_Import
                         long idContract;
                         try
                         {
-                            idContract = tblcontracts_.Where(item => item.month == monthchar && item.year == option.StripName.Year).ToList()[0].idcontract;
+                            idContract = tblcontracts_.Where(item => item.month == monthChar && item.year == option.StripName.Year).First().idcontract;
                         }
                         catch (IndexOutOfRangeException outEx)
                         {
-                            int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                            int erc = globalCount - ParsedData.FutureRecords.Count - ParsedData.FutureRecords.Count;
                             log += string.Format(
-                                "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
+                                "ERROR message from {0} pushing pushing {1}TBLOPTIONS table\n" +
                                 "We dont have contract for option entry N: {2}\n",
                                 DatabaseName, TablesPrefix, erc);
                             log += outEx.Message + "\n";
@@ -433,9 +415,9 @@ namespace ICE_Import
 #if !DEBUG
                         catch (Exception ex)
                         {
-                            int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                            int erc = globalCount - ParsedData.FutureRecords.Count - ParsedData.FutureRecords.Count;
                             log += string.Format(
-                                "ERROR message from {0} pushing pushing {1}TBLOPTIONS table \n" +
+                                "ERROR message from {0} pushing pushing {1}TBLOPTIONS table\n" +
                                 "Can't find contract for option entry N: {2}\n",
                                 DatabaseName, TablesPrefix, erc);
                             log += ex.Message + "\n";
@@ -447,33 +429,27 @@ namespace ICE_Import
                         }
                         #endregion
 
-                        DateTime expirationtime;
-                        int key = option.StripName.Month + option.StripName.Year + idinstrument;
-                        if (expirationtimeDictionary.ContainsKey(key))
-                        {
-                            expirationtime = expirationtimeDictionary[key];
-                        }
-                        else
-                        {
-                            expirationtime = GetExpirationTime(option.StripName.Year, option.StripName.Month, idinstrument);
-                        }
+                        DateTime expirationDate = TMLDBReader.GetExpirationDate(
+                            "option",
+                            IdInstrument,
+                            option.StripName,
+                            ref log);
 
-                        var tableOption = new <# Write(TblOption); #>
+                        var tableOption = new <# Write(TblOption); #> 
                         {
-                            //idoption must generate by DB
                             optionname = optionName,
-                            optionmonth = monthchar,
+                            optionmonth = monthChar,
                             optionmonthint = option.StripName.Month,
                             optionyear = option.StripName.Year,
                             strikeprice = option.StrikePrice.GetValueOrDefault(),
                             callorput = option.OptionType,
-                            idinstrument = idinstrument,
-                            expirationdate = expirationtime,
+                            idinstrument = IdInstrument,
+                            expirationdate = expirationDate,
                             idcontract = idContract,
                             cqgsymbol = optionName
                         };
                         tbloptions_.InsertOnSubmit(tableOption);
-                        Context.SubmitChanges();
+                        Context.SubmitChanges();    // idoption is generated by DB
 
                         #region Find id for fist time pushed option
                         try
@@ -497,7 +473,7 @@ namespace ICE_Import
 #if !DEBUG
                         catch (Exception ex)
                         {
-                            int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                            int erc = globalCount - ParsedData.FutureRecords.Count - ParsedData.FutureRecords.Count;
                             log += string.Format(
                                 "ERROR message from {0} pushing {1}TBLOPTIONDATAS table\n" +
                                 "Connection error - can't check idoption for entry N: {2}\n",
@@ -533,7 +509,7 @@ namespace ICE_Import
 #if !DEBUG
                     catch (Exception ex)
                     {
-                        int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                        int erc = globalCount - ParsedData.FutureRecords.Count - ParsedData.FutureRecords.Count;
                         log += string.Format(
                             "ERROR message from {0} pushing TBLOPTIONDATAS{1} tables\n" +
                             "Connection error - can't check idcontract for entry N: {2}\n",
@@ -566,7 +542,7 @@ namespace ICE_Import
                         TickSize);
                     #endregion
 
-                    var tableOptionData = new <# Write(TblOptionData); #>
+                    var tableOptionData = new <# Write(TblOptionData); #> 
                     {
                         //idoptiondata must generate by DB
                         idoption = TO.idoption,
@@ -589,7 +565,7 @@ namespace ICE_Import
 #if !DEBUG
                 catch (Exception ex)
                 {
-                    int erc = globalCount - ParsedData.FutureRecords.Length - ParsedData.FutureRecords.Length;
+                    int erc = globalCount - ParsedData.FutureRecords.Count - ParsedData.FutureRecords.Count;
                     log += string.Format(
                         "ERROR message from {0} pushing {1}TBLOPTIONS and {1}TBLOPTIONDATAS tables\n" +
                         "Can't push entry N: {2}\n",
@@ -601,7 +577,7 @@ namespace ICE_Import
                 finally
                 {
                     globalCount++;
-                    if (globalCount == 2 * ParsedData.FutureRecords.Length + ParsedData.OptionRecords.Length)
+                    if (globalCount == 2 * ParsedData.FutureRecords.Count + ParsedData.OptionRecords.Count)
                     {
                         log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", count, DatabaseName, TablesPrefix);
                     }
@@ -618,26 +594,5 @@ namespace ICE_Import
         }
 
 <# } #>
-        private DateTime GetExpirationTime(int year, int month, int idinstrument)
-        {
-            DateTime expirationdate;
-            try 
-            {
-                var contractexpirations = ContextTMLDB.tblcontractexpirations.Where(
-                    item =>
-                    item.optionmonthint == month &&
-                    item.optionyear == year &&
-                    item.idinstrument == idinstrument).ToList();
-                if (contractexpirations.Count > 0)
-                {
-                    return expirationdate = contractexpirations[0].expirationdate;
-                }
-                return new DateTime(); 
-            }
-            catch
-            {
-                return new DateTime();
-            }
-        }
     }
 }

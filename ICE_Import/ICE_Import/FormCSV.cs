@@ -1,8 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
-using FileHelpers;
 
 namespace ICE_Import
 {
@@ -10,8 +8,6 @@ namespace ICE_Import
     {
         string[] OptionFilePaths;
         string[] FutureFilePaths;
-
-        string[] Symbols = { "EOD_Futures_578", "EOD_Options_578" };
 
         public FormCSV()
         {
@@ -33,7 +29,7 @@ namespace ICE_Import
         private void button_ParseOptions_Click(object sender, EventArgs e)
         {
             EnableDisableOption(true);
-            backgroundWorker_ParsingOptions.RunWorkerAsync(Symbols[1]);
+            backgroundWorker_ParsingOptions.RunWorkerAsync();
         }
 
         private void button_CancelOption_Click(object sender, EventArgs e)
@@ -88,7 +84,7 @@ namespace ICE_Import
         private void button_ParseFuture_Click(object sender, EventArgs e)
         {
             EnableDisableFuture(true);
-            backgroundWorker_ParsingFutures.RunWorkerAsync(Symbols[0]);
+            backgroundWorker_ParsingFutures.RunWorkerAsync();
         }
 
         private void button_CancelFuture_Click(object sender, EventArgs e)
@@ -139,28 +135,6 @@ namespace ICE_Import
             button.Enabled = true;
 
             return filePaths;
-        }
-
-        private T[] Parse<T>(BackgroundWorker worker, string[] filePaths) where T : class
-        {
-            worker.ReportProgress(0);
-
-            var engine = new FileHelperEngine<T>();
-            T[] records = null;
-
-            for (int i = 0; i < filePaths.Length; i++)
-            {
-                records = engine.ReadFile(filePaths[i]);
-
-                worker.ReportProgress(i + 1);
-
-                if (worker.CancellationPending)
-                {
-                    return null;
-                }
-            }
-
-            return records;
         }
 
         private void checkBoxFuturesOnly_CheckedChanged(object sender, EventArgs e)

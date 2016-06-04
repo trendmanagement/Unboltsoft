@@ -8,7 +8,7 @@ namespace ICE_Import
 {
     [IgnoreFirst]
     [DelimitedRecord(",")]
-    class EOD_Options_578
+    class EOD_Options
     {
         [FieldConverter(typeof(DateTimeConverter), "dd-MMM-yyyy")]
         public DateTime Date;

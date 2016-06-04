@@ -60,7 +60,7 @@ namespace ICE_Import
             double optionStrikePrice,
             double optionStrikeIncrement,
             double optionStrikeDisplay,
-            int instrumentId)
+            long instrumentId)
         {
             Debug.Assert(ContractTypes.Contains(contractType));
 

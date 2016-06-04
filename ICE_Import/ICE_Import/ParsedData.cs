@@ -11,11 +11,13 @@ namespace ICE_Import
         public delegate void ParseEventHandler();
         public static event ParseEventHandler ParseSucceeded;
         public static event ParseEventHandler ParseFailed;
-        public static EOD_Futures_578[] FutureRecords;
-        public static EOD_Options_578[] OptionRecords;
+        public static List<EOD_Futures> FutureRecords;
+        public static List<EOD_Options> OptionRecords;
         public static bool FuturesOnly;
 
         private static bool IsConform;
+
+        public static string ProductName;
 
         public static bool IsParsed
         {
@@ -58,6 +60,10 @@ namespace ICE_Import
 
             if (FuturesOnly || ConformityCheck())
             {
+                ProductName = FutureRecords[0].ProductName;
+                int i = ProductName.IndexOf(" Futures");
+                ProductName = ProductName.Remove(i);
+
                 Program.csvf.Hide();
                 if (Program.dbf == null)
                 {
@@ -74,9 +80,30 @@ namespace ICE_Import
                 ParseFailed();
             }
         }
-        
+
         private static bool ConformityCheck()
         {
+            string formText = "ICE Import (DB Form)";
+
+            if (FutureRecords.Count != 0 && OptionRecords.Count != 0)
+            {
+                // Check conformity of ProductName
+                string optionProductName = OptionRecords[0].ProductName;
+                int i = optionProductName.IndexOf(" Options");
+                optionProductName = optionProductName.Remove(i);
+                IsConform = ProductName == optionProductName;
+                if (!IsConform)
+                {
+                    MessageBox.Show(
+                        "The selected Future CSV Files(s) and Option CSV File(s) do not conform to each other by \"ProductName\" column.",
+                        formText,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+
+            // Check conformity of StripName
             var futureStripNames = new HashSet<DateTime>(FutureRecords.Select(item => item.StripName));
             var optionStripNames = new HashSet<DateTime>(OptionRecords.Select(item => item.StripName));
             foreach (DateTime futureStripName in futureStripNames)
@@ -84,7 +111,6 @@ namespace ICE_Import
                 optionStripNames.Remove(futureStripName);
             }
             IsConform = optionStripNames.Count == 0;
-
             if (!IsConform)
             {
                 var sb = new StringBuilder(
@@ -95,11 +121,34 @@ namespace ICE_Import
                 {
                     sb.Append(optionStripName.ToString("MMMyy") + "\n");
                 }
-                sb.Append("\nDo you want to proceed anyway?");
-                DialogResult result = MessageBox.Show(sb.ToString(), "ICE Import (DB Form)", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                sb.Append(
+                    "\nDo you want to proceed anyway?\n\n" +
+                    "(If you select \"Yes\", the extra options will not be pushed to database.)");
+                DialogResult result = MessageBox.Show(
+                    sb.ToString(),
+                    formText,
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Warning);
                 IsConform = result == DialogResult.Yes;
             }
+
             return IsConform;
+        }
+
+        /// <summary>
+        /// Given "ProductName" from ICE CSV file, get "description" key for [cqgdb].[tblinstruments] table.
+        /// </summary>
+        public static string GetDescription()
+        {
+            int idx = ProductName.IndexOf(' ');
+            if (idx == -1)
+            {
+                return ProductName;
+            }
+            else
+            {
+                return ProductName.Substring(0, idx);
+            }
         }
     }
 }
