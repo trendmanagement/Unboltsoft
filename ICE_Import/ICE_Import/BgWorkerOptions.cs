@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace ICE_Import
@@ -7,45 +8,30 @@ namespace ICE_Import
     {
         private void backgroundWorker_ParsingOptions_DoWork(object sender, DoWorkEventArgs e)
         {
-            BackgroundWorker worker = sender as BackgroundWorker;
+            var worker = (BackgroundWorker)sender;
 
-            ParsedData.OptionRecords = Parse<EOD_Options_578>(worker, OptionFilePaths);
+            ParsedData.OptionRecords = BgWorkerCommon.Parse<EOD_Options>(worker, OptionFilePaths);
 
             e.Result = worker.CancellationPending;
         }
 
         private void backgroundWorker_ParsingOptions_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            int fileIdx = e.ProgressPercentage;
-            if (fileIdx < OptionFilePaths.Length)
-            {
-                label_ParsedOption.Text = OptionFilePaths[fileIdx];
-            }
-            progressBar_ParsingOption.Value = fileIdx;
+            BgWorkerCommon.ProgressChanged(e, OptionFilePaths, label_ParsedOption, progressBar_ParsingOption);
         }
 
         private void backgroundWorker_ParsingOptions_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (e.Error != null)
-            {
-                MessageBox.Show("Can't parse options data file!");
-            }
-            else if ((bool)e.Result)
-            {
-                MessageBox.Show("Parsing options cancelled by user.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Cursor = Cursors.Default;
-            }
-            else
-            {
-                string msg = string.Format("{0} options file(s) has been parsed successfully.", OptionFilePaths.Length);
-                MessageBox.Show(msg, Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-
-            label_ParsedOption.Text = string.Empty;
-            progressBar_ParsingOption.Value = 0;
-            EnableDisableOption(false);
-
-            ParsedData.OnParseComplete();
+            BgWorkerCommon.RunWorkerCompleted(
+                e,
+                "options",
+                ref ParsedData.OptionRecords,
+                ParsedData.OptionRecords.Select(item => item.ProductName),
+                this,
+                label_ParsedOption,
+                progressBar_ParsingOption,
+                EnableDisableOption,
+                OptionFilePaths.Length);
         }
     }
 }

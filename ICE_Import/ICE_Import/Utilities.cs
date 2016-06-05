@@ -60,7 +60,7 @@ namespace ICE_Import
             double optionStrikePrice,
             double optionStrikeIncrement,
             double optionStrikeDisplay,
-            int instrumentId)
+            long instrumentId)
         {
             Debug.Assert(ContractTypes.Contains(contractType));
 
@@ -94,11 +94,6 @@ namespace ICE_Import
         {
             Debug.Assert(month >= 1 && month <= 12);
             return Convert.ToString(((MonthStringCodes)month).ToString());
-        }
-
-        public static double NormalizePrice(double? price)
-        {
-            return price.GetValueOrDefault() / 1000;
         }
     }
 }

@@ -1,20 +1,19 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ICE_Import
 {
-    //you guys will probably come up with a much cleaner architecture than this
-    //we should probably just have a switch that has a separate formatting algo for each instrument
+    // TODO: you guys will probably come up with a much cleaner architecture than this
+    //       we should probably just have a switch that has a separate formatting algo for each instrument
 
 
     class ConversionAndFormatting
     {
 
-        public static double convertToStrikeForCQGSymbol(double barVal, double tickIncrement, double tickDisplay,
-            int idInstrument)
+        public static double convertToStrikeForCQGSymbol(
+            double barVal,
+            double tickIncrement,
+            double tickDisplay,
+            long idInstrument)
         {
             if (idInstrument == 39 || idInstrument == 40) //GLE or HE
             {

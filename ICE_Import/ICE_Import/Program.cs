@@ -5,8 +5,8 @@ namespace ICE_Import
 {
     static class Program
     {
-        public static FormCSV csvf = new FormCSV();
-        public static FormDB dbf = new FormDB();
+        public static FormCSV csvf;
+        public static FormDB dbf;
 
         /// <summary>
         /// The main entry point for the application.
@@ -15,7 +15,9 @@ namespace ICE_Import
         static void Main()
         {
             Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetCompatibleTextRenderingDefault(false);
+            csvf = new FormCSV();
+            dbf = new FormDB();
             Application.Run(csvf);
         }
     }

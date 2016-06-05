@@ -68,5 +68,11 @@ namespace ICE_Import
             // Update text box
             Updated.Invoke(msg);
         }
+
+        public static void LogMessageFormat(string msgPat, params object[] args)
+        {
+            // Update text box
+            Updated.Invoke(string.Format(msgPat, args));
+        }
     }
 }
