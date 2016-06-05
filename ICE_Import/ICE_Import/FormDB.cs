@@ -593,7 +593,7 @@ namespace ICE_Import
             DateTime date;
             string itemHashSet;
 
-            for (int i = 0; i < ParsedData.FutureRecords.Length; i++)
+            for (int i = 0; i < ParsedData.FutureRecords.Count; i++)
             {
                 itemHashSet = GetNameDaylyContractHashSet(ParsedData.FutureRecords[i].StripName, ParsedData.FutureRecords[i].Date);
                 futureDailyHash.Add(itemHashSet);
@@ -632,7 +632,7 @@ namespace ICE_Import
             DateTime date;
             string itemHashSet;
 
-            for (int i = 0; i < ParsedData.FutureRecords.Length; i++)
+            for (int i = 0; i < ParsedData.FutureRecords.Count; i++)
             {
                 itemHashSet = GetNameOptionDataHashSet(ParsedData.FutureRecords[i].StripName, ParsedData.FutureRecords[i].Date);
                 optionDataHash.Add(itemHashSet);
