@@ -90,9 +90,15 @@ namespace ICE_Import
             return Convert.ToChar(((MonthCodes)month).ToString());
         }
 
+        public static string MonthToStringMonthCode(int month)
+        {
+            Debug.Assert(month >= 1 && month <= 12);
+            return Convert.ToString(((MonthStringCodes)month).ToString());
+        }
+
         public static double NormalizePrice(double? price)
         {
-            return price.GetValueOrDefault() / 1000;
+            return price.GetValueOrDefault() / 1000.0;
         }
     }
 }

@@ -324,8 +324,7 @@ namespace ICE_Import
             buttonPull.Enabled = !start;
             buttonCancel.Enabled = start;
             buttonToCSV.Enabled = !start;
-            // buttonCheckPushedData.Enabled = start ? false : (dataGridViewContract.DataSource != null);
-            buttonCheckPushedData.Enabled = false;
+            buttonCheckPushedData.Enabled = start ? false : (dataGridViewContract.DataSource != null);
             progressBar.Value = 0;
         }
 
@@ -457,13 +456,6 @@ namespace ICE_Import
             LogMessage(string.Format("You selected {0} update", asyncSync));
         }
 
-        private void buttonCheckPushedData_Click(object sender, EventArgs e)
-        {
-            ValidatePushedFutureData();
-            ValidatePushedOptionData();
-            buttonCheckPushedData.Enabled = false;
-        }
-
         private void AsyncTaskListener_Updated(
             string message = null,
             int progress = -1,
@@ -529,58 +521,5 @@ namespace ICE_Import
             LogMessage("Elapsed time: " + timeSpan);
         }
 
-        public void ValidatePushedFutureData()
-        {
-            HashSet<DateTime> futureHash = new HashSet<DateTime>(ParsedData.FutureRecords.Select(item => item.StripName));
-
-            for (int i = 0; i < dataGridViewContract.Rows.Count - 1; i++)
-            {
-                string month = dataGridViewContract[3, i].Value.ToString();
-                string year = dataGridViewContract[4, i].Value.ToString();
-                string stripName = month + "." + year;
-                DateTime itemDT = Convert.ToDateTime(stripName);
-                futureHash.Remove(itemDT);
-            }
-            if (futureHash.Count == 0)
-            {
-                AsyncTaskListener.LogMessage("All futures were pushed successfully");
-            }
-            else
-            {
-                AsyncTaskListener.LogMessageFormat("Failed to push {0} futures", futureHash.Count);
-                List<DateTime> residueList = futureHash.ToList();
-                foreach (DateTime dt in residueList)
-                {
-                    AsyncTaskListener.LogMessage(" - " + dt.Month.ToString() + "." + dt.Year.ToString());
-                }
-            }
-        }
-
-        public void ValidatePushedOptionData()
-        {
-            HashSet<DateTime> optionHash = new HashSet<DateTime>(ParsedData.OptionRecords.Select(item => item.StripName));
-
-            for (int i = 0; i < dataGridViewContract.Rows.Count - 1; i++)
-            {
-                string month = dataGridViewContract[3, i].Value.ToString();
-                string year = dataGridViewContract[4, i].Value.ToString();
-                string stripName = month + "." + year;
-                DateTime itemDT = Convert.ToDateTime(stripName);
-                optionHash.Remove(itemDT);
-            }
-            if (optionHash.Count == 0)
-            {
-                AsyncTaskListener.LogMessage("All options were pushed successfully");
-            }
-            else
-            {
-                AsyncTaskListener.LogMessageFormat("Failed to push {0} options", optionHash.Count);
-                List<DateTime> residueList = optionHash.ToList();
-                foreach (DateTime dt in residueList)
-                {
-                    AsyncTaskListener.LogMessage(" - " + dt.Month.ToString() + "." + dt.Year.ToString());
-                }
-            }
-        }
     }
 }

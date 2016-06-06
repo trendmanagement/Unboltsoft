@@ -110,14 +110,14 @@ namespace ICE_Import
                     4 * count;
 
                 LogMessage(string.Format("Pulled: {0} entries from {1} DB", totalCount, DatabaseName));
-
-                EnableDisable(false);
             }
 
             dataGridViewOption.DataSource = bsOption;
             dataGridViewOptionData.DataSource = bsOptionData;
             dataGridViewContract.DataSource = bsContract;
             dataGridViewDailyContract.DataSource = bsDailyContractSettlement;
+
+			EnableDisable(false);
         }
 
         async void PullDataFromDBTest()
@@ -213,14 +213,14 @@ namespace ICE_Import
                     4 * count;
 
                 LogMessage(string.Format("Pulled: {0} entries from {1} DB", totalCount, DatabaseName));
-
-                EnableDisable(false);
             }
 
             dataGridViewOption.DataSource = bsOption;
             dataGridViewOptionData.DataSource = bsOptionData;
             dataGridViewContract.DataSource = bsContract;
             dataGridViewDailyContract.DataSource = bsDailyContractSettlement;
+
+			EnableDisable(false);
         }
 
     }
