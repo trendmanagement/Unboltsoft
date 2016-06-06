@@ -122,6 +122,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TMLDBReader.cs" />
     <Compile Include="Utilities.cs" />
+    <Compile Include="ValidatePushedData.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <None Include="DataClassesTMLDB.dbml.layout">
       <DependentUpon>DataClassesTMLDB.dbml</DependentUpon>
     </None>

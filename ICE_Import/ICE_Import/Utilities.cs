@@ -98,7 +98,7 @@ namespace ICE_Import
 
         public static double NormalizePrice(double? price)
         {
-            return price.GetValueOrDefault() / 1000;
+            return price.GetValueOrDefault() / 1000.0;
         }
     }
 }
