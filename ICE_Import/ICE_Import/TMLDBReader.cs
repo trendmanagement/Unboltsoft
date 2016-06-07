@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
 
 namespace ICE_Import
 {
@@ -20,12 +22,16 @@ namespace ICE_Import
         {
             AsyncTaskListener.LogMessage("Reading ID Instrument, CQG Symbol and Tick Size from TMLDB...");
 
-            tblinstrument record;
+            tblinstrument record = new tblinstrument();
             try
             {
                 record = Context.tblinstruments.Where(item => item.description == productName).First();
             }
             catch (InvalidOperationException)
+            {
+                return false;
+            }
+            catch (SqlException)
             {
                 return false;
             }
@@ -36,12 +42,12 @@ namespace ICE_Import
 
             double secondaryoptionticksize = record.secondaryoptionticksize;
             tickSize = (secondaryoptionticksize > 0) ? secondaryoptionticksize : record.optionticksize;
-            
+
             AsyncTaskListener.LogMessageFormat(
-                "ID Instrument = {0}\nCQG Symbol = {1}\nTick Size = {2}",
-                idInstrument,
-                cqgSymbol,
-                tickSize);
+                    "ID Instrument = {0}\nCQG Symbol = {1}\nTick Size = {2}",
+                    idInstrument,
+                    cqgSymbol,
+                    tickSize);
 
             return true;
         }
@@ -90,6 +96,10 @@ namespace ICE_Import
                 return true;
             }
             catch (InvalidOperationException)
+            {
+                return false;
+            }
+            catch(SqlException)
             {
                 return false;
             }
