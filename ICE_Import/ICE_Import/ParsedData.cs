@@ -65,10 +65,6 @@ namespace ICE_Import
             if (FuturesOnly || ConformityCheck())
             {
                 Program.csvf.Hide();
-                if (Program.dbf == null)
-                {
-                    Program.dbf = new FormDB();
-                }
                 Program.dbf.Show();
 
                 // Raise event
