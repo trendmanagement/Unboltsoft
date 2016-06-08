@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -194,15 +193,15 @@ namespace ICE_Import
             EnableDisable(true);
 
             bool areThreeParamsFound = await Task.Run(
-                    () => TMLDBReader.GetThreeParams(
-                        ParsedData.GetDescription(),
-                        ref IdInstrument,
-                        ref CqgSymbol,
-                        ref TickSize));
+                () => TMLDBReader.GetThreeParams(
+                    ParsedData.GetDescription(),
+                    ref IdInstrument,
+                    ref CqgSymbol,
+                    ref TickSize));
 
             bool isRiskFound = await Task.Run(
-                    () => TMLDBReader.GetRisk(
-                        ref RiskFreeInterestRate));
+                () => TMLDBReader.GetRisk(
+                    ref RiskFreeInterestRate));
 
             if (!areThreeParamsFound || !isRiskFound)
             {
