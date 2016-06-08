@@ -10,6 +10,12 @@ namespace ICE_Import
 {
     public partial class FormDB : Form
     {
+        HashSet<DateTime> stripNameHashSet;
+        HashSet<Tuple<DateTime, DateTime>> stripNameDateHashSet;
+        HashSet<Tuple<DateTime, double>> optionNameHashSet;
+        HashSet<Tuple<DateTime, DateTime, double, double>> optionNameDataHashSet;
+
+
         /// <summary>
         /// Push all data to DB with stored procedures.
         /// Update either test or non-test tables, either synchronously or asynchronously.
@@ -71,7 +77,8 @@ namespace ICE_Import
         /// </summary>
         void PushFuturesToDBWithSP(ref int globalCount, CancellationToken ct)
         {
-            var stripNameHashSet = new HashSet<DateTime>();
+            stripNameHashSet = new HashSet<DateTime>();
+            stripNameDateHashSet = new HashSet<Tuple<DateTime, DateTime>>();
 
             foreach (EOD_Futures future in ParsedData.FutureRecords)
             {
@@ -132,6 +139,8 @@ namespace ICE_Import
                         future.StripName.Year,
                         (long)future.Volume.GetValueOrDefault(),
                         (long)future.OpenInterest.GetValueOrDefault());
+
+                    stripNameDateHashSet.Add(Tuple.Create(future.StripName, future.Date));
                 }
 #if !DEBUG
                 catch (Exception ex)
@@ -160,6 +169,9 @@ namespace ICE_Import
         /// </summary>
         void PushOptionsToDBWithSP(ref int globalCount, CancellationToken ct)
         {
+            optionNameHashSet = new HashSet<Tuple<DateTime, double>>();
+            optionNameDataHashSet = new HashSet<Tuple<DateTime, DateTime, double ,double>>();
+
             string log = string.Empty;
             foreach (EOD_Options option in ParsedData.OptionRecords)
             {
@@ -220,6 +232,8 @@ namespace ICE_Import
                         IdInstrument,
                         expirationDate,
                         optionName);
+
+                    optionNameHashSet.Add(Tuple.Create(option.StripName, option.StrikePrice.GetValueOrDefault()));
 
                     #region Get idoption
                     long idoption = 0;
@@ -285,6 +299,9 @@ namespace ICE_Import
                         option.SettlementPrice.GetValueOrDefault(),
                         impliedvol,
                         futureYear - expirateYear);
+
+                    optionNameDataHashSet.Add((Tuple.Create(option.StripName, option.Date, option.SettlementPrice.GetValueOrDefault(), option.StrikePrice.GetValueOrDefault())));
+
                 }
                 catch (Exception ex)
                 {
@@ -299,7 +316,7 @@ namespace ICE_Import
                 finally
                 {
                     globalCount++;
-                    if (globalCount == 2 * ParsedData.FutureRecords.Count + ParsedData.OptionRecords.Count)
+                    if (globalCount == ParsedData.FutureRecords.Count + ParsedData.OptionRecords.Count)
                     {
                         log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", globalCount, DatabaseName, TablesPrefix);
                     }

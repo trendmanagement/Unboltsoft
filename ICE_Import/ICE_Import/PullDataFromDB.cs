@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,46 +27,121 @@ namespace ICE_Import
             var tbloptions_ = Context.tbloptions;
             var tbloptiondatas_ = Context.tbloptiondatas;
 
-            BindingSource bsOption = new BindingSource();
-            BindingSource bsOptionData = new BindingSource();
-            BindingSource bsContract = new BindingSource();
-            BindingSource bsDailyContractSettlement = new BindingSource();
-
             var listOption = new List<tbloption>();
 
-            int count = 100;
+			var contractList = new List<tblcontract>();
+            var dailyContractList = new List<tbldailycontractsettlement>();
+			var idcontractDictionary = new Dictionary<DateTime, long>();
+            var optionList = new List<tbloption>();
+            var optionDataList = new List<tbloptiondata>();
+			var idoptionDictionary = new Dictionary<Tuple<DateTime, double>, long>();
 
             try
             {
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLCONTRACT table", IsLocalDB ? tblcontracts_.Count() : count, DatabaseName, TablesPrefix));
-
+				var currentContract = new tblcontract();
                 await Task.Run(() =>
                             {
-                                bsContract.DataSource = (from item in tblcontracts_
-                                                         select item
-                                                        ).Take(IsLocalDB ? tblcontracts_.Count() : count).ToList();
+								foreach(var stripName in stripNameHashSet)
+								{
+									try
+									{
+										currentContract = (from item in tblcontracts_
+															where item.monthint == stripName.Month 
+															&& item.year == stripName.Year
+															&& item.idinstrument == IdInstrument
+															select item
+															).ToList()[0];
+									}
+									catch(SqlException)
+									{
+										continue;
+									}
+									catch(ArgumentOutOfRangeException)
+									{
+										continue;
+									}
+
+									contractList.Add(currentContract);
+									idcontractDictionary.Add(stripName, currentContract.idcontract);
+								}
                             }, cts.Token);
+                LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLCONTRACT table", tblcontracts_.Count(), DatabaseName, TablesPrefix));
 
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", IsLocalDB ? tbldailycontractsettlements_.Count() : count, DatabaseName, TablesPrefix));
-
+				var currentDailyContract = new tbldailycontractsettlement();
+				long idcontract;
+				bool isID;
                 await Task.Run(() =>
                                 {
-                                    bsDailyContractSettlement.DataSource = (from item in tbldailycontractsettlements_
-                                                                            select item
-                                                                            ).Take(IsLocalDB ? tbldailycontractsettlements_.Count() : count).ToList();
+								 foreach(var tuple in stripNameDateHashSet)
+								 {
+									isID = idcontractDictionary.TryGetValue(tuple.Item1, out idcontract);
+									if(isID)
+									{
+										try
+										{
+											currentDailyContract = (from item in tbldailycontractsettlements_
+																	where item.idcontract == idcontract 
+																	&& item.date == tuple.Item2
+																	select item
+																	).ToList()[0];
+										}
+										catch(SqlException)
+										{
+											continue;
+										}
+										catch(ArgumentOutOfRangeException)
+										{
+											continue;
+										}
+									}
+									else
+									{
+										continue;
+									}
+									dailyContractList.Add(currentDailyContract);
+								 }
                                 }, cts.Token);
+				LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", tbldailycontractsettlements_.Count(), DatabaseName, TablesPrefix));
 
-                //int count = tbloptions_.Where(item => item.cqgsymbol == "somesymbol").Count();
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONS table", IsLocalDB ? tbloptions_.Count() : count, DatabaseName, TablesPrefix));
                 try
                 {
+					var currentOption = new tbloption();
                     await Task.Run(() =>
                     {
-                        listOption = (from item in tbloptions_
-                                          //where item.cqgsymbol == "somesymbol"
-                                      select item
-                                              ).Take(IsLocalDB ? tbloptions_.Count() : count).ToList();
+						foreach(var tuple in optionNameHashSet)
+						{
+							isID = idcontractDictionary.TryGetValue(tuple.Item1, out idcontract);
+							if(isID)
+							{
+								try
+								{
+									currentOption = (from item in tbloptions_
+													where item.idcontract == idcontract 
+													&& item.optionmonthint == tuple.Item1.Month
+													&& item.optionyear == tuple.Item1.Year
+													&& item.strikeprice == tuple.Item2
+													&& item.idinstrument == IdInstrument
+													select item
+													).ToList()[0];
+								}
+								catch(SqlException)
+								{
+									continue;
+								}
+								catch(ArgumentOutOfRangeException)
+								{
+									continue;
+								}
+							}
+							else
+							{
+								continue;
+							}
+							optionList.Add(currentOption);
+							idoptionDictionary.Add(Tuple.Create(tuple.Item1, currentOption.strikeprice), currentOption.idoption);
+						}
                     }, cts.Token);
+					LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONS table", tbloptions_.Count(), DatabaseName, TablesPrefix));
                 }
 #if !DEBUG
                 catch (Exception ex)
@@ -75,16 +151,44 @@ namespace ICE_Import
 #endif
                 finally
                 {
-                    bsOption.DataSource = listOption;
                 }
 
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONDATAS table", IsLocalDB ? tbloptiondatas_.Count() : count, DatabaseName, TablesPrefix));
+				var currentOptionData = new tbloptiondata();
+				long idoption;
+
                 await Task.Run(() =>
                                     {
-                                        bsOptionData.DataSource = (from item in tbloptiondatas_
-                                                                   select item
-                                                                  ).Take(IsLocalDB ? tbloptiondatas_.Count() : count).ToList();
+										foreach(var tuple in optionNameDataHashSet)
+										{
+											isID = idoptionDictionary.TryGetValue(Tuple.Create(tuple.Item1, tuple.Item4), out idoption);
+											if(isID)
+											{
+												try
+												{
+													currentOptionData = (from item in tbloptiondatas_
+																	where item.idoption == idoption 
+																	&& item.datetime == tuple.Item2
+																	&& item.price == tuple.Item3
+																	select item
+																	).ToList()[0];
+												}
+												catch(SqlException)
+												{
+													continue;
+												}
+												catch(ArgumentOutOfRangeException)
+												{
+													continue;
+												}
+											}
+											else
+											{
+												continue;
+											}
+											optionDataList.Add(currentOptionData);
+										}
                                     }, cts.Token);
+			LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONDATAS table", tbloptiondatas_.Count(), DatabaseName, TablesPrefix));
 
             }
             catch (OperationCanceledException cancel)
@@ -101,21 +205,18 @@ namespace ICE_Import
             finally
             {
                 int totalCount =
-                    IsLocalDB ?
                     tblcontracts_.Count() +
                     tbldailycontractsettlements_.Count() +
                     tbloptions_.Count() +
-                    tbloptiondatas_.Count()
-                    :
-                    4 * count;
+                    tbloptiondatas_.Count();
 
                 LogMessage(string.Format("Pulled: {0} entries from {1} DB", totalCount, DatabaseName));
             }
 
-            dataGridViewOption.DataSource = bsOption;
-            dataGridViewOptionData.DataSource = bsOptionData;
-            dataGridViewContract.DataSource = bsContract;
-            dataGridViewDailyContract.DataSource = bsDailyContractSettlement;
+			dataGridViewContract.DataSource = contractList;
+            dataGridViewDailyContract.DataSource = dailyContractList;
+            dataGridViewOption.DataSource = optionList;
+            dataGridViewOptionData.DataSource = optionDataList;
 
 			EnableDisable(false);
         }
@@ -129,46 +230,121 @@ namespace ICE_Import
             var tbloptions_ = Context.test_tbloptions;
             var tbloptiondatas_ = Context.test_tbloptiondatas;
 
-            BindingSource bsOption = new BindingSource();
-            BindingSource bsOptionData = new BindingSource();
-            BindingSource bsContract = new BindingSource();
-            BindingSource bsDailyContractSettlement = new BindingSource();
-
             var listOption = new List<test_tbloption>();
 
-            int count = 100;
+			var contractList = new List<test_tblcontract>();
+            var dailyContractList = new List<test_tbldailycontractsettlement>();
+			var idcontractDictionary = new Dictionary<DateTime, long>();
+            var optionList = new List<test_tbloption>();
+            var optionDataList = new List<test_tbloptiondata>();
+			var idoptionDictionary = new Dictionary<Tuple<DateTime, double>, long>();
 
             try
             {
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLCONTRACT table", IsLocalDB ? tblcontracts_.Count() : count, DatabaseName, TablesPrefix));
-
+				var currentContract = new test_tblcontract();
                 await Task.Run(() =>
                             {
-                                bsContract.DataSource = (from item in tblcontracts_
-                                                         select item
-                                                        ).Take(IsLocalDB ? tblcontracts_.Count() : count).ToList();
+								foreach(var stripName in stripNameHashSet)
+								{
+									try
+									{
+										currentContract = (from item in tblcontracts_
+															where item.monthint == stripName.Month 
+															&& item.year == stripName.Year
+															&& item.idinstrument == IdInstrument
+															select item
+															).ToList()[0];
+									}
+									catch(SqlException)
+									{
+										continue;
+									}
+									catch(ArgumentOutOfRangeException)
+									{
+										continue;
+									}
+
+									contractList.Add(currentContract);
+									idcontractDictionary.Add(stripName, currentContract.idcontract);
+								}
                             }, cts.Token);
+                LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLCONTRACT table", tblcontracts_.Count(), DatabaseName, TablesPrefix));
 
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", IsLocalDB ? tbldailycontractsettlements_.Count() : count, DatabaseName, TablesPrefix));
-
+				var currentDailyContract = new test_tbldailycontractsettlement();
+				long idcontract;
+				bool isID;
                 await Task.Run(() =>
                                 {
-                                    bsDailyContractSettlement.DataSource = (from item in tbldailycontractsettlements_
-                                                                            select item
-                                                                            ).Take(IsLocalDB ? tbldailycontractsettlements_.Count() : count).ToList();
+								 foreach(var tuple in stripNameDateHashSet)
+								 {
+									isID = idcontractDictionary.TryGetValue(tuple.Item1, out idcontract);
+									if(isID)
+									{
+										try
+										{
+											currentDailyContract = (from item in tbldailycontractsettlements_
+																	where item.idcontract == idcontract 
+																	&& item.date == tuple.Item2
+																	select item
+																	).ToList()[0];
+										}
+										catch(SqlException)
+										{
+											continue;
+										}
+										catch(ArgumentOutOfRangeException)
+										{
+											continue;
+										}
+									}
+									else
+									{
+										continue;
+									}
+									dailyContractList.Add(currentDailyContract);
+								 }
                                 }, cts.Token);
+				LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", tbldailycontractsettlements_.Count(), DatabaseName, TablesPrefix));
 
-                //int count = tbloptions_.Where(item => item.cqgsymbol == "somesymbol").Count();
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONS table", IsLocalDB ? tbloptions_.Count() : count, DatabaseName, TablesPrefix));
                 try
                 {
+					var currentOption = new test_tbloption();
                     await Task.Run(() =>
                     {
-                        listOption = (from item in tbloptions_
-                                          //where item.cqgsymbol == "somesymbol"
-                                      select item
-                                              ).Take(IsLocalDB ? tbloptions_.Count() : count).ToList();
+						foreach(var tuple in optionNameHashSet)
+						{
+							isID = idcontractDictionary.TryGetValue(tuple.Item1, out idcontract);
+							if(isID)
+							{
+								try
+								{
+									currentOption = (from item in tbloptions_
+													where item.idcontract == idcontract 
+													&& item.optionmonthint == tuple.Item1.Month
+													&& item.optionyear == tuple.Item1.Year
+													&& item.strikeprice == tuple.Item2
+													&& item.idinstrument == IdInstrument
+													select item
+													).ToList()[0];
+								}
+								catch(SqlException)
+								{
+									continue;
+								}
+								catch(ArgumentOutOfRangeException)
+								{
+									continue;
+								}
+							}
+							else
+							{
+								continue;
+							}
+							optionList.Add(currentOption);
+							idoptionDictionary.Add(Tuple.Create(tuple.Item1, currentOption.strikeprice), currentOption.idoption);
+						}
                     }, cts.Token);
+					LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONS table", tbloptions_.Count(), DatabaseName, TablesPrefix));
                 }
 #if !DEBUG
                 catch (Exception ex)
@@ -178,16 +354,44 @@ namespace ICE_Import
 #endif
                 finally
                 {
-                    bsOption.DataSource = listOption;
                 }
 
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONDATAS table", IsLocalDB ? tbloptiondatas_.Count() : count, DatabaseName, TablesPrefix));
+				var currentOptionData = new test_tbloptiondata();
+				long idoption;
+
                 await Task.Run(() =>
                                     {
-                                        bsOptionData.DataSource = (from item in tbloptiondatas_
-                                                                   select item
-                                                                  ).Take(IsLocalDB ? tbloptiondatas_.Count() : count).ToList();
+										foreach(var tuple in optionNameDataHashSet)
+										{
+											isID = idoptionDictionary.TryGetValue(Tuple.Create(tuple.Item1, tuple.Item4), out idoption);
+											if(isID)
+											{
+												try
+												{
+													currentOptionData = (from item in tbloptiondatas_
+																	where item.idoption == idoption 
+																	&& item.datetime == tuple.Item2
+																	&& item.price == tuple.Item3
+																	select item
+																	).ToList()[0];
+												}
+												catch(SqlException)
+												{
+													continue;
+												}
+												catch(ArgumentOutOfRangeException)
+												{
+													continue;
+												}
+											}
+											else
+											{
+												continue;
+											}
+											optionDataList.Add(currentOptionData);
+										}
                                     }, cts.Token);
+			LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONDATAS table", tbloptiondatas_.Count(), DatabaseName, TablesPrefix));
 
             }
             catch (OperationCanceledException cancel)
@@ -204,21 +408,18 @@ namespace ICE_Import
             finally
             {
                 int totalCount =
-                    IsLocalDB ?
                     tblcontracts_.Count() +
                     tbldailycontractsettlements_.Count() +
                     tbloptions_.Count() +
-                    tbloptiondatas_.Count()
-                    :
-                    4 * count;
+                    tbloptiondatas_.Count();
 
                 LogMessage(string.Format("Pulled: {0} entries from {1} DB", totalCount, DatabaseName));
             }
 
-            dataGridViewOption.DataSource = bsOption;
-            dataGridViewOptionData.DataSource = bsOptionData;
-            dataGridViewContract.DataSource = bsContract;
-            dataGridViewDailyContract.DataSource = bsDailyContractSettlement;
+			dataGridViewContract.DataSource = contractList;
+            dataGridViewDailyContract.DataSource = dailyContractList;
+            dataGridViewOption.DataSource = optionList;
+            dataGridViewOptionData.DataSource = optionDataList;
 
 			EnableDisable(false);
         }
