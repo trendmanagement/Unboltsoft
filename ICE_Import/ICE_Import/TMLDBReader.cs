@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace ICE_Import
@@ -29,6 +30,10 @@ namespace ICE_Import
             {
                 return false;
             }
+            catch (SqlException)
+            {
+                return false;
+            }
 
             idInstrument = record.idinstrument;
 
@@ -36,7 +41,7 @@ namespace ICE_Import
 
             double secondaryoptionticksize = record.secondaryoptionticksize;
             tickSize = (secondaryoptionticksize > 0) ? secondaryoptionticksize : record.optionticksize;
-            
+
             AsyncTaskListener.LogMessageFormat(
                 "ID Instrument = {0}\nCQG Symbol = {1}\nTick Size = {2}",
                 idInstrument,
@@ -90,6 +95,10 @@ namespace ICE_Import
                 return true;
             }
             catch (InvalidOperationException)
+            {
+                return false;
+            }
+            catch (SqlException)
             {
                 return false;
             }

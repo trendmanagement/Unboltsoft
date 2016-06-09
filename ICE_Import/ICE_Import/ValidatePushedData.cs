@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -9,20 +8,21 @@ namespace ICE_Import
 {
     public partial class FormDB : Form
     {
-        string PushedResult;
+        string ValidationResult;
+
         private async void buttonCheckPushedData_Click(object sender, EventArgs e)
         {
-
             EnableDisable(true);
             await Task.Run(() => ValidatePushedFuturesData());
             await Task.Run(() => ValidatePushedDailyFuturesData());
             if (!ParsedData.FuturesOnly)
             {
                 await Task.Run(() => ValidatePushedOptionsData());
-                await Task.Run(() => ValidatePushedOptionDatasData());
+                await Task.Run(() => ValidatePushedDailyOptionsData());
             }
             EnableDisable(false);
-            MessageBox.Show(PushedResult);
+
+            MessageBox.Show(ValidationResult);
         }
 
         private void ValidatePushedFuturesData()
@@ -38,24 +38,10 @@ namespace ICE_Import
                 DateTime itemDT = Convert.ToDateTime(stripName);
                 futureHash.Remove(itemDT);
             }
-            if (futureHash.Count == 0)
-            {
-                logMessage = "All futures were pushed successfully in tblcontracts";
-                AsyncTaskListener.LogMessage(logMessage);
-            }
-            else
-            {
-                logMessage = string.Format("Failed to push {0} futures in tblcontracts", futureHash.Count);
-                AsyncTaskListener.LogMessageFormat(logMessage);
-                AsyncTaskListener.LogMessage("----------------------------------");
-                List<DateTime> residueList = futureHash.ToList();
-                foreach (DateTime dt in residueList)
-                {
-                    AsyncTaskListener.LogMessage(" - StripName " + dt.Month.ToString() + "." + dt.Year.ToString());
-                    AsyncTaskListener.LogMessage("----------------------------------");
-                }
-            }
-            PushedResult += logMessage + "\n";
+
+            ValidationLogHelper(futureHash, "futures", "tblcontracts");
+
+            ValidationResult += logMessage + "\n";
         }
 
         private void ValidatePushedOptionsData()
@@ -71,23 +57,10 @@ namespace ICE_Import
                 DateTime itemDT = Convert.ToDateTime(stripName);
                 optionHash.Remove(itemDT);
             }
-            if (optionHash.Count == 0)
-            {
-                logMessage = "All options were pushed successfully in tbloptions";
-                AsyncTaskListener.LogMessage(logMessage);
-            }
-            else
-            {
-                logMessage = string.Format("Failed to push {0} options in tbloptions", optionHash.Count);
-                AsyncTaskListener.LogMessageFormat(logMessage);
-                AsyncTaskListener.LogMessage("----------------------------------");
-                foreach (var dt in optionHash)
-                {
-                    AsyncTaskListener.LogMessage(" - StripName " + dt.Month.ToString() + "." + dt.Year.ToString());
-                    AsyncTaskListener.LogMessage("----------------------------------");
-                }
-            }
-            PushedResult += logMessage + "\n";
+
+            ValidationLogHelper(optionHash, "options", "tbloptions");
+
+            ValidationResult += logMessage + "\n";
         }
 
         private void ValidatePushedDailyFuturesData()
@@ -116,27 +89,12 @@ namespace ICE_Import
                 futureDailyHash.Remove(tumple);
             }
 
-            if (futureDailyHash.Count == 0)
-            {
-                logMessage = "All futures were pushed success in tbldailycontractsettlements";
-                AsyncTaskListener.LogMessage(logMessage);
-            }
-            else
-            {
-                logMessage = string.Format("Failed to push {0} futures in tbldailycontractsettlements", futureDailyHash.Count);
-                AsyncTaskListener.LogMessage(logMessage);
-                AsyncTaskListener.LogMessage("----------------------------------");
-                foreach (var item in futureDailyHash)
-                {
-                    AsyncTaskListener.LogMessage(" - StripName " + item.Item1);
-                    AsyncTaskListener.LogMessage(" - Date " + item.Item2);
-                    AsyncTaskListener.LogMessage("----------------------------------");
-                }
-            }
-            PushedResult += logMessage + "\n";
+            ValidationLogHelper(futureDailyHash, "futures", "tbldailycontractsettlements");
+
+            ValidationResult += logMessage + "\n";
         }
 
-        private void ValidatePushedOptionDatasData()
+        private void ValidatePushedDailyOptionsData()
         {
             var optionDataHash = new HashSet<Tuple<DateTime, DateTime, double>>();
             string id;
@@ -171,26 +129,9 @@ namespace ICE_Import
                 optionDataHash.Remove(tuple);
             }
 
-            if (optionDataHash.Count == 0)
-            {
-                logMessage = "All options were pushed success in tbloptiondata";
-                AsyncTaskListener.LogMessage(logMessage);
-            }
-            else
-            {
-                logMessage = string.Format("Failed to push {0} options in tbloptiondata", optionDataHash.Count);
-                AsyncTaskListener.LogMessage(logMessage);
-                AsyncTaskListener.LogMessage("----------------------------------");
-                foreach (var item in optionDataHash)
-                {
-                    AsyncTaskListener.LogMessage(" - StripName " + item.Item1);
-                    AsyncTaskListener.LogMessage(" - Date " + item.Item2);
-                    AsyncTaskListener.LogMessage(" - Expirationdate " + item.Item3);
-                    AsyncTaskListener.LogMessage("----------------------------------");
-                }
-            }
-            PushedResult += logMessage + "\n";
+            ValidationLogHelper(optionDataHash, "options", "tbloptiondata");
 
+            ValidationResult += logMessage + "\n";
         }
 
         private DateTime GetStripNameContractFromGrid(string id, DataGridView dgv)
@@ -213,5 +154,40 @@ namespace ICE_Import
             return itemDT;
         }
 
+        private void ValidationLogHelper<T>(HashSet<T> hash, string symbTypePlural, string tblName)
+        {
+            if (hash.Count == 0)
+            {
+                AsyncTaskListener.LogMessageFormat("All {0} were pushed to {1} successfully", symbTypePlural, tblName);
+            }
+            else
+            {
+                AsyncTaskListener.LogMessageFormat("Failed to push {0} {1} to {2}:", hash.Count, symbTypePlural, tblName);
+                AsyncTaskListener.LogMessage("----------------------------------");
+                foreach (T item in hash)
+                {
+                    LogInvalidItem((dynamic)item);
+                    AsyncTaskListener.LogMessage("----------------------------------");
+                }
+            }
+        }
+
+        private void LogInvalidItem(DateTime dt)
+        {
+            AsyncTaskListener.LogMessage(" - StripName " + dt);
+        }
+
+        private void LogInvalidItem(Tuple<DateTime, DateTime> tuple)
+        {
+            AsyncTaskListener.LogMessage(" - StripName " + tuple.Item1);
+            AsyncTaskListener.LogMessage(" - Date " + tuple.Item2);
+        }
+
+        private void LogInvalidItem(Tuple<DateTime, DateTime, double> tuple)
+        {
+            AsyncTaskListener.LogMessage(" - StripName " + tuple.Item1);
+            AsyncTaskListener.LogMessage(" - Date " + tuple.Item2);
+            AsyncTaskListener.LogMessage(" - Expirationdate " + tuple.Item3);
+        }
     }
 }
