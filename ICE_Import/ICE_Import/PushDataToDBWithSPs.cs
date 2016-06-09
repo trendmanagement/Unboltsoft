@@ -12,9 +12,7 @@ namespace ICE_Import
     {
         HashSet<DateTime> stripNameHashSet;
         HashSet<Tuple<DateTime, DateTime>> stripNameDateHashSet;
-        HashSet<Tuple<DateTime, double>> optionNameHashSet;
-        HashSet<Tuple<DateTime, DateTime, double, double>> optionNameDataHashSet;
-
+        List<long> IdOptionList;
 
         /// <summary>
         /// Push all data to DB with stored procedures.
@@ -110,6 +108,7 @@ namespace ICE_Import
                                 future.StripName.Year,
                                 (int)IdInstrument,
                                 contractname);
+
                             stripNameHashSet.Add(future.StripName);
                         }
                         else
@@ -169,8 +168,7 @@ namespace ICE_Import
         /// </summary>
         void PushOptionsToDBWithSP(ref int globalCount, CancellationToken ct)
         {
-            optionNameHashSet = new HashSet<Tuple<DateTime, double>>();
-            optionNameDataHashSet = new HashSet<Tuple<DateTime, DateTime, double ,double>>();
+            IdOptionList = new List<long>();
 
             string log = string.Empty;
             foreach (EOD_Options option in ParsedData.OptionRecords)
@@ -232,8 +230,6 @@ namespace ICE_Import
                         IdInstrument,
                         expirationDate,
                         optionName);
-
-                    optionNameHashSet.Add(Tuple.Create(option.StripName, option.StrikePrice.GetValueOrDefault()));
 
                     #region Get idoption
                     long idoption = 0;
@@ -300,7 +296,7 @@ namespace ICE_Import
                         impliedvol,
                         futureYear - expirateYear);
 
-                    optionNameDataHashSet.Add((Tuple.Create(option.StripName, option.Date, option.SettlementPrice.GetValueOrDefault(), option.StrikePrice.GetValueOrDefault())));
+                    IdOptionList.Add(idoption);
 
                 }
                 catch (Exception ex)

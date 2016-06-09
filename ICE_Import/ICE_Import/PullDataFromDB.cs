@@ -65,7 +65,7 @@ namespace ICE_Import
 									idcontractDictionary.Add(stripName, currentContract.idcontract);
 								}
                             }, cts.Token);
-                LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLCONTRACT table", tblcontracts_.Count(), DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLCONTRACT table", contractList.Count, DatabaseName, TablesPrefix));
 
 				var currentDailyContract = new tbldailycontractsettlement();
 				long idcontract;
@@ -101,94 +101,55 @@ namespace ICE_Import
 									dailyContractList.Add(currentDailyContract);
 								 }
                                 }, cts.Token);
-				LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", tbldailycontractsettlements_.Count(), DatabaseName, TablesPrefix));
+				LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", dailyContractList.Count, DatabaseName, TablesPrefix));
 
-                try
+				var currentOption = new tbloption();
+                await Task.Run(() =>
                 {
-					var currentOption = new tbloption();
-                    await Task.Run(() =>
-                    {
-						foreach(var tuple in optionNameHashSet)
-						{
-							isID = idcontractDictionary.TryGetValue(tuple.Item1, out idcontract);
-							if(isID)
+							try
 							{
-								try
-								{
-									currentOption = (from item in tbloptions_
-													where item.idcontract == idcontract 
-													&& item.optionmonthint == tuple.Item1.Month
-													&& item.optionyear == tuple.Item1.Year
-													&& item.strikeprice == tuple.Item2
-													&& item.idinstrument == IdInstrument
-													select item
-													).ToList()[0];
-								}
-								catch(SqlException)
-								{
-									continue;
-								}
-								catch(ArgumentOutOfRangeException)
-								{
-									continue;
-								}
+								optionList = (from item in tbloptions_
+												where 
+												item.optionyear >= stripNameHashSet.Min().Year
+												&& item.optionyear <= stripNameHashSet.Max().Year
+												&& item.idinstrument == IdInstrument
+												select item
+												).ToList();
 							}
-							else
+							catch(SqlException)
 							{
-								continue;
+
 							}
-							optionList.Add(currentOption);
-							idoptionDictionary.Add(Tuple.Create(tuple.Item1, currentOption.strikeprice), currentOption.idoption);
-						}
-                    }, cts.Token);
-					LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONS table", tbloptions_.Count(), DatabaseName, TablesPrefix));
-                }
-#if !DEBUG
-                catch (Exception ex)
-                {
-                    LogMessage(ex.Message);
-                }
-#endif
-                finally
-                {
-                }
+                }, cts.Token);
+				LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONS table", optionList.Count, DatabaseName, TablesPrefix));
 
 				var currentOptionData = new tbloptiondata();
-				long idoption;
 
                 await Task.Run(() =>
                                     {
-										foreach(var tuple in optionNameDataHashSet)
+									foreach (var id in IdOptionList)
+									{
+										try
 										{
-											isID = idoptionDictionary.TryGetValue(Tuple.Create(tuple.Item1, tuple.Item4), out idoption);
-											if(isID)
-											{
-												try
-												{
-													currentOptionData = (from item in tbloptiondatas_
-																	where item.idoption == idoption 
-																	&& item.datetime == tuple.Item2
-																	&& item.price == tuple.Item3
-																	select item
-																	).ToList()[0];
-												}
-												catch(SqlException)
-												{
-													continue;
-												}
-												catch(ArgumentOutOfRangeException)
-												{
-													continue;
-												}
-											}
-											else
-											{
-												continue;
-											}
-											optionDataList.Add(currentOptionData);
+											currentOptionData = (from item in tbloptiondatas_
+															where 
+															item.idoption == id
+															select item
+															).ToList()[0];
 										}
+										catch(SqlException)
+										{
+											continue;
+										}
+										catch(ArgumentOutOfRangeException)
+										{
+											continue;
+										}
+										optionDataList.Add(currentOptionData);
+									}
+
                                     }, cts.Token);
-			LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONDATAS table", tbloptiondatas_.Count(), DatabaseName, TablesPrefix));
+				LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONDATAS table", optionDataList.Count, DatabaseName, TablesPrefix));
 
             }
             catch (OperationCanceledException cancel)
@@ -268,7 +229,7 @@ namespace ICE_Import
 									idcontractDictionary.Add(stripName, currentContract.idcontract);
 								}
                             }, cts.Token);
-                LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLCONTRACT table", tblcontracts_.Count(), DatabaseName, TablesPrefix));
+                LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLCONTRACT table", contractList.Count, DatabaseName, TablesPrefix));
 
 				var currentDailyContract = new test_tbldailycontractsettlement();
 				long idcontract;
@@ -304,94 +265,55 @@ namespace ICE_Import
 									dailyContractList.Add(currentDailyContract);
 								 }
                                 }, cts.Token);
-				LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", tbldailycontractsettlements_.Count(), DatabaseName, TablesPrefix));
+				LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", dailyContractList.Count, DatabaseName, TablesPrefix));
 
-                try
+				var currentOption = new test_tbloption();
+                await Task.Run(() =>
                 {
-					var currentOption = new test_tbloption();
-                    await Task.Run(() =>
-                    {
-						foreach(var tuple in optionNameHashSet)
-						{
-							isID = idcontractDictionary.TryGetValue(tuple.Item1, out idcontract);
-							if(isID)
+							try
 							{
-								try
-								{
-									currentOption = (from item in tbloptions_
-													where item.idcontract == idcontract 
-													&& item.optionmonthint == tuple.Item1.Month
-													&& item.optionyear == tuple.Item1.Year
-													&& item.strikeprice == tuple.Item2
-													&& item.idinstrument == IdInstrument
-													select item
-													).ToList()[0];
-								}
-								catch(SqlException)
-								{
-									continue;
-								}
-								catch(ArgumentOutOfRangeException)
-								{
-									continue;
-								}
+								optionList = (from item in tbloptions_
+												where 
+												item.optionyear >= stripNameHashSet.Min().Year
+												&& item.optionyear <= stripNameHashSet.Max().Year
+												&& item.idinstrument == IdInstrument
+												select item
+												).ToList();
 							}
-							else
+							catch(SqlException)
 							{
-								continue;
+
 							}
-							optionList.Add(currentOption);
-							idoptionDictionary.Add(Tuple.Create(tuple.Item1, currentOption.strikeprice), currentOption.idoption);
-						}
-                    }, cts.Token);
-					LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONS table", tbloptions_.Count(), DatabaseName, TablesPrefix));
-                }
-#if !DEBUG
-                catch (Exception ex)
-                {
-                    LogMessage(ex.Message);
-                }
-#endif
-                finally
-                {
-                }
+                }, cts.Token);
+				LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONS table", optionList.Count, DatabaseName, TablesPrefix));
 
 				var currentOptionData = new test_tbloptiondata();
-				long idoption;
 
                 await Task.Run(() =>
                                     {
-										foreach(var tuple in optionNameDataHashSet)
+									foreach (var id in IdOptionList)
+									{
+										try
 										{
-											isID = idoptionDictionary.TryGetValue(Tuple.Create(tuple.Item1, tuple.Item4), out idoption);
-											if(isID)
-											{
-												try
-												{
-													currentOptionData = (from item in tbloptiondatas_
-																	where item.idoption == idoption 
-																	&& item.datetime == tuple.Item2
-																	&& item.price == tuple.Item3
-																	select item
-																	).ToList()[0];
-												}
-												catch(SqlException)
-												{
-													continue;
-												}
-												catch(ArgumentOutOfRangeException)
-												{
-													continue;
-												}
-											}
-											else
-											{
-												continue;
-											}
-											optionDataList.Add(currentOptionData);
+											currentOptionData = (from item in tbloptiondatas_
+															where 
+															item.idoption == id
+															select item
+															).ToList()[0];
 										}
+										catch(SqlException)
+										{
+											continue;
+										}
+										catch(ArgumentOutOfRangeException)
+										{
+											continue;
+										}
+										optionDataList.Add(currentOptionData);
+									}
+
                                     }, cts.Token);
-			LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONDATAS table", tbloptiondatas_.Count(), DatabaseName, TablesPrefix));
+				LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONDATAS table", optionDataList.Count, DatabaseName, TablesPrefix));
 
             }
             catch (OperationCanceledException cancel)

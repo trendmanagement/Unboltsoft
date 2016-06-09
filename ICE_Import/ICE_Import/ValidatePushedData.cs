@@ -30,7 +30,7 @@ namespace ICE_Import
             var futureHash = new HashSet<DateTime>(ParsedData.FutureRecords.Select(item => item.StripName));
             string logMessage = string.Empty;
 
-            for (int i = 0; i < dataGridViewContract.Rows.Count - 1; i++)
+            for (int i = 0; i < dataGridViewContract.Rows.Count; i++)
             {
                 string month = dataGridViewContract[3, i].Value.ToString();
                 string year = dataGridViewContract[4, i].Value.ToString();
@@ -63,10 +63,10 @@ namespace ICE_Import
             var optionHash = new HashSet<DateTime>(ParsedData.OptionRecords.Select(item => item.StripName));
             string logMessage = string.Empty;
 
-            for (int i = 0; i < dataGridViewContract.Rows.Count - 1; i++)
+            for (int i = 0; i < dataGridViewOption.Rows.Count; i++)
             {
-                string month = dataGridViewContract[3, i].Value.ToString();
-                string year = dataGridViewContract[4, i].Value.ToString();
+                string month = dataGridViewOption[3, i].Value.ToString();
+                string year = dataGridViewOption[4, i].Value.ToString();
                 string stripName = month + "." + year;
                 DateTime itemDT = Convert.ToDateTime(stripName);
                 optionHash.Remove(itemDT);
@@ -92,7 +92,7 @@ namespace ICE_Import
 
         private void ValidatePushedDailyFuturesData()
         {
-            var futureDailyHash = new HashSet<Tuple<DateTime, DateTime>>();
+            var futureDailyHash = new List<Tuple<DateTime, DateTime>>();
             string logMessage = string.Empty;
 
             foreach (var item in ParsedData.FutureRecords)
@@ -105,7 +105,7 @@ namespace ICE_Import
             DateTime stripName;
             DateTime date;
 
-            for (int i = 0; i < dataGridViewDailyContract.Rows.Count - 1; i++)
+            for (int i = 0; i < dataGridViewDailyContract.Rows.Count; i++)
             {
                 id = dataGridViewDailyContract[1, i].Value.ToString();
                 stripName = GetStripNameContractFromGrid(id, dataGridViewContract);
@@ -156,7 +156,7 @@ namespace ICE_Import
                 optionDataHash.Add(tuple);
             }
 
-            for (int i = 0; i < dataGridViewOptionData.Rows.Count - 1; i++)
+            for (int i = 0; i < dataGridViewOptionData.Rows.Count; i++)
             {
                 id = dataGridViewOptionData[1, i].Value.ToString();
                 stripName = GetStripNameContractFromGrid(id, dataGridViewOption);
@@ -200,7 +200,7 @@ namespace ICE_Import
             string year;
             string stripName;
 
-            for (int i = 0; i < dgv.Rows.Count - 1; i++)
+            for (int i = 0; i < dgv.Rows.Count; i++)
             {
                 if (id == dgv[0, i].Value.ToString())
                 {
