@@ -28,7 +28,6 @@ namespace ICE_Import
         private void ValidatePushedFuturesData()
         {
             var futureHash = new HashSet<DateTime>(ParsedData.FutureRecords.Select(item => item.StripName));
-            string logMessage = string.Empty;
 
             for (int i = 0; i < dataGridViewContract.Rows.Count; i++)
             {
@@ -40,14 +39,11 @@ namespace ICE_Import
             }
 
             ValidationLogHelper(futureHash, "futures", "tblcontracts");
-
-            ValidationResult += logMessage + "\n";
         }
 
         private void ValidatePushedOptionsData()
         {
             var optionHash = new HashSet<DateTime>(ParsedData.OptionRecords.Select(item => item.StripName));
-            string logMessage = string.Empty;
 
             for (int i = 0; i < dataGridViewOption.Rows.Count; i++)
             {
@@ -59,14 +55,11 @@ namespace ICE_Import
             }
 
             ValidationLogHelper(optionHash, "options", "tbloptions");
-
-            ValidationResult += logMessage + "\n";
         }
 
         private void ValidatePushedDailyFuturesData()
         {
             var futureDailyHash = new List<Tuple<DateTime, DateTime>>();
-            string logMessage = string.Empty;
 
             foreach (var item in ParsedData.FutureRecords)
             {
@@ -90,8 +83,6 @@ namespace ICE_Import
             }
 
             ValidationLogHelper(futureDailyHash, "futures", "tbldailycontractsettlements");
-
-            ValidationResult += logMessage + "\n";
         }
 
         private void ValidatePushedDailyOptionsData()
@@ -103,7 +94,6 @@ namespace ICE_Import
             double expirationdate;
             double futureYear;
             double expirateYear;
-            string logMessage = string.Empty;
 
             foreach (var item in ParsedData.OptionRecords)
             {
@@ -130,8 +120,6 @@ namespace ICE_Import
             }
 
             ValidationLogHelper(optionDataHash, "options", "tbloptiondata");
-
-            ValidationResult += logMessage + "\n";
         }
 
         private DateTime GetStripNameContractFromGrid(string id, DataGridView dgv)
@@ -154,15 +142,42 @@ namespace ICE_Import
             return itemDT;
         }
 
+        private void ValidationLogHelper<T>(List<T> list, string symbTypePlural, string tblName)
+        {
+            string logMessage = string.Empty;
+
+            if (list.Count == 0)
+            {
+                AsyncTaskListener.LogMessageFormat("All {0} were pushed to {1} successfully", symbTypePlural, tblName);
+                logMessage = string.Format("All {0} were pushed to {1} successfully", symbTypePlural, tblName);
+            }
+            else
+            {
+                AsyncTaskListener.LogMessageFormat("Failed to push {0} {1} to {2}:", list.Count, symbTypePlural, tblName);
+                logMessage = string.Format("Failed to push {0} {1} to {2}:", list.Count, symbTypePlural, tblName);
+                AsyncTaskListener.LogMessage("----------------------------------");
+                foreach (T item in list)
+                {
+                    LogInvalidItem((dynamic)item);
+                    AsyncTaskListener.LogMessage("----------------------------------");
+                }
+            }
+            ValidationResult += logMessage + "\n";
+        }
+
         private void ValidationLogHelper<T>(HashSet<T> hash, string symbTypePlural, string tblName)
         {
+            string logMessage = string.Empty;
+
             if (hash.Count == 0)
             {
                 AsyncTaskListener.LogMessageFormat("All {0} were pushed to {1} successfully", symbTypePlural, tblName);
+                logMessage = string.Format("All {0} were pushed to {1} successfully", symbTypePlural, tblName);
             }
             else
             {
                 AsyncTaskListener.LogMessageFormat("Failed to push {0} {1} to {2}:", hash.Count, symbTypePlural, tblName);
+                logMessage = string.Format("Failed to push {0} {1} to {2}:", hash.Count, symbTypePlural, tblName);
                 AsyncTaskListener.LogMessage("----------------------------------");
                 foreach (T item in hash)
                 {
@@ -170,6 +185,7 @@ namespace ICE_Import
                     AsyncTaskListener.LogMessage("----------------------------------");
                 }
             }
+            ValidationResult += logMessage + "\n";
         }
 
         private void LogInvalidItem(DateTime dt)
