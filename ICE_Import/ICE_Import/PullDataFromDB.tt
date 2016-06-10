@@ -39,14 +39,11 @@ namespace ICE_Import
             var tbloptions_ = Context.<# Write(tableNamePrefix[i]); #>tbloptions;
             var tbloptiondatas_ = Context.<# Write(tableNamePrefix[i]); #>tbloptiondatas;
 
-            var listOption = new List<<# Write(TblOption); #>>();
-
 			var contractList = new List<<# Write(tableNamePrefix[i]); #>tblcontract>();
             var dailyContractList = new List<<# Write(tableNamePrefix[i]); #>tbldailycontractsettlement>();
 			var idcontractDictionary = new Dictionary<DateTime, long>();
             var optionList = new List<<# Write(tableNamePrefix[i]); #>tbloption>();
             var optionDataList = new List<<# Write(tableNamePrefix[i]); #>tbloptiondata>();
-			var idoptionDictionary = new Dictionary<Tuple<DateTime, double>, long>();
 
             try
             {

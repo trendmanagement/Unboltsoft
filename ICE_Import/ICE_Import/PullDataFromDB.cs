@@ -27,14 +27,11 @@ namespace ICE_Import
             var tbloptions_ = Context.tbloptions;
             var tbloptiondatas_ = Context.tbloptiondatas;
 
-            var listOption = new List<tbloption>();
-
 			var contractList = new List<tblcontract>();
             var dailyContractList = new List<tbldailycontractsettlement>();
 			var idcontractDictionary = new Dictionary<DateTime, long>();
             var optionList = new List<tbloption>();
             var optionDataList = new List<tbloptiondata>();
-			var idoptionDictionary = new Dictionary<Tuple<DateTime, double>, long>();
 
             try
             {
@@ -191,14 +188,11 @@ namespace ICE_Import
             var tbloptions_ = Context.test_tbloptions;
             var tbloptiondatas_ = Context.test_tbloptiondatas;
 
-            var listOption = new List<test_tbloption>();
-
 			var contractList = new List<test_tblcontract>();
             var dailyContractList = new List<test_tbldailycontractsettlement>();
 			var idcontractDictionary = new Dictionary<DateTime, long>();
             var optionList = new List<test_tbloption>();
             var optionDataList = new List<test_tbloptiondata>();
-			var idoptionDictionary = new Dictionary<Tuple<DateTime, double>, long>();
 
             try
             {
