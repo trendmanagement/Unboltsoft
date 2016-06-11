@@ -13,6 +13,7 @@ namespace ICE_Import
         private async void buttonCheckPushedData_Click(object sender, EventArgs e)
         {
             EnableDisable(true);
+
             await Task.Run(() => ValidatePushedFuturesData());
             await Task.Run(() => ValidatePushedDailyFuturesData());
             if (!ParsedData.FuturesOnly)
@@ -20,9 +21,10 @@ namespace ICE_Import
                 await Task.Run(() => ValidatePushedOptionsData());
                 await Task.Run(() => ValidatePushedDailyOptionsData());
             }
-            EnableDisable(false);
 
-            MessageBox.Show(ValidationResult);
+            MessageBox.Show(ValidationResult, Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            EnableDisable(false);
         }
 
         private void ValidatePushedFuturesData()
@@ -59,12 +61,12 @@ namespace ICE_Import
 
         private void ValidatePushedDailyFuturesData()
         {
-            var futureDailyHash = new List<Tuple<DateTime, DateTime>>();
+            var futureDailyHash = new HashSet<Tuple<DateTime, DateTime>>();
 
             foreach (var item in ParsedData.FutureRecords)
             {
-                var tumple = Tuple.Create(item.StripName, item.Date);
-                futureDailyHash.Add(tumple);
+                var tuple = Tuple.Create(item.StripName, item.Date);
+                futureDailyHash.Add(tuple);
             }
 
             string id;
@@ -77,9 +79,9 @@ namespace ICE_Import
                 stripName = GetStripNameContractFromGrid(id, dataGridViewContract);
                 date = (DateTime)dataGridViewDailyContract[2, i].Value;
 
-                var tumple = Tuple.Create(stripName, date);
+                var tuple = Tuple.Create(stripName, date);
 
-                futureDailyHash.Remove(tumple);
+                futureDailyHash.Remove(tuple);
             }
 
             ValidationLogHelper(futureDailyHash, "futures", "tbldailycontractsettlements");
@@ -142,46 +144,23 @@ namespace ICE_Import
             return itemDT;
         }
 
-        private void ValidationLogHelper<T>(List<T> list, string symbTypePlural, string tblName)
-        {
-            string logMessage = string.Empty;
-
-            if (list.Count == 0)
-            {
-                AsyncTaskListener.LogMessageFormat("All {0} were pushed to {1} successfully", symbTypePlural, tblName);
-                logMessage = string.Format("All {0} were pushed to {1} successfully", symbTypePlural, tblName);
-            }
-            else
-            {
-                AsyncTaskListener.LogMessageFormat("Failed to push {0} {1} to {2}:", list.Count, symbTypePlural, tblName);
-                logMessage = string.Format("Failed to push {0} {1} to {2}:", list.Count, symbTypePlural, tblName);
-                AsyncTaskListener.LogMessage("----------------------------------");
-                foreach (T item in list)
-                {
-                    LogInvalidItem((dynamic)item);
-                    AsyncTaskListener.LogMessage("----------------------------------");
-                }
-            }
-            ValidationResult += logMessage + "\n";
-        }
-
         private void ValidationLogHelper<T>(HashSet<T> hash, string symbTypePlural, string tblName)
         {
             string logMessage = string.Empty;
 
             if (hash.Count == 0)
             {
-                AsyncTaskListener.LogMessageFormat("All {0} were pushed to {1} successfully", symbTypePlural, tblName);
                 logMessage = string.Format("All {0} were pushed to {1} successfully", symbTypePlural, tblName);
+                AsyncTaskListener.LogMessage(logMessage);
             }
             else
             {
-                AsyncTaskListener.LogMessageFormat("Failed to push {0} {1} to {2}:", hash.Count, symbTypePlural, tblName);
                 logMessage = string.Format("Failed to push {0} {1} to {2}:", hash.Count, symbTypePlural, tblName);
+                AsyncTaskListener.LogMessage(logMessage);
                 AsyncTaskListener.LogMessage("----------------------------------");
-                foreach (T item in hash)
+                foreach (dynamic item in hash)
                 {
-                    LogInvalidItem((dynamic)item);
+                    LogInvalidItem(item);
                     AsyncTaskListener.LogMessage("----------------------------------");
                 }
             }

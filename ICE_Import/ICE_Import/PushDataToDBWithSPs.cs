@@ -10,10 +10,6 @@ namespace ICE_Import
 {
     public partial class FormDB : Form
     {
-        HashSet<DateTime> stripNameHashSet;
-        HashSet<Tuple<DateTime, DateTime>> stripNameDateHashSet;
-        List<long> IdOptionList;
-
         /// <summary>
         /// Push all data to DB with stored procedures.
         /// Update either test or non-test tables, either synchronously or asynchronously.
@@ -75,8 +71,8 @@ namespace ICE_Import
         /// </summary>
         void PushFuturesToDBWithSP(ref int globalCount, CancellationToken ct)
         {
-            stripNameHashSet = new HashSet<DateTime>();
-            stripNameDateHashSet = new HashSet<Tuple<DateTime, DateTime>>();
+            StripNameHashSet = new HashSet<DateTime>();
+            StripNameDateHashSet = new HashSet<Tuple<DateTime, DateTime>>();
 
             foreach (EOD_Futures future in ParsedData.FutureRecords)
             {
@@ -84,7 +80,7 @@ namespace ICE_Import
                 {
                     break;
                 }
-                bool newFuture = !stripNameHashSet.Contains(future.StripName);
+                bool newFuture = !StripNameHashSet.Contains(future.StripName);
 
                 char monthChar = Utilities.MonthToMonthCode(future.StripName.Month);
 
@@ -109,7 +105,7 @@ namespace ICE_Import
                                 (int)IdInstrument,
                                 contractname);
 
-                            stripNameHashSet.Add(future.StripName);
+                            StripNameHashSet.Add(future.StripName);
                         }
                         else
                         {
@@ -127,7 +123,7 @@ namespace ICE_Import
                                 (int)IdInstrument,
                                 expirationDate,
                                 contractname);
-                            stripNameHashSet.Add(future.StripName);
+                            StripNameHashSet.Add(future.StripName);
                         }
                     }
 
@@ -139,7 +135,7 @@ namespace ICE_Import
                         (long)future.Volume.GetValueOrDefault(),
                         (long)future.OpenInterest.GetValueOrDefault());
 
-                    stripNameDateHashSet.Add(Tuple.Create(future.StripName, future.Date));
+                    StripNameDateHashSet.Add(Tuple.Create(future.StripName, future.Date));
                 }
 #if !DEBUG
                 catch (Exception ex)
@@ -168,7 +164,7 @@ namespace ICE_Import
         /// </summary>
         void PushOptionsToDBWithSP(ref int globalCount, CancellationToken ct)
         {
-            IdOptionList = new List<long>();
+            IdOptionHashSet = new HashSet<long>();
 
             string log = string.Empty;
             foreach (EOD_Options option in ParsedData.OptionRecords)
@@ -296,8 +292,7 @@ namespace ICE_Import
                         impliedvol,
                         futureYear - expirateYear);
 
-                    IdOptionList.Add(idoption);
-
+                    IdOptionHashSet.Add(idoption);
                 }
                 catch (Exception ex)
                 {

@@ -34,161 +34,192 @@ namespace ICE_Import
         {
             cts = new CancellationTokenSource();
 
-            var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
-            var tbldailycontractsettlements_ = Context.<# Write(tableNamePrefix[i]); #>tbldailycontractsettlements;
-            var tbloptions_ = Context.<# Write(tableNamePrefix[i]); #>tbloptions;
-            var tbloptiondatas_ = Context.<# Write(tableNamePrefix[i]); #>tbloptiondatas;
-
-			var contractList = new List<<# Write(tableNamePrefix[i]); #>tblcontract>();
-            var dailyContractList = new List<<# Write(tableNamePrefix[i]); #>tbldailycontractsettlement>();
-			var idcontractDictionary = new Dictionary<DateTime, long>();
-            var optionList = new List<<# Write(tableNamePrefix[i]); #>tbloption>();
-            var optionDataList = new List<<# Write(tableNamePrefix[i]); #>tbloptiondata>();
-
+            Dictionary<DateTime, long> idcontractDictionary = null;
+            List<<# Write(tableNamePrefix[i]); #>tblcontract> contractList = null;
+            List<<# Write(tableNamePrefix[i]); #>tbldailycontractsettlement> dailyContractList = null;
+            List<<# Write(tableNamePrefix[i]); #>tbloption> optionList = null;
+            List<<# Write(tableNamePrefix[i]); #>tbloptiondata> optionDataList = null;
+            
             try
             {
-				var currentContract = new <# Write(tableNamePrefix[i]); #>tblcontract();
-                await Task.Run(() =>
-                            {
-								foreach(var stripName in stripNameHashSet)
-								{
-									try
-									{
-										currentContract = (from item in tblcontracts_
-															where item.monthint == stripName.Month 
-															&& item.year == stripName.Year
-															&& item.idinstrument == IdInstrument
-															select item
-															).ToList()[0];
-									}
-									catch(SqlException)
-									{
-										continue;
-									}
-									catch(ArgumentOutOfRangeException)
-									{
-										continue;
-									}
+                AsyncTaskListener.LogMessage("Started pulling FUTURES data...");
+                await Task.Run(() => PullFutures<# Write(methodNameSuffix[i]); #>(out idcontractDictionary, out contractList), cts.Token);
+                AsyncTaskListener.LogMessageFormat("Pulled {0} entries from {1} {2}TBLCONTRACT table", contractList.Count, DatabaseName, TablesPrefix);
 
-									contractList.Add(currentContract);
-									idcontractDictionary.Add(stripName, currentContract.idcontract);
-								}
-                            }, cts.Token);
-                LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLCONTRACT table", contractList.Count, DatabaseName, TablesPrefix));
+                AsyncTaskListener.LogMessage("Started pulling DAILY FUTURES data...");
+                await Task.Run(() => PullDailyFutures<# Write(methodNameSuffix[i]); #>(idcontractDictionary, out dailyContractList), cts.Token);
+                AsyncTaskListener.LogMessageFormat("Pulled {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", dailyContractList.Count, DatabaseName, TablesPrefix);
 
-				var currentDailyContract = new <# Write(tableNamePrefix[i]); #>tbldailycontractsettlement();
-				long idcontract;
-				bool isID;
-                await Task.Run(() =>
-                                {
-								 foreach(var tuple in stripNameDateHashSet)
-								 {
-									isID = idcontractDictionary.TryGetValue(tuple.Item1, out idcontract);
-									if(isID)
-									{
-										try
-										{
-											currentDailyContract = (from item in tbldailycontractsettlements_
-																	where item.idcontract == idcontract 
-																	&& item.date == tuple.Item2
-																	select item
-																	).ToList()[0];
-										}
-										catch(SqlException)
-										{
-											continue;
-										}
-										catch(ArgumentOutOfRangeException)
-										{
-											continue;
-										}
-									}
-									else
-									{
-										continue;
-									}
-									dailyContractList.Add(currentDailyContract);
-								 }
-                                }, cts.Token);
-				LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", dailyContractList.Count, DatabaseName, TablesPrefix));
+                AsyncTaskListener.LogMessage("Started pulling OPTIONS data...");
+                await Task.Run(() => PullOptions<# Write(methodNameSuffix[i]); #>(out optionList), cts.Token);
+                AsyncTaskListener.LogMessageFormat("Pulled {0} entries from {1} {2}TBLOPTIONS table", optionList.Count, DatabaseName, TablesPrefix);
 
-				var currentOption = new <# Write(tableNamePrefix[i]); #>tbloption();
-                await Task.Run(() =>
-                {
-							try
-							{
-								optionList = (from item in tbloptions_
-												where 
-												item.optionyear >= stripNameHashSet.Min().Year
-												&& item.optionyear <= stripNameHashSet.Max().Year
-												&& item.idinstrument == IdInstrument
-												select item
-												).ToList();
-							}
-							catch(SqlException)
-							{
-
-							}
-                }, cts.Token);
-				LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONS table", optionList.Count, DatabaseName, TablesPrefix));
-
-				var currentOptionData = new <# Write(tableNamePrefix[i]); #>tbloptiondata();
-
-                await Task.Run(() =>
-                                    {
-									foreach (var id in IdOptionList)
-									{
-										try
-										{
-											currentOptionData = (from item in tbloptiondatas_
-															where 
-															item.idoption == id
-															select item
-															).ToList()[0];
-										}
-										catch(SqlException)
-										{
-											continue;
-										}
-										catch(ArgumentOutOfRangeException)
-										{
-											continue;
-										}
-										optionDataList.Add(currentOptionData);
-									}
-
-                                    }, cts.Token);
-				LogMessage(string.Format("Pulled {0} entries from {1} {2}TBLOPTIONDATAS table", optionDataList.Count, DatabaseName, TablesPrefix));
-
+                AsyncTaskListener.LogMessage("Started pulling DAILY OPTIONS data...");
+                await Task.Run(() => PullDailyOptions(out optionDataList), cts.Token);
+                AsyncTaskListener.LogMessageFormat("Pulled {0} entries from {1} {2}TBLOPTIONDATAS table", optionDataList.Count, DatabaseName, TablesPrefix);
             }
             catch (OperationCanceledException cancel)
             {
-                LogMessage(cancel.Message);
+                AsyncTaskListener.LogMessage(cancel.Message);
             }
 #if !DEBUG
             catch (Exception ex)
             {
-                LogMessage("ERROR");
-                LogMessage(ex.Message);
+                AsyncTaskListener.LogMessage("ERROR");
+                AsyncTaskListener.LogMessage(ex.Message);
             }
 #endif
             finally
             {
                 int totalCount =
-                    tblcontracts_.Count() +
-                    tbldailycontractsettlements_.Count() +
-                    tbloptions_.Count() +
-                    tbloptiondatas_.Count();
-
-                LogMessage(string.Format("Pulled: {0} entries from {1} DB", totalCount, DatabaseName));
+                    contractList.Count() +
+                    dailyContractList.Count() +
+                    optionList.Count() +
+                    optionDataList.Count();
+                AsyncTaskListener.LogMessageFormat("Pulled: {0} entries from {1} DB", totalCount, DatabaseName);
             }
 
-			dataGridViewContract.DataSource = contractList;
+            dataGridViewContract.DataSource = contractList;
             dataGridViewDailyContract.DataSource = dailyContractList;
             dataGridViewOption.DataSource = optionList;
             dataGridViewOptionData.DataSource = optionDataList;
 
-			EnableDisable(false);
+            EnableDisable(false);
+        }
+
+        void PullFutures<# Write(methodNameSuffix[i]); #>(
+            out Dictionary<DateTime, long> idcontractDictionary,
+            out List<<# Write(tableNamePrefix[i]); #>tblcontract> contractList)
+        {
+            idcontractDictionary = new Dictionary<DateTime, long>();
+            contractList = new List<<# Write(tableNamePrefix[i]); #>tblcontract>();
+
+            var tblcontracts = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
+
+            foreach (var stripName in StripNameHashSet)
+            {
+                <# Write(tableNamePrefix[i]); #>tblcontract currentContract;
+
+                try
+                {
+                    currentContract = (from item in tblcontracts
+                                       where item.monthint == stripName.Month &&
+                                       item.year == stripName.Year &&
+                                       item.idinstrument == IdInstrument
+                                       select item
+                                       ).First();
+                }
+                catch (SqlException)
+                {
+                    continue;
+                }
+                catch (InvalidOperationException)
+                {
+                    continue;
+                }
+        
+                idcontractDictionary.Add(stripName, currentContract.idcontract);
+                contractList.Add(currentContract);
+            }
+
+            contractList = contractList.OrderBy(item => item.idcontract).ToList();
+        }
+
+        void PullDailyFutures<# Write(methodNameSuffix[i]); #>(
+            Dictionary<DateTime, long> idcontractDictionary,
+            out List<<# Write(tableNamePrefix[i]); #>tbldailycontractsettlement> dailyContractList)
+        {
+            dailyContractList = new List<<# Write(tableNamePrefix[i]); #>tbldailycontractsettlement>();
+
+            var tbldailycontractsettlements = Context.<# Write(tableNamePrefix[i]); #>tbldailycontractsettlements;
+
+            foreach (var tuple in StripNameDateHashSet)
+            {
+                <# Write(tableNamePrefix[i]); #>tbldailycontractsettlement currentDailyContract;
+
+                long idcontract;
+                bool isID = idcontractDictionary.TryGetValue(tuple.Item1, out idcontract);
+                if (isID)
+                {
+                    try
+                    {
+                        currentDailyContract = (from item in tbldailycontractsettlements
+                                                where item.idcontract == idcontract &&
+                                                item.date == tuple.Item2
+                                                select item
+                                                ).First();
+                    }
+                    catch (SqlException)
+                    {
+                        continue;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+
+                dailyContractList.Add(currentDailyContract);
+            }
+
+            dailyContractList = dailyContractList.OrderBy(item => item.idcontract).OrderBy(item => item.date).ToList();
+        }
+
+        void PullOptions<# Write(methodNameSuffix[i]); #>(
+            out List<<# Write(tableNamePrefix[i]); #>tbloption> optionList)
+        {
+            optionList = new List<<# Write(tableNamePrefix[i]); #>tbloption>();
+
+            var tbloptions = Context.<# Write(tableNamePrefix[i]); #>tbloptions;
+
+            try
+            {
+                optionList = (from item in tbloptions
+                              where 
+                              item.optionyear >= StripNameHashSet.Min().Year &&
+                              item.optionyear <= StripNameHashSet.Max().Year &&
+                              item.idinstrument == IdInstrument
+                              select item
+                              ).ToList();
+            }
+            catch (SqlException)
+            {
+            }
+
+            optionList = optionList.OrderBy(item => item.idoption).ToList();
+        }
+
+        void PullDailyOptions(
+            out List<<# Write(tableNamePrefix[i]); #>tbloptiondata> optionDataList)
+        {
+            optionDataList = new List<<# Write(tableNamePrefix[i]); #>tbloptiondata>();
+
+            var tbloptiondatas = Context.<# Write(tableNamePrefix[i]); #>tbloptiondatas;
+
+            foreach (var id in IdOptionHashSet)
+            {
+                IEnumerable<<# Write(tableNamePrefix[i]); #>tbloptiondata> currentOptionData;
+
+                try
+                {
+                    currentOptionData = (from item in tbloptiondatas
+                                         where 
+                                         item.idoption == id
+                                         select item);
+                }
+                catch (SqlException)
+                {
+                    continue;
+                }
+
+                optionDataList.AddRange(currentOptionData);
+            }
+
+            optionDataList = optionDataList.OrderBy(item => item.idoption).OrderBy(item => item.datetime).ToList();
         }
 
 <# } #>

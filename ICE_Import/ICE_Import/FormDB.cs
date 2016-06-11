@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,7 +15,6 @@ namespace ICE_Import
         CancellationTokenSource cts;
 
         string DatabaseName;
-        bool IsLocalDB;
 
         string TablesPrefix;
         bool IsTestTables;
@@ -38,6 +35,10 @@ namespace ICE_Import
         string CqgSymbol;
         double RiskFreeInterestRate = double.NaN;
         double TickSize = double.NaN;
+
+        HashSet<DateTime> StripNameHashSet;
+        HashSet<Tuple<DateTime, DateTime>> StripNameDateHashSet;
+        HashSet<long> IdOptionHashSet;
 
         public FormDB()
         {
@@ -344,19 +345,16 @@ namespace ICE_Import
                 case 1:
                     // Local DB
                     DatabaseName = "Local";
-                    IsLocalDB = true;
                     ConnectionString = ConnectionStrings.Local;
                     break;
                 case 2:
                     // TMLDB_Copy
                     DatabaseName = "TMLDB_Copy";
-                    IsLocalDB = false;
                     ConnectionString = ConnectionStrings.TMLDB_Copy;
                     break;
                 case 3:
                     // TMLDB
                     DatabaseName = "TMLDB";
-                    IsLocalDB = false;
                     ConnectionString = ConnectionStrings.TMLDB;
                     break;
                 default:

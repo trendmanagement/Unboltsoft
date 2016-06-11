@@ -11,23 +11,23 @@
 
 namespace ICE_Import
 {
-	using System.Data.Linq;
-	using System.Data.Linq.Mapping;
-	using System.Data;
-	using System.Collections.Generic;
-	using System.Reflection;
-	using System.Linq;
-	using System.Linq.Expressions;
-	using System.ComponentModel;
-	using System;
-	
-	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="TMLDB")]
-	public partial class DataClassesTMLDBDataContext : System.Data.Linq.DataContext
-	{
-		
-		private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource();
-		
+    using System.Data.Linq;
+    using System.Data.Linq.Mapping;
+    using System.Data;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.ComponentModel;
+    using System;
+    
+    
+    [global::System.Data.Linq.Mapping.DatabaseAttribute(Name="TMLDB")]
+    public partial class DataClassesTMLDBDataContext : System.Data.Linq.DataContext
+    {
+        
+        private static System.Data.Linq.Mapping.MappingSource mappingSource = new AttributeMappingSource();
+        
     #region Extensibility Method Definitions
     partial void OnCreated();
     partial void Inserttblinstrument(tblinstrument instance);
@@ -67,346 +67,346 @@ namespace ICE_Import
     partial void Updatetblcontractexpiration(tblcontractexpiration instance);
     partial void Deletetblcontractexpiration(tblcontractexpiration instance);
     #endregion
-		
-		public DataClassesTMLDBDataContext() : 
-				base(global::ICE_Import.Properties.Settings.Default.TMLDBConnectionString, mappingSource)
-		{
-			OnCreated();
-		}
-		
-		public DataClassesTMLDBDataContext(string connection) : 
-				base(connection, mappingSource)
-		{
-			OnCreated();
-		}
-		
-		public DataClassesTMLDBDataContext(System.Data.IDbConnection connection) : 
-				base(connection, mappingSource)
-		{
-			OnCreated();
-		}
-		
-		public DataClassesTMLDBDataContext(string connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
-				base(connection, mappingSource)
-		{
-			OnCreated();
-		}
-		
-		public DataClassesTMLDBDataContext(System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
-				base(connection, mappingSource)
-		{
-			OnCreated();
-		}
-		
-		public System.Data.Linq.Table<tblinstrument> tblinstruments
-		{
-			get
-			{
-				return this.GetTable<tblinstrument>();
-			}
-		}
-		
-		public System.Data.Linq.Table<tblcontract> tblcontracts
-		{
-			get
-			{
-				return this.GetTable<tblcontract>();
-			}
-		}
-		
-		public System.Data.Linq.Table<tbldailycontractsettlement> tbldailycontractsettlements
-		{
-			get
-			{
-				return this.GetTable<tbldailycontractsettlement>();
-			}
-		}
-		
-		public System.Data.Linq.Table<tbloption> tbloptions
-		{
-			get
-			{
-				return this.GetTable<tbloption>();
-			}
-		}
-		
-		public System.Data.Linq.Table<tbloptiondata> tbloptiondatas
-		{
-			get
-			{
-				return this.GetTable<tbloptiondata>();
-			}
-		}
-		
-		public System.Data.Linq.Table<test_tblcontract> test_tblcontracts
-		{
-			get
-			{
-				return this.GetTable<test_tblcontract>();
-			}
-		}
-		
-		public System.Data.Linq.Table<test_tbldailycontractsettlement> test_tbldailycontractsettlements
-		{
-			get
-			{
-				return this.GetTable<test_tbldailycontractsettlement>();
-			}
-		}
-		
-		public System.Data.Linq.Table<test_tbloption> test_tbloptions
-		{
-			get
-			{
-				return this.GetTable<test_tbloption>();
-			}
-		}
-		
-		public System.Data.Linq.Table<test_tbloptiondata> test_tbloptiondatas
-		{
-			get
-			{
-				return this.GetTable<test_tbloptiondata>();
-			}
-		}
-		
-		public System.Data.Linq.Table<tbloptioninputdata> tbloptioninputdatas
-		{
-			get
-			{
-				return this.GetTable<tbloptioninputdata>();
-			}
-		}
-		
-		public System.Data.Linq.Table<tbloptioninputsymbol> tbloptioninputsymbols
-		{
-			get
-			{
-				return this.GetTable<tbloptioninputsymbol>();
-			}
-		}
-		
-		public System.Data.Linq.Table<tblcontractexpiration> tblcontractexpirations
-		{
-			get
-			{
-				return this.GetTable<tblcontractexpiration>();
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPF")]
-		public int test_SPF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, expirationdate, cqgsymbol);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPDF")]
-		public int test_SPDF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> spanDate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> settlementPrice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> monthChar, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> yearInt, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> volume, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> openinterest)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), spanDate, settlementPrice, monthChar, yearInt, volume, openinterest);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPO")]
-		public int test_SPO([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, expirationdate, cqgsymbol);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPOD")]
-		public int test_SPOD([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idoption, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> datetime, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> price, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> impliedvol, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> timetoexpinyears)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), idoption, datetime, price, impliedvol, timetoexpinyears);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPF_Mod")]
-		public int test_SPF_Mod([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, cqgsymbol);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPO_Mod")]
-		public int test_SPO_Mod([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, cqgsymbol);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPF")]
-		public int SPF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, expirationdate, cqgsymbol);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPDF")]
-		public int SPDF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> spanDate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> settlementPrice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> monthChar, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> yearInt, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> volume, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> openinterest)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), spanDate, settlementPrice, monthChar, yearInt, volume, openinterest);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPO")]
-		public int SPO([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, expirationdate, cqgsymbol);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPOD")]
-		public int SPOD([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idoption, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> datetime, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> price, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> impliedvol, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> timetoexpinyears)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), idoption, datetime, price, impliedvol, timetoexpinyears);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPF_Mod")]
-		public int SPF_Mod([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, cqgsymbol);
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPO_Mod")]
-		public int SPO_Mod([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, cqgsymbol);
-			return ((int)(result.ReturnValue));
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tblinstruments")]
-	public partial class tblinstrument : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _idinstrument;
-		
-		private string _symbol;
-		
-		private string _description;
-		
-		private string _cqgsymbol;
-		
-		private string _exchangesymbol;
-		
-		private string _optionexchangesymbol;
-		
-		private string _exchangesymbolTT;
-		
-		private string _optionexchangesymbolTT;
-		
-		private long _idinstrumentgroup;
-		
-		private long _idexchange;
-		
-		private long _margin;
-		
-		private double _commissionpercontract;
-		
-		private byte _modeled;
-		
-		private byte _enabled;
-		
-		private short _listedspread;
-		
-		private System.DateTime _datastart;
-		
-		private int _timeshifthours;
-		
-		private double _ticksize;
-		
-		private double _tickdisplay;
-		
-		private double _tickvalue;
-		
-		private double _optionstrikeincrement;
-		
-		private double _optionstrikedisplay;
-		
-		private double _optionstrikedisplayTT;
-		
-		private double _optionticksize;
-		
-		private double _optiontickdisplay;
-		
-		private double _optiontickvalue;
-		
-		private double _secondaryoptionticksize;
-		
-		private double _secondaryoptiontickvalue;
-		
-		private double _secondaryoptiontickdisplay;
-		
-		private double _secondaryoptionticksizerule;
-		
-		private double _spanticksize;
-		
-		private double _spantickdisplay;
-		
-		private double _spanstrikedisplay;
-		
-		private double _spanoptionticksize;
-		
-		private double _spanoptiontickdisplay;
-		
-		private double _optionadmstrikedisplay;
-		
-		private double _admoptionftpfilestrikedisplay;
-		
-		private System.DateTime _optionstart;
-		
-		private System.DateTime _spanoptionstart;
-		
-		private byte _stoptype;
-		
-		private long _pricebandinticks;
-		
-		private long _limittickoffset;
-		
-		private System.DateTime _customdayboundarytime;
-		
-		private short _usedailycustomdata;
-		
-		private short _decisionoffsetminutes;
-		
-		private byte _optionenabled;
-		
-		private byte _productionenabled;
-		
-		private string _admcode;
-		
-		private string _admexchangecode;
-		
-		private double _admfuturepricefactor;
-		
-		private double _admoptionpricefactor;
-		
-		private string _spanfuturecode;
-		
-		private string _spanoptioncode;
-		
-		private byte _optiondatamonthscollected;
-		
-		private string _notes;
-		
-		private short _idAssetClass;
-		
-		private short _substitutesymbol_eod;
-		
-		private string _instrumentsymbol_pre_eod;
-		
-		private string _instrumentsymboleod_eod;
-		
-		private int _instrumentid_eod;
-		
-		private System.DateTime _settlementtime;
-		
+        
+        public DataClassesTMLDBDataContext() : 
+                base(global::ICE_Import.Properties.Settings.Default.TMLDBConnectionString, mappingSource)
+        {
+            OnCreated();
+        }
+        
+        public DataClassesTMLDBDataContext(string connection) : 
+                base(connection, mappingSource)
+        {
+            OnCreated();
+        }
+        
+        public DataClassesTMLDBDataContext(System.Data.IDbConnection connection) : 
+                base(connection, mappingSource)
+        {
+            OnCreated();
+        }
+        
+        public DataClassesTMLDBDataContext(string connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
+                base(connection, mappingSource)
+        {
+            OnCreated();
+        }
+        
+        public DataClassesTMLDBDataContext(System.Data.IDbConnection connection, System.Data.Linq.Mapping.MappingSource mappingSource) : 
+                base(connection, mappingSource)
+        {
+            OnCreated();
+        }
+        
+        public System.Data.Linq.Table<tblinstrument> tblinstruments
+        {
+            get
+            {
+                return this.GetTable<tblinstrument>();
+            }
+        }
+        
+        public System.Data.Linq.Table<tblcontract> tblcontracts
+        {
+            get
+            {
+                return this.GetTable<tblcontract>();
+            }
+        }
+        
+        public System.Data.Linq.Table<tbldailycontractsettlement> tbldailycontractsettlements
+        {
+            get
+            {
+                return this.GetTable<tbldailycontractsettlement>();
+            }
+        }
+        
+        public System.Data.Linq.Table<tbloption> tbloptions
+        {
+            get
+            {
+                return this.GetTable<tbloption>();
+            }
+        }
+        
+        public System.Data.Linq.Table<tbloptiondata> tbloptiondatas
+        {
+            get
+            {
+                return this.GetTable<tbloptiondata>();
+            }
+        }
+        
+        public System.Data.Linq.Table<test_tblcontract> test_tblcontracts
+        {
+            get
+            {
+                return this.GetTable<test_tblcontract>();
+            }
+        }
+        
+        public System.Data.Linq.Table<test_tbldailycontractsettlement> test_tbldailycontractsettlements
+        {
+            get
+            {
+                return this.GetTable<test_tbldailycontractsettlement>();
+            }
+        }
+        
+        public System.Data.Linq.Table<test_tbloption> test_tbloptions
+        {
+            get
+            {
+                return this.GetTable<test_tbloption>();
+            }
+        }
+        
+        public System.Data.Linq.Table<test_tbloptiondata> test_tbloptiondatas
+        {
+            get
+            {
+                return this.GetTable<test_tbloptiondata>();
+            }
+        }
+        
+        public System.Data.Linq.Table<tbloptioninputdata> tbloptioninputdatas
+        {
+            get
+            {
+                return this.GetTable<tbloptioninputdata>();
+            }
+        }
+        
+        public System.Data.Linq.Table<tbloptioninputsymbol> tbloptioninputsymbols
+        {
+            get
+            {
+                return this.GetTable<tbloptioninputsymbol>();
+            }
+        }
+        
+        public System.Data.Linq.Table<tblcontractexpiration> tblcontractexpirations
+        {
+            get
+            {
+                return this.GetTable<tblcontractexpiration>();
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPF")]
+        public int test_SPF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, expirationdate, cqgsymbol);
+            return ((int)(result.ReturnValue));
+        }
+        
+        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPDF")]
+        public int test_SPDF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> spanDate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> settlementPrice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> monthChar, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> yearInt, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> volume, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> openinterest)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), spanDate, settlementPrice, monthChar, yearInt, volume, openinterest);
+            return ((int)(result.ReturnValue));
+        }
+        
+        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPO")]
+        public int test_SPO([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, expirationdate, cqgsymbol);
+            return ((int)(result.ReturnValue));
+        }
+        
+        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPOD")]
+        public int test_SPOD([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idoption, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> datetime, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> price, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> impliedvol, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> timetoexpinyears)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), idoption, datetime, price, impliedvol, timetoexpinyears);
+            return ((int)(result.ReturnValue));
+        }
+        
+        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPF_Mod")]
+        public int test_SPF_Mod([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, cqgsymbol);
+            return ((int)(result.ReturnValue));
+        }
+        
+        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPO_Mod")]
+        public int test_SPO_Mod([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, cqgsymbol);
+            return ((int)(result.ReturnValue));
+        }
+        
+        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPF")]
+        public int SPF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, expirationdate, cqgsymbol);
+            return ((int)(result.ReturnValue));
+        }
+        
+        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPDF")]
+        public int SPDF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> spanDate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> settlementPrice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> monthChar, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> yearInt, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> volume, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> openinterest)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), spanDate, settlementPrice, monthChar, yearInt, volume, openinterest);
+            return ((int)(result.ReturnValue));
+        }
+        
+        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPO")]
+        public int SPO([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, expirationdate, cqgsymbol);
+            return ((int)(result.ReturnValue));
+        }
+        
+        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPOD")]
+        public int SPOD([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idoption, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> datetime, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> price, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> impliedvol, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> timetoexpinyears)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), idoption, datetime, price, impliedvol, timetoexpinyears);
+            return ((int)(result.ReturnValue));
+        }
+        
+        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPF_Mod")]
+        public int SPF_Mod([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, cqgsymbol);
+            return ((int)(result.ReturnValue));
+        }
+        
+        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPO_Mod")]
+        public int SPO_Mod([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, cqgsymbol);
+            return ((int)(result.ReturnValue));
+        }
+    }
+    
+    [global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tblinstruments")]
+    public partial class tblinstrument : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        
+        private long _idinstrument;
+        
+        private string _symbol;
+        
+        private string _description;
+        
+        private string _cqgsymbol;
+        
+        private string _exchangesymbol;
+        
+        private string _optionexchangesymbol;
+        
+        private string _exchangesymbolTT;
+        
+        private string _optionexchangesymbolTT;
+        
+        private long _idinstrumentgroup;
+        
+        private long _idexchange;
+        
+        private long _margin;
+        
+        private double _commissionpercontract;
+        
+        private byte _modeled;
+        
+        private byte _enabled;
+        
+        private short _listedspread;
+        
+        private System.DateTime _datastart;
+        
+        private int _timeshifthours;
+        
+        private double _ticksize;
+        
+        private double _tickdisplay;
+        
+        private double _tickvalue;
+        
+        private double _optionstrikeincrement;
+        
+        private double _optionstrikedisplay;
+        
+        private double _optionstrikedisplayTT;
+        
+        private double _optionticksize;
+        
+        private double _optiontickdisplay;
+        
+        private double _optiontickvalue;
+        
+        private double _secondaryoptionticksize;
+        
+        private double _secondaryoptiontickvalue;
+        
+        private double _secondaryoptiontickdisplay;
+        
+        private double _secondaryoptionticksizerule;
+        
+        private double _spanticksize;
+        
+        private double _spantickdisplay;
+        
+        private double _spanstrikedisplay;
+        
+        private double _spanoptionticksize;
+        
+        private double _spanoptiontickdisplay;
+        
+        private double _optionadmstrikedisplay;
+        
+        private double _admoptionftpfilestrikedisplay;
+        
+        private System.DateTime _optionstart;
+        
+        private System.DateTime _spanoptionstart;
+        
+        private byte _stoptype;
+        
+        private long _pricebandinticks;
+        
+        private long _limittickoffset;
+        
+        private System.DateTime _customdayboundarytime;
+        
+        private short _usedailycustomdata;
+        
+        private short _decisionoffsetminutes;
+        
+        private byte _optionenabled;
+        
+        private byte _productionenabled;
+        
+        private string _admcode;
+        
+        private string _admexchangecode;
+        
+        private double _admfuturepricefactor;
+        
+        private double _admoptionpricefactor;
+        
+        private string _spanfuturecode;
+        
+        private string _spanoptioncode;
+        
+        private byte _optiondatamonthscollected;
+        
+        private string _notes;
+        
+        private short _idAssetClass;
+        
+        private short _substitutesymbol_eod;
+        
+        private string _instrumentsymbol_pre_eod;
+        
+        private string _instrumentsymboleod_eod;
+        
+        private int _instrumentid_eod;
+        
+        private System.DateTime _settlementtime;
+        
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -534,1275 +534,1275 @@ namespace ICE_Import
     partial void OnsettlementtimeChanging(System.DateTime value);
     partial void OnsettlementtimeChanged();
     #endregion
-		
-		public tblinstrument()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
-		public long idinstrument
-		{
-			get
-			{
-				return this._idinstrument;
-			}
-			set
-			{
-				if ((this._idinstrument != value))
-				{
-					this.OnidinstrumentChanging(value);
-					this.SendPropertyChanging();
-					this._idinstrument = value;
-					this.SendPropertyChanged("idinstrument");
-					this.OnidinstrumentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_symbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string symbol
-		{
-			get
-			{
-				return this._symbol;
-			}
-			set
-			{
-				if ((this._symbol != value))
-				{
-					this.OnsymbolChanging(value);
-					this.SendPropertyChanging();
-					this._symbol = value;
-					this.SendPropertyChanged("symbol");
-					this.OnsymbolChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_description", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string description
-		{
-			get
-			{
-				return this._description;
-			}
-			set
-			{
-				if ((this._description != value))
-				{
-					this.OndescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._description = value;
-					this.SendPropertyChanged("description");
-					this.OndescriptionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string cqgsymbol
-		{
-			get
-			{
-				return this._cqgsymbol;
-			}
-			set
-			{
-				if ((this._cqgsymbol != value))
-				{
-					this.OncqgsymbolChanging(value);
-					this.SendPropertyChanging();
-					this._cqgsymbol = value;
-					this.SendPropertyChanged("cqgsymbol");
-					this.OncqgsymbolChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_exchangesymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string exchangesymbol
-		{
-			get
-			{
-				return this._exchangesymbol;
-			}
-			set
-			{
-				if ((this._exchangesymbol != value))
-				{
-					this.OnexchangesymbolChanging(value);
-					this.SendPropertyChanging();
-					this._exchangesymbol = value;
-					this.SendPropertyChanged("exchangesymbol");
-					this.OnexchangesymbolChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionexchangesymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string optionexchangesymbol
-		{
-			get
-			{
-				return this._optionexchangesymbol;
-			}
-			set
-			{
-				if ((this._optionexchangesymbol != value))
-				{
-					this.OnoptionexchangesymbolChanging(value);
-					this.SendPropertyChanging();
-					this._optionexchangesymbol = value;
-					this.SendPropertyChanged("optionexchangesymbol");
-					this.OnoptionexchangesymbolChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_exchangesymbolTT", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string exchangesymbolTT
-		{
-			get
-			{
-				return this._exchangesymbolTT;
-			}
-			set
-			{
-				if ((this._exchangesymbolTT != value))
-				{
-					this.OnexchangesymbolTTChanging(value);
-					this.SendPropertyChanging();
-					this._exchangesymbolTT = value;
-					this.SendPropertyChanged("exchangesymbolTT");
-					this.OnexchangesymbolTTChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionexchangesymbolTT", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string optionexchangesymbolTT
-		{
-			get
-			{
-				return this._optionexchangesymbolTT;
-			}
-			set
-			{
-				if ((this._optionexchangesymbolTT != value))
-				{
-					this.OnoptionexchangesymbolTTChanging(value);
-					this.SendPropertyChanging();
-					this._optionexchangesymbolTT = value;
-					this.SendPropertyChanged("optionexchangesymbolTT");
-					this.OnoptionexchangesymbolTTChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrumentgroup", DbType="BigInt NOT NULL")]
-		public long idinstrumentgroup
-		{
-			get
-			{
-				return this._idinstrumentgroup;
-			}
-			set
-			{
-				if ((this._idinstrumentgroup != value))
-				{
-					this.OnidinstrumentgroupChanging(value);
-					this.SendPropertyChanging();
-					this._idinstrumentgroup = value;
-					this.SendPropertyChanged("idinstrumentgroup");
-					this.OnidinstrumentgroupChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idexchange", DbType="BigInt NOT NULL")]
-		public long idexchange
-		{
-			get
-			{
-				return this._idexchange;
-			}
-			set
-			{
-				if ((this._idexchange != value))
-				{
-					this.OnidexchangeChanging(value);
-					this.SendPropertyChanging();
-					this._idexchange = value;
-					this.SendPropertyChanged("idexchange");
-					this.OnidexchangeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_margin", DbType="BigInt NOT NULL")]
-		public long margin
-		{
-			get
-			{
-				return this._margin;
-			}
-			set
-			{
-				if ((this._margin != value))
-				{
-					this.OnmarginChanging(value);
-					this.SendPropertyChanging();
-					this._margin = value;
-					this.SendPropertyChanged("margin");
-					this.OnmarginChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_commissionpercontract", DbType="Float NOT NULL")]
-		public double commissionpercontract
-		{
-			get
-			{
-				return this._commissionpercontract;
-			}
-			set
-			{
-				if ((this._commissionpercontract != value))
-				{
-					this.OncommissionpercontractChanging(value);
-					this.SendPropertyChanging();
-					this._commissionpercontract = value;
-					this.SendPropertyChanged("commissionpercontract");
-					this.OncommissionpercontractChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_modeled", DbType="TinyInt NOT NULL")]
-		public byte modeled
-		{
-			get
-			{
-				return this._modeled;
-			}
-			set
-			{
-				if ((this._modeled != value))
-				{
-					this.OnmodeledChanging(value);
-					this.SendPropertyChanging();
-					this._modeled = value;
-					this.SendPropertyChanged("modeled");
-					this.OnmodeledChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_enabled", DbType="TinyInt NOT NULL")]
-		public byte enabled
-		{
-			get
-			{
-				return this._enabled;
-			}
-			set
-			{
-				if ((this._enabled != value))
-				{
-					this.OnenabledChanging(value);
-					this.SendPropertyChanging();
-					this._enabled = value;
-					this.SendPropertyChanged("enabled");
-					this.OnenabledChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_listedspread", DbType="SmallInt NOT NULL")]
-		public short listedspread
-		{
-			get
-			{
-				return this._listedspread;
-			}
-			set
-			{
-				if ((this._listedspread != value))
-				{
-					this.OnlistedspreadChanging(value);
-					this.SendPropertyChanging();
-					this._listedspread = value;
-					this.SendPropertyChanged("listedspread");
-					this.OnlistedspreadChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_datastart", DbType="Date NOT NULL")]
-		public System.DateTime datastart
-		{
-			get
-			{
-				return this._datastart;
-			}
-			set
-			{
-				if ((this._datastart != value))
-				{
-					this.OndatastartChanging(value);
-					this.SendPropertyChanging();
-					this._datastart = value;
-					this.SendPropertyChanged("datastart");
-					this.OndatastartChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_timeshifthours", DbType="Int NOT NULL")]
-		public int timeshifthours
-		{
-			get
-			{
-				return this._timeshifthours;
-			}
-			set
-			{
-				if ((this._timeshifthours != value))
-				{
-					this.OntimeshifthoursChanging(value);
-					this.SendPropertyChanging();
-					this._timeshifthours = value;
-					this.SendPropertyChanged("timeshifthours");
-					this.OntimeshifthoursChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ticksize", DbType="Float NOT NULL")]
-		public double ticksize
-		{
-			get
-			{
-				return this._ticksize;
-			}
-			set
-			{
-				if ((this._ticksize != value))
-				{
-					this.OnticksizeChanging(value);
-					this.SendPropertyChanging();
-					this._ticksize = value;
-					this.SendPropertyChanged("ticksize");
-					this.OnticksizeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_tickdisplay", DbType="Float NOT NULL")]
-		public double tickdisplay
-		{
-			get
-			{
-				return this._tickdisplay;
-			}
-			set
-			{
-				if ((this._tickdisplay != value))
-				{
-					this.OntickdisplayChanging(value);
-					this.SendPropertyChanging();
-					this._tickdisplay = value;
-					this.SendPropertyChanged("tickdisplay");
-					this.OntickdisplayChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_tickvalue", DbType="Float NOT NULL")]
-		public double tickvalue
-		{
-			get
-			{
-				return this._tickvalue;
-			}
-			set
-			{
-				if ((this._tickvalue != value))
-				{
-					this.OntickvalueChanging(value);
-					this.SendPropertyChanging();
-					this._tickvalue = value;
-					this.SendPropertyChanged("tickvalue");
-					this.OntickvalueChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionstrikeincrement", DbType="Float NOT NULL")]
-		public double optionstrikeincrement
-		{
-			get
-			{
-				return this._optionstrikeincrement;
-			}
-			set
-			{
-				if ((this._optionstrikeincrement != value))
-				{
-					this.OnoptionstrikeincrementChanging(value);
-					this.SendPropertyChanging();
-					this._optionstrikeincrement = value;
-					this.SendPropertyChanged("optionstrikeincrement");
-					this.OnoptionstrikeincrementChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionstrikedisplay", DbType="Float NOT NULL")]
-		public double optionstrikedisplay
-		{
-			get
-			{
-				return this._optionstrikedisplay;
-			}
-			set
-			{
-				if ((this._optionstrikedisplay != value))
-				{
-					this.OnoptionstrikedisplayChanging(value);
-					this.SendPropertyChanging();
-					this._optionstrikedisplay = value;
-					this.SendPropertyChanged("optionstrikedisplay");
-					this.OnoptionstrikedisplayChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionstrikedisplayTT", DbType="Float NOT NULL")]
-		public double optionstrikedisplayTT
-		{
-			get
-			{
-				return this._optionstrikedisplayTT;
-			}
-			set
-			{
-				if ((this._optionstrikedisplayTT != value))
-				{
-					this.OnoptionstrikedisplayTTChanging(value);
-					this.SendPropertyChanging();
-					this._optionstrikedisplayTT = value;
-					this.SendPropertyChanged("optionstrikedisplayTT");
-					this.OnoptionstrikedisplayTTChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionticksize", DbType="Float NOT NULL")]
-		public double optionticksize
-		{
-			get
-			{
-				return this._optionticksize;
-			}
-			set
-			{
-				if ((this._optionticksize != value))
-				{
-					this.OnoptionticksizeChanging(value);
-					this.SendPropertyChanging();
-					this._optionticksize = value;
-					this.SendPropertyChanged("optionticksize");
-					this.OnoptionticksizeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optiontickdisplay", DbType="Float NOT NULL")]
-		public double optiontickdisplay
-		{
-			get
-			{
-				return this._optiontickdisplay;
-			}
-			set
-			{
-				if ((this._optiontickdisplay != value))
-				{
-					this.OnoptiontickdisplayChanging(value);
-					this.SendPropertyChanging();
-					this._optiontickdisplay = value;
-					this.SendPropertyChanged("optiontickdisplay");
-					this.OnoptiontickdisplayChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optiontickvalue", DbType="Float NOT NULL")]
-		public double optiontickvalue
-		{
-			get
-			{
-				return this._optiontickvalue;
-			}
-			set
-			{
-				if ((this._optiontickvalue != value))
-				{
-					this.OnoptiontickvalueChanging(value);
-					this.SendPropertyChanging();
-					this._optiontickvalue = value;
-					this.SendPropertyChanged("optiontickvalue");
-					this.OnoptiontickvalueChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_secondaryoptionticksize", DbType="Float NOT NULL")]
-		public double secondaryoptionticksize
-		{
-			get
-			{
-				return this._secondaryoptionticksize;
-			}
-			set
-			{
-				if ((this._secondaryoptionticksize != value))
-				{
-					this.OnsecondaryoptionticksizeChanging(value);
-					this.SendPropertyChanging();
-					this._secondaryoptionticksize = value;
-					this.SendPropertyChanged("secondaryoptionticksize");
-					this.OnsecondaryoptionticksizeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_secondaryoptiontickvalue", DbType="Float NOT NULL")]
-		public double secondaryoptiontickvalue
-		{
-			get
-			{
-				return this._secondaryoptiontickvalue;
-			}
-			set
-			{
-				if ((this._secondaryoptiontickvalue != value))
-				{
-					this.OnsecondaryoptiontickvalueChanging(value);
-					this.SendPropertyChanging();
-					this._secondaryoptiontickvalue = value;
-					this.SendPropertyChanged("secondaryoptiontickvalue");
-					this.OnsecondaryoptiontickvalueChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_secondaryoptiontickdisplay", DbType="Float NOT NULL")]
-		public double secondaryoptiontickdisplay
-		{
-			get
-			{
-				return this._secondaryoptiontickdisplay;
-			}
-			set
-			{
-				if ((this._secondaryoptiontickdisplay != value))
-				{
-					this.OnsecondaryoptiontickdisplayChanging(value);
-					this.SendPropertyChanging();
-					this._secondaryoptiontickdisplay = value;
-					this.SendPropertyChanged("secondaryoptiontickdisplay");
-					this.OnsecondaryoptiontickdisplayChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_secondaryoptionticksizerule", DbType="Float NOT NULL")]
-		public double secondaryoptionticksizerule
-		{
-			get
-			{
-				return this._secondaryoptionticksizerule;
-			}
-			set
-			{
-				if ((this._secondaryoptionticksizerule != value))
-				{
-					this.OnsecondaryoptionticksizeruleChanging(value);
-					this.SendPropertyChanging();
-					this._secondaryoptionticksizerule = value;
-					this.SendPropertyChanged("secondaryoptionticksizerule");
-					this.OnsecondaryoptionticksizeruleChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanticksize", DbType="Float NOT NULL")]
-		public double spanticksize
-		{
-			get
-			{
-				return this._spanticksize;
-			}
-			set
-			{
-				if ((this._spanticksize != value))
-				{
-					this.OnspanticksizeChanging(value);
-					this.SendPropertyChanging();
-					this._spanticksize = value;
-					this.SendPropertyChanged("spanticksize");
-					this.OnspanticksizeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spantickdisplay", DbType="Float NOT NULL")]
-		public double spantickdisplay
-		{
-			get
-			{
-				return this._spantickdisplay;
-			}
-			set
-			{
-				if ((this._spantickdisplay != value))
-				{
-					this.OnspantickdisplayChanging(value);
-					this.SendPropertyChanging();
-					this._spantickdisplay = value;
-					this.SendPropertyChanged("spantickdisplay");
-					this.OnspantickdisplayChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanstrikedisplay", DbType="Float NOT NULL")]
-		public double spanstrikedisplay
-		{
-			get
-			{
-				return this._spanstrikedisplay;
-			}
-			set
-			{
-				if ((this._spanstrikedisplay != value))
-				{
-					this.OnspanstrikedisplayChanging(value);
-					this.SendPropertyChanging();
-					this._spanstrikedisplay = value;
-					this.SendPropertyChanged("spanstrikedisplay");
-					this.OnspanstrikedisplayChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanoptionticksize", DbType="Float NOT NULL")]
-		public double spanoptionticksize
-		{
-			get
-			{
-				return this._spanoptionticksize;
-			}
-			set
-			{
-				if ((this._spanoptionticksize != value))
-				{
-					this.OnspanoptionticksizeChanging(value);
-					this.SendPropertyChanging();
-					this._spanoptionticksize = value;
-					this.SendPropertyChanged("spanoptionticksize");
-					this.OnspanoptionticksizeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanoptiontickdisplay", DbType="Float NOT NULL")]
-		public double spanoptiontickdisplay
-		{
-			get
-			{
-				return this._spanoptiontickdisplay;
-			}
-			set
-			{
-				if ((this._spanoptiontickdisplay != value))
-				{
-					this.OnspanoptiontickdisplayChanging(value);
-					this.SendPropertyChanging();
-					this._spanoptiontickdisplay = value;
-					this.SendPropertyChanged("spanoptiontickdisplay");
-					this.OnspanoptiontickdisplayChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionadmstrikedisplay", DbType="Float NOT NULL")]
-		public double optionadmstrikedisplay
-		{
-			get
-			{
-				return this._optionadmstrikedisplay;
-			}
-			set
-			{
-				if ((this._optionadmstrikedisplay != value))
-				{
-					this.OnoptionadmstrikedisplayChanging(value);
-					this.SendPropertyChanging();
-					this._optionadmstrikedisplay = value;
-					this.SendPropertyChanged("optionadmstrikedisplay");
-					this.OnoptionadmstrikedisplayChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admoptionftpfilestrikedisplay", DbType="Float NOT NULL")]
-		public double admoptionftpfilestrikedisplay
-		{
-			get
-			{
-				return this._admoptionftpfilestrikedisplay;
-			}
-			set
-			{
-				if ((this._admoptionftpfilestrikedisplay != value))
-				{
-					this.OnadmoptionftpfilestrikedisplayChanging(value);
-					this.SendPropertyChanging();
-					this._admoptionftpfilestrikedisplay = value;
-					this.SendPropertyChanged("admoptionftpfilestrikedisplay");
-					this.OnadmoptionftpfilestrikedisplayChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionstart", DbType="Date NOT NULL")]
-		public System.DateTime optionstart
-		{
-			get
-			{
-				return this._optionstart;
-			}
-			set
-			{
-				if ((this._optionstart != value))
-				{
-					this.OnoptionstartChanging(value);
-					this.SendPropertyChanging();
-					this._optionstart = value;
-					this.SendPropertyChanged("optionstart");
-					this.OnoptionstartChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanoptionstart", DbType="Date NOT NULL")]
-		public System.DateTime spanoptionstart
-		{
-			get
-			{
-				return this._spanoptionstart;
-			}
-			set
-			{
-				if ((this._spanoptionstart != value))
-				{
-					this.OnspanoptionstartChanging(value);
-					this.SendPropertyChanging();
-					this._spanoptionstart = value;
-					this.SendPropertyChanged("spanoptionstart");
-					this.OnspanoptionstartChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_stoptype", DbType="TinyInt NOT NULL")]
-		public byte stoptype
-		{
-			get
-			{
-				return this._stoptype;
-			}
-			set
-			{
-				if ((this._stoptype != value))
-				{
-					this.OnstoptypeChanging(value);
-					this.SendPropertyChanging();
-					this._stoptype = value;
-					this.SendPropertyChanged("stoptype");
-					this.OnstoptypeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pricebandinticks", DbType="BigInt NOT NULL")]
-		public long pricebandinticks
-		{
-			get
-			{
-				return this._pricebandinticks;
-			}
-			set
-			{
-				if ((this._pricebandinticks != value))
-				{
-					this.OnpricebandinticksChanging(value);
-					this.SendPropertyChanging();
-					this._pricebandinticks = value;
-					this.SendPropertyChanged("pricebandinticks");
-					this.OnpricebandinticksChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_limittickoffset", DbType="BigInt NOT NULL")]
-		public long limittickoffset
-		{
-			get
-			{
-				return this._limittickoffset;
-			}
-			set
-			{
-				if ((this._limittickoffset != value))
-				{
-					this.OnlimittickoffsetChanging(value);
-					this.SendPropertyChanging();
-					this._limittickoffset = value;
-					this.SendPropertyChanged("limittickoffset");
-					this.OnlimittickoffsetChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_customdayboundarytime", DbType="DateTime2 NOT NULL")]
-		public System.DateTime customdayboundarytime
-		{
-			get
-			{
-				return this._customdayboundarytime;
-			}
-			set
-			{
-				if ((this._customdayboundarytime != value))
-				{
-					this.OncustomdayboundarytimeChanging(value);
-					this.SendPropertyChanging();
-					this._customdayboundarytime = value;
-					this.SendPropertyChanged("customdayboundarytime");
-					this.OncustomdayboundarytimeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_usedailycustomdata", DbType="SmallInt NOT NULL")]
-		public short usedailycustomdata
-		{
-			get
-			{
-				return this._usedailycustomdata;
-			}
-			set
-			{
-				if ((this._usedailycustomdata != value))
-				{
-					this.OnusedailycustomdataChanging(value);
-					this.SendPropertyChanging();
-					this._usedailycustomdata = value;
-					this.SendPropertyChanged("usedailycustomdata");
-					this.OnusedailycustomdataChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_decisionoffsetminutes", DbType="SmallInt NOT NULL")]
-		public short decisionoffsetminutes
-		{
-			get
-			{
-				return this._decisionoffsetminutes;
-			}
-			set
-			{
-				if ((this._decisionoffsetminutes != value))
-				{
-					this.OndecisionoffsetminutesChanging(value);
-					this.SendPropertyChanging();
-					this._decisionoffsetminutes = value;
-					this.SendPropertyChanged("decisionoffsetminutes");
-					this.OndecisionoffsetminutesChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionenabled", DbType="TinyInt NOT NULL")]
-		public byte optionenabled
-		{
-			get
-			{
-				return this._optionenabled;
-			}
-			set
-			{
-				if ((this._optionenabled != value))
-				{
-					this.OnoptionenabledChanging(value);
-					this.SendPropertyChanging();
-					this._optionenabled = value;
-					this.SendPropertyChanged("optionenabled");
-					this.OnoptionenabledChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_productionenabled", DbType="TinyInt NOT NULL")]
-		public byte productionenabled
-		{
-			get
-			{
-				return this._productionenabled;
-			}
-			set
-			{
-				if ((this._productionenabled != value))
-				{
-					this.OnproductionenabledChanging(value);
-					this.SendPropertyChanging();
-					this._productionenabled = value;
-					this.SendPropertyChanged("productionenabled");
-					this.OnproductionenabledChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admcode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
-		public string admcode
-		{
-			get
-			{
-				return this._admcode;
-			}
-			set
-			{
-				if ((this._admcode != value))
-				{
-					this.OnadmcodeChanging(value);
-					this.SendPropertyChanging();
-					this._admcode = value;
-					this.SendPropertyChanged("admcode");
-					this.OnadmcodeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admexchangecode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
-		public string admexchangecode
-		{
-			get
-			{
-				return this._admexchangecode;
-			}
-			set
-			{
-				if ((this._admexchangecode != value))
-				{
-					this.OnadmexchangecodeChanging(value);
-					this.SendPropertyChanging();
-					this._admexchangecode = value;
-					this.SendPropertyChanged("admexchangecode");
-					this.OnadmexchangecodeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admfuturepricefactor", DbType="Float NOT NULL")]
-		public double admfuturepricefactor
-		{
-			get
-			{
-				return this._admfuturepricefactor;
-			}
-			set
-			{
-				if ((this._admfuturepricefactor != value))
-				{
-					this.OnadmfuturepricefactorChanging(value);
-					this.SendPropertyChanging();
-					this._admfuturepricefactor = value;
-					this.SendPropertyChanged("admfuturepricefactor");
-					this.OnadmfuturepricefactorChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admoptionpricefactor", DbType="Float NOT NULL")]
-		public double admoptionpricefactor
-		{
-			get
-			{
-				return this._admoptionpricefactor;
-			}
-			set
-			{
-				if ((this._admoptionpricefactor != value))
-				{
-					this.OnadmoptionpricefactorChanging(value);
-					this.SendPropertyChanging();
-					this._admoptionpricefactor = value;
-					this.SendPropertyChanged("admoptionpricefactor");
-					this.OnadmoptionpricefactorChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanfuturecode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
-		public string spanfuturecode
-		{
-			get
-			{
-				return this._spanfuturecode;
-			}
-			set
-			{
-				if ((this._spanfuturecode != value))
-				{
-					this.OnspanfuturecodeChanging(value);
-					this.SendPropertyChanging();
-					this._spanfuturecode = value;
-					this.SendPropertyChanged("spanfuturecode");
-					this.OnspanfuturecodeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanoptioncode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
-		public string spanoptioncode
-		{
-			get
-			{
-				return this._spanoptioncode;
-			}
-			set
-			{
-				if ((this._spanoptioncode != value))
-				{
-					this.OnspanoptioncodeChanging(value);
-					this.SendPropertyChanging();
-					this._spanoptioncode = value;
-					this.SendPropertyChanged("spanoptioncode");
-					this.OnspanoptioncodeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optiondatamonthscollected", DbType="TinyInt NOT NULL")]
-		public byte optiondatamonthscollected
-		{
-			get
-			{
-				return this._optiondatamonthscollected;
-			}
-			set
-			{
-				if ((this._optiondatamonthscollected != value))
-				{
-					this.OnoptiondatamonthscollectedChanging(value);
-					this.SendPropertyChanging();
-					this._optiondatamonthscollected = value;
-					this.SendPropertyChanged("optiondatamonthscollected");
-					this.OnoptiondatamonthscollectedChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_notes", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string notes
-		{
-			get
-			{
-				return this._notes;
-			}
-			set
-			{
-				if ((this._notes != value))
-				{
-					this.OnnotesChanging(value);
-					this.SendPropertyChanging();
-					this._notes = value;
-					this.SendPropertyChanged("notes");
-					this.OnnotesChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idAssetClass", DbType="SmallInt NOT NULL")]
-		public short idAssetClass
-		{
-			get
-			{
-				return this._idAssetClass;
-			}
-			set
-			{
-				if ((this._idAssetClass != value))
-				{
-					this.OnidAssetClassChanging(value);
-					this.SendPropertyChanging();
-					this._idAssetClass = value;
-					this.SendPropertyChanged("idAssetClass");
-					this.OnidAssetClassChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_substitutesymbol_eod", DbType="SmallInt NOT NULL")]
-		public short substitutesymbol_eod
-		{
-			get
-			{
-				return this._substitutesymbol_eod;
-			}
-			set
-			{
-				if ((this._substitutesymbol_eod != value))
-				{
-					this.Onsubstitutesymbol_eodChanging(value);
-					this.SendPropertyChanging();
-					this._substitutesymbol_eod = value;
-					this.SendPropertyChanged("substitutesymbol_eod");
-					this.Onsubstitutesymbol_eodChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_instrumentsymbol_pre_eod", DbType="VarChar(5) NOT NULL", CanBeNull=false)]
-		public string instrumentsymbol_pre_eod
-		{
-			get
-			{
-				return this._instrumentsymbol_pre_eod;
-			}
-			set
-			{
-				if ((this._instrumentsymbol_pre_eod != value))
-				{
-					this.Oninstrumentsymbol_pre_eodChanging(value);
-					this.SendPropertyChanging();
-					this._instrumentsymbol_pre_eod = value;
-					this.SendPropertyChanged("instrumentsymbol_pre_eod");
-					this.Oninstrumentsymbol_pre_eodChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_instrumentsymboleod_eod", DbType="VarChar(5) NOT NULL", CanBeNull=false)]
-		public string instrumentsymboleod_eod
-		{
-			get
-			{
-				return this._instrumentsymboleod_eod;
-			}
-			set
-			{
-				if ((this._instrumentsymboleod_eod != value))
-				{
-					this.Oninstrumentsymboleod_eodChanging(value);
-					this.SendPropertyChanging();
-					this._instrumentsymboleod_eod = value;
-					this.SendPropertyChanged("instrumentsymboleod_eod");
-					this.Oninstrumentsymboleod_eodChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_instrumentid_eod", DbType="Int NOT NULL")]
-		public int instrumentid_eod
-		{
-			get
-			{
-				return this._instrumentid_eod;
-			}
-			set
-			{
-				if ((this._instrumentid_eod != value))
-				{
-					this.Oninstrumentid_eodChanging(value);
-					this.SendPropertyChanging();
-					this._instrumentid_eod = value;
-					this.SendPropertyChanged("instrumentid_eod");
-					this.Oninstrumentid_eodChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_settlementtime", DbType="DateTime NOT NULL")]
-		public System.DateTime settlementtime
-		{
-			get
-			{
-				return this._settlementtime;
-			}
-			set
-			{
-				if ((this._settlementtime != value))
-				{
-					this.OnsettlementtimeChanging(value);
-					this.SendPropertyChanging();
-					this._settlementtime = value;
-					this.SendPropertyChanged("settlementtime");
-					this.OnsettlementtimeChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tblcontracts")]
-	public partial class tblcontract : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _idcontract;
-		
-		private string _contractname;
-		
-		private char _month;
-		
-		private short _monthint;
-		
-		private long _year;
-		
-		private long _idinstrument;
-		
-		private System.DateTime _expirationdate;
-		
-		private string _cqgsymbol;
-		
+        
+        public tblinstrument()
+        {
+            OnCreated();
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
+        public long idinstrument
+        {
+            get
+            {
+                return this._idinstrument;
+            }
+            set
+            {
+                if ((this._idinstrument != value))
+                {
+                    this.OnidinstrumentChanging(value);
+                    this.SendPropertyChanging();
+                    this._idinstrument = value;
+                    this.SendPropertyChanged("idinstrument");
+                    this.OnidinstrumentChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_symbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string symbol
+        {
+            get
+            {
+                return this._symbol;
+            }
+            set
+            {
+                if ((this._symbol != value))
+                {
+                    this.OnsymbolChanging(value);
+                    this.SendPropertyChanging();
+                    this._symbol = value;
+                    this.SendPropertyChanged("symbol");
+                    this.OnsymbolChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_description", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string description
+        {
+            get
+            {
+                return this._description;
+            }
+            set
+            {
+                if ((this._description != value))
+                {
+                    this.OndescriptionChanging(value);
+                    this.SendPropertyChanging();
+                    this._description = value;
+                    this.SendPropertyChanged("description");
+                    this.OndescriptionChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string cqgsymbol
+        {
+            get
+            {
+                return this._cqgsymbol;
+            }
+            set
+            {
+                if ((this._cqgsymbol != value))
+                {
+                    this.OncqgsymbolChanging(value);
+                    this.SendPropertyChanging();
+                    this._cqgsymbol = value;
+                    this.SendPropertyChanged("cqgsymbol");
+                    this.OncqgsymbolChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_exchangesymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string exchangesymbol
+        {
+            get
+            {
+                return this._exchangesymbol;
+            }
+            set
+            {
+                if ((this._exchangesymbol != value))
+                {
+                    this.OnexchangesymbolChanging(value);
+                    this.SendPropertyChanging();
+                    this._exchangesymbol = value;
+                    this.SendPropertyChanged("exchangesymbol");
+                    this.OnexchangesymbolChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionexchangesymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string optionexchangesymbol
+        {
+            get
+            {
+                return this._optionexchangesymbol;
+            }
+            set
+            {
+                if ((this._optionexchangesymbol != value))
+                {
+                    this.OnoptionexchangesymbolChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionexchangesymbol = value;
+                    this.SendPropertyChanged("optionexchangesymbol");
+                    this.OnoptionexchangesymbolChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_exchangesymbolTT", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string exchangesymbolTT
+        {
+            get
+            {
+                return this._exchangesymbolTT;
+            }
+            set
+            {
+                if ((this._exchangesymbolTT != value))
+                {
+                    this.OnexchangesymbolTTChanging(value);
+                    this.SendPropertyChanging();
+                    this._exchangesymbolTT = value;
+                    this.SendPropertyChanged("exchangesymbolTT");
+                    this.OnexchangesymbolTTChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionexchangesymbolTT", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string optionexchangesymbolTT
+        {
+            get
+            {
+                return this._optionexchangesymbolTT;
+            }
+            set
+            {
+                if ((this._optionexchangesymbolTT != value))
+                {
+                    this.OnoptionexchangesymbolTTChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionexchangesymbolTT = value;
+                    this.SendPropertyChanged("optionexchangesymbolTT");
+                    this.OnoptionexchangesymbolTTChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrumentgroup", DbType="BigInt NOT NULL")]
+        public long idinstrumentgroup
+        {
+            get
+            {
+                return this._idinstrumentgroup;
+            }
+            set
+            {
+                if ((this._idinstrumentgroup != value))
+                {
+                    this.OnidinstrumentgroupChanging(value);
+                    this.SendPropertyChanging();
+                    this._idinstrumentgroup = value;
+                    this.SendPropertyChanged("idinstrumentgroup");
+                    this.OnidinstrumentgroupChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idexchange", DbType="BigInt NOT NULL")]
+        public long idexchange
+        {
+            get
+            {
+                return this._idexchange;
+            }
+            set
+            {
+                if ((this._idexchange != value))
+                {
+                    this.OnidexchangeChanging(value);
+                    this.SendPropertyChanging();
+                    this._idexchange = value;
+                    this.SendPropertyChanged("idexchange");
+                    this.OnidexchangeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_margin", DbType="BigInt NOT NULL")]
+        public long margin
+        {
+            get
+            {
+                return this._margin;
+            }
+            set
+            {
+                if ((this._margin != value))
+                {
+                    this.OnmarginChanging(value);
+                    this.SendPropertyChanging();
+                    this._margin = value;
+                    this.SendPropertyChanged("margin");
+                    this.OnmarginChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_commissionpercontract", DbType="Float NOT NULL")]
+        public double commissionpercontract
+        {
+            get
+            {
+                return this._commissionpercontract;
+            }
+            set
+            {
+                if ((this._commissionpercontract != value))
+                {
+                    this.OncommissionpercontractChanging(value);
+                    this.SendPropertyChanging();
+                    this._commissionpercontract = value;
+                    this.SendPropertyChanged("commissionpercontract");
+                    this.OncommissionpercontractChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_modeled", DbType="TinyInt NOT NULL")]
+        public byte modeled
+        {
+            get
+            {
+                return this._modeled;
+            }
+            set
+            {
+                if ((this._modeled != value))
+                {
+                    this.OnmodeledChanging(value);
+                    this.SendPropertyChanging();
+                    this._modeled = value;
+                    this.SendPropertyChanged("modeled");
+                    this.OnmodeledChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_enabled", DbType="TinyInt NOT NULL")]
+        public byte enabled
+        {
+            get
+            {
+                return this._enabled;
+            }
+            set
+            {
+                if ((this._enabled != value))
+                {
+                    this.OnenabledChanging(value);
+                    this.SendPropertyChanging();
+                    this._enabled = value;
+                    this.SendPropertyChanged("enabled");
+                    this.OnenabledChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_listedspread", DbType="SmallInt NOT NULL")]
+        public short listedspread
+        {
+            get
+            {
+                return this._listedspread;
+            }
+            set
+            {
+                if ((this._listedspread != value))
+                {
+                    this.OnlistedspreadChanging(value);
+                    this.SendPropertyChanging();
+                    this._listedspread = value;
+                    this.SendPropertyChanged("listedspread");
+                    this.OnlistedspreadChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_datastart", DbType="Date NOT NULL")]
+        public System.DateTime datastart
+        {
+            get
+            {
+                return this._datastart;
+            }
+            set
+            {
+                if ((this._datastart != value))
+                {
+                    this.OndatastartChanging(value);
+                    this.SendPropertyChanging();
+                    this._datastart = value;
+                    this.SendPropertyChanged("datastart");
+                    this.OndatastartChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_timeshifthours", DbType="Int NOT NULL")]
+        public int timeshifthours
+        {
+            get
+            {
+                return this._timeshifthours;
+            }
+            set
+            {
+                if ((this._timeshifthours != value))
+                {
+                    this.OntimeshifthoursChanging(value);
+                    this.SendPropertyChanging();
+                    this._timeshifthours = value;
+                    this.SendPropertyChanged("timeshifthours");
+                    this.OntimeshifthoursChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ticksize", DbType="Float NOT NULL")]
+        public double ticksize
+        {
+            get
+            {
+                return this._ticksize;
+            }
+            set
+            {
+                if ((this._ticksize != value))
+                {
+                    this.OnticksizeChanging(value);
+                    this.SendPropertyChanging();
+                    this._ticksize = value;
+                    this.SendPropertyChanged("ticksize");
+                    this.OnticksizeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_tickdisplay", DbType="Float NOT NULL")]
+        public double tickdisplay
+        {
+            get
+            {
+                return this._tickdisplay;
+            }
+            set
+            {
+                if ((this._tickdisplay != value))
+                {
+                    this.OntickdisplayChanging(value);
+                    this.SendPropertyChanging();
+                    this._tickdisplay = value;
+                    this.SendPropertyChanged("tickdisplay");
+                    this.OntickdisplayChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_tickvalue", DbType="Float NOT NULL")]
+        public double tickvalue
+        {
+            get
+            {
+                return this._tickvalue;
+            }
+            set
+            {
+                if ((this._tickvalue != value))
+                {
+                    this.OntickvalueChanging(value);
+                    this.SendPropertyChanging();
+                    this._tickvalue = value;
+                    this.SendPropertyChanged("tickvalue");
+                    this.OntickvalueChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionstrikeincrement", DbType="Float NOT NULL")]
+        public double optionstrikeincrement
+        {
+            get
+            {
+                return this._optionstrikeincrement;
+            }
+            set
+            {
+                if ((this._optionstrikeincrement != value))
+                {
+                    this.OnoptionstrikeincrementChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionstrikeincrement = value;
+                    this.SendPropertyChanged("optionstrikeincrement");
+                    this.OnoptionstrikeincrementChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionstrikedisplay", DbType="Float NOT NULL")]
+        public double optionstrikedisplay
+        {
+            get
+            {
+                return this._optionstrikedisplay;
+            }
+            set
+            {
+                if ((this._optionstrikedisplay != value))
+                {
+                    this.OnoptionstrikedisplayChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionstrikedisplay = value;
+                    this.SendPropertyChanged("optionstrikedisplay");
+                    this.OnoptionstrikedisplayChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionstrikedisplayTT", DbType="Float NOT NULL")]
+        public double optionstrikedisplayTT
+        {
+            get
+            {
+                return this._optionstrikedisplayTT;
+            }
+            set
+            {
+                if ((this._optionstrikedisplayTT != value))
+                {
+                    this.OnoptionstrikedisplayTTChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionstrikedisplayTT = value;
+                    this.SendPropertyChanged("optionstrikedisplayTT");
+                    this.OnoptionstrikedisplayTTChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionticksize", DbType="Float NOT NULL")]
+        public double optionticksize
+        {
+            get
+            {
+                return this._optionticksize;
+            }
+            set
+            {
+                if ((this._optionticksize != value))
+                {
+                    this.OnoptionticksizeChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionticksize = value;
+                    this.SendPropertyChanged("optionticksize");
+                    this.OnoptionticksizeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optiontickdisplay", DbType="Float NOT NULL")]
+        public double optiontickdisplay
+        {
+            get
+            {
+                return this._optiontickdisplay;
+            }
+            set
+            {
+                if ((this._optiontickdisplay != value))
+                {
+                    this.OnoptiontickdisplayChanging(value);
+                    this.SendPropertyChanging();
+                    this._optiontickdisplay = value;
+                    this.SendPropertyChanged("optiontickdisplay");
+                    this.OnoptiontickdisplayChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optiontickvalue", DbType="Float NOT NULL")]
+        public double optiontickvalue
+        {
+            get
+            {
+                return this._optiontickvalue;
+            }
+            set
+            {
+                if ((this._optiontickvalue != value))
+                {
+                    this.OnoptiontickvalueChanging(value);
+                    this.SendPropertyChanging();
+                    this._optiontickvalue = value;
+                    this.SendPropertyChanged("optiontickvalue");
+                    this.OnoptiontickvalueChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_secondaryoptionticksize", DbType="Float NOT NULL")]
+        public double secondaryoptionticksize
+        {
+            get
+            {
+                return this._secondaryoptionticksize;
+            }
+            set
+            {
+                if ((this._secondaryoptionticksize != value))
+                {
+                    this.OnsecondaryoptionticksizeChanging(value);
+                    this.SendPropertyChanging();
+                    this._secondaryoptionticksize = value;
+                    this.SendPropertyChanged("secondaryoptionticksize");
+                    this.OnsecondaryoptionticksizeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_secondaryoptiontickvalue", DbType="Float NOT NULL")]
+        public double secondaryoptiontickvalue
+        {
+            get
+            {
+                return this._secondaryoptiontickvalue;
+            }
+            set
+            {
+                if ((this._secondaryoptiontickvalue != value))
+                {
+                    this.OnsecondaryoptiontickvalueChanging(value);
+                    this.SendPropertyChanging();
+                    this._secondaryoptiontickvalue = value;
+                    this.SendPropertyChanged("secondaryoptiontickvalue");
+                    this.OnsecondaryoptiontickvalueChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_secondaryoptiontickdisplay", DbType="Float NOT NULL")]
+        public double secondaryoptiontickdisplay
+        {
+            get
+            {
+                return this._secondaryoptiontickdisplay;
+            }
+            set
+            {
+                if ((this._secondaryoptiontickdisplay != value))
+                {
+                    this.OnsecondaryoptiontickdisplayChanging(value);
+                    this.SendPropertyChanging();
+                    this._secondaryoptiontickdisplay = value;
+                    this.SendPropertyChanged("secondaryoptiontickdisplay");
+                    this.OnsecondaryoptiontickdisplayChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_secondaryoptionticksizerule", DbType="Float NOT NULL")]
+        public double secondaryoptionticksizerule
+        {
+            get
+            {
+                return this._secondaryoptionticksizerule;
+            }
+            set
+            {
+                if ((this._secondaryoptionticksizerule != value))
+                {
+                    this.OnsecondaryoptionticksizeruleChanging(value);
+                    this.SendPropertyChanging();
+                    this._secondaryoptionticksizerule = value;
+                    this.SendPropertyChanged("secondaryoptionticksizerule");
+                    this.OnsecondaryoptionticksizeruleChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanticksize", DbType="Float NOT NULL")]
+        public double spanticksize
+        {
+            get
+            {
+                return this._spanticksize;
+            }
+            set
+            {
+                if ((this._spanticksize != value))
+                {
+                    this.OnspanticksizeChanging(value);
+                    this.SendPropertyChanging();
+                    this._spanticksize = value;
+                    this.SendPropertyChanged("spanticksize");
+                    this.OnspanticksizeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spantickdisplay", DbType="Float NOT NULL")]
+        public double spantickdisplay
+        {
+            get
+            {
+                return this._spantickdisplay;
+            }
+            set
+            {
+                if ((this._spantickdisplay != value))
+                {
+                    this.OnspantickdisplayChanging(value);
+                    this.SendPropertyChanging();
+                    this._spantickdisplay = value;
+                    this.SendPropertyChanged("spantickdisplay");
+                    this.OnspantickdisplayChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanstrikedisplay", DbType="Float NOT NULL")]
+        public double spanstrikedisplay
+        {
+            get
+            {
+                return this._spanstrikedisplay;
+            }
+            set
+            {
+                if ((this._spanstrikedisplay != value))
+                {
+                    this.OnspanstrikedisplayChanging(value);
+                    this.SendPropertyChanging();
+                    this._spanstrikedisplay = value;
+                    this.SendPropertyChanged("spanstrikedisplay");
+                    this.OnspanstrikedisplayChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanoptionticksize", DbType="Float NOT NULL")]
+        public double spanoptionticksize
+        {
+            get
+            {
+                return this._spanoptionticksize;
+            }
+            set
+            {
+                if ((this._spanoptionticksize != value))
+                {
+                    this.OnspanoptionticksizeChanging(value);
+                    this.SendPropertyChanging();
+                    this._spanoptionticksize = value;
+                    this.SendPropertyChanged("spanoptionticksize");
+                    this.OnspanoptionticksizeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanoptiontickdisplay", DbType="Float NOT NULL")]
+        public double spanoptiontickdisplay
+        {
+            get
+            {
+                return this._spanoptiontickdisplay;
+            }
+            set
+            {
+                if ((this._spanoptiontickdisplay != value))
+                {
+                    this.OnspanoptiontickdisplayChanging(value);
+                    this.SendPropertyChanging();
+                    this._spanoptiontickdisplay = value;
+                    this.SendPropertyChanged("spanoptiontickdisplay");
+                    this.OnspanoptiontickdisplayChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionadmstrikedisplay", DbType="Float NOT NULL")]
+        public double optionadmstrikedisplay
+        {
+            get
+            {
+                return this._optionadmstrikedisplay;
+            }
+            set
+            {
+                if ((this._optionadmstrikedisplay != value))
+                {
+                    this.OnoptionadmstrikedisplayChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionadmstrikedisplay = value;
+                    this.SendPropertyChanged("optionadmstrikedisplay");
+                    this.OnoptionadmstrikedisplayChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admoptionftpfilestrikedisplay", DbType="Float NOT NULL")]
+        public double admoptionftpfilestrikedisplay
+        {
+            get
+            {
+                return this._admoptionftpfilestrikedisplay;
+            }
+            set
+            {
+                if ((this._admoptionftpfilestrikedisplay != value))
+                {
+                    this.OnadmoptionftpfilestrikedisplayChanging(value);
+                    this.SendPropertyChanging();
+                    this._admoptionftpfilestrikedisplay = value;
+                    this.SendPropertyChanged("admoptionftpfilestrikedisplay");
+                    this.OnadmoptionftpfilestrikedisplayChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionstart", DbType="Date NOT NULL")]
+        public System.DateTime optionstart
+        {
+            get
+            {
+                return this._optionstart;
+            }
+            set
+            {
+                if ((this._optionstart != value))
+                {
+                    this.OnoptionstartChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionstart = value;
+                    this.SendPropertyChanged("optionstart");
+                    this.OnoptionstartChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanoptionstart", DbType="Date NOT NULL")]
+        public System.DateTime spanoptionstart
+        {
+            get
+            {
+                return this._spanoptionstart;
+            }
+            set
+            {
+                if ((this._spanoptionstart != value))
+                {
+                    this.OnspanoptionstartChanging(value);
+                    this.SendPropertyChanging();
+                    this._spanoptionstart = value;
+                    this.SendPropertyChanged("spanoptionstart");
+                    this.OnspanoptionstartChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_stoptype", DbType="TinyInt NOT NULL")]
+        public byte stoptype
+        {
+            get
+            {
+                return this._stoptype;
+            }
+            set
+            {
+                if ((this._stoptype != value))
+                {
+                    this.OnstoptypeChanging(value);
+                    this.SendPropertyChanging();
+                    this._stoptype = value;
+                    this.SendPropertyChanged("stoptype");
+                    this.OnstoptypeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_pricebandinticks", DbType="BigInt NOT NULL")]
+        public long pricebandinticks
+        {
+            get
+            {
+                return this._pricebandinticks;
+            }
+            set
+            {
+                if ((this._pricebandinticks != value))
+                {
+                    this.OnpricebandinticksChanging(value);
+                    this.SendPropertyChanging();
+                    this._pricebandinticks = value;
+                    this.SendPropertyChanged("pricebandinticks");
+                    this.OnpricebandinticksChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_limittickoffset", DbType="BigInt NOT NULL")]
+        public long limittickoffset
+        {
+            get
+            {
+                return this._limittickoffset;
+            }
+            set
+            {
+                if ((this._limittickoffset != value))
+                {
+                    this.OnlimittickoffsetChanging(value);
+                    this.SendPropertyChanging();
+                    this._limittickoffset = value;
+                    this.SendPropertyChanged("limittickoffset");
+                    this.OnlimittickoffsetChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_customdayboundarytime", DbType="DateTime2 NOT NULL")]
+        public System.DateTime customdayboundarytime
+        {
+            get
+            {
+                return this._customdayboundarytime;
+            }
+            set
+            {
+                if ((this._customdayboundarytime != value))
+                {
+                    this.OncustomdayboundarytimeChanging(value);
+                    this.SendPropertyChanging();
+                    this._customdayboundarytime = value;
+                    this.SendPropertyChanged("customdayboundarytime");
+                    this.OncustomdayboundarytimeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_usedailycustomdata", DbType="SmallInt NOT NULL")]
+        public short usedailycustomdata
+        {
+            get
+            {
+                return this._usedailycustomdata;
+            }
+            set
+            {
+                if ((this._usedailycustomdata != value))
+                {
+                    this.OnusedailycustomdataChanging(value);
+                    this.SendPropertyChanging();
+                    this._usedailycustomdata = value;
+                    this.SendPropertyChanged("usedailycustomdata");
+                    this.OnusedailycustomdataChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_decisionoffsetminutes", DbType="SmallInt NOT NULL")]
+        public short decisionoffsetminutes
+        {
+            get
+            {
+                return this._decisionoffsetminutes;
+            }
+            set
+            {
+                if ((this._decisionoffsetminutes != value))
+                {
+                    this.OndecisionoffsetminutesChanging(value);
+                    this.SendPropertyChanging();
+                    this._decisionoffsetminutes = value;
+                    this.SendPropertyChanged("decisionoffsetminutes");
+                    this.OndecisionoffsetminutesChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionenabled", DbType="TinyInt NOT NULL")]
+        public byte optionenabled
+        {
+            get
+            {
+                return this._optionenabled;
+            }
+            set
+            {
+                if ((this._optionenabled != value))
+                {
+                    this.OnoptionenabledChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionenabled = value;
+                    this.SendPropertyChanged("optionenabled");
+                    this.OnoptionenabledChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_productionenabled", DbType="TinyInt NOT NULL")]
+        public byte productionenabled
+        {
+            get
+            {
+                return this._productionenabled;
+            }
+            set
+            {
+                if ((this._productionenabled != value))
+                {
+                    this.OnproductionenabledChanging(value);
+                    this.SendPropertyChanging();
+                    this._productionenabled = value;
+                    this.SendPropertyChanged("productionenabled");
+                    this.OnproductionenabledChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admcode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
+        public string admcode
+        {
+            get
+            {
+                return this._admcode;
+            }
+            set
+            {
+                if ((this._admcode != value))
+                {
+                    this.OnadmcodeChanging(value);
+                    this.SendPropertyChanging();
+                    this._admcode = value;
+                    this.SendPropertyChanged("admcode");
+                    this.OnadmcodeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admexchangecode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
+        public string admexchangecode
+        {
+            get
+            {
+                return this._admexchangecode;
+            }
+            set
+            {
+                if ((this._admexchangecode != value))
+                {
+                    this.OnadmexchangecodeChanging(value);
+                    this.SendPropertyChanging();
+                    this._admexchangecode = value;
+                    this.SendPropertyChanged("admexchangecode");
+                    this.OnadmexchangecodeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admfuturepricefactor", DbType="Float NOT NULL")]
+        public double admfuturepricefactor
+        {
+            get
+            {
+                return this._admfuturepricefactor;
+            }
+            set
+            {
+                if ((this._admfuturepricefactor != value))
+                {
+                    this.OnadmfuturepricefactorChanging(value);
+                    this.SendPropertyChanging();
+                    this._admfuturepricefactor = value;
+                    this.SendPropertyChanged("admfuturepricefactor");
+                    this.OnadmfuturepricefactorChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_admoptionpricefactor", DbType="Float NOT NULL")]
+        public double admoptionpricefactor
+        {
+            get
+            {
+                return this._admoptionpricefactor;
+            }
+            set
+            {
+                if ((this._admoptionpricefactor != value))
+                {
+                    this.OnadmoptionpricefactorChanging(value);
+                    this.SendPropertyChanging();
+                    this._admoptionpricefactor = value;
+                    this.SendPropertyChanged("admoptionpricefactor");
+                    this.OnadmoptionpricefactorChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanfuturecode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
+        public string spanfuturecode
+        {
+            get
+            {
+                return this._spanfuturecode;
+            }
+            set
+            {
+                if ((this._spanfuturecode != value))
+                {
+                    this.OnspanfuturecodeChanging(value);
+                    this.SendPropertyChanging();
+                    this._spanfuturecode = value;
+                    this.SendPropertyChanged("spanfuturecode");
+                    this.OnspanfuturecodeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_spanoptioncode", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
+        public string spanoptioncode
+        {
+            get
+            {
+                return this._spanoptioncode;
+            }
+            set
+            {
+                if ((this._spanoptioncode != value))
+                {
+                    this.OnspanoptioncodeChanging(value);
+                    this.SendPropertyChanging();
+                    this._spanoptioncode = value;
+                    this.SendPropertyChanged("spanoptioncode");
+                    this.OnspanoptioncodeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optiondatamonthscollected", DbType="TinyInt NOT NULL")]
+        public byte optiondatamonthscollected
+        {
+            get
+            {
+                return this._optiondatamonthscollected;
+            }
+            set
+            {
+                if ((this._optiondatamonthscollected != value))
+                {
+                    this.OnoptiondatamonthscollectedChanging(value);
+                    this.SendPropertyChanging();
+                    this._optiondatamonthscollected = value;
+                    this.SendPropertyChanged("optiondatamonthscollected");
+                    this.OnoptiondatamonthscollectedChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_notes", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string notes
+        {
+            get
+            {
+                return this._notes;
+            }
+            set
+            {
+                if ((this._notes != value))
+                {
+                    this.OnnotesChanging(value);
+                    this.SendPropertyChanging();
+                    this._notes = value;
+                    this.SendPropertyChanged("notes");
+                    this.OnnotesChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idAssetClass", DbType="SmallInt NOT NULL")]
+        public short idAssetClass
+        {
+            get
+            {
+                return this._idAssetClass;
+            }
+            set
+            {
+                if ((this._idAssetClass != value))
+                {
+                    this.OnidAssetClassChanging(value);
+                    this.SendPropertyChanging();
+                    this._idAssetClass = value;
+                    this.SendPropertyChanged("idAssetClass");
+                    this.OnidAssetClassChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_substitutesymbol_eod", DbType="SmallInt NOT NULL")]
+        public short substitutesymbol_eod
+        {
+            get
+            {
+                return this._substitutesymbol_eod;
+            }
+            set
+            {
+                if ((this._substitutesymbol_eod != value))
+                {
+                    this.Onsubstitutesymbol_eodChanging(value);
+                    this.SendPropertyChanging();
+                    this._substitutesymbol_eod = value;
+                    this.SendPropertyChanged("substitutesymbol_eod");
+                    this.Onsubstitutesymbol_eodChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_instrumentsymbol_pre_eod", DbType="VarChar(5) NOT NULL", CanBeNull=false)]
+        public string instrumentsymbol_pre_eod
+        {
+            get
+            {
+                return this._instrumentsymbol_pre_eod;
+            }
+            set
+            {
+                if ((this._instrumentsymbol_pre_eod != value))
+                {
+                    this.Oninstrumentsymbol_pre_eodChanging(value);
+                    this.SendPropertyChanging();
+                    this._instrumentsymbol_pre_eod = value;
+                    this.SendPropertyChanged("instrumentsymbol_pre_eod");
+                    this.Oninstrumentsymbol_pre_eodChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_instrumentsymboleod_eod", DbType="VarChar(5) NOT NULL", CanBeNull=false)]
+        public string instrumentsymboleod_eod
+        {
+            get
+            {
+                return this._instrumentsymboleod_eod;
+            }
+            set
+            {
+                if ((this._instrumentsymboleod_eod != value))
+                {
+                    this.Oninstrumentsymboleod_eodChanging(value);
+                    this.SendPropertyChanging();
+                    this._instrumentsymboleod_eod = value;
+                    this.SendPropertyChanged("instrumentsymboleod_eod");
+                    this.Oninstrumentsymboleod_eodChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_instrumentid_eod", DbType="Int NOT NULL")]
+        public int instrumentid_eod
+        {
+            get
+            {
+                return this._instrumentid_eod;
+            }
+            set
+            {
+                if ((this._instrumentid_eod != value))
+                {
+                    this.Oninstrumentid_eodChanging(value);
+                    this.SendPropertyChanging();
+                    this._instrumentid_eod = value;
+                    this.SendPropertyChanged("instrumentid_eod");
+                    this.Oninstrumentid_eodChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_settlementtime", DbType="DateTime NOT NULL")]
+        public System.DateTime settlementtime
+        {
+            get
+            {
+                return this._settlementtime;
+            }
+            set
+            {
+                if ((this._settlementtime != value))
+                {
+                    this.OnsettlementtimeChanging(value);
+                    this.SendPropertyChanging();
+                    this._settlementtime = value;
+                    this.SendPropertyChanged("settlementtime");
+                    this.OnsettlementtimeChanged();
+                }
+            }
+        }
+        
+        public event PropertyChangingEventHandler PropertyChanging;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected virtual void SendPropertyChanging()
+        {
+            if ((this.PropertyChanging != null))
+            {
+                this.PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+        
+        protected virtual void SendPropertyChanged(String propertyName)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tblcontracts")]
+    public partial class tblcontract : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        
+        private long _idcontract;
+        
+        private string _contractname;
+        
+        private char _month;
+        
+        private short _monthint;
+        
+        private long _year;
+        
+        private long _idinstrument;
+        
+        private System.DateTime _expirationdate;
+        
+        private string _cqgsymbol;
+        
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -1824,211 +1824,211 @@ namespace ICE_Import
     partial void OncqgsymbolChanging(string value);
     partial void OncqgsymbolChanged();
     #endregion
-		
-		public tblcontract()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long idcontract
-		{
-			get
-			{
-				return this._idcontract;
-			}
-			set
-			{
-				if ((this._idcontract != value))
-				{
-					this.OnidcontractChanging(value);
-					this.SendPropertyChanging();
-					this._idcontract = value;
-					this.SendPropertyChanged("idcontract");
-					this.OnidcontractChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_contractname", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string contractname
-		{
-			get
-			{
-				return this._contractname;
-			}
-			set
-			{
-				if ((this._contractname != value))
-				{
-					this.OncontractnameChanging(value);
-					this.SendPropertyChanging();
-					this._contractname = value;
-					this.SendPropertyChanged("contractname");
-					this.OncontractnameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_month", DbType="Char(1) NOT NULL")]
-		public char month
-		{
-			get
-			{
-				return this._month;
-			}
-			set
-			{
-				if ((this._month != value))
-				{
-					this.OnmonthChanging(value);
-					this.SendPropertyChanging();
-					this._month = value;
-					this.SendPropertyChanged("month");
-					this.OnmonthChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_monthint", DbType="SmallInt NOT NULL")]
-		public short monthint
-		{
-			get
-			{
-				return this._monthint;
-			}
-			set
-			{
-				if ((this._monthint != value))
-				{
-					this.OnmonthintChanging(value);
-					this.SendPropertyChanging();
-					this._monthint = value;
-					this.SendPropertyChanged("monthint");
-					this.OnmonthintChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_year", DbType="BigInt NOT NULL")]
-		public long year
-		{
-			get
-			{
-				return this._year;
-			}
-			set
-			{
-				if ((this._year != value))
-				{
-					this.OnyearChanging(value);
-					this.SendPropertyChanging();
-					this._year = value;
-					this.SendPropertyChanged("year");
-					this.OnyearChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
-		public long idinstrument
-		{
-			get
-			{
-				return this._idinstrument;
-			}
-			set
-			{
-				if ((this._idinstrument != value))
-				{
-					this.OnidinstrumentChanging(value);
-					this.SendPropertyChanging();
-					this._idinstrument = value;
-					this.SendPropertyChanged("idinstrument");
-					this.OnidinstrumentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_expirationdate", DbType="Date NOT NULL")]
-		public System.DateTime expirationdate
-		{
-			get
-			{
-				return this._expirationdate;
-			}
-			set
-			{
-				if ((this._expirationdate != value))
-				{
-					this.OnexpirationdateChanging(value);
-					this.SendPropertyChanging();
-					this._expirationdate = value;
-					this.SendPropertyChanged("expirationdate");
-					this.OnexpirationdateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string cqgsymbol
-		{
-			get
-			{
-				return this._cqgsymbol;
-			}
-			set
-			{
-				if ((this._cqgsymbol != value))
-				{
-					this.OncqgsymbolChanging(value);
-					this.SendPropertyChanging();
-					this._cqgsymbol = value;
-					this.SendPropertyChanged("cqgsymbol");
-					this.OncqgsymbolChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tbldailycontractsettlements")]
-	public partial class tbldailycontractsettlement : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _iddailycontractsettlements;
-		
-		private long _idcontract;
-		
-		private System.DateTime _date;
-		
-		private double _settlement;
-		
-		private long _volume;
-		
-		private long _openinterest;
-		
+        
+        public tblcontract()
+        {
+            OnCreated();
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+        public long idcontract
+        {
+            get
+            {
+                return this._idcontract;
+            }
+            set
+            {
+                if ((this._idcontract != value))
+                {
+                    this.OnidcontractChanging(value);
+                    this.SendPropertyChanging();
+                    this._idcontract = value;
+                    this.SendPropertyChanged("idcontract");
+                    this.OnidcontractChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_contractname", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string contractname
+        {
+            get
+            {
+                return this._contractname;
+            }
+            set
+            {
+                if ((this._contractname != value))
+                {
+                    this.OncontractnameChanging(value);
+                    this.SendPropertyChanging();
+                    this._contractname = value;
+                    this.SendPropertyChanged("contractname");
+                    this.OncontractnameChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_month", DbType="Char(1) NOT NULL")]
+        public char month
+        {
+            get
+            {
+                return this._month;
+            }
+            set
+            {
+                if ((this._month != value))
+                {
+                    this.OnmonthChanging(value);
+                    this.SendPropertyChanging();
+                    this._month = value;
+                    this.SendPropertyChanged("month");
+                    this.OnmonthChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_monthint", DbType="SmallInt NOT NULL")]
+        public short monthint
+        {
+            get
+            {
+                return this._monthint;
+            }
+            set
+            {
+                if ((this._monthint != value))
+                {
+                    this.OnmonthintChanging(value);
+                    this.SendPropertyChanging();
+                    this._monthint = value;
+                    this.SendPropertyChanged("monthint");
+                    this.OnmonthintChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_year", DbType="BigInt NOT NULL")]
+        public long year
+        {
+            get
+            {
+                return this._year;
+            }
+            set
+            {
+                if ((this._year != value))
+                {
+                    this.OnyearChanging(value);
+                    this.SendPropertyChanging();
+                    this._year = value;
+                    this.SendPropertyChanged("year");
+                    this.OnyearChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
+        public long idinstrument
+        {
+            get
+            {
+                return this._idinstrument;
+            }
+            set
+            {
+                if ((this._idinstrument != value))
+                {
+                    this.OnidinstrumentChanging(value);
+                    this.SendPropertyChanging();
+                    this._idinstrument = value;
+                    this.SendPropertyChanged("idinstrument");
+                    this.OnidinstrumentChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_expirationdate", DbType="Date NOT NULL")]
+        public System.DateTime expirationdate
+        {
+            get
+            {
+                return this._expirationdate;
+            }
+            set
+            {
+                if ((this._expirationdate != value))
+                {
+                    this.OnexpirationdateChanging(value);
+                    this.SendPropertyChanging();
+                    this._expirationdate = value;
+                    this.SendPropertyChanged("expirationdate");
+                    this.OnexpirationdateChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string cqgsymbol
+        {
+            get
+            {
+                return this._cqgsymbol;
+            }
+            set
+            {
+                if ((this._cqgsymbol != value))
+                {
+                    this.OncqgsymbolChanging(value);
+                    this.SendPropertyChanging();
+                    this._cqgsymbol = value;
+                    this.SendPropertyChanged("cqgsymbol");
+                    this.OncqgsymbolChanged();
+                }
+            }
+        }
+        
+        public event PropertyChangingEventHandler PropertyChanging;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected virtual void SendPropertyChanging()
+        {
+            if ((this.PropertyChanging != null))
+            {
+                this.PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+        
+        protected virtual void SendPropertyChanged(String propertyName)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tbldailycontractsettlements")]
+    public partial class tbldailycontractsettlement : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        
+        private long _iddailycontractsettlements;
+        
+        private long _idcontract;
+        
+        private System.DateTime _date;
+        
+        private double _settlement;
+        
+        private long _volume;
+        
+        private long _openinterest;
+        
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2046,181 +2046,181 @@ namespace ICE_Import
     partial void OnopeninterestChanging(long value);
     partial void OnopeninterestChanged();
     #endregion
-		
-		public tbldailycontractsettlement()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_iddailycontractsettlements", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long iddailycontractsettlements
-		{
-			get
-			{
-				return this._iddailycontractsettlements;
-			}
-			set
-			{
-				if ((this._iddailycontractsettlements != value))
-				{
-					this.OniddailycontractsettlementsChanging(value);
-					this.SendPropertyChanging();
-					this._iddailycontractsettlements = value;
-					this.SendPropertyChanged("iddailycontractsettlements");
-					this.OniddailycontractsettlementsChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
-		public long idcontract
-		{
-			get
-			{
-				return this._idcontract;
-			}
-			set
-			{
-				if ((this._idcontract != value))
-				{
-					this.OnidcontractChanging(value);
-					this.SendPropertyChanging();
-					this._idcontract = value;
-					this.SendPropertyChanged("idcontract");
-					this.OnidcontractChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_date", DbType="Date NOT NULL")]
-		public System.DateTime date
-		{
-			get
-			{
-				return this._date;
-			}
-			set
-			{
-				if ((this._date != value))
-				{
-					this.OndateChanging(value);
-					this.SendPropertyChanging();
-					this._date = value;
-					this.SendPropertyChanged("date");
-					this.OndateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_settlement", DbType="Float NOT NULL")]
-		public double settlement
-		{
-			get
-			{
-				return this._settlement;
-			}
-			set
-			{
-				if ((this._settlement != value))
-				{
-					this.OnsettlementChanging(value);
-					this.SendPropertyChanging();
-					this._settlement = value;
-					this.SendPropertyChanged("settlement");
-					this.OnsettlementChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_volume", DbType="BigInt NOT NULL")]
-		public long volume
-		{
-			get
-			{
-				return this._volume;
-			}
-			set
-			{
-				if ((this._volume != value))
-				{
-					this.OnvolumeChanging(value);
-					this.SendPropertyChanging();
-					this._volume = value;
-					this.SendPropertyChanged("volume");
-					this.OnvolumeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_openinterest", DbType="BigInt NOT NULL")]
-		public long openinterest
-		{
-			get
-			{
-				return this._openinterest;
-			}
-			set
-			{
-				if ((this._openinterest != value))
-				{
-					this.OnopeninterestChanging(value);
-					this.SendPropertyChanging();
-					this._openinterest = value;
-					this.SendPropertyChanged("openinterest");
-					this.OnopeninterestChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tbloptions")]
-	public partial class tbloption : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _idoption;
-		
-		private string _optionname;
-		
-		private char _optionmonth;
-		
-		private int _optionmonthint;
-		
-		private int _optionyear;
-		
-		private double _strikeprice;
-		
-		private char _callorput;
-		
-		private long _idinstrument;
-		
-		private System.DateTime _expirationdate;
-		
-		private long _idcontract;
-		
-		private string _cqgsymbol;
-		
+        
+        public tbldailycontractsettlement()
+        {
+            OnCreated();
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_iddailycontractsettlements", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+        public long iddailycontractsettlements
+        {
+            get
+            {
+                return this._iddailycontractsettlements;
+            }
+            set
+            {
+                if ((this._iddailycontractsettlements != value))
+                {
+                    this.OniddailycontractsettlementsChanging(value);
+                    this.SendPropertyChanging();
+                    this._iddailycontractsettlements = value;
+                    this.SendPropertyChanged("iddailycontractsettlements");
+                    this.OniddailycontractsettlementsChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
+        public long idcontract
+        {
+            get
+            {
+                return this._idcontract;
+            }
+            set
+            {
+                if ((this._idcontract != value))
+                {
+                    this.OnidcontractChanging(value);
+                    this.SendPropertyChanging();
+                    this._idcontract = value;
+                    this.SendPropertyChanged("idcontract");
+                    this.OnidcontractChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_date", DbType="Date NOT NULL")]
+        public System.DateTime date
+        {
+            get
+            {
+                return this._date;
+            }
+            set
+            {
+                if ((this._date != value))
+                {
+                    this.OndateChanging(value);
+                    this.SendPropertyChanging();
+                    this._date = value;
+                    this.SendPropertyChanged("date");
+                    this.OndateChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_settlement", DbType="Float NOT NULL")]
+        public double settlement
+        {
+            get
+            {
+                return this._settlement;
+            }
+            set
+            {
+                if ((this._settlement != value))
+                {
+                    this.OnsettlementChanging(value);
+                    this.SendPropertyChanging();
+                    this._settlement = value;
+                    this.SendPropertyChanged("settlement");
+                    this.OnsettlementChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_volume", DbType="BigInt NOT NULL")]
+        public long volume
+        {
+            get
+            {
+                return this._volume;
+            }
+            set
+            {
+                if ((this._volume != value))
+                {
+                    this.OnvolumeChanging(value);
+                    this.SendPropertyChanging();
+                    this._volume = value;
+                    this.SendPropertyChanged("volume");
+                    this.OnvolumeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_openinterest", DbType="BigInt NOT NULL")]
+        public long openinterest
+        {
+            get
+            {
+                return this._openinterest;
+            }
+            set
+            {
+                if ((this._openinterest != value))
+                {
+                    this.OnopeninterestChanging(value);
+                    this.SendPropertyChanging();
+                    this._openinterest = value;
+                    this.SendPropertyChanged("openinterest");
+                    this.OnopeninterestChanged();
+                }
+            }
+        }
+        
+        public event PropertyChangingEventHandler PropertyChanging;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected virtual void SendPropertyChanging()
+        {
+            if ((this.PropertyChanging != null))
+            {
+                this.PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+        
+        protected virtual void SendPropertyChanged(String propertyName)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tbloptions")]
+    public partial class tbloption : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        
+        private long _idoption;
+        
+        private string _optionname;
+        
+        private char _optionmonth;
+        
+        private int _optionmonthint;
+        
+        private int _optionyear;
+        
+        private double _strikeprice;
+        
+        private char _callorput;
+        
+        private long _idinstrument;
+        
+        private System.DateTime _expirationdate;
+        
+        private long _idcontract;
+        
+        private string _cqgsymbol;
+        
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2248,271 +2248,271 @@ namespace ICE_Import
     partial void OncqgsymbolChanging(string value);
     partial void OncqgsymbolChanged();
     #endregion
-		
-		public tbloption()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoption", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long idoption
-		{
-			get
-			{
-				return this._idoption;
-			}
-			set
-			{
-				if ((this._idoption != value))
-				{
-					this.OnidoptionChanging(value);
-					this.SendPropertyChanging();
-					this._idoption = value;
-					this.SendPropertyChanged("idoption");
-					this.OnidoptionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionname", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string optionname
-		{
-			get
-			{
-				return this._optionname;
-			}
-			set
-			{
-				if ((this._optionname != value))
-				{
-					this.OnoptionnameChanging(value);
-					this.SendPropertyChanging();
-					this._optionname = value;
-					this.SendPropertyChanged("optionname");
-					this.OnoptionnameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmonth", DbType="Char(1) NOT NULL")]
-		public char optionmonth
-		{
-			get
-			{
-				return this._optionmonth;
-			}
-			set
-			{
-				if ((this._optionmonth != value))
-				{
-					this.OnoptionmonthChanging(value);
-					this.SendPropertyChanging();
-					this._optionmonth = value;
-					this.SendPropertyChanged("optionmonth");
-					this.OnoptionmonthChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmonthint", DbType="Int NOT NULL")]
-		public int optionmonthint
-		{
-			get
-			{
-				return this._optionmonthint;
-			}
-			set
-			{
-				if ((this._optionmonthint != value))
-				{
-					this.OnoptionmonthintChanging(value);
-					this.SendPropertyChanging();
-					this._optionmonthint = value;
-					this.SendPropertyChanged("optionmonthint");
-					this.OnoptionmonthintChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionyear", DbType="Int NOT NULL")]
-		public int optionyear
-		{
-			get
-			{
-				return this._optionyear;
-			}
-			set
-			{
-				if ((this._optionyear != value))
-				{
-					this.OnoptionyearChanging(value);
-					this.SendPropertyChanging();
-					this._optionyear = value;
-					this.SendPropertyChanged("optionyear");
-					this.OnoptionyearChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_strikeprice", DbType="Float NOT NULL")]
-		public double strikeprice
-		{
-			get
-			{
-				return this._strikeprice;
-			}
-			set
-			{
-				if ((this._strikeprice != value))
-				{
-					this.OnstrikepriceChanging(value);
-					this.SendPropertyChanging();
-					this._strikeprice = value;
-					this.SendPropertyChanged("strikeprice");
-					this.OnstrikepriceChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_callorput", DbType="Char(1) NOT NULL")]
-		public char callorput
-		{
-			get
-			{
-				return this._callorput;
-			}
-			set
-			{
-				if ((this._callorput != value))
-				{
-					this.OncallorputChanging(value);
-					this.SendPropertyChanging();
-					this._callorput = value;
-					this.SendPropertyChanged("callorput");
-					this.OncallorputChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL")]
-		public long idinstrument
-		{
-			get
-			{
-				return this._idinstrument;
-			}
-			set
-			{
-				if ((this._idinstrument != value))
-				{
-					this.OnidinstrumentChanging(value);
-					this.SendPropertyChanging();
-					this._idinstrument = value;
-					this.SendPropertyChanged("idinstrument");
-					this.OnidinstrumentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_expirationdate", DbType="Date NOT NULL")]
-		public System.DateTime expirationdate
-		{
-			get
-			{
-				return this._expirationdate;
-			}
-			set
-			{
-				if ((this._expirationdate != value))
-				{
-					this.OnexpirationdateChanging(value);
-					this.SendPropertyChanging();
-					this._expirationdate = value;
-					this.SendPropertyChanged("expirationdate");
-					this.OnexpirationdateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
-		public long idcontract
-		{
-			get
-			{
-				return this._idcontract;
-			}
-			set
-			{
-				if ((this._idcontract != value))
-				{
-					this.OnidcontractChanging(value);
-					this.SendPropertyChanging();
-					this._idcontract = value;
-					this.SendPropertyChanged("idcontract");
-					this.OnidcontractChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string cqgsymbol
-		{
-			get
-			{
-				return this._cqgsymbol;
-			}
-			set
-			{
-				if ((this._cqgsymbol != value))
-				{
-					this.OncqgsymbolChanging(value);
-					this.SendPropertyChanging();
-					this._cqgsymbol = value;
-					this.SendPropertyChanged("cqgsymbol");
-					this.OncqgsymbolChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tbloptiondata")]
-	public partial class tbloptiondata : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _idoptiondata;
-		
-		private long _idoption;
-		
-		private System.DateTime _datetime;
-		
-		private double _price;
-		
-		private double _impliedvol;
-		
-		private double _timetoexpinyears;
-		
+        
+        public tbloption()
+        {
+            OnCreated();
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoption", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+        public long idoption
+        {
+            get
+            {
+                return this._idoption;
+            }
+            set
+            {
+                if ((this._idoption != value))
+                {
+                    this.OnidoptionChanging(value);
+                    this.SendPropertyChanging();
+                    this._idoption = value;
+                    this.SendPropertyChanged("idoption");
+                    this.OnidoptionChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionname", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string optionname
+        {
+            get
+            {
+                return this._optionname;
+            }
+            set
+            {
+                if ((this._optionname != value))
+                {
+                    this.OnoptionnameChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionname = value;
+                    this.SendPropertyChanged("optionname");
+                    this.OnoptionnameChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmonth", DbType="Char(1) NOT NULL")]
+        public char optionmonth
+        {
+            get
+            {
+                return this._optionmonth;
+            }
+            set
+            {
+                if ((this._optionmonth != value))
+                {
+                    this.OnoptionmonthChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionmonth = value;
+                    this.SendPropertyChanged("optionmonth");
+                    this.OnoptionmonthChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmonthint", DbType="Int NOT NULL")]
+        public int optionmonthint
+        {
+            get
+            {
+                return this._optionmonthint;
+            }
+            set
+            {
+                if ((this._optionmonthint != value))
+                {
+                    this.OnoptionmonthintChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionmonthint = value;
+                    this.SendPropertyChanged("optionmonthint");
+                    this.OnoptionmonthintChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionyear", DbType="Int NOT NULL")]
+        public int optionyear
+        {
+            get
+            {
+                return this._optionyear;
+            }
+            set
+            {
+                if ((this._optionyear != value))
+                {
+                    this.OnoptionyearChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionyear = value;
+                    this.SendPropertyChanged("optionyear");
+                    this.OnoptionyearChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_strikeprice", DbType="Float NOT NULL")]
+        public double strikeprice
+        {
+            get
+            {
+                return this._strikeprice;
+            }
+            set
+            {
+                if ((this._strikeprice != value))
+                {
+                    this.OnstrikepriceChanging(value);
+                    this.SendPropertyChanging();
+                    this._strikeprice = value;
+                    this.SendPropertyChanged("strikeprice");
+                    this.OnstrikepriceChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_callorput", DbType="Char(1) NOT NULL")]
+        public char callorput
+        {
+            get
+            {
+                return this._callorput;
+            }
+            set
+            {
+                if ((this._callorput != value))
+                {
+                    this.OncallorputChanging(value);
+                    this.SendPropertyChanging();
+                    this._callorput = value;
+                    this.SendPropertyChanged("callorput");
+                    this.OncallorputChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL")]
+        public long idinstrument
+        {
+            get
+            {
+                return this._idinstrument;
+            }
+            set
+            {
+                if ((this._idinstrument != value))
+                {
+                    this.OnidinstrumentChanging(value);
+                    this.SendPropertyChanging();
+                    this._idinstrument = value;
+                    this.SendPropertyChanged("idinstrument");
+                    this.OnidinstrumentChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_expirationdate", DbType="Date NOT NULL")]
+        public System.DateTime expirationdate
+        {
+            get
+            {
+                return this._expirationdate;
+            }
+            set
+            {
+                if ((this._expirationdate != value))
+                {
+                    this.OnexpirationdateChanging(value);
+                    this.SendPropertyChanging();
+                    this._expirationdate = value;
+                    this.SendPropertyChanged("expirationdate");
+                    this.OnexpirationdateChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
+        public long idcontract
+        {
+            get
+            {
+                return this._idcontract;
+            }
+            set
+            {
+                if ((this._idcontract != value))
+                {
+                    this.OnidcontractChanging(value);
+                    this.SendPropertyChanging();
+                    this._idcontract = value;
+                    this.SendPropertyChanged("idcontract");
+                    this.OnidcontractChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string cqgsymbol
+        {
+            get
+            {
+                return this._cqgsymbol;
+            }
+            set
+            {
+                if ((this._cqgsymbol != value))
+                {
+                    this.OncqgsymbolChanging(value);
+                    this.SendPropertyChanging();
+                    this._cqgsymbol = value;
+                    this.SendPropertyChanged("cqgsymbol");
+                    this.OncqgsymbolChanged();
+                }
+            }
+        }
+        
+        public event PropertyChangingEventHandler PropertyChanging;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected virtual void SendPropertyChanging()
+        {
+            if ((this.PropertyChanging != null))
+            {
+                this.PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+        
+        protected virtual void SendPropertyChanged(String propertyName)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tbloptiondata")]
+    public partial class tbloptiondata : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        
+        private long _idoptiondata;
+        
+        private long _idoption;
+        
+        private System.DateTime _datetime;
+        
+        private double _price;
+        
+        private double _impliedvol;
+        
+        private double _timetoexpinyears;
+        
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2530,175 +2530,175 @@ namespace ICE_Import
     partial void OntimetoexpinyearsChanging(double value);
     partial void OntimetoexpinyearsChanged();
     #endregion
-		
-		public tbloptiondata()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptiondata", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long idoptiondata
-		{
-			get
-			{
-				return this._idoptiondata;
-			}
-			set
-			{
-				if ((this._idoptiondata != value))
-				{
-					this.OnidoptiondataChanging(value);
-					this.SendPropertyChanging();
-					this._idoptiondata = value;
-					this.SendPropertyChanged("idoptiondata");
-					this.OnidoptiondataChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoption", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
-		public long idoption
-		{
-			get
-			{
-				return this._idoption;
-			}
-			set
-			{
-				if ((this._idoption != value))
-				{
-					this.OnidoptionChanging(value);
-					this.SendPropertyChanging();
-					this._idoption = value;
-					this.SendPropertyChanged("idoption");
-					this.OnidoptionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_datetime", DbType="DateTime2 NOT NULL", IsPrimaryKey=true)]
-		public System.DateTime datetime
-		{
-			get
-			{
-				return this._datetime;
-			}
-			set
-			{
-				if ((this._datetime != value))
-				{
-					this.OndatetimeChanging(value);
-					this.SendPropertyChanging();
-					this._datetime = value;
-					this.SendPropertyChanged("datetime");
-					this.OndatetimeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_price", DbType="Float NOT NULL")]
-		public double price
-		{
-			get
-			{
-				return this._price;
-			}
-			set
-			{
-				if ((this._price != value))
-				{
-					this.OnpriceChanging(value);
-					this.SendPropertyChanging();
-					this._price = value;
-					this.SendPropertyChanged("price");
-					this.OnpriceChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_impliedvol", DbType="Float NOT NULL")]
-		public double impliedvol
-		{
-			get
-			{
-				return this._impliedvol;
-			}
-			set
-			{
-				if ((this._impliedvol != value))
-				{
-					this.OnimpliedvolChanging(value);
-					this.SendPropertyChanging();
-					this._impliedvol = value;
-					this.SendPropertyChanged("impliedvol");
-					this.OnimpliedvolChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_timetoexpinyears", DbType="Float NOT NULL")]
-		public double timetoexpinyears
-		{
-			get
-			{
-				return this._timetoexpinyears;
-			}
-			set
-			{
-				if ((this._timetoexpinyears != value))
-				{
-					this.OntimetoexpinyearsChanging(value);
-					this.SendPropertyChanging();
-					this._timetoexpinyears = value;
-					this.SendPropertyChanged("timetoexpinyears");
-					this.OntimetoexpinyearsChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.test_tblcontracts")]
-	public partial class test_tblcontract : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _idcontract;
-		
-		private string _contractname;
-		
-		private char _month;
-		
-		private short _monthint;
-		
-		private long _year;
-		
-		private long _idinstrument;
-		
-		private System.DateTime _expirationdate;
-		
-		private string _cqgsymbol;
-		
+        
+        public tbloptiondata()
+        {
+            OnCreated();
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptiondata", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+        public long idoptiondata
+        {
+            get
+            {
+                return this._idoptiondata;
+            }
+            set
+            {
+                if ((this._idoptiondata != value))
+                {
+                    this.OnidoptiondataChanging(value);
+                    this.SendPropertyChanging();
+                    this._idoptiondata = value;
+                    this.SendPropertyChanged("idoptiondata");
+                    this.OnidoptiondataChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoption", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
+        public long idoption
+        {
+            get
+            {
+                return this._idoption;
+            }
+            set
+            {
+                if ((this._idoption != value))
+                {
+                    this.OnidoptionChanging(value);
+                    this.SendPropertyChanging();
+                    this._idoption = value;
+                    this.SendPropertyChanged("idoption");
+                    this.OnidoptionChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_datetime", DbType="DateTime2 NOT NULL", IsPrimaryKey=true)]
+        public System.DateTime datetime
+        {
+            get
+            {
+                return this._datetime;
+            }
+            set
+            {
+                if ((this._datetime != value))
+                {
+                    this.OndatetimeChanging(value);
+                    this.SendPropertyChanging();
+                    this._datetime = value;
+                    this.SendPropertyChanged("datetime");
+                    this.OndatetimeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_price", DbType="Float NOT NULL")]
+        public double price
+        {
+            get
+            {
+                return this._price;
+            }
+            set
+            {
+                if ((this._price != value))
+                {
+                    this.OnpriceChanging(value);
+                    this.SendPropertyChanging();
+                    this._price = value;
+                    this.SendPropertyChanged("price");
+                    this.OnpriceChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_impliedvol", DbType="Float NOT NULL")]
+        public double impliedvol
+        {
+            get
+            {
+                return this._impliedvol;
+            }
+            set
+            {
+                if ((this._impliedvol != value))
+                {
+                    this.OnimpliedvolChanging(value);
+                    this.SendPropertyChanging();
+                    this._impliedvol = value;
+                    this.SendPropertyChanged("impliedvol");
+                    this.OnimpliedvolChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_timetoexpinyears", DbType="Float NOT NULL")]
+        public double timetoexpinyears
+        {
+            get
+            {
+                return this._timetoexpinyears;
+            }
+            set
+            {
+                if ((this._timetoexpinyears != value))
+                {
+                    this.OntimetoexpinyearsChanging(value);
+                    this.SendPropertyChanging();
+                    this._timetoexpinyears = value;
+                    this.SendPropertyChanged("timetoexpinyears");
+                    this.OntimetoexpinyearsChanged();
+                }
+            }
+        }
+        
+        public event PropertyChangingEventHandler PropertyChanging;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected virtual void SendPropertyChanging()
+        {
+            if ((this.PropertyChanging != null))
+            {
+                this.PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+        
+        protected virtual void SendPropertyChanged(String propertyName)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.test_tblcontracts")]
+    public partial class test_tblcontract : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        
+        private long _idcontract;
+        
+        private string _contractname;
+        
+        private char _month;
+        
+        private short _monthint;
+        
+        private long _year;
+        
+        private long _idinstrument;
+        
+        private System.DateTime _expirationdate;
+        
+        private string _cqgsymbol;
+        
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2720,211 +2720,211 @@ namespace ICE_Import
     partial void OncqgsymbolChanging(string value);
     partial void OncqgsymbolChanged();
     #endregion
-		
-		public test_tblcontract()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long idcontract
-		{
-			get
-			{
-				return this._idcontract;
-			}
-			set
-			{
-				if ((this._idcontract != value))
-				{
-					this.OnidcontractChanging(value);
-					this.SendPropertyChanging();
-					this._idcontract = value;
-					this.SendPropertyChanged("idcontract");
-					this.OnidcontractChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_contractname", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string contractname
-		{
-			get
-			{
-				return this._contractname;
-			}
-			set
-			{
-				if ((this._contractname != value))
-				{
-					this.OncontractnameChanging(value);
-					this.SendPropertyChanging();
-					this._contractname = value;
-					this.SendPropertyChanged("contractname");
-					this.OncontractnameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_month", DbType="Char(1) NOT NULL")]
-		public char month
-		{
-			get
-			{
-				return this._month;
-			}
-			set
-			{
-				if ((this._month != value))
-				{
-					this.OnmonthChanging(value);
-					this.SendPropertyChanging();
-					this._month = value;
-					this.SendPropertyChanged("month");
-					this.OnmonthChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_monthint", DbType="SmallInt NOT NULL")]
-		public short monthint
-		{
-			get
-			{
-				return this._monthint;
-			}
-			set
-			{
-				if ((this._monthint != value))
-				{
-					this.OnmonthintChanging(value);
-					this.SendPropertyChanging();
-					this._monthint = value;
-					this.SendPropertyChanged("monthint");
-					this.OnmonthintChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_year", DbType="BigInt NOT NULL")]
-		public long year
-		{
-			get
-			{
-				return this._year;
-			}
-			set
-			{
-				if ((this._year != value))
-				{
-					this.OnyearChanging(value);
-					this.SendPropertyChanging();
-					this._year = value;
-					this.SendPropertyChanged("year");
-					this.OnyearChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
-		public long idinstrument
-		{
-			get
-			{
-				return this._idinstrument;
-			}
-			set
-			{
-				if ((this._idinstrument != value))
-				{
-					this.OnidinstrumentChanging(value);
-					this.SendPropertyChanging();
-					this._idinstrument = value;
-					this.SendPropertyChanged("idinstrument");
-					this.OnidinstrumentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_expirationdate", DbType="Date NOT NULL")]
-		public System.DateTime expirationdate
-		{
-			get
-			{
-				return this._expirationdate;
-			}
-			set
-			{
-				if ((this._expirationdate != value))
-				{
-					this.OnexpirationdateChanging(value);
-					this.SendPropertyChanging();
-					this._expirationdate = value;
-					this.SendPropertyChanged("expirationdate");
-					this.OnexpirationdateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string cqgsymbol
-		{
-			get
-			{
-				return this._cqgsymbol;
-			}
-			set
-			{
-				if ((this._cqgsymbol != value))
-				{
-					this.OncqgsymbolChanging(value);
-					this.SendPropertyChanging();
-					this._cqgsymbol = value;
-					this.SendPropertyChanged("cqgsymbol");
-					this.OncqgsymbolChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.test_tbldailycontractsettlements")]
-	public partial class test_tbldailycontractsettlement : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _iddailycontractsettlements;
-		
-		private long _idcontract;
-		
-		private System.DateTime _date;
-		
-		private double _settlement;
-		
-		private long _volume;
-		
-		private long _openinterest;
-		
+        
+        public test_tblcontract()
+        {
+            OnCreated();
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+        public long idcontract
+        {
+            get
+            {
+                return this._idcontract;
+            }
+            set
+            {
+                if ((this._idcontract != value))
+                {
+                    this.OnidcontractChanging(value);
+                    this.SendPropertyChanging();
+                    this._idcontract = value;
+                    this.SendPropertyChanged("idcontract");
+                    this.OnidcontractChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_contractname", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string contractname
+        {
+            get
+            {
+                return this._contractname;
+            }
+            set
+            {
+                if ((this._contractname != value))
+                {
+                    this.OncontractnameChanging(value);
+                    this.SendPropertyChanging();
+                    this._contractname = value;
+                    this.SendPropertyChanged("contractname");
+                    this.OncontractnameChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_month", DbType="Char(1) NOT NULL")]
+        public char month
+        {
+            get
+            {
+                return this._month;
+            }
+            set
+            {
+                if ((this._month != value))
+                {
+                    this.OnmonthChanging(value);
+                    this.SendPropertyChanging();
+                    this._month = value;
+                    this.SendPropertyChanged("month");
+                    this.OnmonthChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_monthint", DbType="SmallInt NOT NULL")]
+        public short monthint
+        {
+            get
+            {
+                return this._monthint;
+            }
+            set
+            {
+                if ((this._monthint != value))
+                {
+                    this.OnmonthintChanging(value);
+                    this.SendPropertyChanging();
+                    this._monthint = value;
+                    this.SendPropertyChanged("monthint");
+                    this.OnmonthintChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_year", DbType="BigInt NOT NULL")]
+        public long year
+        {
+            get
+            {
+                return this._year;
+            }
+            set
+            {
+                if ((this._year != value))
+                {
+                    this.OnyearChanging(value);
+                    this.SendPropertyChanging();
+                    this._year = value;
+                    this.SendPropertyChanged("year");
+                    this.OnyearChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
+        public long idinstrument
+        {
+            get
+            {
+                return this._idinstrument;
+            }
+            set
+            {
+                if ((this._idinstrument != value))
+                {
+                    this.OnidinstrumentChanging(value);
+                    this.SendPropertyChanging();
+                    this._idinstrument = value;
+                    this.SendPropertyChanged("idinstrument");
+                    this.OnidinstrumentChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_expirationdate", DbType="Date NOT NULL")]
+        public System.DateTime expirationdate
+        {
+            get
+            {
+                return this._expirationdate;
+            }
+            set
+            {
+                if ((this._expirationdate != value))
+                {
+                    this.OnexpirationdateChanging(value);
+                    this.SendPropertyChanging();
+                    this._expirationdate = value;
+                    this.SendPropertyChanged("expirationdate");
+                    this.OnexpirationdateChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string cqgsymbol
+        {
+            get
+            {
+                return this._cqgsymbol;
+            }
+            set
+            {
+                if ((this._cqgsymbol != value))
+                {
+                    this.OncqgsymbolChanging(value);
+                    this.SendPropertyChanging();
+                    this._cqgsymbol = value;
+                    this.SendPropertyChanged("cqgsymbol");
+                    this.OncqgsymbolChanged();
+                }
+            }
+        }
+        
+        public event PropertyChangingEventHandler PropertyChanging;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected virtual void SendPropertyChanging()
+        {
+            if ((this.PropertyChanging != null))
+            {
+                this.PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+        
+        protected virtual void SendPropertyChanged(String propertyName)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.test_tbldailycontractsettlements")]
+    public partial class test_tbldailycontractsettlement : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        
+        private long _iddailycontractsettlements;
+        
+        private long _idcontract;
+        
+        private System.DateTime _date;
+        
+        private double _settlement;
+        
+        private long _volume;
+        
+        private long _openinterest;
+        
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2942,181 +2942,181 @@ namespace ICE_Import
     partial void OnopeninterestChanging(long value);
     partial void OnopeninterestChanged();
     #endregion
-		
-		public test_tbldailycontractsettlement()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_iddailycontractsettlements", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long iddailycontractsettlements
-		{
-			get
-			{
-				return this._iddailycontractsettlements;
-			}
-			set
-			{
-				if ((this._iddailycontractsettlements != value))
-				{
-					this.OniddailycontractsettlementsChanging(value);
-					this.SendPropertyChanging();
-					this._iddailycontractsettlements = value;
-					this.SendPropertyChanged("iddailycontractsettlements");
-					this.OniddailycontractsettlementsChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
-		public long idcontract
-		{
-			get
-			{
-				return this._idcontract;
-			}
-			set
-			{
-				if ((this._idcontract != value))
-				{
-					this.OnidcontractChanging(value);
-					this.SendPropertyChanging();
-					this._idcontract = value;
-					this.SendPropertyChanged("idcontract");
-					this.OnidcontractChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_date", DbType="Date NOT NULL")]
-		public System.DateTime date
-		{
-			get
-			{
-				return this._date;
-			}
-			set
-			{
-				if ((this._date != value))
-				{
-					this.OndateChanging(value);
-					this.SendPropertyChanging();
-					this._date = value;
-					this.SendPropertyChanged("date");
-					this.OndateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_settlement", DbType="Float NOT NULL")]
-		public double settlement
-		{
-			get
-			{
-				return this._settlement;
-			}
-			set
-			{
-				if ((this._settlement != value))
-				{
-					this.OnsettlementChanging(value);
-					this.SendPropertyChanging();
-					this._settlement = value;
-					this.SendPropertyChanged("settlement");
-					this.OnsettlementChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_volume", DbType="BigInt NOT NULL")]
-		public long volume
-		{
-			get
-			{
-				return this._volume;
-			}
-			set
-			{
-				if ((this._volume != value))
-				{
-					this.OnvolumeChanging(value);
-					this.SendPropertyChanging();
-					this._volume = value;
-					this.SendPropertyChanged("volume");
-					this.OnvolumeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_openinterest", DbType="BigInt NOT NULL")]
-		public long openinterest
-		{
-			get
-			{
-				return this._openinterest;
-			}
-			set
-			{
-				if ((this._openinterest != value))
-				{
-					this.OnopeninterestChanging(value);
-					this.SendPropertyChanging();
-					this._openinterest = value;
-					this.SendPropertyChanged("openinterest");
-					this.OnopeninterestChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.test_tbloptions")]
-	public partial class test_tbloption : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _idoption;
-		
-		private string _optionname;
-		
-		private char _optionmonth;
-		
-		private int _optionmonthint;
-		
-		private int _optionyear;
-		
-		private double _strikeprice;
-		
-		private char _callorput;
-		
-		private long _idinstrument;
-		
-		private System.DateTime _expirationdate;
-		
-		private long _idcontract;
-		
-		private string _cqgsymbol;
-		
+        
+        public test_tbldailycontractsettlement()
+        {
+            OnCreated();
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_iddailycontractsettlements", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+        public long iddailycontractsettlements
+        {
+            get
+            {
+                return this._iddailycontractsettlements;
+            }
+            set
+            {
+                if ((this._iddailycontractsettlements != value))
+                {
+                    this.OniddailycontractsettlementsChanging(value);
+                    this.SendPropertyChanging();
+                    this._iddailycontractsettlements = value;
+                    this.SendPropertyChanged("iddailycontractsettlements");
+                    this.OniddailycontractsettlementsChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
+        public long idcontract
+        {
+            get
+            {
+                return this._idcontract;
+            }
+            set
+            {
+                if ((this._idcontract != value))
+                {
+                    this.OnidcontractChanging(value);
+                    this.SendPropertyChanging();
+                    this._idcontract = value;
+                    this.SendPropertyChanged("idcontract");
+                    this.OnidcontractChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_date", DbType="Date NOT NULL")]
+        public System.DateTime date
+        {
+            get
+            {
+                return this._date;
+            }
+            set
+            {
+                if ((this._date != value))
+                {
+                    this.OndateChanging(value);
+                    this.SendPropertyChanging();
+                    this._date = value;
+                    this.SendPropertyChanged("date");
+                    this.OndateChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_settlement", DbType="Float NOT NULL")]
+        public double settlement
+        {
+            get
+            {
+                return this._settlement;
+            }
+            set
+            {
+                if ((this._settlement != value))
+                {
+                    this.OnsettlementChanging(value);
+                    this.SendPropertyChanging();
+                    this._settlement = value;
+                    this.SendPropertyChanged("settlement");
+                    this.OnsettlementChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_volume", DbType="BigInt NOT NULL")]
+        public long volume
+        {
+            get
+            {
+                return this._volume;
+            }
+            set
+            {
+                if ((this._volume != value))
+                {
+                    this.OnvolumeChanging(value);
+                    this.SendPropertyChanging();
+                    this._volume = value;
+                    this.SendPropertyChanged("volume");
+                    this.OnvolumeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_openinterest", DbType="BigInt NOT NULL")]
+        public long openinterest
+        {
+            get
+            {
+                return this._openinterest;
+            }
+            set
+            {
+                if ((this._openinterest != value))
+                {
+                    this.OnopeninterestChanging(value);
+                    this.SendPropertyChanging();
+                    this._openinterest = value;
+                    this.SendPropertyChanged("openinterest");
+                    this.OnopeninterestChanged();
+                }
+            }
+        }
+        
+        public event PropertyChangingEventHandler PropertyChanging;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected virtual void SendPropertyChanging()
+        {
+            if ((this.PropertyChanging != null))
+            {
+                this.PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+        
+        protected virtual void SendPropertyChanged(String propertyName)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.test_tbloptions")]
+    public partial class test_tbloption : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        
+        private long _idoption;
+        
+        private string _optionname;
+        
+        private char _optionmonth;
+        
+        private int _optionmonthint;
+        
+        private int _optionyear;
+        
+        private double _strikeprice;
+        
+        private char _callorput;
+        
+        private long _idinstrument;
+        
+        private System.DateTime _expirationdate;
+        
+        private long _idcontract;
+        
+        private string _cqgsymbol;
+        
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -3144,271 +3144,271 @@ namespace ICE_Import
     partial void OncqgsymbolChanging(string value);
     partial void OncqgsymbolChanged();
     #endregion
-		
-		public test_tbloption()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoption", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long idoption
-		{
-			get
-			{
-				return this._idoption;
-			}
-			set
-			{
-				if ((this._idoption != value))
-				{
-					this.OnidoptionChanging(value);
-					this.SendPropertyChanging();
-					this._idoption = value;
-					this.SendPropertyChanged("idoption");
-					this.OnidoptionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionname", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string optionname
-		{
-			get
-			{
-				return this._optionname;
-			}
-			set
-			{
-				if ((this._optionname != value))
-				{
-					this.OnoptionnameChanging(value);
-					this.SendPropertyChanging();
-					this._optionname = value;
-					this.SendPropertyChanged("optionname");
-					this.OnoptionnameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmonth", DbType="Char(1) NOT NULL")]
-		public char optionmonth
-		{
-			get
-			{
-				return this._optionmonth;
-			}
-			set
-			{
-				if ((this._optionmonth != value))
-				{
-					this.OnoptionmonthChanging(value);
-					this.SendPropertyChanging();
-					this._optionmonth = value;
-					this.SendPropertyChanged("optionmonth");
-					this.OnoptionmonthChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmonthint", DbType="Int NOT NULL")]
-		public int optionmonthint
-		{
-			get
-			{
-				return this._optionmonthint;
-			}
-			set
-			{
-				if ((this._optionmonthint != value))
-				{
-					this.OnoptionmonthintChanging(value);
-					this.SendPropertyChanging();
-					this._optionmonthint = value;
-					this.SendPropertyChanged("optionmonthint");
-					this.OnoptionmonthintChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionyear", DbType="Int NOT NULL")]
-		public int optionyear
-		{
-			get
-			{
-				return this._optionyear;
-			}
-			set
-			{
-				if ((this._optionyear != value))
-				{
-					this.OnoptionyearChanging(value);
-					this.SendPropertyChanging();
-					this._optionyear = value;
-					this.SendPropertyChanged("optionyear");
-					this.OnoptionyearChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_strikeprice", DbType="Float NOT NULL")]
-		public double strikeprice
-		{
-			get
-			{
-				return this._strikeprice;
-			}
-			set
-			{
-				if ((this._strikeprice != value))
-				{
-					this.OnstrikepriceChanging(value);
-					this.SendPropertyChanging();
-					this._strikeprice = value;
-					this.SendPropertyChanged("strikeprice");
-					this.OnstrikepriceChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_callorput", DbType="Char(1) NOT NULL")]
-		public char callorput
-		{
-			get
-			{
-				return this._callorput;
-			}
-			set
-			{
-				if ((this._callorput != value))
-				{
-					this.OncallorputChanging(value);
-					this.SendPropertyChanging();
-					this._callorput = value;
-					this.SendPropertyChanged("callorput");
-					this.OncallorputChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL")]
-		public long idinstrument
-		{
-			get
-			{
-				return this._idinstrument;
-			}
-			set
-			{
-				if ((this._idinstrument != value))
-				{
-					this.OnidinstrumentChanging(value);
-					this.SendPropertyChanging();
-					this._idinstrument = value;
-					this.SendPropertyChanged("idinstrument");
-					this.OnidinstrumentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_expirationdate", DbType="Date NOT NULL")]
-		public System.DateTime expirationdate
-		{
-			get
-			{
-				return this._expirationdate;
-			}
-			set
-			{
-				if ((this._expirationdate != value))
-				{
-					this.OnexpirationdateChanging(value);
-					this.SendPropertyChanging();
-					this._expirationdate = value;
-					this.SendPropertyChanged("expirationdate");
-					this.OnexpirationdateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
-		public long idcontract
-		{
-			get
-			{
-				return this._idcontract;
-			}
-			set
-			{
-				if ((this._idcontract != value))
-				{
-					this.OnidcontractChanging(value);
-					this.SendPropertyChanging();
-					this._idcontract = value;
-					this.SendPropertyChanged("idcontract");
-					this.OnidcontractChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string cqgsymbol
-		{
-			get
-			{
-				return this._cqgsymbol;
-			}
-			set
-			{
-				if ((this._cqgsymbol != value))
-				{
-					this.OncqgsymbolChanging(value);
-					this.SendPropertyChanging();
-					this._cqgsymbol = value;
-					this.SendPropertyChanged("cqgsymbol");
-					this.OncqgsymbolChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.test_tbloptiondata")]
-	public partial class test_tbloptiondata : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _idoptiondata;
-		
-		private long _idoption;
-		
-		private System.DateTime _datetime;
-		
-		private double _price;
-		
-		private double _impliedvol;
-		
-		private double _timetoexpinyears;
-		
+        
+        public test_tbloption()
+        {
+            OnCreated();
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoption", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+        public long idoption
+        {
+            get
+            {
+                return this._idoption;
+            }
+            set
+            {
+                if ((this._idoption != value))
+                {
+                    this.OnidoptionChanging(value);
+                    this.SendPropertyChanging();
+                    this._idoption = value;
+                    this.SendPropertyChanged("idoption");
+                    this.OnidoptionChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionname", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string optionname
+        {
+            get
+            {
+                return this._optionname;
+            }
+            set
+            {
+                if ((this._optionname != value))
+                {
+                    this.OnoptionnameChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionname = value;
+                    this.SendPropertyChanged("optionname");
+                    this.OnoptionnameChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmonth", DbType="Char(1) NOT NULL")]
+        public char optionmonth
+        {
+            get
+            {
+                return this._optionmonth;
+            }
+            set
+            {
+                if ((this._optionmonth != value))
+                {
+                    this.OnoptionmonthChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionmonth = value;
+                    this.SendPropertyChanged("optionmonth");
+                    this.OnoptionmonthChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmonthint", DbType="Int NOT NULL")]
+        public int optionmonthint
+        {
+            get
+            {
+                return this._optionmonthint;
+            }
+            set
+            {
+                if ((this._optionmonthint != value))
+                {
+                    this.OnoptionmonthintChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionmonthint = value;
+                    this.SendPropertyChanged("optionmonthint");
+                    this.OnoptionmonthintChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionyear", DbType="Int NOT NULL")]
+        public int optionyear
+        {
+            get
+            {
+                return this._optionyear;
+            }
+            set
+            {
+                if ((this._optionyear != value))
+                {
+                    this.OnoptionyearChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionyear = value;
+                    this.SendPropertyChanged("optionyear");
+                    this.OnoptionyearChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_strikeprice", DbType="Float NOT NULL")]
+        public double strikeprice
+        {
+            get
+            {
+                return this._strikeprice;
+            }
+            set
+            {
+                if ((this._strikeprice != value))
+                {
+                    this.OnstrikepriceChanging(value);
+                    this.SendPropertyChanging();
+                    this._strikeprice = value;
+                    this.SendPropertyChanged("strikeprice");
+                    this.OnstrikepriceChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_callorput", DbType="Char(1) NOT NULL")]
+        public char callorput
+        {
+            get
+            {
+                return this._callorput;
+            }
+            set
+            {
+                if ((this._callorput != value))
+                {
+                    this.OncallorputChanging(value);
+                    this.SendPropertyChanging();
+                    this._callorput = value;
+                    this.SendPropertyChanged("callorput");
+                    this.OncallorputChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL")]
+        public long idinstrument
+        {
+            get
+            {
+                return this._idinstrument;
+            }
+            set
+            {
+                if ((this._idinstrument != value))
+                {
+                    this.OnidinstrumentChanging(value);
+                    this.SendPropertyChanging();
+                    this._idinstrument = value;
+                    this.SendPropertyChanged("idinstrument");
+                    this.OnidinstrumentChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_expirationdate", DbType="Date NOT NULL")]
+        public System.DateTime expirationdate
+        {
+            get
+            {
+                return this._expirationdate;
+            }
+            set
+            {
+                if ((this._expirationdate != value))
+                {
+                    this.OnexpirationdateChanging(value);
+                    this.SendPropertyChanging();
+                    this._expirationdate = value;
+                    this.SendPropertyChanged("expirationdate");
+                    this.OnexpirationdateChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
+        public long idcontract
+        {
+            get
+            {
+                return this._idcontract;
+            }
+            set
+            {
+                if ((this._idcontract != value))
+                {
+                    this.OnidcontractChanging(value);
+                    this.SendPropertyChanging();
+                    this._idcontract = value;
+                    this.SendPropertyChanged("idcontract");
+                    this.OnidcontractChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_cqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string cqgsymbol
+        {
+            get
+            {
+                return this._cqgsymbol;
+            }
+            set
+            {
+                if ((this._cqgsymbol != value))
+                {
+                    this.OncqgsymbolChanging(value);
+                    this.SendPropertyChanging();
+                    this._cqgsymbol = value;
+                    this.SendPropertyChanged("cqgsymbol");
+                    this.OncqgsymbolChanged();
+                }
+            }
+        }
+        
+        public event PropertyChangingEventHandler PropertyChanging;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected virtual void SendPropertyChanging()
+        {
+            if ((this.PropertyChanging != null))
+            {
+                this.PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+        
+        protected virtual void SendPropertyChanged(String propertyName)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.test_tbloptiondata")]
+    public partial class test_tbloptiondata : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        
+        private long _idoptiondata;
+        
+        private long _idoption;
+        
+        private System.DateTime _datetime;
+        
+        private double _price;
+        
+        private double _impliedvol;
+        
+        private double _timetoexpinyears;
+        
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -3426,173 +3426,173 @@ namespace ICE_Import
     partial void OntimetoexpinyearsChanging(double value);
     partial void OntimetoexpinyearsChanged();
     #endregion
-		
-		public test_tbloptiondata()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptiondata", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long idoptiondata
-		{
-			get
-			{
-				return this._idoptiondata;
-			}
-			set
-			{
-				if ((this._idoptiondata != value))
-				{
-					this.OnidoptiondataChanging(value);
-					this.SendPropertyChanging();
-					this._idoptiondata = value;
-					this.SendPropertyChanged("idoptiondata");
-					this.OnidoptiondataChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoption", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
-		public long idoption
-		{
-			get
-			{
-				return this._idoption;
-			}
-			set
-			{
-				if ((this._idoption != value))
-				{
-					this.OnidoptionChanging(value);
-					this.SendPropertyChanging();
-					this._idoption = value;
-					this.SendPropertyChanged("idoption");
-					this.OnidoptionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_datetime", DbType="DateTime2 NOT NULL", IsPrimaryKey=true)]
-		public System.DateTime datetime
-		{
-			get
-			{
-				return this._datetime;
-			}
-			set
-			{
-				if ((this._datetime != value))
-				{
-					this.OndatetimeChanging(value);
-					this.SendPropertyChanging();
-					this._datetime = value;
-					this.SendPropertyChanged("datetime");
-					this.OndatetimeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_price", DbType="Float NOT NULL")]
-		public double price
-		{
-			get
-			{
-				return this._price;
-			}
-			set
-			{
-				if ((this._price != value))
-				{
-					this.OnpriceChanging(value);
-					this.SendPropertyChanging();
-					this._price = value;
-					this.SendPropertyChanged("price");
-					this.OnpriceChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_impliedvol", DbType="Float NOT NULL")]
-		public double impliedvol
-		{
-			get
-			{
-				return this._impliedvol;
-			}
-			set
-			{
-				if ((this._impliedvol != value))
-				{
-					this.OnimpliedvolChanging(value);
-					this.SendPropertyChanging();
-					this._impliedvol = value;
-					this.SendPropertyChanged("impliedvol");
-					this.OnimpliedvolChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_timetoexpinyears", DbType="Float NOT NULL")]
-		public double timetoexpinyears
-		{
-			get
-			{
-				return this._timetoexpinyears;
-			}
-			set
-			{
-				if ((this._timetoexpinyears != value))
-				{
-					this.OntimetoexpinyearsChanging(value);
-					this.SendPropertyChanging();
-					this._timetoexpinyears = value;
-					this.SendPropertyChanged("timetoexpinyears");
-					this.OntimetoexpinyearsChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tbloptioninputdata")]
-	public partial class tbloptioninputdata : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _idoptioninputdata;
-		
-		private long _idoptioninputsymbol;
-		
-		private System.DateTime _optioninputdatetime;
-		
-		private double _optioninputopen;
-		
-		private double _optioninputhigh;
-		
-		private double _optioninputlow;
-		
-		private double _optioninputclose;
-		
+        
+        public test_tbloptiondata()
+        {
+            OnCreated();
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptiondata", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+        public long idoptiondata
+        {
+            get
+            {
+                return this._idoptiondata;
+            }
+            set
+            {
+                if ((this._idoptiondata != value))
+                {
+                    this.OnidoptiondataChanging(value);
+                    this.SendPropertyChanging();
+                    this._idoptiondata = value;
+                    this.SendPropertyChanged("idoptiondata");
+                    this.OnidoptiondataChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoption", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
+        public long idoption
+        {
+            get
+            {
+                return this._idoption;
+            }
+            set
+            {
+                if ((this._idoption != value))
+                {
+                    this.OnidoptionChanging(value);
+                    this.SendPropertyChanging();
+                    this._idoption = value;
+                    this.SendPropertyChanged("idoption");
+                    this.OnidoptionChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_datetime", DbType="DateTime2 NOT NULL", IsPrimaryKey=true)]
+        public System.DateTime datetime
+        {
+            get
+            {
+                return this._datetime;
+            }
+            set
+            {
+                if ((this._datetime != value))
+                {
+                    this.OndatetimeChanging(value);
+                    this.SendPropertyChanging();
+                    this._datetime = value;
+                    this.SendPropertyChanged("datetime");
+                    this.OndatetimeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_price", DbType="Float NOT NULL")]
+        public double price
+        {
+            get
+            {
+                return this._price;
+            }
+            set
+            {
+                if ((this._price != value))
+                {
+                    this.OnpriceChanging(value);
+                    this.SendPropertyChanging();
+                    this._price = value;
+                    this.SendPropertyChanged("price");
+                    this.OnpriceChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_impliedvol", DbType="Float NOT NULL")]
+        public double impliedvol
+        {
+            get
+            {
+                return this._impliedvol;
+            }
+            set
+            {
+                if ((this._impliedvol != value))
+                {
+                    this.OnimpliedvolChanging(value);
+                    this.SendPropertyChanging();
+                    this._impliedvol = value;
+                    this.SendPropertyChanged("impliedvol");
+                    this.OnimpliedvolChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_timetoexpinyears", DbType="Float NOT NULL")]
+        public double timetoexpinyears
+        {
+            get
+            {
+                return this._timetoexpinyears;
+            }
+            set
+            {
+                if ((this._timetoexpinyears != value))
+                {
+                    this.OntimetoexpinyearsChanging(value);
+                    this.SendPropertyChanging();
+                    this._timetoexpinyears = value;
+                    this.SendPropertyChanged("timetoexpinyears");
+                    this.OntimetoexpinyearsChanged();
+                }
+            }
+        }
+        
+        public event PropertyChangingEventHandler PropertyChanging;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected virtual void SendPropertyChanging()
+        {
+            if ((this.PropertyChanging != null))
+            {
+                this.PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+        
+        protected virtual void SendPropertyChanged(String propertyName)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tbloptioninputdata")]
+    public partial class tbloptioninputdata : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        
+        private long _idoptioninputdata;
+        
+        private long _idoptioninputsymbol;
+        
+        private System.DateTime _optioninputdatetime;
+        
+        private double _optioninputopen;
+        
+        private double _optioninputhigh;
+        
+        private double _optioninputlow;
+        
+        private double _optioninputclose;
+        
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -3612,189 +3612,189 @@ namespace ICE_Import
     partial void OnoptioninputcloseChanging(double value);
     partial void OnoptioninputcloseChanged();
     #endregion
-		
-		public tbloptioninputdata()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptioninputdata", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long idoptioninputdata
-		{
-			get
-			{
-				return this._idoptioninputdata;
-			}
-			set
-			{
-				if ((this._idoptioninputdata != value))
-				{
-					this.OnidoptioninputdataChanging(value);
-					this.SendPropertyChanging();
-					this._idoptioninputdata = value;
-					this.SendPropertyChanged("idoptioninputdata");
-					this.OnidoptioninputdataChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptioninputsymbol", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
-		public long idoptioninputsymbol
-		{
-			get
-			{
-				return this._idoptioninputsymbol;
-			}
-			set
-			{
-				if ((this._idoptioninputsymbol != value))
-				{
-					this.OnidoptioninputsymbolChanging(value);
-					this.SendPropertyChanging();
-					this._idoptioninputsymbol = value;
-					this.SendPropertyChanged("idoptioninputsymbol");
-					this.OnidoptioninputsymbolChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optioninputdatetime", DbType="DateTime2 NOT NULL")]
-		public System.DateTime optioninputdatetime
-		{
-			get
-			{
-				return this._optioninputdatetime;
-			}
-			set
-			{
-				if ((this._optioninputdatetime != value))
-				{
-					this.OnoptioninputdatetimeChanging(value);
-					this.SendPropertyChanging();
-					this._optioninputdatetime = value;
-					this.SendPropertyChanged("optioninputdatetime");
-					this.OnoptioninputdatetimeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optioninputopen", DbType="Float NOT NULL")]
-		public double optioninputopen
-		{
-			get
-			{
-				return this._optioninputopen;
-			}
-			set
-			{
-				if ((this._optioninputopen != value))
-				{
-					this.OnoptioninputopenChanging(value);
-					this.SendPropertyChanging();
-					this._optioninputopen = value;
-					this.SendPropertyChanged("optioninputopen");
-					this.OnoptioninputopenChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optioninputhigh", DbType="Float NOT NULL")]
-		public double optioninputhigh
-		{
-			get
-			{
-				return this._optioninputhigh;
-			}
-			set
-			{
-				if ((this._optioninputhigh != value))
-				{
-					this.OnoptioninputhighChanging(value);
-					this.SendPropertyChanging();
-					this._optioninputhigh = value;
-					this.SendPropertyChanged("optioninputhigh");
-					this.OnoptioninputhighChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optioninputlow", DbType="Float NOT NULL")]
-		public double optioninputlow
-		{
-			get
-			{
-				return this._optioninputlow;
-			}
-			set
-			{
-				if ((this._optioninputlow != value))
-				{
-					this.OnoptioninputlowChanging(value);
-					this.SendPropertyChanging();
-					this._optioninputlow = value;
-					this.SendPropertyChanged("optioninputlow");
-					this.OnoptioninputlowChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optioninputclose", DbType="Float NOT NULL")]
-		public double optioninputclose
-		{
-			get
-			{
-				return this._optioninputclose;
-			}
-			set
-			{
-				if ((this._optioninputclose != value))
-				{
-					this.OnoptioninputcloseChanging(value);
-					this.SendPropertyChanging();
-					this._optioninputclose = value;
-					this.SendPropertyChanged("optioninputclose");
-					this.OnoptioninputcloseChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tbloptioninputsymbols")]
-	public partial class tbloptioninputsymbol : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _idoptioninputsymbol;
-		
-		private string _optioninputcqgsymbol;
-		
-		private long _idinstrument;
-		
-		private long _idoptioninputtype;
-		
-		private double _multiplier;
-		
+        
+        public tbloptioninputdata()
+        {
+            OnCreated();
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptioninputdata", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+        public long idoptioninputdata
+        {
+            get
+            {
+                return this._idoptioninputdata;
+            }
+            set
+            {
+                if ((this._idoptioninputdata != value))
+                {
+                    this.OnidoptioninputdataChanging(value);
+                    this.SendPropertyChanging();
+                    this._idoptioninputdata = value;
+                    this.SendPropertyChanged("idoptioninputdata");
+                    this.OnidoptioninputdataChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptioninputsymbol", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
+        public long idoptioninputsymbol
+        {
+            get
+            {
+                return this._idoptioninputsymbol;
+            }
+            set
+            {
+                if ((this._idoptioninputsymbol != value))
+                {
+                    this.OnidoptioninputsymbolChanging(value);
+                    this.SendPropertyChanging();
+                    this._idoptioninputsymbol = value;
+                    this.SendPropertyChanged("idoptioninputsymbol");
+                    this.OnidoptioninputsymbolChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optioninputdatetime", DbType="DateTime2 NOT NULL")]
+        public System.DateTime optioninputdatetime
+        {
+            get
+            {
+                return this._optioninputdatetime;
+            }
+            set
+            {
+                if ((this._optioninputdatetime != value))
+                {
+                    this.OnoptioninputdatetimeChanging(value);
+                    this.SendPropertyChanging();
+                    this._optioninputdatetime = value;
+                    this.SendPropertyChanged("optioninputdatetime");
+                    this.OnoptioninputdatetimeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optioninputopen", DbType="Float NOT NULL")]
+        public double optioninputopen
+        {
+            get
+            {
+                return this._optioninputopen;
+            }
+            set
+            {
+                if ((this._optioninputopen != value))
+                {
+                    this.OnoptioninputopenChanging(value);
+                    this.SendPropertyChanging();
+                    this._optioninputopen = value;
+                    this.SendPropertyChanged("optioninputopen");
+                    this.OnoptioninputopenChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optioninputhigh", DbType="Float NOT NULL")]
+        public double optioninputhigh
+        {
+            get
+            {
+                return this._optioninputhigh;
+            }
+            set
+            {
+                if ((this._optioninputhigh != value))
+                {
+                    this.OnoptioninputhighChanging(value);
+                    this.SendPropertyChanging();
+                    this._optioninputhigh = value;
+                    this.SendPropertyChanged("optioninputhigh");
+                    this.OnoptioninputhighChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optioninputlow", DbType="Float NOT NULL")]
+        public double optioninputlow
+        {
+            get
+            {
+                return this._optioninputlow;
+            }
+            set
+            {
+                if ((this._optioninputlow != value))
+                {
+                    this.OnoptioninputlowChanging(value);
+                    this.SendPropertyChanging();
+                    this._optioninputlow = value;
+                    this.SendPropertyChanged("optioninputlow");
+                    this.OnoptioninputlowChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optioninputclose", DbType="Float NOT NULL")]
+        public double optioninputclose
+        {
+            get
+            {
+                return this._optioninputclose;
+            }
+            set
+            {
+                if ((this._optioninputclose != value))
+                {
+                    this.OnoptioninputcloseChanging(value);
+                    this.SendPropertyChanging();
+                    this._optioninputclose = value;
+                    this.SendPropertyChanged("optioninputclose");
+                    this.OnoptioninputcloseChanged();
+                }
+            }
+        }
+        
+        public event PropertyChangingEventHandler PropertyChanging;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected virtual void SendPropertyChanging()
+        {
+            if ((this.PropertyChanging != null))
+            {
+                this.PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+        
+        protected virtual void SendPropertyChanged(String propertyName)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tbloptioninputsymbols")]
+    public partial class tbloptioninputsymbol : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        
+        private long _idoptioninputsymbol;
+        
+        private string _optioninputcqgsymbol;
+        
+        private long _idinstrument;
+        
+        private long _idoptioninputtype;
+        
+        private double _multiplier;
+        
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -3810,151 +3810,151 @@ namespace ICE_Import
     partial void OnmultiplierChanging(double value);
     partial void OnmultiplierChanged();
     #endregion
-		
-		public tbloptioninputsymbol()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptioninputsymbol", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long idoptioninputsymbol
-		{
-			get
-			{
-				return this._idoptioninputsymbol;
-			}
-			set
-			{
-				if ((this._idoptioninputsymbol != value))
-				{
-					this.OnidoptioninputsymbolChanging(value);
-					this.SendPropertyChanging();
-					this._idoptioninputsymbol = value;
-					this.SendPropertyChanged("idoptioninputsymbol");
-					this.OnidoptioninputsymbolChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optioninputcqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
-		public string optioninputcqgsymbol
-		{
-			get
-			{
-				return this._optioninputcqgsymbol;
-			}
-			set
-			{
-				if ((this._optioninputcqgsymbol != value))
-				{
-					this.OnoptioninputcqgsymbolChanging(value);
-					this.SendPropertyChanging();
-					this._optioninputcqgsymbol = value;
-					this.SendPropertyChanged("optioninputcqgsymbol");
-					this.OnoptioninputcqgsymbolChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL")]
-		public long idinstrument
-		{
-			get
-			{
-				return this._idinstrument;
-			}
-			set
-			{
-				if ((this._idinstrument != value))
-				{
-					this.OnidinstrumentChanging(value);
-					this.SendPropertyChanging();
-					this._idinstrument = value;
-					this.SendPropertyChanged("idinstrument");
-					this.OnidinstrumentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptioninputtype", DbType="BigInt NOT NULL")]
-		public long idoptioninputtype
-		{
-			get
-			{
-				return this._idoptioninputtype;
-			}
-			set
-			{
-				if ((this._idoptioninputtype != value))
-				{
-					this.OnidoptioninputtypeChanging(value);
-					this.SendPropertyChanging();
-					this._idoptioninputtype = value;
-					this.SendPropertyChanged("idoptioninputtype");
-					this.OnidoptioninputtypeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_multiplier", DbType="Float NOT NULL")]
-		public double multiplier
-		{
-			get
-			{
-				return this._multiplier;
-			}
-			set
-			{
-				if ((this._multiplier != value))
-				{
-					this.OnmultiplierChanging(value);
-					this.SendPropertyChanging();
-					this._multiplier = value;
-					this.SendPropertyChanged("multiplier");
-					this.OnmultiplierChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tblcontractexpirations")]
-	public partial class tblcontractexpiration : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _idoptionexpirationdates;
-		
-		private short _contracttype;
-		
-		private long _idinstrument;
-		
-		private int _optionyear;
-		
-		private int _optionmonthint;
-		
-		private System.DateTime _expirationdate;
-		
+        
+        public tbloptioninputsymbol()
+        {
+            OnCreated();
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptioninputsymbol", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+        public long idoptioninputsymbol
+        {
+            get
+            {
+                return this._idoptioninputsymbol;
+            }
+            set
+            {
+                if ((this._idoptioninputsymbol != value))
+                {
+                    this.OnidoptioninputsymbolChanging(value);
+                    this.SendPropertyChanging();
+                    this._idoptioninputsymbol = value;
+                    this.SendPropertyChanged("idoptioninputsymbol");
+                    this.OnidoptioninputsymbolChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optioninputcqgsymbol", DbType="VarChar(45) NOT NULL", CanBeNull=false)]
+        public string optioninputcqgsymbol
+        {
+            get
+            {
+                return this._optioninputcqgsymbol;
+            }
+            set
+            {
+                if ((this._optioninputcqgsymbol != value))
+                {
+                    this.OnoptioninputcqgsymbolChanging(value);
+                    this.SendPropertyChanging();
+                    this._optioninputcqgsymbol = value;
+                    this.SendPropertyChanged("optioninputcqgsymbol");
+                    this.OnoptioninputcqgsymbolChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL")]
+        public long idinstrument
+        {
+            get
+            {
+                return this._idinstrument;
+            }
+            set
+            {
+                if ((this._idinstrument != value))
+                {
+                    this.OnidinstrumentChanging(value);
+                    this.SendPropertyChanging();
+                    this._idinstrument = value;
+                    this.SendPropertyChanged("idinstrument");
+                    this.OnidinstrumentChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptioninputtype", DbType="BigInt NOT NULL")]
+        public long idoptioninputtype
+        {
+            get
+            {
+                return this._idoptioninputtype;
+            }
+            set
+            {
+                if ((this._idoptioninputtype != value))
+                {
+                    this.OnidoptioninputtypeChanging(value);
+                    this.SendPropertyChanging();
+                    this._idoptioninputtype = value;
+                    this.SendPropertyChanged("idoptioninputtype");
+                    this.OnidoptioninputtypeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_multiplier", DbType="Float NOT NULL")]
+        public double multiplier
+        {
+            get
+            {
+                return this._multiplier;
+            }
+            set
+            {
+                if ((this._multiplier != value))
+                {
+                    this.OnmultiplierChanging(value);
+                    this.SendPropertyChanging();
+                    this._multiplier = value;
+                    this.SendPropertyChanged("multiplier");
+                    this.OnmultiplierChanged();
+                }
+            }
+        }
+        
+        public event PropertyChangingEventHandler PropertyChanging;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected virtual void SendPropertyChanging()
+        {
+            if ((this.PropertyChanging != null))
+            {
+                this.PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+        
+        protected virtual void SendPropertyChanged(String propertyName)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tblcontractexpirations")]
+    public partial class tblcontractexpiration : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        
+        private long _idoptionexpirationdates;
+        
+        private short _contracttype;
+        
+        private long _idinstrument;
+        
+        private int _optionyear;
+        
+        private int _optionmonthint;
+        
+        private System.DateTime _expirationdate;
+        
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -3972,151 +3972,151 @@ namespace ICE_Import
     partial void OnexpirationdateChanging(System.DateTime value);
     partial void OnexpirationdateChanged();
     #endregion
-		
-		public tblcontractexpiration()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptionexpirationdates", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long idoptionexpirationdates
-		{
-			get
-			{
-				return this._idoptionexpirationdates;
-			}
-			set
-			{
-				if ((this._idoptionexpirationdates != value))
-				{
-					this.OnidoptionexpirationdatesChanging(value);
-					this.SendPropertyChanging();
-					this._idoptionexpirationdates = value;
-					this.SendPropertyChanged("idoptionexpirationdates");
-					this.OnidoptionexpirationdatesChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_contracttype", DbType="SmallInt NOT NULL")]
-		public short contracttype
-		{
-			get
-			{
-				return this._contracttype;
-			}
-			set
-			{
-				if ((this._contracttype != value))
-				{
-					this.OncontracttypeChanging(value);
-					this.SendPropertyChanging();
-					this._contracttype = value;
-					this.SendPropertyChanged("contracttype");
-					this.OncontracttypeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL")]
-		public long idinstrument
-		{
-			get
-			{
-				return this._idinstrument;
-			}
-			set
-			{
-				if ((this._idinstrument != value))
-				{
-					this.OnidinstrumentChanging(value);
-					this.SendPropertyChanging();
-					this._idinstrument = value;
-					this.SendPropertyChanged("idinstrument");
-					this.OnidinstrumentChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionyear", DbType="Int NOT NULL")]
-		public int optionyear
-		{
-			get
-			{
-				return this._optionyear;
-			}
-			set
-			{
-				if ((this._optionyear != value))
-				{
-					this.OnoptionyearChanging(value);
-					this.SendPropertyChanging();
-					this._optionyear = value;
-					this.SendPropertyChanged("optionyear");
-					this.OnoptionyearChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmonthint", DbType="Int NOT NULL")]
-		public int optionmonthint
-		{
-			get
-			{
-				return this._optionmonthint;
-			}
-			set
-			{
-				if ((this._optionmonthint != value))
-				{
-					this.OnoptionmonthintChanging(value);
-					this.SendPropertyChanging();
-					this._optionmonthint = value;
-					this.SendPropertyChanged("optionmonthint");
-					this.OnoptionmonthintChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_expirationdate", DbType="Date NOT NULL")]
-		public System.DateTime expirationdate
-		{
-			get
-			{
-				return this._expirationdate;
-			}
-			set
-			{
-				if ((this._expirationdate != value))
-				{
-					this.OnexpirationdateChanging(value);
-					this.SendPropertyChanging();
-					this._expirationdate = value;
-					this.SendPropertyChanged("expirationdate");
-					this.OnexpirationdateChanged();
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
+        
+        public tblcontractexpiration()
+        {
+            OnCreated();
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoptionexpirationdates", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+        public long idoptionexpirationdates
+        {
+            get
+            {
+                return this._idoptionexpirationdates;
+            }
+            set
+            {
+                if ((this._idoptionexpirationdates != value))
+                {
+                    this.OnidoptionexpirationdatesChanging(value);
+                    this.SendPropertyChanging();
+                    this._idoptionexpirationdates = value;
+                    this.SendPropertyChanged("idoptionexpirationdates");
+                    this.OnidoptionexpirationdatesChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_contracttype", DbType="SmallInt NOT NULL")]
+        public short contracttype
+        {
+            get
+            {
+                return this._contracttype;
+            }
+            set
+            {
+                if ((this._contracttype != value))
+                {
+                    this.OncontracttypeChanging(value);
+                    this.SendPropertyChanging();
+                    this._contracttype = value;
+                    this.SendPropertyChanged("contracttype");
+                    this.OncontracttypeChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idinstrument", DbType="BigInt NOT NULL")]
+        public long idinstrument
+        {
+            get
+            {
+                return this._idinstrument;
+            }
+            set
+            {
+                if ((this._idinstrument != value))
+                {
+                    this.OnidinstrumentChanging(value);
+                    this.SendPropertyChanging();
+                    this._idinstrument = value;
+                    this.SendPropertyChanged("idinstrument");
+                    this.OnidinstrumentChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionyear", DbType="Int NOT NULL")]
+        public int optionyear
+        {
+            get
+            {
+                return this._optionyear;
+            }
+            set
+            {
+                if ((this._optionyear != value))
+                {
+                    this.OnoptionyearChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionyear = value;
+                    this.SendPropertyChanged("optionyear");
+                    this.OnoptionyearChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_optionmonthint", DbType="Int NOT NULL")]
+        public int optionmonthint
+        {
+            get
+            {
+                return this._optionmonthint;
+            }
+            set
+            {
+                if ((this._optionmonthint != value))
+                {
+                    this.OnoptionmonthintChanging(value);
+                    this.SendPropertyChanging();
+                    this._optionmonthint = value;
+                    this.SendPropertyChanged("optionmonthint");
+                    this.OnoptionmonthintChanged();
+                }
+            }
+        }
+        
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_expirationdate", DbType="Date NOT NULL")]
+        public System.DateTime expirationdate
+        {
+            get
+            {
+                return this._expirationdate;
+            }
+            set
+            {
+                if ((this._expirationdate != value))
+                {
+                    this.OnexpirationdateChanging(value);
+                    this.SendPropertyChanging();
+                    this._expirationdate = value;
+                    this.SendPropertyChanged("expirationdate");
+                    this.OnexpirationdateChanged();
+                }
+            }
+        }
+        
+        public event PropertyChangingEventHandler PropertyChanging;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        protected virtual void SendPropertyChanging()
+        {
+            if ((this.PropertyChanging != null))
+            {
+                this.PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+        
+        protected virtual void SendPropertyChanged(String propertyName)
+        {
+            if ((this.PropertyChanged != null))
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
 }
 #pragma warning restore 1591

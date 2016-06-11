@@ -20,7 +20,7 @@ namespace ICE_Import
             bool isTestTables,
             CancellationToken ct)
         {
-            AsyncTaskListener.LogMessage("Started installing stored procedures");
+            AsyncTaskListener.LogMessage("Started installing stored procedures...");
 
             // Get paths of all files in "StoredProcs" directory
             string baseDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
