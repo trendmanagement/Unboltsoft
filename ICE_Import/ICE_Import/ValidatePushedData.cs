@@ -13,6 +13,7 @@ namespace ICE_Import
         private async void buttonCheckPushedData_Click(object sender, EventArgs e)
         {
             EnableDisable(true);
+
             await Task.Run(() => ValidatePushedFuturesData());
             await Task.Run(() => ValidatePushedDailyFuturesData());
             if (!ParsedData.FuturesOnly)
@@ -20,17 +21,17 @@ namespace ICE_Import
                 await Task.Run(() => ValidatePushedOptionsData());
                 await Task.Run(() => ValidatePushedDailyOptionsData());
             }
-            EnableDisable(false);
 
-            MessageBox.Show(ValidationResult);
+            MessageBox.Show(ValidationResult, Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            EnableDisable(false);
         }
 
         private void ValidatePushedFuturesData()
         {
             var futureHash = new HashSet<DateTime>(ParsedData.FutureRecords.Select(item => item.StripName));
-            string logMessage = string.Empty;
 
-            for (int i = 0; i < dataGridViewContract.Rows.Count - 1; i++)
+            for (int i = 0; i < dataGridViewContract.Rows.Count; i++)
             {
                 string month = dataGridViewContract[3, i].Value.ToString();
                 string year = dataGridViewContract[4, i].Value.ToString();
@@ -40,58 +41,50 @@ namespace ICE_Import
             }
 
             ValidationLogHelper(futureHash, "futures", "tblcontracts");
-
-            ValidationResult += logMessage + "\n";
         }
 
         private void ValidatePushedOptionsData()
         {
             var optionHash = new HashSet<DateTime>(ParsedData.OptionRecords.Select(item => item.StripName));
-            string logMessage = string.Empty;
 
-            for (int i = 0; i < dataGridViewContract.Rows.Count - 1; i++)
+            for (int i = 0; i < dataGridViewOption.Rows.Count; i++)
             {
-                string month = dataGridViewContract[3, i].Value.ToString();
-                string year = dataGridViewContract[4, i].Value.ToString();
+                string month = dataGridViewOption[3, i].Value.ToString();
+                string year = dataGridViewOption[4, i].Value.ToString();
                 string stripName = month + "." + year;
                 DateTime itemDT = Convert.ToDateTime(stripName);
                 optionHash.Remove(itemDT);
             }
 
             ValidationLogHelper(optionHash, "options", "tbloptions");
-
-            ValidationResult += logMessage + "\n";
         }
 
         private void ValidatePushedDailyFuturesData()
         {
             var futureDailyHash = new HashSet<Tuple<DateTime, DateTime>>();
-            string logMessage = string.Empty;
 
             foreach (var item in ParsedData.FutureRecords)
             {
-                var tumple = Tuple.Create(item.StripName, item.Date);
-                futureDailyHash.Add(tumple);
+                var tuple = Tuple.Create(item.StripName, item.Date);
+                futureDailyHash.Add(tuple);
             }
 
             string id;
             DateTime stripName;
             DateTime date;
 
-            for (int i = 0; i < dataGridViewDailyContract.Rows.Count - 1; i++)
+            for (int i = 0; i < dataGridViewDailyContract.Rows.Count; i++)
             {
                 id = dataGridViewDailyContract[1, i].Value.ToString();
                 stripName = GetStripNameContractFromGrid(id, dataGridViewContract);
                 date = (DateTime)dataGridViewDailyContract[2, i].Value;
 
-                var tumple = Tuple.Create(stripName, date);
+                var tuple = Tuple.Create(stripName, date);
 
-                futureDailyHash.Remove(tumple);
+                futureDailyHash.Remove(tuple);
             }
 
             ValidationLogHelper(futureDailyHash, "futures", "tbldailycontractsettlements");
-
-            ValidationResult += logMessage + "\n";
         }
 
         private void ValidatePushedDailyOptionsData()
@@ -103,7 +96,6 @@ namespace ICE_Import
             double expirationdate;
             double futureYear;
             double expirateYear;
-            string logMessage = string.Empty;
 
             foreach (var item in ParsedData.OptionRecords)
             {
@@ -114,7 +106,7 @@ namespace ICE_Import
                 optionDataHash.Add(tuple);
             }
 
-            for (int i = 0; i < dataGridViewOptionData.Rows.Count - 1; i++)
+            for (int i = 0; i < dataGridViewOptionData.Rows.Count; i++)
             {
                 id = dataGridViewOptionData[1, i].Value.ToString();
                 stripName = GetStripNameContractFromGrid(id, dataGridViewOption);
@@ -130,8 +122,6 @@ namespace ICE_Import
             }
 
             ValidationLogHelper(optionDataHash, "options", "tbloptiondata");
-
-            ValidationResult += logMessage + "\n";
         }
 
         private DateTime GetStripNameContractFromGrid(string id, DataGridView dgv)
@@ -141,7 +131,7 @@ namespace ICE_Import
             string year;
             string stripName;
 
-            for (int i = 0; i < dgv.Rows.Count - 1; i++)
+            for (int i = 0; i < dgv.Rows.Count; i++)
             {
                 if (id == dgv[0, i].Value.ToString())
                 {
@@ -156,20 +146,25 @@ namespace ICE_Import
 
         private void ValidationLogHelper<T>(HashSet<T> hash, string symbTypePlural, string tblName)
         {
+            string logMessage = string.Empty;
+
             if (hash.Count == 0)
             {
-                AsyncTaskListener.LogMessageFormat("All {0} were pushed to {1} successfully", symbTypePlural, tblName);
+                logMessage = string.Format("All {0} were pushed to {1} successfully", symbTypePlural, tblName);
+                AsyncTaskListener.LogMessage(logMessage);
             }
             else
             {
-                AsyncTaskListener.LogMessageFormat("Failed to push {0} {1} to {2}:", hash.Count, symbTypePlural, tblName);
+                logMessage = string.Format("Failed to push {0} {1} to {2}:", hash.Count, symbTypePlural, tblName);
+                AsyncTaskListener.LogMessage(logMessage);
                 AsyncTaskListener.LogMessage("----------------------------------");
-                foreach (T item in hash)
+                foreach (dynamic item in hash)
                 {
-                    LogInvalidItem((dynamic)item);
+                    LogInvalidItem(item);
                     AsyncTaskListener.LogMessage("----------------------------------");
                 }
             }
+            ValidationResult += logMessage + "\n";
         }
 
         private void LogInvalidItem(DateTime dt)

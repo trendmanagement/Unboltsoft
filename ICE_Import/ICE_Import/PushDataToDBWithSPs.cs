@@ -71,7 +71,8 @@ namespace ICE_Import
         /// </summary>
         void PushFuturesToDBWithSP(ref int globalCount, CancellationToken ct)
         {
-            var stripNameHashSet = new HashSet<DateTime>();
+            StripNameHashSet = new HashSet<DateTime>();
+            StripNameDateHashSet = new HashSet<Tuple<DateTime, DateTime>>();
 
             foreach (EOD_Futures future in ParsedData.FutureRecords)
             {
@@ -79,7 +80,7 @@ namespace ICE_Import
                 {
                     break;
                 }
-                bool newFuture = !stripNameHashSet.Contains(future.StripName);
+                bool newFuture = !StripNameHashSet.Contains(future.StripName);
 
                 char monthChar = Utilities.MonthToMonthCode(future.StripName.Month);
 
@@ -103,7 +104,8 @@ namespace ICE_Import
                                 future.StripName.Year,
                                 (int)IdInstrument,
                                 contractname);
-                            stripNameHashSet.Add(future.StripName);
+
+                            StripNameHashSet.Add(future.StripName);
                         }
                         else
                         {
@@ -121,7 +123,7 @@ namespace ICE_Import
                                 (int)IdInstrument,
                                 expirationDate,
                                 contractname);
-                            stripNameHashSet.Add(future.StripName);
+                            StripNameHashSet.Add(future.StripName);
                         }
                     }
 
@@ -132,6 +134,8 @@ namespace ICE_Import
                         future.StripName.Year,
                         (long)future.Volume.GetValueOrDefault(),
                         (long)future.OpenInterest.GetValueOrDefault());
+
+                    StripNameDateHashSet.Add(Tuple.Create(future.StripName, future.Date));
                 }
 #if !DEBUG
                 catch (Exception ex)
@@ -160,6 +164,8 @@ namespace ICE_Import
         /// </summary>
         void PushOptionsToDBWithSP(ref int globalCount, CancellationToken ct)
         {
+            IdOptionHashSet = new HashSet<long>();
+
             string log = string.Empty;
             foreach (EOD_Options option in ParsedData.OptionRecords)
             {
@@ -285,6 +291,8 @@ namespace ICE_Import
                         option.SettlementPrice.GetValueOrDefault(),
                         impliedvol,
                         futureYear - expirateYear);
+
+                    IdOptionHashSet.Add(idoption);
                 }
                 catch (Exception ex)
                 {
@@ -299,7 +307,7 @@ namespace ICE_Import
                 finally
                 {
                     globalCount++;
-                    if (globalCount == 2 * ParsedData.FutureRecords.Count + ParsedData.OptionRecords.Count)
+                    if (globalCount == ParsedData.FutureRecords.Count + ParsedData.OptionRecords.Count)
                     {
                         log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", globalCount, DatabaseName, TablesPrefix);
                     }

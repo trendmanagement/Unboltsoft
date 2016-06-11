@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -33,103 +34,192 @@ namespace ICE_Import
         {
             cts = new CancellationTokenSource();
 
-            var tblcontracts_ = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
-            var tbldailycontractsettlements_ = Context.<# Write(tableNamePrefix[i]); #>tbldailycontractsettlements;
-            var tbloptions_ = Context.<# Write(tableNamePrefix[i]); #>tbloptions;
-            var tbloptiondatas_ = Context.<# Write(tableNamePrefix[i]); #>tbloptiondatas;
-
-            BindingSource bsOption = new BindingSource();
-            BindingSource bsOptionData = new BindingSource();
-            BindingSource bsContract = new BindingSource();
-            BindingSource bsDailyContractSettlement = new BindingSource();
-
-            var listOption = new List<<# Write(TblOption); #>>();
-
-            int count = 100;
-
+            Dictionary<DateTime, long> idcontractDictionary = null;
+            List<<# Write(tableNamePrefix[i]); #>tblcontract> contractList = null;
+            List<<# Write(tableNamePrefix[i]); #>tbldailycontractsettlement> dailyContractList = null;
+            List<<# Write(tableNamePrefix[i]); #>tbloption> optionList = null;
+            List<<# Write(tableNamePrefix[i]); #>tbloptiondata> optionDataList = null;
+            
             try
             {
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLCONTRACT table", IsLocalDB ? tblcontracts_.Count() : count, DatabaseName, TablesPrefix));
+                AsyncTaskListener.LogMessage("Started pulling FUTURES data...");
+                await Task.Run(() => PullFutures<# Write(methodNameSuffix[i]); #>(out idcontractDictionary, out contractList), cts.Token);
+                AsyncTaskListener.LogMessageFormat("Pulled {0} entries from {1} {2}TBLCONTRACT table", contractList.Count, DatabaseName, TablesPrefix);
 
-                await Task.Run(() =>
-                            {
-                                bsContract.DataSource = (from item in tblcontracts_
-                                                         select item
-                                                        ).Take(IsLocalDB ? tblcontracts_.Count() : count).ToList();
-                            }, cts.Token);
+                AsyncTaskListener.LogMessage("Started pulling DAILY FUTURES data...");
+                await Task.Run(() => PullDailyFutures<# Write(methodNameSuffix[i]); #>(idcontractDictionary, out dailyContractList), cts.Token);
+                AsyncTaskListener.LogMessageFormat("Pulled {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", dailyContractList.Count, DatabaseName, TablesPrefix);
 
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLDAILYCONTRACTSETTLEMENT table", IsLocalDB ? tbldailycontractsettlements_.Count() : count, DatabaseName, TablesPrefix));
+                AsyncTaskListener.LogMessage("Started pulling OPTIONS data...");
+                await Task.Run(() => PullOptions<# Write(methodNameSuffix[i]); #>(out optionList), cts.Token);
+                AsyncTaskListener.LogMessageFormat("Pulled {0} entries from {1} {2}TBLOPTIONS table", optionList.Count, DatabaseName, TablesPrefix);
 
-                await Task.Run(() =>
-                                {
-                                    bsDailyContractSettlement.DataSource = (from item in tbldailycontractsettlements_
-                                                                            select item
-                                                                            ).Take(IsLocalDB ? tbldailycontractsettlements_.Count() : count).ToList();
-                                }, cts.Token);
-
-                //int count = tbloptions_.Where(item => item.cqgsymbol == "somesymbol").Count();
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONS table", IsLocalDB ? tbloptions_.Count() : count, DatabaseName, TablesPrefix));
-                try
-                {
-                    await Task.Run(() =>
-                    {
-                        listOption = (from item in tbloptions_
-                                          //where item.cqgsymbol == "somesymbol"
-                                      select item
-                                              ).Take(IsLocalDB ? tbloptions_.Count() : count).ToList();
-                    }, cts.Token);
-                }
-#if !DEBUG
-                catch (Exception ex)
-                {
-                    LogMessage(ex.Message);
-                }
-#endif
-                finally
-                {
-                    bsOption.DataSource = listOption;
-                }
-
-                LogMessage(string.Format("Started pulling {0} entries from {1} {2}TBLOPTIONDATAS table", IsLocalDB ? tbloptiondatas_.Count() : count, DatabaseName, TablesPrefix));
-                await Task.Run(() =>
-                                    {
-                                        bsOptionData.DataSource = (from item in tbloptiondatas_
-                                                                   select item
-                                                                  ).Take(IsLocalDB ? tbloptiondatas_.Count() : count).ToList();
-                                    }, cts.Token);
-
+                AsyncTaskListener.LogMessage("Started pulling DAILY OPTIONS data...");
+                await Task.Run(() => PullDailyOptions(out optionDataList), cts.Token);
+                AsyncTaskListener.LogMessageFormat("Pulled {0} entries from {1} {2}TBLOPTIONDATAS table", optionDataList.Count, DatabaseName, TablesPrefix);
             }
             catch (OperationCanceledException cancel)
             {
-                LogMessage(cancel.Message);
+                AsyncTaskListener.LogMessage(cancel.Message);
             }
 #if !DEBUG
             catch (Exception ex)
             {
-                LogMessage("ERROR");
-                LogMessage(ex.Message);
+                AsyncTaskListener.LogMessage("ERROR");
+                AsyncTaskListener.LogMessage(ex.Message);
             }
 #endif
             finally
             {
                 int totalCount =
-                    IsLocalDB ?
-                    tblcontracts_.Count() +
-                    tbldailycontractsettlements_.Count() +
-                    tbloptions_.Count() +
-                    tbloptiondatas_.Count()
-                    :
-                    4 * count;
-
-                LogMessage(string.Format("Pulled: {0} entries from {1} DB", totalCount, DatabaseName));
+                    contractList.Count() +
+                    dailyContractList.Count() +
+                    optionList.Count() +
+                    optionDataList.Count();
+                AsyncTaskListener.LogMessageFormat("Pulled: {0} entries from {1} DB", totalCount, DatabaseName);
             }
 
-            dataGridViewOption.DataSource = bsOption;
-            dataGridViewOptionData.DataSource = bsOptionData;
-            dataGridViewContract.DataSource = bsContract;
-            dataGridViewDailyContract.DataSource = bsDailyContractSettlement;
+            dataGridViewContract.DataSource = contractList;
+            dataGridViewDailyContract.DataSource = dailyContractList;
+            dataGridViewOption.DataSource = optionList;
+            dataGridViewOptionData.DataSource = optionDataList;
 
-			EnableDisable(false);
+            EnableDisable(false);
+        }
+
+        void PullFutures<# Write(methodNameSuffix[i]); #>(
+            out Dictionary<DateTime, long> idcontractDictionary,
+            out List<<# Write(tableNamePrefix[i]); #>tblcontract> contractList)
+        {
+            idcontractDictionary = new Dictionary<DateTime, long>();
+            contractList = new List<<# Write(tableNamePrefix[i]); #>tblcontract>();
+
+            var tblcontracts = Context.<# Write(tableNamePrefix[i]); #>tblcontracts;
+
+            foreach (var stripName in StripNameHashSet)
+            {
+                <# Write(tableNamePrefix[i]); #>tblcontract currentContract;
+
+                try
+                {
+                    currentContract = (from item in tblcontracts
+                                       where item.monthint == stripName.Month &&
+                                       item.year == stripName.Year &&
+                                       item.idinstrument == IdInstrument
+                                       select item
+                                       ).First();
+                }
+                catch (SqlException)
+                {
+                    continue;
+                }
+                catch (InvalidOperationException)
+                {
+                    continue;
+                }
+        
+                idcontractDictionary.Add(stripName, currentContract.idcontract);
+                contractList.Add(currentContract);
+            }
+
+            contractList = contractList.OrderBy(item => item.idcontract).ToList();
+        }
+
+        void PullDailyFutures<# Write(methodNameSuffix[i]); #>(
+            Dictionary<DateTime, long> idcontractDictionary,
+            out List<<# Write(tableNamePrefix[i]); #>tbldailycontractsettlement> dailyContractList)
+        {
+            dailyContractList = new List<<# Write(tableNamePrefix[i]); #>tbldailycontractsettlement>();
+
+            var tbldailycontractsettlements = Context.<# Write(tableNamePrefix[i]); #>tbldailycontractsettlements;
+
+            foreach (var tuple in StripNameDateHashSet)
+            {
+                <# Write(tableNamePrefix[i]); #>tbldailycontractsettlement currentDailyContract;
+
+                long idcontract;
+                bool isID = idcontractDictionary.TryGetValue(tuple.Item1, out idcontract);
+                if (isID)
+                {
+                    try
+                    {
+                        currentDailyContract = (from item in tbldailycontractsettlements
+                                                where item.idcontract == idcontract &&
+                                                item.date == tuple.Item2
+                                                select item
+                                                ).First();
+                    }
+                    catch (SqlException)
+                    {
+                        continue;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+
+                dailyContractList.Add(currentDailyContract);
+            }
+
+            dailyContractList = dailyContractList.OrderBy(item => item.idcontract).OrderBy(item => item.date).ToList();
+        }
+
+        void PullOptions<# Write(methodNameSuffix[i]); #>(
+            out List<<# Write(tableNamePrefix[i]); #>tbloption> optionList)
+        {
+            optionList = new List<<# Write(tableNamePrefix[i]); #>tbloption>();
+
+            var tbloptions = Context.<# Write(tableNamePrefix[i]); #>tbloptions;
+
+            try
+            {
+                optionList = (from item in tbloptions
+                              where 
+                              item.optionyear >= StripNameHashSet.Min().Year &&
+                              item.optionyear <= StripNameHashSet.Max().Year &&
+                              item.idinstrument == IdInstrument
+                              select item
+                              ).ToList();
+            }
+            catch (SqlException)
+            {
+            }
+
+            optionList = optionList.OrderBy(item => item.idoption).ToList();
+        }
+
+        void PullDailyOptions(
+            out List<<# Write(tableNamePrefix[i]); #>tbloptiondata> optionDataList)
+        {
+            optionDataList = new List<<# Write(tableNamePrefix[i]); #>tbloptiondata>();
+
+            var tbloptiondatas = Context.<# Write(tableNamePrefix[i]); #>tbloptiondatas;
+
+            foreach (var id in IdOptionHashSet)
+            {
+                IEnumerable<<# Write(tableNamePrefix[i]); #>tbloptiondata> currentOptionData;
+
+                try
+                {
+                    currentOptionData = (from item in tbloptiondatas
+                                         where 
+                                         item.idoption == id
+                                         select item);
+                }
+                catch (SqlException)
+                {
+                    continue;
+                }
+
+                optionDataList.AddRange(currentOptionData);
+            }
+
+            optionDataList = optionDataList.OrderBy(item => item.idoption).OrderBy(item => item.datetime).ToList();
         }
 
 <# } #>
