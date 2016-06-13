@@ -200,26 +200,43 @@ namespace ICE_Import
 
             var tbloptiondatas = Context.<# Write(tableNamePrefix[i]); #>tbloptiondatas;
 
-            foreach (var id in IdOptionHashSet)
+
+			if (IdOptionHashSet.Count == 0)
             {
-                IEnumerable<<# Write(tableNamePrefix[i]); #>tbloptiondata> currentOptionData;
 
                 try
                 {
-                    currentOptionData = (from item in tbloptiondatas
-                                         where 
-                                         item.idoption == id
-                                         select item);
+                    optionDataList = (from item in tbloptiondatas
+                                             select item).ToList();
                 }
                 catch (SqlException)
                 {
-                    continue;
                 }
 
-                optionDataList.AddRange(currentOptionData);
+            }
+            else
+            {
+                foreach (var id in IdOptionHashSet)
+                {
+					IEnumerable<<# Write(tableNamePrefix[i]); #>tbloptiondata> currentOptionData;
+
+                    try
+                    {
+                        currentOptionData = (from item in tbloptiondatas
+                                             where
+                                             item.idoption == id
+                                             select item);
+                    }
+                    catch (SqlException)
+                    {
+                        continue;
+                    }
+
+                    //optionDataList.AddRange(currentOptionData);
+                }
             }
 
-            optionDataList = optionDataList.OrderBy(item => item.idoption).OrderBy(item => item.datetime).ToList();
+            optionDataList = optionDataList.OrderBy(item => item.idoption).ToList();
         }
 
 <# } #>

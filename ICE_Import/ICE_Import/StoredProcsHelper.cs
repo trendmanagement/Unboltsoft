@@ -56,7 +56,7 @@ namespace ICE_Import
             string cqgsymbol);
 
         public delegate int d_SPOD(
-            int? idoption,
+            string optionname,
             DateTime? datetime,
             double? price,
             double? impliedvol,

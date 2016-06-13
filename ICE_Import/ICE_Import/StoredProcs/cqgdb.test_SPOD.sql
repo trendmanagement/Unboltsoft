@@ -1,6 +1,6 @@
 CREATE PROCEDURE [cqgdb].[test_SPOD]
-    @idoption INT, 
-    @datetime DATE,
+	@optionname VARCHAR(45),
+	@datetime DATE,
     @price FLOAT(53),
     @impliedvol FLOAT(53),
     @timetoexpinyears FLOAT(53)
@@ -10,10 +10,11 @@ SET NOCOUNT ON;
 
 MERGE INTO cqgdb.test_tbloptiondata as tgt_tbloptiondata
 USING
-    (SELECT @idoption, @datetime)
-    AS src_tbloptiondata (idoption, datetime)
-    ON src_tbloptiondata.idoption = tgt_tbloptiondata.idoption
-    AND src_tbloptiondata.datetime = tgt_tbloptiondata.datetime
+    (SELECT * FROM [cqgdb].test_tbloptions WHERE optionname = @optionname)
+    AS src_tbloptions
+    ON src_tbloptions.idoption = tgt_tbloptiondata.idoption
+    AND tgt_tbloptiondata.datetime = @datetime
+	AND tgt_tbloptiondata.price = @price
 
 WHEN MATCHED THEN
 UPDATE
@@ -27,6 +28,6 @@ WHEN NOT MATCHED THEN
     INSERT 
     (idoption, datetime, price, impliedvol,timetoexpinyears)
     VALUES 
-    (@idoption, @datetime, @price, @impliedvol, @timetoexpinyears);
+    (src_tbloptions.idoption, @datetime, @price, @impliedvol, @timetoexpinyears);
 
 SET NOCOUNT OFF;

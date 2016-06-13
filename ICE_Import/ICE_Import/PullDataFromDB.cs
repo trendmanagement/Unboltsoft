@@ -188,26 +188,43 @@ namespace ICE_Import
 
             var tbloptiondatas = Context.tbloptiondatas;
 
-            foreach (var id in IdOptionHashSet)
+
+			if (IdOptionHashSet.Count == 0)
             {
-                IEnumerable<tbloptiondata> currentOptionData;
 
                 try
                 {
-                    currentOptionData = (from item in tbloptiondatas
-                                         where 
-                                         item.idoption == id
-                                         select item);
+                    optionDataList = (from item in tbloptiondatas
+                                             select item).ToList();
                 }
                 catch (SqlException)
                 {
-                    continue;
                 }
 
-                optionDataList.AddRange(currentOptionData);
+            }
+            else
+            {
+                foreach (var id in IdOptionHashSet)
+                {
+					IEnumerable<tbloptiondata> currentOptionData;
+
+                    try
+                    {
+                        currentOptionData = (from item in tbloptiondatas
+                                             where
+                                             item.idoption == id
+                                             select item);
+                    }
+                    catch (SqlException)
+                    {
+                        continue;
+                    }
+
+                    //optionDataList.AddRange(currentOptionData);
+                }
             }
 
-            optionDataList = optionDataList.OrderBy(item => item.idoption).OrderBy(item => item.datetime).ToList();
+            optionDataList = optionDataList.OrderBy(item => item.idoption).ToList();
         }
 
         async void PullDataFromDBTest()
@@ -380,26 +397,43 @@ namespace ICE_Import
 
             var tbloptiondatas = Context.test_tbloptiondatas;
 
-            foreach (var id in IdOptionHashSet)
+
+			if (IdOptionHashSet.Count == 0)
             {
-                IEnumerable<test_tbloptiondata> currentOptionData;
 
                 try
                 {
-                    currentOptionData = (from item in tbloptiondatas
-                                         where 
-                                         item.idoption == id
-                                         select item);
+                    optionDataList = (from item in tbloptiondatas
+                                             select item).ToList();
                 }
                 catch (SqlException)
                 {
-                    continue;
                 }
 
-                optionDataList.AddRange(currentOptionData);
+            }
+            else
+            {
+                foreach (var id in IdOptionHashSet)
+                {
+					IEnumerable<test_tbloptiondata> currentOptionData;
+
+                    try
+                    {
+                        currentOptionData = (from item in tbloptiondatas
+                                             where
+                                             item.idoption == id
+                                             select item);
+                    }
+                    catch (SqlException)
+                    {
+                        continue;
+                    }
+
+                    //optionDataList.AddRange(currentOptionData);
+                }
             }
 
-            optionDataList = optionDataList.OrderBy(item => item.idoption).OrderBy(item => item.datetime).ToList();
+            optionDataList = optionDataList.OrderBy(item => item.idoption).ToList();
         }
 
     }

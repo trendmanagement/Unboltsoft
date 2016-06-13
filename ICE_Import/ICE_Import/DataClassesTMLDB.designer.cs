@@ -215,10 +215,10 @@ namespace ICE_Import
             return ((int)(result.ReturnValue));
         }
         
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPOD")]
-        public int test_SPOD([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idoption, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> datetime, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> price, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> impliedvol, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> timetoexpinyears)
+        [Function(Name="cqgdb.test_SPOD")]
+        public int test_SPOD([Parameter(DbType= "VarChar(45)")] string optionname, [Parameter(DbType="Date")] DateTime? datetime, [Parameter(DbType="Float")] double? price, [Parameter(DbType="Float")] double? impliedvol, [Parameter(DbType="Float")] double? timetoexpinyears)
         {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), idoption, datetime, price, impliedvol, timetoexpinyears);
+            IExecuteResult result = ExecuteMethodCall(this, ((MethodInfo)(MethodBase.GetCurrentMethod())), optionname, datetime, price, impliedvol, timetoexpinyears);
             return ((int)(result.ReturnValue));
         }
         
@@ -258,12 +258,12 @@ namespace ICE_Import
         }
         
         [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPOD")]
-        public int SPOD([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idoption, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> datetime, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> price, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> impliedvol, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> timetoexpinyears)
+        public int SPOD([Parameter(DbType = "VarChar(45)")] string optionname, [Parameter(DbType = "Date")] DateTime? datetime, [Parameter(DbType = "Float")] double? price, [Parameter(DbType = "Float")] double? impliedvol, [Parameter(DbType = "Float")] double? timetoexpinyears)
         {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), idoption, datetime, price, impliedvol, timetoexpinyears);
+            IExecuteResult result = ExecuteMethodCall(this, ((MethodInfo)(MethodBase.GetCurrentMethod())), optionname, datetime, price, impliedvol, timetoexpinyears);
             return ((int)(result.ReturnValue));
         }
-        
+
         [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPF_Mod")]
         public int SPF_Mod([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
         {

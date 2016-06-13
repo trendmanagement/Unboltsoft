@@ -286,13 +286,13 @@ namespace ICE_Import
                     #endregion
 
                     StoredProcsHelper.SPOD(
-                        (int)idoption,
+                        optionName,
                         option.Date,
                         option.SettlementPrice.GetValueOrDefault(),
                         impliedvol,
                         futureYear - expirateYear);
 
-                    IdOptionHashSet.Add(idoption);
+                    //IdOptionHashSet.Add(idoption);
                 }
                 catch (Exception ex)
                 {

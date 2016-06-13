@@ -141,7 +141,7 @@ namespace ICE_Import
         }
 
         public int SPOD(
-            int? idoption,
+            string optionname,
             DateTime? datetime,
             double? price,
             double? impliedvol,
@@ -149,7 +149,7 @@ namespace ICE_Import
         {
             PushCommand(
                 "SPOD",
-                idoption,
+                optionname,
                 datetime,
                 price,
                 impliedvol,
@@ -264,5 +264,6 @@ namespace ICE_Import
                 AsyncTaskListener.LogMessage(e.Message);
             }
         }
+
     }
 }

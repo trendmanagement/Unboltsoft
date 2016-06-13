@@ -56,8 +56,10 @@ namespace ICE_Import
                     {
                         createProcCommand.ExecuteNonQuery();
                     }
-                    catch (SqlException)
+                    catch (SqlException ex)
                     {
+                        AsyncTaskListener.LogMessage(ex.Message);
+
                         // Remove the old stored procedure from DB
                         string procName = fileName.Substring(0, fileName.Length - storedProcFileExt.Length);
                         string dropProcCommandBody = string.Format(dropProcCommandPattern, procName);
@@ -67,8 +69,10 @@ namespace ICE_Import
                             {
                                 dropProcCommand.ExecuteNonQuery();
                             }
-                            catch (SqlException)
+                            catch (SqlException exc)
                             {
+                                AsyncTaskListener.LogMessage(exc.Message);
+
                                 AsyncTaskListener.LogMessage("    " + fileName + " - FAILED");
                                 return false;
                             }
