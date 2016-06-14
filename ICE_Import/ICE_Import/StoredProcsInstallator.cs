@@ -72,7 +72,6 @@ namespace ICE_Import
                             catch (SqlException exc)
                             {
                                 AsyncTaskListener.LogMessage(exc.Message);
-
                                 AsyncTaskListener.LogMessage("    " + fileName + " - FAILED");
                                 return false;
                             }

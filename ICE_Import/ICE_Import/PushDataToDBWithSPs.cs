@@ -36,14 +36,14 @@ namespace ICE_Import
                 }
 
                 AsyncTaskListener.Init("Pushing of FUTURES data started");
-                await Task.Run(() => PushFuturesToDBWithSP(ref globalCount, ct), ct);
+                await Task.Run(() => PushFuturesSQL(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
                 AsyncTaskListener.LogMessage("Pushing of FUTURES data complete");
 
                 if (!ParsedData.FuturesOnly)
                 {
                     AsyncTaskListener.LogMessage("Pushing of OPTIONS data started");
-                    await Task.Run(() => PushOptionsToDBWithSP(ref globalCount, ct), ct);
+                    await Task.Run(() => PushOptionsSQL(ref globalCount, ct), ct);
                     LogElapsedTime(DateTime.Now - start);
                     AsyncTaskListener.LogMessage("Pushing of OPTIONS data complete");
                 }
@@ -226,64 +226,6 @@ namespace ICE_Import
                         IdInstrument,
                         expirationDate,
                         optionName);
-
-                    #region Get idoption
-                    long idoption = 0;
-                    if (cb_TestTables.Checked)
-                    {
-                        var tbloptions = new List<test_tbloption>();
-                        try
-                        {
-                            var optlist = Context.test_tbloptions.Where(item => item.optionname == optionName).ToList();
-                            foreach (var item in optlist)
-                            {
-                                tbloptions.Add(item);
-                            }
-                            int countContracts = tbloptions.Count;
-                            if (countContracts > 0)
-                            {
-                                idoption = tbloptions[0].idoption;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            int erc = globalCount - ParsedData.FutureRecords.Count - ParsedData.FutureRecords.Count;
-                            log += string.Format(
-                                "ERROR message from {0} pushing pushing {1}TBLOPTIONS table\n" +
-                                "Can't read N: {2} from DB\n",
-                                DatabaseName, TablesPrefix, erc);
-                            log += ex.Message + "\n";
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        var tbloptions = new List<tbloption>();
-                        try
-                        {
-                            var optlist = Context.tbloptions.Where(item => item.optionname == optionName).ToList();
-                            foreach (var item in optlist)
-                            {
-                                tbloptions.Add(item);
-                            }
-                            int countContracts = tbloptions.Count;
-                            if (countContracts > 0)
-                            {
-                                idoption = tbloptions[0].idoption;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            int erc = globalCount - ParsedData.FutureRecords.Count - ParsedData.FutureRecords.Count;
-                            log += string.Format(
-                                "ERROR message from {0} pushing pushing {1}TBLOPTIONS table\n" +
-                                "Can't read N: {2} from DB\n",
-                                DatabaseName, TablesPrefix, erc);
-                            log += ex.Message + "\n";
-                            continue;
-                        }
-                    }
-                    #endregion
 
                     StoredProcsHelper.SPOD(
                         optionName,
