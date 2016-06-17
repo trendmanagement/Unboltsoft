@@ -1,8 +1,8 @@
 ﻿CREATE PROCEDURE [cqgdb].[SPDF]
+	@monthChar char,
+    @yearInt int,
     @spanDate date,
     @settlementPrice float,
-    @monthChar char,
-    @yearInt int,
     @volume bigint,
     @openinterest bigint
 AS

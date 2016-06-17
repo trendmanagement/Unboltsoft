@@ -4,10 +4,10 @@
 <#@ include file="MultipleOutputHelper.ttinclude" #>
 <# string content =
 @"CREATE PROCEDURE [cqgdb].[{0}SPDF]
+	@monthChar char,
+    @yearInt int,
     @spanDate date,
     @settlementPrice float,
-    @monthChar char,
-    @yearInt int,
     @volume bigint,
     @openinterest bigint
 AS

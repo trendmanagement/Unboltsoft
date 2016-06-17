@@ -74,6 +74,9 @@
     <Compile Include="PushDataSQL.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="PushTable.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="StoredProcsInstallator.cs" />
     <Compile Include="BgWorkerFutures.cs">
       <SubType>Form</SubType>
@@ -268,6 +271,18 @@
     <Content Include="StoredProcs\cqgdb.test_SPO_Mod.sql">
       <DependentUpon>cqgdb.SPO_Mod.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\SPDFTable.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\SPFTable.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\SPODTable.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\SPOTable.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

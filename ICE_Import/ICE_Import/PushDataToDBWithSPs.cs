@@ -36,14 +36,14 @@ namespace ICE_Import
                 }
 
                 AsyncTaskListener.Init("Pushing of FUTURES data started");
-                await Task.Run(() => PushFuturesSQL(ref globalCount, ct), ct);
+                await Task.Run(() => PushContractsTable(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
                 AsyncTaskListener.LogMessage("Pushing of FUTURES data complete");
 
                 if (!ParsedData.FuturesOnly)
                 {
                     AsyncTaskListener.LogMessage("Pushing of OPTIONS data started");
-                    await Task.Run(() => PushOptionsSQL(ref globalCount, ct), ct);
+                    await Task.Run(() => PushOptionsTable(ref globalCount, ct), ct);
                     LogElapsedTime(DateTime.Now - start);
                     AsyncTaskListener.LogMessage("Pushing of OPTIONS data complete");
                 }

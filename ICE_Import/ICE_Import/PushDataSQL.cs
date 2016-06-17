@@ -74,10 +74,10 @@ namespace ICE_Import
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
 
-                            cmd.Parameters.Add("@spanDate", SqlDbType.Date).Value = future.Date;
-                            cmd.Parameters.Add("@settlementPrice", SqlDbType.Float).Value = future.SettlementPrice.GetValueOrDefault();
                             cmd.Parameters.Add("@monthChar", SqlDbType.Char).Value = monthChar;
                             cmd.Parameters.Add("@yearInt", SqlDbType.Int).Value = future.StripName.Year;
+                            cmd.Parameters.Add("@spanDate", SqlDbType.Date).Value = future.Date;
+                            cmd.Parameters.Add("@settlementPrice", SqlDbType.Float).Value = future.SettlementPrice.GetValueOrDefault();
                             cmd.Parameters.Add("@volume", SqlDbType.BigInt).Value = (long)future.Volume.GetValueOrDefault();
                             cmd.Parameters.Add("@openinterest", SqlDbType.BigInt).Value = (long)future.OpenInterest.GetValueOrDefault();
 

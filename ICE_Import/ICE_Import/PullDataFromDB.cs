@@ -84,30 +84,40 @@ namespace ICE_Import
 
             var tblcontracts = Context.tblcontracts;
 
-            foreach (var stripName in StripNameHashSet)
-            {
-                tblcontract currentContract;
+			int count = 1000;
 
-                try
-                {
-                    currentContract = (from item in tblcontracts
-                                       where item.monthint == stripName.Month &&
-                                       item.year == stripName.Year &&
-                                       item.idinstrument == IdInstrument
-                                       select item
-                                       ).First();
-                }
-                catch (SqlException)
-                {
-                    continue;
-                }
-                catch (InvalidOperationException)
-                {
-                    continue;
-                }
+            if (rb_LocalDB.Checked || count <= (from item in tblcontracts select item).Count())
+            {
+                contractList = (from item in tblcontracts
+                                select item).ToList();
+            }
+            else
+            {
+				foreach (var stripName in StripNameHashSet)
+				{
+					tblcontract currentContract;
+
+					try
+					{
+						currentContract = (from item in tblcontracts
+										   where item.monthint == stripName.Month &&
+										   item.year == stripName.Year &&
+										   item.idinstrument == IdInstrument
+										   select item
+										   ).First();
+					}
+					catch (SqlException)
+					{
+						continue;
+					}
+					catch (InvalidOperationException)
+					{
+						continue;
+					}
         
-                idcontractDictionary.Add(stripName, currentContract.idcontract);
-                contractList.Add(currentContract);
+					idcontractDictionary.Add(stripName, currentContract.idcontract);
+					contractList.Add(currentContract);
+				}
             }
 
             contractList = contractList.OrderBy(item => item.idcontract).ToList();
@@ -120,6 +130,17 @@ namespace ICE_Import
             dailyContractList = new List<tbldailycontractsettlement>();
 
             var tbldailycontractsettlements = Context.tbldailycontractsettlements;
+
+							
+			int count = 1000;
+
+            if (rb_LocalDB.Checked || count <= (from item in tbldailycontractsettlements select item).Count())
+            {
+                dailyContractList = (from item in tbldailycontractsettlements
+                                select item).ToList();
+            }
+            else
+            {
 
             foreach (var tuple in StripNameDateHashSet)
             {
@@ -153,7 +174,7 @@ namespace ICE_Import
 
                 dailyContractList.Add(currentDailyContract);
             }
-
+			}
             dailyContractList = dailyContractList.OrderBy(item => item.idcontract).OrderBy(item => item.date).ToList();
         }
 
@@ -164,20 +185,29 @@ namespace ICE_Import
 
             var tbloptions = Context.tbloptions;
 
-            try
+			int count = 1000;
+
+            if (rb_LocalDB.Checked || count <= (from item in tbloptions select item).Count())
             {
                 optionList = (from item in tbloptions
-                              where 
-                              item.optionyear >= StripNameHashSet.Min().Year &&
-                              item.optionyear <= StripNameHashSet.Max().Year &&
-                              item.idinstrument == IdInstrument
-                              select item
-                              ).ToList();
+                                select item).ToList();
             }
-            catch (SqlException)
+            else
             {
-            }
-
+				try
+				{
+					optionList = (from item in tbloptions
+								  where 
+								  item.optionyear >= StripNameHashSet.Min().Year &&
+								  item.optionyear <= StripNameHashSet.Max().Year &&
+								  item.idinstrument == IdInstrument
+								  select item
+								  ).ToList();
+				}
+				catch (SqlException)
+				{
+				}
+			}
             optionList = optionList.OrderBy(item => item.idoption).ToList();
         }
 
@@ -187,6 +217,16 @@ namespace ICE_Import
             optionDataList = new List<tbloptiondata>();
 
             var tbloptiondatas = Context.tbloptiondatas;
+
+			int count = 1000;
+
+            if (rb_LocalDB.Checked || count <= (from item in tbloptiondatas select item).Count())
+            {
+                optionDataList = (from item in tbloptiondatas
+                                select item).ToList();
+            }
+            else
+            {
 
 
 			if (IdOptionHashSet.Count == 0)
@@ -223,7 +263,7 @@ namespace ICE_Import
                     //optionDataList.AddRange(currentOptionData);
                 }
             }
-
+			}
             optionDataList = optionDataList.OrderBy(item => item.idoption).ToList();
         }
 
@@ -293,30 +333,40 @@ namespace ICE_Import
 
             var tblcontracts = Context.test_tblcontracts;
 
-            foreach (var stripName in StripNameHashSet)
-            {
-                test_tblcontract currentContract;
+			int count = 1000;
 
-                try
-                {
-                    currentContract = (from item in tblcontracts
-                                       where item.monthint == stripName.Month &&
-                                       item.year == stripName.Year &&
-                                       item.idinstrument == IdInstrument
-                                       select item
-                                       ).First();
-                }
-                catch (SqlException)
-                {
-                    continue;
-                }
-                catch (InvalidOperationException)
-                {
-                    continue;
-                }
+            if (rb_LocalDB.Checked || count <= (from item in tblcontracts select item).Count())
+            {
+                contractList = (from item in tblcontracts
+                                select item).ToList();
+            }
+            else
+            {
+				foreach (var stripName in StripNameHashSet)
+				{
+					test_tblcontract currentContract;
+
+					try
+					{
+						currentContract = (from item in tblcontracts
+										   where item.monthint == stripName.Month &&
+										   item.year == stripName.Year &&
+										   item.idinstrument == IdInstrument
+										   select item
+										   ).First();
+					}
+					catch (SqlException)
+					{
+						continue;
+					}
+					catch (InvalidOperationException)
+					{
+						continue;
+					}
         
-                idcontractDictionary.Add(stripName, currentContract.idcontract);
-                contractList.Add(currentContract);
+					idcontractDictionary.Add(stripName, currentContract.idcontract);
+					contractList.Add(currentContract);
+				}
             }
 
             contractList = contractList.OrderBy(item => item.idcontract).ToList();
@@ -329,6 +379,16 @@ namespace ICE_Import
             dailyContractList = new List<test_tbldailycontractsettlement>();
 
             var tbldailycontractsettlements = Context.test_tbldailycontractsettlements;
+							
+			int count = 1000;
+
+            if (rb_LocalDB.Checked || count <= (from item in tbldailycontractsettlements select item).Count())
+            {
+                dailyContractList = (from item in tbldailycontractsettlements
+                                select item).ToList();
+            }
+            else
+            {
 
             foreach (var tuple in StripNameDateHashSet)
             {
@@ -362,8 +422,8 @@ namespace ICE_Import
 
                 dailyContractList.Add(currentDailyContract);
             }
-
-            dailyContractList = dailyContractList.OrderBy(item => item.idcontract).OrderBy(item => item.date).ToList();
+			}
+            dailyContractList = dailyContractList.OrderBy(item => item.iddailycontractsettlements).ToList();
         }
 
         void PullOptionsTest(
@@ -373,20 +433,29 @@ namespace ICE_Import
 
             var tbloptions = Context.test_tbloptions;
 
-            try
+			int count = 1000;
+
+            if (rb_LocalDB.Checked || count <= (from item in tbloptions select item).Count())
             {
                 optionList = (from item in tbloptions
-                              where 
-                              item.optionyear >= StripNameHashSet.Min().Year &&
-                              item.optionyear <= StripNameHashSet.Max().Year &&
-                              item.idinstrument == IdInstrument
-                              select item
-                              ).ToList();
+                                select item).ToList();
             }
-            catch (SqlException)
+            else
             {
-            }
-
+				try
+				{
+					optionList = (from item in tbloptions
+								  where 
+								  item.optionyear >= StripNameHashSet.Min().Year &&
+								  item.optionyear <= StripNameHashSet.Max().Year &&
+								  item.idinstrument == IdInstrument
+								  select item
+								  ).ToList();
+				}
+				catch (SqlException)
+				{
+				}
+			}
             optionList = optionList.OrderBy(item => item.idoption).ToList();
         }
 
@@ -396,6 +465,16 @@ namespace ICE_Import
             optionDataList = new List<test_tbloptiondata>();
 
             var tbloptiondatas = Context.test_tbloptiondatas;
+
+			int count = 1000;
+
+            if (rb_LocalDB.Checked || count <= (from item in tbloptiondatas select item).Count())
+            {
+                optionDataList = (from item in tbloptiondatas
+                                select item).ToList();
+            }
+            else
+            {
 
 
 			if (IdOptionHashSet.Count == 0)
@@ -432,7 +511,7 @@ namespace ICE_Import
                     //optionDataList.AddRange(currentOptionData);
                 }
             }
-
+			}
             optionDataList = optionDataList.OrderBy(item => item.idoption).ToList();
         }
 

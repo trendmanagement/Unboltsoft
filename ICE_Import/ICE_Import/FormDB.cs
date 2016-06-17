@@ -52,9 +52,11 @@ namespace ICE_Import
             AsyncTaskListener.Updated += AsyncTaskListener_Updated;
 
             rb_DB_CheckedChanged(rb_LocalDB, null);
-            cb_TestTables_CheckedChanged(null, null);
+            //cb_TestTables_CheckedChanged(null, null);
+            cb_TestTables.Enabled = false;
             cb_StoredProcs_CheckedChanged(null, null);
-            cb_AsyncUpdate_CheckedChanged(null, null);
+            //cb_AsyncUpdate_CheckedChanged(null, null);
+            cb_AsyncUpdate.Enabled = false;
 
             var contextTMLDB = new DataClassesTMLDBDataContext(ConnectionStrings.TMLDB);
             TMLDBReader = new TMLDBReader(contextTMLDB);
@@ -307,9 +309,9 @@ namespace ICE_Import
             rb_LocalDB.Enabled = !start;
             rb_TMLDBCopy.Enabled = !start;
             rb_TMLDB.Enabled = !start;
-            cb_TestTables.Enabled = !start;
+            //cb_TestTables.Enabled = !start;
             cb_StoredProcs.Enabled = !start;
-            cb_AsyncUpdate.Enabled = !start;
+            //cb_AsyncUpdate.Enabled = !start;
             if (start)
             {
                 buttonPush.Enabled = false;
