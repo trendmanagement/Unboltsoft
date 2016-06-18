@@ -84,5 +84,5 @@ WHEN NOT MATCHED THEN
     src.expirationdate,
     src.idcontract, 
     src.cqgsymbol);
-SET NOCOUNT ON;
 DROP TABLE temp;
+SET NOCOUNT ON;

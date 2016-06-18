@@ -192,7 +192,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>cqgdb.SPDF.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\cqgdb.SPDF.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -206,7 +205,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>cqgdb.SPF.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\cqgdb.SPF_Mod.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -216,7 +214,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>cqgdb.SPF_Mod.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\cqgdb.SPO.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -226,7 +223,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>cqgdb.SPO.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\cqgdb.SPOD.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -236,7 +232,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>cqgdb.SPOD.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\cqgdb.SPO_Mod.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -246,43 +241,36 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>cqgdb.SPO_Mod.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\cqgdb.test_SPDF.sql">
       <DependentUpon>cqgdb.SPDF.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\cqgdb.test_SPF.sql">
       <DependentUpon>cqgdb.SPF.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\cqgdb.test_SPF_Mod.sql">
       <DependentUpon>cqgdb.SPF_Mod.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\cqgdb.test_SPO.sql">
       <DependentUpon>cqgdb.SPO.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\cqgdb.test_SPOD.sql">
       <DependentUpon>cqgdb.SPOD.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\cqgdb.test_SPO_Mod.sql">
       <DependentUpon>cqgdb.SPO_Mod.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\SPDFTable.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\SPFTable.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\SPODTable.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="StoredProcs\SPOTable.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

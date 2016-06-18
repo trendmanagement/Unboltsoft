@@ -26,8 +26,8 @@ SELECT
 	timetoexpinyears
 FROM @optiondata
 
-UPDATE temp SET temp.idoption = cqgdb.tbloptions.idoption FROM  cqgdb.tbloptions INNER JOIN temp ON
-temp.optionname = cqgdb.tbloptions.optionname
+UPDATE temp SET temp.idoption = tbloptions.idoption FROM  tbloptions INNER JOIN temp ON
+temp.optionname = tbloptions.optionname
 
 SET NOCOUNT ON;
 
@@ -58,6 +58,5 @@ WHEN NOT MATCHED THEN
 	src.price, 
 	src.impliedvol, 
 	src.timetoexpinyears);
-
+DROP TABLE temp;
 SET NOCOUNT OFF;
-DROP TABLE temp

@@ -72,5 +72,5 @@ VALUES
 	src.volume, 
 	src.openinterest
 );
-
+DROP TABLE temp;
 SET NOCOUNT OFF;
