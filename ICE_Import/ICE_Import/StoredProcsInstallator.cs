@@ -7,6 +7,7 @@ namespace ICE_Import
 {
     static class StoredProcsInstallator
     {
+        static bool IsSPInstaled;
         const string storedProcsDir = "StoredProcs";
         const string storedProcFileExt = ".sql";
         const string testTablesPrefix = "test_";
@@ -20,76 +21,89 @@ namespace ICE_Import
             bool isTestTables,
             CancellationToken ct)
         {
-            AsyncTaskListener.LogMessage("Started installing stored procedures...");
 
-            // Get paths of all files in "StoredProcs" directory
-            string baseDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            string subDir = Path.Combine(baseDir, storedProcsDir);
-            string[] filePaths = Directory.GetFiles(subDir);
-
-            using (var connection = new SqlConnection(connectionString))
+            if (!IsSPInstaled)
             {
-                connection.Open();
+                AsyncTaskListener.LogMessage("Started installing stored procedures...");
 
-                foreach (string filePath in filePaths)
+                // Get paths of all files in "StoredProcs" directory
+                string baseDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                string subDir = Path.Combine(baseDir, storedProcsDir);
+                string[] filePaths = Directory.GetFiles(subDir);
+                using (var connection = new SqlConnection(connectionString))
                 {
-                    if (ct.IsCancellationRequested)
-                    {
-                        connection.Close();
-                        break;
-                    }
+                    connection.Open();
 
-                    // Do not install "test_" stored procedures if we are working with non-test tables and vice versa
-                    string fileName = Path.GetFileName(filePath);
-                    bool isTestStoredProc = fileName.Contains(testTablesPrefix);
-                    bool skip = isTestStoredProc ^ isTestTables;
-                    if (skip)
+                    foreach (string filePath in filePaths)
                     {
-                        AsyncTaskListener.LogMessage("    " + fileName + " - skipped");
-                        continue;
-                    }
-
-                    // Install the new stored procedure from SQL file into DB
-                    string storedProcBody = File.ReadAllText(filePath);
-                    var createProcCommand = new SqlCommand(storedProcBody, connection);
-                    try
-                    {
-                        createProcCommand.ExecuteNonQuery();
-                    }
-                    catch (SqlException ex)
-                    {
-                        AsyncTaskListener.LogMessage(ex.Message);
-
-                        // Remove the old stored procedure from DB
-                        string procName = fileName.Substring(0, fileName.Length - storedProcFileExt.Length);
-                        string dropProcCommandBody = string.Format(dropProcCommandPattern, procName);
-                        using (var dropProcCommand = new SqlCommand(dropProcCommandBody, connection))
+                        if (ct.IsCancellationRequested)
                         {
-                            try
-                            {
-                                dropProcCommand.ExecuteNonQuery();
-                            }
-                            catch (SqlException exc)
-                            {
-                                AsyncTaskListener.LogMessage(exc.Message);
-                                AsyncTaskListener.LogMessage("    " + fileName + " - FAILED");
-                                return false;
-                            }
+                            connection.Close();
+                            break;
                         }
 
-                        // Try again
-                        createProcCommand.ExecuteNonQuery();
+                        // Do not install "test_" stored procedures if we are working with non-test tables and vice versa
+                        string fileName = Path.GetFileName(filePath);
+                        bool isTestStoredProc = fileName.Contains(testTablesPrefix);
+                        bool skip = isTestStoredProc ^ isTestTables;
+                        if (skip)
+                        {
+                            AsyncTaskListener.LogMessage("    " + fileName + " - skipped");
+                            continue;
+                        }
+
+                        // Install the new stored procedure from SQL file into DB
+                        string storedProcBody = File.ReadAllText(filePath);
+                        var createProcCommand = new SqlCommand(storedProcBody, connection);
+                        try
+                        {
+                            createProcCommand.ExecuteNonQuery();
+                            IsSPInstaled = true;
+                        }
+                        catch (SqlException ex)
+                        {
+                            AsyncTaskListener.LogMessage(ex.Message);
+                            //string msg = string.Format("There is already an object named '{0}' in the database.", fileName.Substring(0, fileName.Length - 4));
+                            //AsyncTaskListener.LogMessage(msg);
+                            //if (ex.Message == msg)
+                            //{
+                            //    continue;
+                            //}
+
+                            // Remove the old stored procedure from DB
+                            string procName = fileName.Substring(0, fileName.Length - storedProcFileExt.Length);
+                            string dropProcCommandBody = string.Format(dropProcCommandPattern, procName);
+                            using (var dropProcCommand = new SqlCommand(dropProcCommandBody, connection))
+                            {
+                                try
+                                {
+                                    dropProcCommand.ExecuteNonQuery();
+                                }
+                                catch (SqlException exc)
+                                {
+                                    AsyncTaskListener.LogMessage(exc.Message);
+                                    AsyncTaskListener.LogMessage("    " + fileName + " - FAILED");
+                                    IsSPInstaled = false;
+                                    return false;
+                                }
+                            }
+                            // Try again
+                            createProcCommand.ExecuteNonQuery();
+                        }
+
+                        AsyncTaskListener.LogMessage("    " + fileName + " - done");
                     }
-
-                    AsyncTaskListener.LogMessage("    " + fileName + " - done");
+                    connection.Close();
                 }
-
-                connection.Close();
+                AsyncTaskListener.LogMessage("Completed installing stored procedures");
+                return true;
+            }
+            else
+            {
+                AsyncTaskListener.LogMessage("SP's was installed.");
+                return true;
             }
 
-            AsyncTaskListener.LogMessage("Completed installing stored procedures");
-
-            return true;
         }
     }
 }

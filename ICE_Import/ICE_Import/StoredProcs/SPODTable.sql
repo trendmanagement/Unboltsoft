@@ -2,7 +2,7 @@ CREATE PROCEDURE [cqgdb].[SPODTable]
 	@optiondata OptionDatasType READONLY
 AS
 
-CREATE TABLE temp
+CREATE TABLE tempOptionData
 ( 
 	optionname varchar(50),
 	idoption int,
@@ -12,7 +12,7 @@ CREATE TABLE temp
 	timetoexpinyears float
 )
 
-INSERT INTO temp
+INSERT INTO tempOptionData
 (
 	datetime, 
 	price, 
@@ -26,13 +26,13 @@ SELECT
 	timetoexpinyears
 FROM @optiondata
 
-UPDATE temp SET temp.idoption = tbloptions.idoption FROM  tbloptions INNER JOIN temp ON
-temp.optionname = tbloptions.optionname
+UPDATE tempOptionData SET tempOptionData.idoption = tbloptions.idoption FROM tbloptions INNER JOIN tempOptionData ON
+tempOptionData.optionname = tbloptions.optionname
 
 SET NOCOUNT ON;
 
 MERGE INTO cqgdb.tbloptiondata as tgt
-USING temp AS src
+USING tempOptionData AS src
     ON tgt.idoption = src.idoption
     AND tgt.datetime = src.datetime
 	AND tgt.price = src.price
@@ -58,5 +58,5 @@ WHEN NOT MATCHED THEN
 	src.price, 
 	src.impliedvol, 
 	src.timetoexpinyears);
-DROP TABLE temp;
+DROP TABLE tempOptionData;
 SET NOCOUNT OFF;

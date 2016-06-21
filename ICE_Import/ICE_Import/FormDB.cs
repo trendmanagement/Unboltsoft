@@ -37,6 +37,7 @@ namespace ICE_Import
         double TickSize = double.NaN;
 
         HashSet<DateTime> StripNameHashSet;
+        HashSet<string> OptionNameHashSet;
         HashSet<Tuple<DateTime, DateTime>> StripNameDateHashSet;
         HashSet<long> IdOptionHashSet;
 
@@ -52,8 +53,8 @@ namespace ICE_Import
             AsyncTaskListener.Updated += AsyncTaskListener_Updated;
 
             rb_DB_CheckedChanged(rb_LocalDB, null);
-            //cb_TestTables_CheckedChanged(null, null);
-            cb_TestTables.Enabled = false;
+            cb_TestTables_CheckedChanged(null, null);
+            //cb_TestTables.Enabled = false;
             cb_StoredProcs_CheckedChanged(null, null);
             //cb_AsyncUpdate_CheckedChanged(null, null);
             cb_AsyncUpdate.Enabled = false;
@@ -309,7 +310,7 @@ namespace ICE_Import
             rb_LocalDB.Enabled = !start;
             rb_TMLDBCopy.Enabled = !start;
             rb_TMLDB.Enabled = !start;
-            //cb_TestTables.Enabled = !start;
+            cb_TestTables.Enabled = !start;
             cb_StoredProcs.Enabled = !start;
             //cb_AsyncUpdate.Enabled = !start;
             if (start)
@@ -492,10 +493,10 @@ namespace ICE_Import
 
         private bool ValidateOptions(bool isPush = false)
         {
-            if (isPush && DatabaseName == "TMLDB" && IsTestTables && IsStoredProcs)
+            if (isPush && DatabaseName == "TMLDB" && !IsTestTables)
             {
                 MessageBox.Show(
-                    "TMLDB does not have stored procedures for working with test tables.",
+                    "We can't push to no test tables in TMLDB.",
                     Text,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);

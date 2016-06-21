@@ -134,6 +134,10 @@ namespace ICE_Import
 
         void PushOptionsTable(ref int globalCount, CancellationToken ct)
         {
+            bool newOption;
+
+            OptionNameHashSet = new HashSet<string>();
+
             IdOptionHashSet = new HashSet<long>();
 
             //Create tables
@@ -177,22 +181,29 @@ namespace ICE_Import
                         0,
                         IdInstrument);
 
-                    DateTime expirationDate = TMLDBReader.GetExpirationDate(
-                        "option",
-                        IdInstrument,
-                        option.StripName,
-                        ref log);
+                    newOption = !OptionNameHashSet.Contains(optionName);
 
-                    tblOptions.Rows.Add(
-                    optionName,
-                    monthChar,
-                    option.StripName.Month,
-                    option.StripName.Year,
-                    option.StrikePrice.GetValueOrDefault(),
-                    option.OptionType,
-                    IdInstrument,
-                    expirationDate,
-                    optionName);
+                    if (newOption)
+                    {
+                        DateTime expirationDate = TMLDBReader.GetExpirationDate(
+                            "option",
+                            IdInstrument,
+                            option.StripName,
+                            ref log);
+
+                        tblOptions.Rows.Add(
+                        optionName,
+                        monthChar,
+                        option.StripName.Month,
+                        option.StripName.Year,
+                        option.StrikePrice.GetValueOrDefault(),
+                        option.OptionType,
+                        IdInstrument,
+                        expirationDate,
+                        optionName);
+
+                        OptionNameHashSet.Add(optionName);
+                    }
 
                     #region Implied Volatility
                     // callPutFlag                      - tableOption.callorput

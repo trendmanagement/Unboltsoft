@@ -47,12 +47,11 @@ tblcontracts.year= temp.optionyear
 
 MERGE INTO cqgdb.tbloptions as tgt
 USING temp AS src
-    ON tgt.idcontract = src.idcontract
-    AND tgt.optionmonthint = src.optionmonthint 
-    AND tgt.optionyear = src.optionyear
-    AND tgt.strikeprice = src.strikeprice
-    AND tgt.callorput = src.callorput
-    AND tgt.idinstrument = src.idinstrument 
+    ON tgt.optionname = src.optionname
+    --AND tgt.optionmonthint = src.optionmonthint 
+    --AND tgt.optionyear = src.optionyear
+    --AND tgt.strikeprice = src.strikeprice
+    --AND tgt.callorput = src.callorput
 
 WHEN MATCHED THEN
 UPDATE
