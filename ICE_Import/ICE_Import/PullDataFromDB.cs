@@ -264,7 +264,7 @@ namespace ICE_Import
                 }
             }
 			}
-            optionDataList = optionDataList.OrderBy(item => item.idoption).ToList();
+            optionDataList = optionDataList.OrderBy(item => item.idoptiondata).ToList();
         }
 
         async void PullDataFromDBTest()
@@ -379,6 +379,7 @@ namespace ICE_Import
             dailyContractList = new List<test_tbldailycontractsettlement>();
 
             var tbldailycontractsettlements = Context.test_tbldailycontractsettlements;
+
 							
 			int count = 1000;
 
@@ -423,7 +424,7 @@ namespace ICE_Import
                 dailyContractList.Add(currentDailyContract);
             }
 			}
-            dailyContractList = dailyContractList.OrderBy(item => item.iddailycontractsettlements).ToList();
+            dailyContractList = dailyContractList.OrderBy(item => item.idcontract).OrderBy(item => item.date).ToList();
         }
 
         void PullOptionsTest(
@@ -512,7 +513,7 @@ namespace ICE_Import
                 }
             }
 			}
-            optionDataList = optionDataList.OrderBy(item => item.idoption).ToList();
+            optionDataList = optionDataList.OrderBy(item => item.idoptiondata).ToList();
         }
 
     }

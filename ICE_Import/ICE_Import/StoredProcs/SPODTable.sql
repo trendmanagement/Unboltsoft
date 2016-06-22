@@ -4,7 +4,7 @@ AS
 
 CREATE TABLE tempOptionData
 ( 
-	optionname varchar(50),
+	optionname varchar (45),
 	idoption int,
 	datetime date, 
 	price float, 
@@ -14,12 +14,14 @@ CREATE TABLE tempOptionData
 
 INSERT INTO tempOptionData
 (
+	optionname,
 	datetime, 
 	price, 
 	impliedvol,
 	timetoexpinyears
 )
 SELECT
+	optionname,
 	datetime, 
 	price, 
 	impliedvol,
@@ -27,7 +29,7 @@ SELECT
 FROM @optiondata
 
 UPDATE tempOptionData SET tempOptionData.idoption = tbloptions.idoption FROM tbloptions INNER JOIN tempOptionData ON
-tempOptionData.optionname = tbloptions.optionname
+tempOptionData.	optionname = tbloptions.optionname
 
 SET NOCOUNT ON;
 
@@ -40,12 +42,11 @@ USING tempOptionData AS src
 WHEN MATCHED THEN
 UPDATE
     SET 
-    price =src.price,
-    impliedvol =src.impliedvol,
+    price = src.price,
+    impliedvol = src.impliedvol,
     timetoexpinyears = src.timetoexpinyears
 
 WHEN NOT MATCHED THEN
-
     INSERT 
     (idoption,
 	 datetime, 

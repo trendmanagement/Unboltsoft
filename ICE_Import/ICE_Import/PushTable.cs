@@ -95,6 +95,8 @@ namespace ICE_Import
                 AsyncTaskListener.Update(globalCount, log);
                 log = string.Empty;
             }
+
+            #region Pushing commands
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
@@ -102,14 +104,14 @@ namespace ICE_Import
                 using (SqlCommand cmd = new SqlCommand("[cqgdb].SPFTable", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-
+                    cmd.CommandTimeout = 0;
                     cmd.Parameters.AddWithValue("@contract", tblContract);
 
                     try
                     {
                         cmd.ExecuteNonQuery();
                     }
-                    catch (Exception ex)
+                    catch (SqlException ex)
                     {
                         AsyncTaskListener.LogMessage(ex.Message);
                     }
@@ -117,21 +119,22 @@ namespace ICE_Import
                 using (SqlCommand cmd = new SqlCommand("[cqgdb].SPDFTable", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-
+                    cmd.CommandTimeout = 0;
                     cmd.Parameters.AddWithValue("@dailycontract", tblDailyContract);
 
                     try
                     {
                         cmd.ExecuteNonQuery();
                     }
-                    catch (Exception ex)
+                    catch (SqlException ex)
                     {
                         AsyncTaskListener.LogMessage(ex.Message);
                     }
                 }
             }
-        }
+            #endregion
 
+        }
         void PushOptionsTable(ref int globalCount, CancellationToken ct)
         {
             bool newOption;
@@ -256,6 +259,8 @@ namespace ICE_Import
                     log = string.Empty;
                 }
             }
+
+            #region Pushing commands
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
@@ -263,14 +268,14 @@ namespace ICE_Import
                 using (SqlCommand cmd = new SqlCommand("[cqgdb].SPOTable", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-
+                    cmd.CommandTimeout = 0;
                     cmd.Parameters.AddWithValue("@option", tblOptions);
 
                     try
                     {
                         cmd.ExecuteNonQuery();
                     }
-                    catch (Exception ex)
+                    catch (SqlException ex)
                     {
                         AsyncTaskListener.LogMessage(ex.Message);
                     }
@@ -278,19 +283,20 @@ namespace ICE_Import
                 using (SqlCommand cmd = new SqlCommand("[cqgdb].SPODTable", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-
+                    cmd.CommandTimeout = 0;
                     cmd.Parameters.AddWithValue("@optiondata", tblOptionDatas);
 
                     try
                     {
                         cmd.ExecuteNonQuery();
                     }
-                    catch (Exception ex)
+                    catch (SqlException ex)
                     {
                         AsyncTaskListener.LogMessage(ex.Message);
                     }
                 }
             }
+            #endregion
         }
     }
 }

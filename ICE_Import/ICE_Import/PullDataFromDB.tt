@@ -276,7 +276,7 @@ namespace ICE_Import
                 }
             }
 			}
-            optionDataList = optionDataList.OrderBy(item => item.idoption).ToList();
+            optionDataList = optionDataList.OrderBy(item => item.idoptiondata).ToList();
         }
 
 <# } #>
