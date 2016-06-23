@@ -3113,7 +3113,7 @@ namespace ICE_Import
         
         private System.DateTime _expirationdate;
         
-        private long _idcontract;
+        private long? _idcontract;
         
         private string _cqgsymbol;
         
@@ -3139,7 +3139,7 @@ namespace ICE_Import
     partial void OnidinstrumentChanged();
     partial void OnexpirationdateChanging(System.DateTime value);
     partial void OnexpirationdateChanged();
-    partial void OnidcontractChanging(long value);
+    partial void OnidcontractChanging(long? value);
     partial void OnidcontractChanged();
     partial void OncqgsymbolChanging(string value);
     partial void OncqgsymbolChanged();
@@ -3331,7 +3331,7 @@ namespace ICE_Import
         }
         
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
-        public long idcontract
+        public long? idcontract
         {
             get
             {
@@ -3399,7 +3399,7 @@ namespace ICE_Import
         
         private long _idoptiondata;
         
-        private long _idoption;
+        private long? _idoption;
         
         private System.DateTime _datetime;
         
@@ -3415,7 +3415,7 @@ namespace ICE_Import
     partial void OnCreated();
     partial void OnidoptiondataChanging(long value);
     partial void OnidoptiondataChanged();
-    partial void OnidoptionChanging(long value);
+    partial void OnidoptionChanging(long? value);
     partial void OnidoptionChanged();
     partial void OndatetimeChanging(System.DateTime value);
     partial void OndatetimeChanged();
@@ -3453,7 +3453,7 @@ namespace ICE_Import
         }
         
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoption", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
-        public long idoption
+        public long? idoption
         {
             get
             {

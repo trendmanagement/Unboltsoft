@@ -1,4 +1,9 @@
-﻿CREATE PROCEDURE [cqgdb].[SPOTable]
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension=".sql" #>
+<#@ include file="MultipleOutputHelper.ttinclude" #>
+<# string content =
+@"CREATE PROCEDURE [cqgdb].[{0}SPOTable]
     @option OptionsType READONLY
 AS
 
@@ -40,12 +45,12 @@ SELECT
     cqgsymbol
 FROM @option
 
-UPDATE temp set temp.idcontract = tblcontracts.idcontract from tblcontracts INNER JOIN temp ON
-tblcontracts.idinstrument = temp.idinstrument AND
-tblcontracts.month = temp.optionmonth AND
-tblcontracts.year= temp.optionyear
+UPDATE temp set temp.idcontract = {0}tblcontracts.idcontract from {0}tblcontracts INNER JOIN temp ON
+{0}tblcontracts.idinstrument = temp.idinstrument AND
+{0}tblcontracts.month = temp.optionmonth AND
+{0}tblcontracts.year= temp.optionyear
 
-MERGE INTO cqgdb.tbloptions as tgt
+MERGE INTO cqgdb.{0}tbloptions as tgt
 USING temp AS src
     ON tgt.optionname = src.optionname
 
@@ -80,4 +85,13 @@ WHEN NOT MATCHED THEN
     src.idcontract, 
     src.cqgsymbol);
 DROP TABLE temp;
-SET NOCOUNT ON;
+SET NOCOUNT ON;"; #>
+<# var manager = Manager.Create(Host, GenerationEnvironment); #>
+<# manager.StartNewFile("test_SPOTable.sql"); #>
+<# Write(string.Format(content, "test_")); #>
+<# manager.EndBlock(); #>
+<# manager.Process(true); #>
+<# manager.StartNewFile("SPOTable.sql"); #>
+<# Write(string.Format(content, string.Empty)); #>
+<# manager.EndBlock(); #>
+<# manager.Process(false); #>

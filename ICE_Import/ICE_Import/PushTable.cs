@@ -101,7 +101,10 @@ namespace ICE_Import
             {
                 connection.Open();
 
-                using (SqlCommand cmd = new SqlCommand("[cqgdb].SPFTable", connection))
+                string SPFName = (!cb_TestTables.Checked) ? "[cqgdb].SPFTable" : "[cqgdb].test_SPFTable";
+                string SPDFName = (!cb_TestTables.Checked) ? "[cqgdb].SPDFTable" : "[cqgdb].test_SPDFTable";
+
+                using (SqlCommand cmd = new SqlCommand(SPFName, connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandTimeout = 0;
@@ -265,7 +268,10 @@ namespace ICE_Import
             {
                 connection.Open();
 
-                using (SqlCommand cmd = new SqlCommand("[cqgdb].SPOTable", connection))
+                string SPOName = (!cb_TestTables.Checked) ? "[cqgdb].SPOTable" : "[cqgdb].test_SPOTable";
+                string SPODName = (!cb_TestTables.Checked) ? "[cqgdb].SPODTable" : "[cqgdb].test_SPODTable";
+
+                using (SqlCommand cmd = new SqlCommand(SPOName, connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandTimeout = 0;
@@ -280,7 +286,7 @@ namespace ICE_Import
                         AsyncTaskListener.LogMessage(ex.Message);
                     }
                 }
-                using (SqlCommand cmd = new SqlCommand("[cqgdb].SPODTable", connection))
+                using (SqlCommand cmd = new SqlCommand(SPODName, connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandTimeout = 0;

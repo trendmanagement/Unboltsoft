@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [cqgdb].[SPODTable]
+CREATE PROCEDURE [cqgdb].[test_SPODTable]
     @optiondata OptionDatasType READONLY
 AS
 
@@ -28,12 +28,12 @@ SELECT
     timetoexpinyears
 FROM @optiondata
 
-UPDATE tempOptionData SET tempOptionData.idoption = tbloptions.idoption FROM tbloptions INNER JOIN tempOptionData ON
-tempOptionData. optionname = tbloptions.optionname
+UPDATE tempOptionData SET tempOptionData.idoption = test_tbloptions.idoption FROM test_tbloptions INNER JOIN tempOptionData ON
+tempOptionData. optionname = test_tbloptions.optionname
 
 SET NOCOUNT ON;
 
-MERGE INTO cqgdb.tbloptiondata as tgt
+MERGE INTO cqgdb.test_tbloptiondata as tgt
 USING tempOptionData AS src
     ON tgt.idoption = src.idoption
     AND tgt.datetime = src.datetime

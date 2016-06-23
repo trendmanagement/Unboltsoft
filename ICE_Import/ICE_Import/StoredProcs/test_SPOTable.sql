@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [cqgdb].[SPOTable]
+CREATE PROCEDURE [cqgdb].[test_SPOTable]
     @option OptionsType READONLY
 AS
 
@@ -40,12 +40,12 @@ SELECT
     cqgsymbol
 FROM @option
 
-UPDATE temp set temp.idcontract = tblcontracts.idcontract from tblcontracts INNER JOIN temp ON
-tblcontracts.idinstrument = temp.idinstrument AND
-tblcontracts.month = temp.optionmonth AND
-tblcontracts.year= temp.optionyear
+UPDATE temp set temp.idcontract = test_tblcontracts.idcontract from test_tblcontracts INNER JOIN temp ON
+test_tblcontracts.idinstrument = temp.idinstrument AND
+test_tblcontracts.month = temp.optionmonth AND
+test_tblcontracts.year= temp.optionyear
 
-MERGE INTO cqgdb.tbloptions as tgt
+MERGE INTO cqgdb.test_tbloptions as tgt
 USING temp AS src
     ON tgt.optionname = src.optionname
 

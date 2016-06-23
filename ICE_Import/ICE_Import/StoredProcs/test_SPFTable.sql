@@ -1,10 +1,10 @@
-﻿CREATE PROCEDURE [cqgdb].[SPFTable]
+CREATE PROCEDURE [cqgdb].[test_SPFTable]
     @contract ContractType READONLY
 AS
 
 SET NOCOUNT ON;    
 
-MERGE INTO cqgdb.tblcontracts as tgt
+MERGE INTO cqgdb.test_tblcontracts as tgt
 
 USING @contract AS src
     ON tgt.month = src.month

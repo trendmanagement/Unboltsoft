@@ -261,15 +261,59 @@
       <DependentUpon>cqgdb.SPO_Mod.tt</DependentUpon>
     </Content>
     <Content Include="StoredProcs\SPDFTable.sql">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SPDFTable.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\SPDFTable.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SPDFTable.sql</LastGenOutput>
     </Content>
     <Content Include="StoredProcs\SPFTable.sql">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SPFTable.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\SPFTable.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SPFTable.sql</LastGenOutput>
     </Content>
     <Content Include="StoredProcs\SPODTable.sql">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SPODTable.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="StoredProcs\SPODTable.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SPODTable.sql</LastGenOutput>
+    </Content>
     <Content Include="StoredProcs\SPOTable.sql">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SPOTable.tt</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\SPOTable.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SPOTable.sql</LastGenOutput>
+    </Content>
+    <Content Include="StoredProcs\test_SPDFTable.sql">
+      <DependentUpon>SPDFTable.tt</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\test_SPFTable.sql">
+      <DependentUpon>SPFTable.tt</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\test_SPODTable.sql">
+      <DependentUpon>SPODTable.tt</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="StoredProcs\test_SPOTable.sql">
+      <DependentUpon>SPOTable.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [cqgdb].[SPDFTable]
+CREATE PROCEDURE [cqgdb].[test_SPDFTable]
 	@dailycontract DailyContractSettlementType READONLY
 AS
 SET NOCOUNT ON;
@@ -35,13 +35,13 @@ SELECT
 	openinterest
 FROM @dailycontract
 
-UPDATE temp set temp.idcontract = tblcontracts.idcontract from tblcontracts INNER JOIN temp ON
-tblcontracts.idinstrument = temp.idinstrument AND
-tblcontracts.month = temp.month AND
-tblcontracts.year= temp.year
+UPDATE temp set temp.idcontract = test_tblcontracts.idcontract from test_tblcontracts INNER JOIN temp ON
+test_tblcontracts.idinstrument = temp.idinstrument AND
+test_tblcontracts.month = temp.month AND
+test_tblcontracts.year= temp.year
 
 
-MERGE INTO cqgdb.tbldailycontractsettlements AS tgt 
+MERGE INTO cqgdb.test_tbldailycontractsettlements AS tgt 
 
 USING temp AS src
     ON tgt.idcontract = src.idcontract 
