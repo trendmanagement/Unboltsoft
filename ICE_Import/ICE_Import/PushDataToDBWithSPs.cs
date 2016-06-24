@@ -164,7 +164,7 @@ namespace ICE_Import
         /// </summary>
         void PushOptionsToDBWithSP(ref int globalCount, CancellationToken ct)
         {
-            IdOptionHashSet = new HashSet<long>();
+            OptionDataHashSet = new HashSet<Tuple<DateTime, DateTime>>();
 
             string log = string.Empty;
             foreach (EOD_Options option in ParsedData.OptionRecords)

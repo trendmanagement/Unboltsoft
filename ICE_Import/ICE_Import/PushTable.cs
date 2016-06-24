@@ -86,12 +86,12 @@ namespace ICE_Import
                 StripNameDateHashSet.Add(Tuple.Create(future.StripName, future.Date));
 
                 globalCount++;
-                if (globalCount == ParsedData.FutureRecords.Count)
-                {
-                    log += string.Format(
-                        "Pushed {0} entries to {1} {2}TBLCONTRACT table",
-                        globalCount, DatabaseName, TablesPrefix);
-                }
+                //if (globalCount == ParsedData.FutureRecords.Count)
+                //{
+                //    log += string.Format(
+                //        "Pushed {0} entries to {1} {2}TBLCONTRACT table",
+                //        globalCount, DatabaseName, TablesPrefix);
+                //}
                 AsyncTaskListener.Update(globalCount, log);
                 log = string.Empty;
             }
@@ -137,6 +137,8 @@ namespace ICE_Import
             }
             #endregion
 
+            AsyncTaskListener.LogMessageFormat("Pushed {0} entries to {1} {2}TBLCONTRACT table", globalCount, DatabaseName, TablesPrefix);
+
         }
         void PushOptionsTable(ref int globalCount, CancellationToken ct)
         {
@@ -144,7 +146,7 @@ namespace ICE_Import
 
             OptionNameHashSet = new HashSet<string>();
 
-            IdOptionHashSet = new HashSet<long>();
+            OptionDataHashSet = new HashSet<Tuple<DateTime, DateTime>>();
 
             //Create tables
             var tblOptions = new DataTable();
@@ -239,7 +241,7 @@ namespace ICE_Import
                     option.SettlementPrice.GetValueOrDefault(),
                     impliedvol,
                     futureYear - expirateYear);
-                    //IdOptionHashSet.Add(idoption);
+                    OptionDataHashSet.Add(Tuple.Create(option.Date, option.StripName));
                 }
                 catch (Exception ex)
                 {
@@ -254,10 +256,10 @@ namespace ICE_Import
                 finally
                 {
                     globalCount++;
-                    if (globalCount == ParsedData.FutureRecords.Count + ParsedData.OptionRecords.Count)
-                    {
-                        log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", globalCount, DatabaseName, TablesPrefix);
-                    }
+                    //if (globalCount == ParsedData.FutureRecords.Count + ParsedData.OptionRecords.Count)
+                    //{
+                    //    log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", globalCount, DatabaseName, TablesPrefix);
+                    //}
                     AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
@@ -303,6 +305,31 @@ namespace ICE_Import
                 }
             }
             #endregion
+
+            AsyncTaskListener.LogMessageFormat("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", globalCount, DatabaseName, TablesPrefix);
+
+        }
+
+        void DropTempTables()
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand cmd = new SqlCommand("[cqgdb].DropTempTables", connection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = 0;
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        AsyncTaskListener.LogMessage(ex.Message);
+                    }
+                }
+            }
         }
     }
 }

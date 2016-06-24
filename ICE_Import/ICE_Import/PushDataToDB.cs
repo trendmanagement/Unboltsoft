@@ -319,7 +319,7 @@ namespace ICE_Import
             var tblOptionList = new List<tbloption>();
             var tblOptionDataList = new List<tbloptiondata>();
 
-            IdOptionHashSet = new HashSet<long>();
+            OptionDataHashSet = new HashSet<Tuple<DateTime, DateTime>>();
 
             int count = 0;
 
@@ -532,7 +532,7 @@ namespace ICE_Import
 
                     tbloptiondatas_.InsertOnSubmit(tableOptionData);
                     Context.SubmitChanges();
-                    IdOptionHashSet.Add(TO.idoption);
+                    //OptionDataHashSet.Add(TO.idoption);
                     count++;
                 }
                 catch (OperationCanceledException cancel)
@@ -868,7 +868,7 @@ namespace ICE_Import
             var tblOptionList = new List<test_tbloption>();
             var tblOptionDataList = new List<test_tbloptiondata>();
 
-            IdOptionHashSet = new HashSet<long>();
+            OptionDataHashSet = new HashSet<Tuple<DateTime, DateTime>>();
 
             int count = 0;
 
@@ -1081,7 +1081,7 @@ namespace ICE_Import
 
                     tbloptiondatas_.InsertOnSubmit(tableOptionData);
                     Context.SubmitChanges();
-                    IdOptionHashSet.Add(TO.idoption);
+                    //OptionDataHashSet.Add(TO.idoption);
                     count++;
                 }
                 catch (OperationCanceledException cancel)

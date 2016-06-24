@@ -39,7 +39,7 @@ namespace ICE_Import
         HashSet<DateTime> StripNameHashSet;
         HashSet<string> OptionNameHashSet;
         HashSet<Tuple<DateTime, DateTime>> StripNameDateHashSet;
-        HashSet<long> IdOptionHashSet;
+        HashSet<Tuple<DateTime, DateTime>> OptionDataHashSet;
 
         public FormDB()
         {
@@ -132,6 +132,16 @@ namespace ICE_Import
             {
                 X = this.Width - 25 - buttonToCSV.Width,
                 Y = this.Height - 247
+            };
+            buttonDrop.Location = new Point()
+            {
+                X = buttonDrop.Location.X,
+                Y = this.Height - 247
+            };
+            checkBox1000.Location = new Point()
+            {
+                X = checkBox1000.Location.X,
+                Y = this.Height - 218
             };
         }
 
@@ -259,7 +269,7 @@ namespace ICE_Import
             }
 
             // Update the data grid
-            buttonPull_Click(sender, e);
+            //buttonPull_Click(sender, e);
         }
 
         private void buttonPull_Click(object sender, EventArgs e)
@@ -328,6 +338,8 @@ namespace ICE_Import
             buttonPull.Enabled = !start;
             buttonCancel.Enabled = start;
             buttonToCSV.Enabled = !start;
+            buttonDrop.Enabled = !start;
+            checkBox1000.Enabled = !start;
             buttonCheckPushedData.Enabled = start ? false : (dataGridViewContract.DataSource != null);
             progressBar.Value = 0;
         }
@@ -522,5 +534,9 @@ namespace ICE_Import
             LogMessage("Elapsed time: " + timeSpan);
         }
 
+        private void buttonDrop_Click(object sender, EventArgs e)
+        {
+            DropTempTables();
+        }
     }
 }

@@ -119,7 +119,7 @@ namespace ICE_Import
 
                 connection.Open();
 
-                IdOptionHashSet = new HashSet<long>();
+                OptionDataHashSet = new HashSet<Tuple<DateTime, DateTime>>();
 
                 string log = string.Empty;
                 foreach (EOD_Options option in ParsedData.OptionRecords)

@@ -86,7 +86,7 @@ namespace ICE_Import
 
 			int count = 1000;
 
-            if (rb_LocalDB.Checked || count <= (from item in tblcontracts select item).Count())
+            if (rb_LocalDB.Checked || count >= (from item in tblcontracts select item).Count())
             {
                 contractList = (from item in tblcontracts
                                 select item).ToList();
@@ -134,7 +134,7 @@ namespace ICE_Import
 							
 			int count = 1000;
 
-            if (rb_LocalDB.Checked || count <= (from item in tbldailycontractsettlements select item).Count())
+            if (rb_LocalDB.Checked || count >= (from item in tbldailycontractsettlements select item).Count())
             {
                 dailyContractList = (from item in tbldailycontractsettlements
                                 select item).ToList();
@@ -187,7 +187,7 @@ namespace ICE_Import
 
 			int count = 1000;
 
-            if (rb_LocalDB.Checked || count <= (from item in tbloptions select item).Count())
+            if (rb_LocalDB.Checked || count >= (from item in tbloptions select item).Count())
             {
                 optionList = (from item in tbloptions
                                 select item).ToList();
@@ -217,52 +217,44 @@ namespace ICE_Import
             optionDataList = new List<tbloptiondata>();
 
             var tbloptiondatas = Context.tbloptiondatas;
+			var tbloptions = Context.tbloptions;
 
 			int count = 1000;
 
-            if (rb_LocalDB.Checked || count <= (from item in tbloptiondatas select item).Count())
+            if (rb_LocalDB.Checked || OptionDataHashSet.Count == 0 || count >= (from item in tbloptiondatas select item).Count())
             {
                 optionDataList = (from item in tbloptiondatas
                                 select item).ToList();
             }
             else
             {
-
-
-			if (IdOptionHashSet.Count == 0)
-            {
-
-                try
-                {
-                    optionDataList = (from item in tbloptiondatas
-                                             select item).ToList();
-                }
-                catch (SqlException)
-                {
-                }
-
-            }
-            else
-            {
-                foreach (var id in IdOptionHashSet)
+                foreach (var tuple in OptionDataHashSet)
                 {
 					IEnumerable<tbloptiondata> currentOptionData;
 
                     try
                     {
-                        currentOptionData = (from item in tbloptiondatas
-                                             where
-                                             item.idoption == id
-                                             select item);
+                            long id = (from item in tbloptions
+                                       where
+                                       item.optionyear == tuple.Item2.Year &&
+                                       item.optionmonthint == tuple.Item2.Month &&
+                                       item.idinstrument == IdInstrument
+                                       select item).ToList()[0].idoption;
+
+                            currentOptionData = (from item in tbloptiondatas
+                                                 where
+                                                 item.idoption == id &&
+                                                 item.datetime >= tuple.Item1 &&
+                                                 item.datetime <= tuple.Item2
+                                                 select item);
                     }
                     catch (SqlException)
                     {
                         continue;
                     }
 
-                    //optionDataList.AddRange(currentOptionData);
+                    optionDataList.AddRange(currentOptionData);
                 }
-            }
 			}
             optionDataList = optionDataList.OrderBy(item => item.idoptiondata).ToList();
         }
@@ -335,7 +327,7 @@ namespace ICE_Import
 
 			int count = 1000;
 
-            if (rb_LocalDB.Checked || count <= (from item in tblcontracts select item).Count())
+            if (rb_LocalDB.Checked || count >= (from item in tblcontracts select item).Count())
             {
                 contractList = (from item in tblcontracts
                                 select item).ToList();
@@ -383,7 +375,7 @@ namespace ICE_Import
 							
 			int count = 1000;
 
-            if (rb_LocalDB.Checked || count <= (from item in tbldailycontractsettlements select item).Count())
+            if (rb_LocalDB.Checked || count >= (from item in tbldailycontractsettlements select item).Count())
             {
                 dailyContractList = (from item in tbldailycontractsettlements
                                 select item).ToList();
@@ -436,7 +428,7 @@ namespace ICE_Import
 
 			int count = 1000;
 
-            if (rb_LocalDB.Checked || count <= (from item in tbloptions select item).Count())
+            if (rb_LocalDB.Checked || count >= (from item in tbloptions select item).Count())
             {
                 optionList = (from item in tbloptions
                                 select item).ToList();
@@ -466,52 +458,44 @@ namespace ICE_Import
             optionDataList = new List<test_tbloptiondata>();
 
             var tbloptiondatas = Context.test_tbloptiondatas;
+			var tbloptions = Context.test_tbloptions;
 
 			int count = 1000;
 
-            if (rb_LocalDB.Checked || count <= (from item in tbloptiondatas select item).Count())
+            if (rb_LocalDB.Checked || OptionDataHashSet.Count == 0 || count >= (from item in tbloptiondatas select item).Count())
             {
                 optionDataList = (from item in tbloptiondatas
                                 select item).ToList();
             }
             else
             {
-
-
-			if (IdOptionHashSet.Count == 0)
-            {
-
-                try
-                {
-                    optionDataList = (from item in tbloptiondatas
-                                             select item).ToList();
-                }
-                catch (SqlException)
-                {
-                }
-
-            }
-            else
-            {
-                foreach (var id in IdOptionHashSet)
+                foreach (var tuple in OptionDataHashSet)
                 {
 					IEnumerable<test_tbloptiondata> currentOptionData;
 
                     try
                     {
-                        currentOptionData = (from item in tbloptiondatas
-                                             where
-                                             item.idoption == id
-                                             select item);
+                            long id = (from item in tbloptions
+                                       where
+                                       item.optionyear == tuple.Item2.Year &&
+                                       item.optionmonthint == tuple.Item2.Month &&
+                                       item.idinstrument == IdInstrument
+                                       select item).ToList()[0].idoption;
+
+                            currentOptionData = (from item in tbloptiondatas
+                                                 where
+                                                 item.idoption == id &&
+                                                 item.datetime >= tuple.Item1 &&
+                                                 item.datetime <= tuple.Item2
+                                                 select item);
                     }
                     catch (SqlException)
                     {
                         continue;
                     }
 
-                    //optionDataList.AddRange(currentOptionData);
+                    optionDataList.AddRange(currentOptionData);
                 }
-            }
 			}
             optionDataList = optionDataList.OrderBy(item => item.idoptiondata).ToList();
         }

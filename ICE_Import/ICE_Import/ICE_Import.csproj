@@ -260,6 +260,9 @@
     <Content Include="StoredProcs\cqgdb.test_SPO_Mod.sql">
       <DependentUpon>cqgdb.SPO_Mod.tt</DependentUpon>
     </Content>
+    <Content Include="StoredProcs\DropTempTables.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="StoredProcs\SPDFTable.sql">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

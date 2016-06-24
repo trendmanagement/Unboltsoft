@@ -54,6 +54,8 @@
             this.labelRPS1 = new System.Windows.Forms.Label();
             this.labelRPS2 = new System.Windows.Forms.Label();
             this.buttonCheckPushedData = new System.Windows.Forms.Button();
+            this.buttonDrop = new System.Windows.Forms.Button();
+            this.checkBox1000 = new System.Windows.Forms.CheckBox();
             this.tabPageDailyContract.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDailyContract)).BeginInit();
             this.tabPageContract.SuspendLayout();
@@ -343,11 +345,33 @@
             this.buttonCheckPushedData.UseVisualStyleBackColor = true;
             this.buttonCheckPushedData.Click += new System.EventHandler(this.buttonCheckPushedData_Click);
             // 
+            // buttonDrop
+            // 
+            this.buttonDrop.Location = new System.Drawing.Point(488, 257);
+            this.buttonDrop.Name = "buttonDrop";
+            this.buttonDrop.Size = new System.Drawing.Size(75, 23);
+            this.buttonDrop.TabIndex = 13;
+            this.buttonDrop.Text = "Drop tables";
+            this.buttonDrop.UseVisualStyleBackColor = true;
+            this.buttonDrop.Click += new System.EventHandler(this.buttonDrop_Click);
+            // 
+            // checkBox1000
+            // 
+            this.checkBox1000.AutoSize = true;
+            this.checkBox1000.Location = new System.Drawing.Point(367, 290);
+            this.checkBox1000.Name = "checkBox1000";
+            this.checkBox1000.Size = new System.Drawing.Size(89, 17);
+            this.checkBox1000.TabIndex = 14;
+            this.checkBox1000.Text = "Pull first 1000";
+            this.checkBox1000.UseVisualStyleBackColor = true;
+            // 
             // FormDB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 465);
+            this.Controls.Add(this.checkBox1000);
+            this.Controls.Add(this.buttonDrop);
             this.Controls.Add(this.buttonCheckPushedData);
             this.Controls.Add(this.labelRPS1);
             this.Controls.Add(this.labelRPS2);
@@ -410,5 +434,7 @@
         private System.Windows.Forms.Label labelRPS1;
         private System.Windows.Forms.Label labelRPS2;
         private System.Windows.Forms.Button buttonCheckPushedData;
+        private System.Windows.Forms.Button buttonDrop;
+        private System.Windows.Forms.CheckBox checkBox1000;
     }
 }
