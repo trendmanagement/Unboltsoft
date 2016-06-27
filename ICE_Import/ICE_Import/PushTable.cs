@@ -12,6 +12,47 @@ namespace ICE_Import
 {
     public partial class FormDB : Form
     {
+        async Task PushDataToDB(CancellationToken ct)
+        {
+            progressBar.Maximum = ParsedData.FutureRecords.Count;
+            if (!ParsedData.FuturesOnly)
+            {
+                progressBar.Maximum += ParsedData.OptionRecords.Count;
+            }
+
+            int globalCount = 0;
+            DateTime start = DateTime.Now;
+
+            AsyncTaskListener.Init();
+
+            try
+            {
+
+                AsyncTaskListener.Init("Pushing of FUTURES data started");
+                await Task.Run(() => PushContractsTable(ref globalCount, ct), ct);
+                LogElapsedTime(DateTime.Now - start);
+                AsyncTaskListener.LogMessage("Pushing of FUTURES data complete");
+
+                if (!ParsedData.FuturesOnly)
+                {
+                    AsyncTaskListener.LogMessage("Pushing of OPTIONS data started");
+                    await Task.Run(() => PushOptionsTable(ref globalCount, ct), ct);
+                    LogElapsedTime(DateTime.Now - start);
+                    AsyncTaskListener.LogMessage("Pushing of OPTIONS data complete");
+                }
+
+            }
+            catch (OperationCanceledException)
+            {
+                // Already logged
+            }
+            finally
+            {
+                EnableDisable(false);
+            }
+
+            LogMessage(string.Format("Pushed to DB: {0} entries", globalCount));
+        }
         void PushContractsTable(ref int globalCount, CancellationToken ct)
         {
             StripNameHashSet = new HashSet<DateTime>();
@@ -146,7 +187,7 @@ namespace ICE_Import
 
             OptionNameHashSet = new HashSet<string>();
 
-            OptionDataHashSet = new HashSet<Tuple<DateTime, DateTime>>();
+            OptionDataList = new List<Tuple<string, DateTime, double>>();
 
             //Create tables
             var tblOptions = new DataTable();
@@ -241,7 +282,7 @@ namespace ICE_Import
                     option.SettlementPrice.GetValueOrDefault(),
                     impliedvol,
                     futureYear - expirateYear);
-                    OptionDataHashSet.Add(Tuple.Create(option.Date, option.StripName));
+                    OptionDataList.Add(Tuple.Create(optionName, option.Date, option.SettlementPrice.GetValueOrDefault()));
                 }
                 catch (Exception ex)
                 {
@@ -309,16 +350,20 @@ namespace ICE_Import
             AsyncTaskListener.LogMessageFormat("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", globalCount, DatabaseName, TablesPrefix);
 
         }
-
         void DropTempTables()
         {
+            string exeption1 = "Cannot drop the table 'temp', because it does not exist or you do not have permission.\r\nCannot drop the table 'tempOptionData', because it does not exist or you do not have permission.";
+            string exeption2 = "Cannot drop the table 'tempOptionData', because it does not exist or you do not have permission.";
+            string exeption3 = "Cannot drop the table 'temp', because it does not exist or you do not have permission.";
+
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
+                string query = "DROP TABLE temp; DROP TABLE tempOptionData;";
 
-                using (SqlCommand cmd = new SqlCommand("[cqgdb].DropTempTables", connection))
+                using (SqlCommand cmd = new SqlCommand(query, connection))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandType = CommandType.Text;
                     cmd.CommandTimeout = 0;
                     try
                     {
@@ -326,7 +371,22 @@ namespace ICE_Import
                     }
                     catch (SqlException ex)
                     {
-                        AsyncTaskListener.LogMessage(ex.Message);
+                        if(ex.Message == exeption1)
+                        {
+                            AsyncTaskListener.LogMessage("No tables to drop.");
+                        }
+                        else if (ex.Message == exeption2)
+                        {
+                            AsyncTaskListener.LogMessage("Dropted 'temp' table");
+                        }
+                        else if (ex.Message == exeption3)
+                        {
+                            AsyncTaskListener.LogMessage("Dropted 'tempOptionData' table");
+                        }
+                        else
+                        {
+                            AsyncTaskListener.LogMessage(ex.Message);
+                        }
                     }
                 }
             }
