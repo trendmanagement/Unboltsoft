@@ -22,8 +22,8 @@ namespace ICE_Import
         [FieldConverter(typeof(CharConverter), true)]
         public char OptionType;
 
-        [FieldConverter(typeof(DoubleConverter))]
-        public double? StrikePrice;
+        [FieldConverter(typeof(DecimalConverter))]
+        public decimal? StrikePrice;
 
         [FieldConverter(typeof(StringConverter))]
         public string OptionMarketID;
