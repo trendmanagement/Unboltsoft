@@ -113,9 +113,14 @@ namespace ICE_Import
                     "The selected Future CSV Files(s) and Option CSV File(s) do not conform to each other.\n\n" +
                     "Options with the following values of StripName do not have corresponding futures " +
                     "(only the first 10 values are shown):\n\n");
-                foreach (DateTime optionStripName in optionStripNames.Take(10))
+                foreach (DateTime optionStripName in optionStripNames)
                 {
                     sb.Append(optionStripName.ToString("MMMyy") + "\n");
+                    var items = OptionRecords.Where(option => option.StripName == optionStripName).ToList();
+                    foreach(var item in items)
+                    {
+                        OptionRecords.Remove(item);
+                    }
                 }
                 sb.Append(
                     "\nDo you want to proceed anyway?\n\n" +
