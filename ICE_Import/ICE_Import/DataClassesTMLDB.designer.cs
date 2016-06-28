@@ -193,90 +193,6 @@ namespace ICE_Import
                 return this.GetTable<tblcontractexpiration>();
             }
         }
-        
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPF")]
-        public int test_SPF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-        {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, expirationdate, cqgsymbol);
-            return ((int)(result.ReturnValue));
-        }
-        
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPDF")]
-        public int test_SPDF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> spanDate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> settlementPrice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> monthChar, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> yearInt, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> volume, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> openinterest)
-        {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), spanDate, settlementPrice, monthChar, yearInt, volume, openinterest);
-            return ((int)(result.ReturnValue));
-        }
-        
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPO")]
-        public int test_SPO([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-        {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, expirationdate, cqgsymbol);
-            return ((int)(result.ReturnValue));
-        }
-        
-        [Function(Name="cqgdb.test_SPOD")]
-        public int test_SPOD([Parameter(DbType= "VarChar(45)")] string optionname, [Parameter(DbType="Date")] DateTime? datetime, [Parameter(DbType="Float")] double? price, [Parameter(DbType="Float")] double? impliedvol, [Parameter(DbType="Float")] double? timetoexpinyears)
-        {
-            IExecuteResult result = ExecuteMethodCall(this, ((MethodInfo)(MethodBase.GetCurrentMethod())), optionname, datetime, price, impliedvol, timetoexpinyears);
-            return ((int)(result.ReturnValue));
-        }
-        
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPF_Mod")]
-        public int test_SPF_Mod([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-        {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, cqgsymbol);
-            return ((int)(result.ReturnValue));
-        }
-        
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.test_SPO_Mod")]
-        public int test_SPO_Mod([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-        {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, cqgsymbol);
-            return ((int)(result.ReturnValue));
-        }
-        
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPF")]
-        public int SPF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-        {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, expirationdate, cqgsymbol);
-            return ((int)(result.ReturnValue));
-        }
-        
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPDF")]
-        public int SPDF([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> spanDate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> settlementPrice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> monthChar, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> yearInt, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> volume, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> openinterest)
-        {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), spanDate, settlementPrice, monthChar, yearInt, volume, openinterest);
-            return ((int)(result.ReturnValue));
-        }
-        
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPO")]
-        public int SPO([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Date")] System.Nullable<System.DateTime> expirationdate, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-        {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, expirationdate, cqgsymbol);
-            return ((int)(result.ReturnValue));
-        }
-        
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPOD")]
-        public int SPOD([Parameter(DbType = "VarChar(45)")] string optionname, [Parameter(DbType = "Date")] DateTime? datetime, [Parameter(DbType = "Float")] double? price, [Parameter(DbType = "Float")] double? impliedvol, [Parameter(DbType = "Float")] double? timetoexpinyears)
-        {
-            IExecuteResult result = ExecuteMethodCall(this, ((MethodInfo)(MethodBase.GetCurrentMethod())), optionname, datetime, price, impliedvol, timetoexpinyears);
-            return ((int)(result.ReturnValue));
-        }
-
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPF_Mod")]
-        public int SPF_Mod([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string contractname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> month, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> monthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> year, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-        {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), contractname, month, monthint, year, idinstrument, cqgsymbol);
-            return ((int)(result.ReturnValue));
-        }
-        
-        [global::System.Data.Linq.Mapping.FunctionAttribute(Name="cqgdb.SPO_Mod")]
-        public int SPO_Mod([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string optionname, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> optionmonth, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionmonthint, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Int")] System.Nullable<int> optionyear, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Float")] System.Nullable<double> strikeprice, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="Char(1)")] System.Nullable<char> callorput, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="BigInt")] System.Nullable<long> idinstrument, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="VarChar(45)")] string cqgsymbol)
-        {
-            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), optionname, optionmonth, optionmonthint, optionyear, strikeprice, callorput, idinstrument, cqgsymbol);
-            return ((int)(result.ReturnValue));
-        }
     }
     
     [global::System.Data.Linq.Mapping.TableAttribute(Name="cqgdb.tblinstruments")]
@@ -2019,7 +1935,7 @@ namespace ICE_Import
         
         private long _iddailycontractsettlements;
         
-        private long? _idcontract;
+        private long _idcontract;
         
         private System.DateTime _date;
         
@@ -2035,7 +1951,7 @@ namespace ICE_Import
     partial void OnCreated();
     partial void OniddailycontractsettlementsChanging(long value);
     partial void OniddailycontractsettlementsChanged();
-    partial void OnidcontractChanging(long? value);
+    partial void OnidcontractChanging(long value);
     partial void OnidcontractChanged();
     partial void OndateChanging(System.DateTime value);
     partial void OndateChanged();
@@ -2073,7 +1989,7 @@ namespace ICE_Import
         }
         
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
-        public long? idcontract
+        public long idcontract
         {
             get
             {
@@ -2217,7 +2133,7 @@ namespace ICE_Import
         
         private System.DateTime _expirationdate;
         
-        private long? _idcontract;
+        private long _idcontract;
         
         private string _cqgsymbol;
         
@@ -2243,7 +2159,7 @@ namespace ICE_Import
     partial void OnidinstrumentChanged();
     partial void OnexpirationdateChanging(System.DateTime value);
     partial void OnexpirationdateChanged();
-    partial void OnidcontractChanging(long? value);
+    partial void OnidcontractChanging(long value);
     partial void OnidcontractChanged();
     partial void OncqgsymbolChanging(string value);
     partial void OncqgsymbolChanged();
@@ -2435,7 +2351,7 @@ namespace ICE_Import
         }
         
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
-        public long? idcontract
+        public long idcontract
         {
             get
             {
@@ -2503,7 +2419,7 @@ namespace ICE_Import
         
         private long _idoptiondata;
         
-        private long? _idoption;
+        private long _idoption;
         
         private System.DateTime _datetime;
         
@@ -2519,7 +2435,7 @@ namespace ICE_Import
     partial void OnCreated();
     partial void OnidoptiondataChanging(long value);
     partial void OnidoptiondataChanged();
-    partial void OnidoptionChanging(long? value);
+    partial void OnidoptionChanging(long value);
     partial void OnidoptionChanged();
     partial void OndatetimeChanging(System.DateTime value);
     partial void OndatetimeChanged();
@@ -2557,7 +2473,7 @@ namespace ICE_Import
         }
         
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoption", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
-        public long? idoption
+        public long idoption
         {
             get
             {
@@ -3113,7 +3029,7 @@ namespace ICE_Import
         
         private System.DateTime _expirationdate;
         
-        private long? _idcontract;
+        private long _idcontract;
         
         private string _cqgsymbol;
         
@@ -3139,7 +3055,7 @@ namespace ICE_Import
     partial void OnidinstrumentChanged();
     partial void OnexpirationdateChanging(System.DateTime value);
     partial void OnexpirationdateChanged();
-    partial void OnidcontractChanging(long? value);
+    partial void OnidcontractChanging(long value);
     partial void OnidcontractChanged();
     partial void OncqgsymbolChanging(string value);
     partial void OncqgsymbolChanged();
@@ -3331,7 +3247,7 @@ namespace ICE_Import
         }
         
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idcontract", DbType="BigInt NOT NULL")]
-        public long? idcontract
+        public long idcontract
         {
             get
             {
@@ -3399,7 +3315,7 @@ namespace ICE_Import
         
         private long _idoptiondata;
         
-        private long? _idoption;
+        private long _idoption;
         
         private System.DateTime _datetime;
         
@@ -3415,7 +3331,7 @@ namespace ICE_Import
     partial void OnCreated();
     partial void OnidoptiondataChanging(long value);
     partial void OnidoptiondataChanged();
-    partial void OnidoptionChanging(long? value);
+    partial void OnidoptionChanging(long value);
     partial void OnidoptionChanged();
     partial void OndatetimeChanging(System.DateTime value);
     partial void OndatetimeChanged();
@@ -3453,7 +3369,7 @@ namespace ICE_Import
         }
         
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_idoption", DbType="BigInt NOT NULL", IsPrimaryKey=true)]
-        public long? idoption
+        public long idoption
         {
             get
             {
