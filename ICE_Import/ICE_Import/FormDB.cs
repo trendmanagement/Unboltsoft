@@ -105,6 +105,11 @@ namespace ICE_Import
                 X = buttonCheckPushedData.Location.X,
                 Y = this.Height - 247
             };
+            buttonDrop.Location = new Point()
+            {
+                X = buttonDrop.Location.X,
+                Y = this.Height - 218
+            };
             labelRPS1.Location = new Point()
             {
                 X = this.Width - 103,
@@ -124,11 +129,6 @@ namespace ICE_Import
             buttonToCSV.Location = new Point()
             {
                 X = this.Width - 25 - buttonToCSV.Width,
-                Y = this.Height - 247
-            };
-            buttonDrop.Location = new Point()
-            {
-                X = buttonDrop.Location.X,
                 Y = this.Height - 247
             };
         }

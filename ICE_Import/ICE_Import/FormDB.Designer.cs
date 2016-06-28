@@ -48,12 +48,12 @@
             this.rb_TMLDBCopy = new System.Windows.Forms.RadioButton();
             this.rb_LocalDB = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkBox1000 = new System.Windows.Forms.CheckBox();
             this.cb_TestTables = new System.Windows.Forms.CheckBox();
             this.labelRPS1 = new System.Windows.Forms.Label();
             this.labelRPS2 = new System.Windows.Forms.Label();
             this.buttonCheckPushedData = new System.Windows.Forms.Button();
             this.buttonDrop = new System.Windows.Forms.Button();
-            this.checkBox1000 = new System.Windows.Forms.CheckBox();
             this.tabPageDailyContract.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDailyContract)).BeginInit();
             this.tabPageContract.SuspendLayout();
@@ -77,12 +77,12 @@
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.ReadOnly = true;
             this.richTextBoxLog.Size = new System.Drawing.Size(664, 90);
-            this.richTextBoxLog.TabIndex = 12;
+            this.richTextBoxLog.TabIndex = 13;
             this.richTextBoxLog.Text = "";
             // 
             // buttonPush
             // 
-            this.buttonPush.Location = new System.Drawing.Point(276, 257);
+            this.buttonPush.Location = new System.Drawing.Point(255, 257);
             this.buttonPush.Name = "buttonPush";
             this.buttonPush.Size = new System.Drawing.Size(85, 23);
             this.buttonPush.TabIndex = 4;
@@ -95,11 +95,11 @@
             this.progressBar.Location = new System.Drawing.Point(12, 358);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(640, 10);
-            this.progressBar.TabIndex = 11;
+            this.progressBar.TabIndex = 12;
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(276, 329);
+            this.buttonCancel.Location = new System.Drawing.Point(255, 329);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(85, 23);
             this.buttonCancel.TabIndex = 6;
@@ -109,7 +109,7 @@
             // 
             // buttonPull
             // 
-            this.buttonPull.Location = new System.Drawing.Point(276, 286);
+            this.buttonPull.Location = new System.Drawing.Point(255, 286);
             this.buttonPull.Name = "buttonPull";
             this.buttonPull.Size = new System.Drawing.Size(85, 23);
             this.buttonPull.TabIndex = 5;
@@ -214,7 +214,7 @@
             this.buttonToCSV.Location = new System.Drawing.Point(567, 257);
             this.buttonToCSV.Name = "buttonToCSV";
             this.buttonToCSV.Size = new System.Drawing.Size(85, 23);
-            this.buttonToCSV.TabIndex = 8;
+            this.buttonToCSV.TabIndex = 9;
             this.buttonToCSV.Text = "To CSV Form";
             this.buttonToCSV.UseVisualStyleBackColor = true;
             this.buttonToCSV.Click += new System.EventHandler(this.buttonToCSV_Click);
@@ -275,10 +275,20 @@
             this.groupBox2.Controls.Add(this.cb_TestTables);
             this.groupBox2.Location = new System.Drawing.Point(122, 257);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(148, 95);
+            this.groupBox2.Size = new System.Drawing.Size(127, 95);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Options";
+            // 
+            // checkBox1000
+            // 
+            this.checkBox1000.AutoSize = true;
+            this.checkBox1000.Location = new System.Drawing.Point(6, 44);
+            this.checkBox1000.Name = "checkBox1000";
+            this.checkBox1000.Size = new System.Drawing.Size(92, 17);
+            this.checkBox1000.TabIndex = 14;
+            this.checkBox1000.Text = "Pull First 1000";
+            this.checkBox1000.UseVisualStyleBackColor = true;
             // 
             // cb_TestTables
             // 
@@ -297,7 +307,7 @@
             this.labelRPS1.Location = new System.Drawing.Point(577, 334);
             this.labelRPS1.Name = "labelRPS1";
             this.labelRPS1.Size = new System.Drawing.Size(32, 13);
-            this.labelRPS1.TabIndex = 9;
+            this.labelRPS1.TabIndex = 10;
             this.labelRPS1.Text = "RPS:";
             // 
             // labelRPS2
@@ -306,13 +316,13 @@
             this.labelRPS2.Location = new System.Drawing.Point(615, 334);
             this.labelRPS2.Name = "labelRPS2";
             this.labelRPS2.Size = new System.Drawing.Size(0, 13);
-            this.labelRPS2.TabIndex = 10;
+            this.labelRPS2.TabIndex = 11;
             // 
             // buttonCheckPushedData
             // 
-            this.buttonCheckPushedData.Location = new System.Drawing.Point(367, 257);
+            this.buttonCheckPushedData.Location = new System.Drawing.Point(392, 257);
             this.buttonCheckPushedData.Name = "buttonCheckPushedData";
-            this.buttonCheckPushedData.Size = new System.Drawing.Size(115, 23);
+            this.buttonCheckPushedData.Size = new System.Drawing.Size(123, 23);
             this.buttonCheckPushedData.TabIndex = 7;
             this.buttonCheckPushedData.Text = "Check Pushed Data";
             this.buttonCheckPushedData.UseVisualStyleBackColor = true;
@@ -320,23 +330,13 @@
             // 
             // buttonDrop
             // 
-            this.buttonDrop.Location = new System.Drawing.Point(488, 257);
+            this.buttonDrop.Location = new System.Drawing.Point(392, 286);
             this.buttonDrop.Name = "buttonDrop";
-            this.buttonDrop.Size = new System.Drawing.Size(75, 23);
-            this.buttonDrop.TabIndex = 13;
-            this.buttonDrop.Text = "Drop tables";
+            this.buttonDrop.Size = new System.Drawing.Size(123, 23);
+            this.buttonDrop.TabIndex = 8;
+            this.buttonDrop.Text = "Drop \"temp_\" Tables";
             this.buttonDrop.UseVisualStyleBackColor = true;
             this.buttonDrop.Click += new System.EventHandler(this.buttonDrop_Click);
-            // 
-            // checkBox1000
-            // 
-            this.checkBox1000.AutoSize = true;
-            this.checkBox1000.Location = new System.Drawing.Point(6, 44);
-            this.checkBox1000.Name = "checkBox1000";
-            this.checkBox1000.Size = new System.Drawing.Size(89, 17);
-            this.checkBox1000.TabIndex = 14;
-            this.checkBox1000.Text = "Pull first 1000";
-            this.checkBox1000.UseVisualStyleBackColor = true;
             // 
             // FormDB
             // 

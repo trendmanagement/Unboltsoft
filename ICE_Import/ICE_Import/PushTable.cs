@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -27,7 +25,6 @@ namespace ICE_Import
 
             try
             {
-
                 AsyncTaskListener.Init("Pushing of FUTURES data started");
                 await Task.Run(() => PushContractsTable(ref globalCount, ct), ct);
                 LogElapsedTime(DateTime.Now - start);
@@ -40,7 +37,6 @@ namespace ICE_Import
                     LogElapsedTime(DateTime.Now - start);
                     AsyncTaskListener.LogMessage("Pushing of OPTIONS data complete");
                 }
-
             }
             catch (OperationCanceledException)
             {
@@ -53,12 +49,13 @@ namespace ICE_Import
 
             LogMessage(string.Format("Pushed to DB: {0} entries", globalCount));
         }
+
         void PushContractsTable(ref int globalCount, CancellationToken ct)
         {
             StripNameHashSet = new HashSet<DateTime>();
             StripNameDateHashSet = new HashSet<Tuple<DateTime, DateTime>>();
 
-            //Create tables
+            // Create tables
             var tblContract = new DataTable();
             tblContract.Columns.Add("contractname", typeof(string));
             tblContract.Columns.Add("month", typeof(char));
@@ -121,18 +118,11 @@ namespace ICE_Import
                     future.Date,
                     future.SettlementPrice.GetValueOrDefault(),
                     (long)future.Volume.GetValueOrDefault(),
-                    (long)future.OpenInterest.GetValueOrDefault()
-                    );
+                    (long)future.OpenInterest.GetValueOrDefault());
 
                 StripNameDateHashSet.Add(Tuple.Create(future.StripName, future.Date));
 
                 globalCount++;
-                //if (globalCount == ParsedData.FutureRecords.Count)
-                //{
-                //    log += string.Format(
-                //        "Pushed {0} entries to {1} {2}TBLCONTRACT table",
-                //        globalCount, DatabaseName, TablesPrefix);
-                //}
                 AsyncTaskListener.Update(globalCount, log);
                 log = string.Empty;
             }
@@ -142,45 +132,15 @@ namespace ICE_Import
             {
                 connection.Open();
 
-                string SPFName = (!cb_TestTables.Checked) ? "[cqgdb].SPFTable" : "[cqgdb].test_SPFTable";
-                string SPDFName = (!cb_TestTables.Checked) ? "[cqgdb].SPDFTable" : "[cqgdb].test_SPDFTable";
-
-                using (SqlCommand cmd = new SqlCommand(SPFName, connection))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandTimeout = 0;
-                    cmd.Parameters.AddWithValue("@contract", tblContract);
-
-                    try
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                    catch (SqlException ex)
-                    {
-                        AsyncTaskListener.LogMessage(ex.Message);
-                    }
-                }
-                using (SqlCommand cmd = new SqlCommand("[cqgdb].SPDFTable", connection))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandTimeout = 0;
-                    cmd.Parameters.AddWithValue("@dailycontract", tblDailyContract);
-
-                    try
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                    catch (SqlException ex)
-                    {
-                        AsyncTaskListener.LogMessage(ex.Message);
-                    }
-                }
+                PushOneTable(tblContract, "contract", "SPFTable", connection);
+                PushOneTable(tblDailyContract, "dailycontract", "SPDFTable", connection);
             }
             #endregion
 
             AsyncTaskListener.LogMessageFormat("Pushed {0} entries to {1} {2}TBLCONTRACT table", globalCount, DatabaseName, TablesPrefix);
 
         }
+
         void PushOptionsTable(ref int globalCount, CancellationToken ct)
         {
             bool newOption;
@@ -189,7 +149,7 @@ namespace ICE_Import
 
             OptionDataList = new List<Tuple<string, DateTime, double>>();
 
-            //Create tables
+            // Create tables
             var tblOptions = new DataTable();
             tblOptions.Columns.Add("optionname", typeof(string));
             tblOptions.Columns.Add("optionmonth", typeof(char));
@@ -241,15 +201,15 @@ namespace ICE_Import
                             ref log);
 
                         tblOptions.Rows.Add(
-                        optionName,
-                        monthChar,
-                        option.StripName.Month,
-                        option.StripName.Year,
-                        option.StrikePrice.GetValueOrDefault(),
-                        option.OptionType,
-                        IdInstrument,
-                        expirationDate,
-                        optionName);
+                            optionName,
+                            monthChar,
+                            option.StripName.Month,
+                            option.StripName.Year,
+                            option.StrikePrice.GetValueOrDefault(),
+                            option.OptionType,
+                            IdInstrument,
+                            expirationDate,
+                            optionName);
 
                         OptionNameHashSet.Add(optionName);
                     }
@@ -277,11 +237,12 @@ namespace ICE_Import
                     double expirateYear = option.Date.Year + option.Date.Month / 12.0;
 
                     tblOptionDatas.Rows.Add(
-                    optionName,
-                    option.Date,
-                    option.SettlementPrice.GetValueOrDefault(),
-                    impliedvol,
-                    futureYear - expirateYear);
+                        optionName,
+                        option.Date,
+                        option.SettlementPrice.GetValueOrDefault(),
+                        impliedvol,
+                        futureYear - expirateYear);
+
                     OptionDataList.Add(Tuple.Create(optionName, option.Date, option.SettlementPrice.GetValueOrDefault()));
                 }
                 catch (Exception ex)
@@ -297,10 +258,6 @@ namespace ICE_Import
                 finally
                 {
                     globalCount++;
-                    //if (globalCount == ParsedData.FutureRecords.Count + ParsedData.OptionRecords.Count)
-                    //{
-                    //    log += string.Format("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", globalCount, DatabaseName, TablesPrefix);
-                    //}
                     AsyncTaskListener.Update(globalCount, log);
                     log = string.Empty;
                 }
@@ -311,50 +268,41 @@ namespace ICE_Import
             {
                 connection.Open();
 
-                string SPOName = (!cb_TestTables.Checked) ? "[cqgdb].SPOTable" : "[cqgdb].test_SPOTable";
-                string SPODName = (!cb_TestTables.Checked) ? "[cqgdb].SPODTable" : "[cqgdb].test_SPODTable";
-
-                using (SqlCommand cmd = new SqlCommand(SPOName, connection))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandTimeout = 0;
-                    cmd.Parameters.AddWithValue("@option", tblOptions);
-
-                    try
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                    catch (SqlException ex)
-                    {
-                        AsyncTaskListener.LogMessage(ex.Message);
-                    }
-                }
-                using (SqlCommand cmd = new SqlCommand(SPODName, connection))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandTimeout = 0;
-                    cmd.Parameters.AddWithValue("@optiondata", tblOptionDatas);
-
-                    try
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                    catch (SqlException ex)
-                    {
-                        AsyncTaskListener.LogMessage(ex.Message);
-                    }
-                }
+                PushOneTable(tblOptions, "option", "SPOTable", connection);
+                PushOneTable(tblOptionDatas, "optiondata", "SPODTable", connection);
             }
             #endregion
 
             AsyncTaskListener.LogMessageFormat("Pushed {0} entries to {1} {2}TBLOPTIONS and {2}TBLOPTIONDATAS tables", globalCount, DatabaseName, TablesPrefix);
-
         }
+
+        void PushOneTable(DataTable table, string tableType, string spNameRoot, SqlConnection connection)
+        {
+            string spNamePrefix = cb_TestTables.Checked ? "[cqgdb].test_" : "[cqgdb].";
+            string spName = spNamePrefix + spNameRoot;
+
+            using (SqlCommand cmd = new SqlCommand(spName, connection))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandTimeout = 0;
+                cmd.Parameters.AddWithValue("@" + tableType, table);
+
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    AsyncTaskListener.LogMessage(ex.Message);
+                }
+            }
+        }
+
         void DropTempTables()
         {
-            string exeption1 = "Cannot drop the table 'temp', because it does not exist or you do not have permission.\r\nCannot drop the table 'tempOptionData', because it does not exist or you do not have permission.";
             string exeption2 = "Cannot drop the table 'tempOptionData', because it does not exist or you do not have permission.";
             string exeption3 = "Cannot drop the table 'temp', because it does not exist or you do not have permission.";
+            string exeption1 = exeption3 + "\r\n" + exeption2;
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -371,17 +319,17 @@ namespace ICE_Import
                     }
                     catch (SqlException ex)
                     {
-                        if(ex.Message == exeption1)
+                        if (ex.Message == exeption1)
                         {
-                            AsyncTaskListener.LogMessage("No tables to drop.");
+                            AsyncTaskListener.LogMessage("No tables to drop");
                         }
                         else if (ex.Message == exeption2)
                         {
-                            AsyncTaskListener.LogMessage("Dropted 'temp' table");
+                            AsyncTaskListener.LogMessage("Dropped 'temp' table");
                         }
                         else if (ex.Message == exeption3)
                         {
-                            AsyncTaskListener.LogMessage("Dropted 'tempOptionData' table");
+                            AsyncTaskListener.LogMessage("Dropped 'tempOptionData' table");
                         }
                         else
                         {

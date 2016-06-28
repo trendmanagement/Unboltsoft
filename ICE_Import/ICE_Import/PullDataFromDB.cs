@@ -23,7 +23,7 @@ namespace ICE_Import
             cts = new CancellationTokenSource();
 
             Dictionary<DateTime, long> idcontractDictionary = null;
-			Dictionary<string, long> idoptionDictionary = null;
+            Dictionary<string, long> idoptionDictionary = null;
             List<tblcontract> contractList = null;
             List<tbldailycontractsettlement> dailyContractList = null;
             List<tbloption> optionList = null;
@@ -85,13 +85,13 @@ namespace ICE_Import
 
             var tblcontracts = Context.tblcontracts;
 
-			int count = 1000;
+            int count = 1000;
 
-			if(checkBox1000.Checked)
-			{
-				contractList = (from item in tblcontracts
+            if (checkBox1000.Checked)
+            {
+                contractList = (from item in tblcontracts
                                 select item).Take(count).ToList();
-			}
+            }
             else if (rb_LocalDB.Checked || count >= (from item in tblcontracts select item).Count())
             {
                 contractList = (from item in tblcontracts
@@ -99,31 +99,31 @@ namespace ICE_Import
             }
             else
             {
-				foreach (var stripName in StripNameHashSet)
-				{
-					tblcontract currentContract;
+                foreach (var stripName in StripNameHashSet)
+                {
+                    tblcontract currentContract;
 
-					try
-					{
-						currentContract = (from item in tblcontracts
-										   where item.monthint == stripName.Month &&
-										   item.year == stripName.Year &&
-										   item.idinstrument == IdInstrument
-										   select item
-										   ).First();
-					}
-					catch (SqlException)
-					{
-						continue;
-					}
-					catch (InvalidOperationException)
-					{
-						continue;
-					}
-        
-					idcontractDictionary.Add(stripName, currentContract.idcontract);
-					contractList.Add(currentContract);
-				}
+                    try
+                    {
+                        currentContract = (from item in tblcontracts
+                                           where item.monthint == stripName.Month &&
+                                           item.year == stripName.Year &&
+                                           item.idinstrument == IdInstrument
+                                           select item
+                                           ).First();
+                    }
+                    catch (SqlException)
+                    {
+                        continue;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        continue;
+                    }
+
+                    idcontractDictionary.Add(stripName, currentContract.idcontract);
+                    contractList.Add(currentContract);
+                }
             }
 
             contractList = contractList.OrderBy(item => item.idcontract).ToList();
@@ -137,161 +137,157 @@ namespace ICE_Import
 
             var tbldailycontractsettlements = Context.tbldailycontractsettlements;
 
-							
-			int count = 1000;
+            int count = 1000;
 
-			if(checkBox1000.Checked)
-			{
-				dailyContractList = (from item in tbldailycontractsettlements
-                                select item).Take(count).ToList();
-			}
+            if (checkBox1000.Checked)
+            {
+                dailyContractList = (from item in tbldailycontractsettlements
+                                     select item).Take(count).ToList();
+            }
             else if (rb_LocalDB.Checked || count >= (from item in tbldailycontractsettlements select item).Count())
             {
                 dailyContractList = (from item in tbldailycontractsettlements
-                                select item).ToList();
+                                     select item).ToList();
             }
             else
             {
+                foreach (var tuple in StripNameDateHashSet)
+                {
+                    tbldailycontractsettlement currentDailyContract;
+                
+                    long idcontract;
+                    bool isID = idcontractDictionary.TryGetValue(tuple.Item1, out idcontract);
+                    if (isID)
+                    {
+                        try
+                        {
+                            currentDailyContract = (from item in tbldailycontractsettlements
+                                                    where item.idcontract == idcontract &&
+                                                    item.date == tuple.Item2
+                                                    select item
+                                                    ).First();
+                        }
+                        catch (SqlException)
+                        {
+                            continue;
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
 
-            foreach (var tuple in StripNameDateHashSet)
+                    dailyContractList.Add(currentDailyContract);
+                }
+            }
+            dailyContractList = dailyContractList.OrderBy(item => item.idcontract).OrderBy(item => item.date).ToList();
+        }
+
+        void PullOptions(
+            out Dictionary<string, long> idoptionDictionary, 
+            out List<tbloption> optionList)
+        {
+            optionList = new List<tbloption>();
+
+            idoptionDictionary = new Dictionary<string, long>();
+
+            var tbloptions = Context.tbloptions;
+
+            tbloption currentOption;
+
+            int count = 1000;
+
+            if (checkBox1000.Checked)
             {
-                tbldailycontractsettlement currentDailyContract;
-
-                long idcontract;
-                bool isID = idcontractDictionary.TryGetValue(tuple.Item1, out idcontract);
-                if (isID)
+                 optionList = (from item in tbloptions
+                               select item).Take(count).ToList();
+            }
+            else if (rb_LocalDB.Checked || count >= (from item in tbloptions select item).Count())
+            {
+                optionList = (from item in tbloptions
+                              select item).ToList();
+            }
+            else
+            {
+                foreach (var name in OptionNameHashSet)
                 {
                     try
                     {
-                        currentDailyContract = (from item in tbldailycontractsettlements
-                                                where item.idcontract == idcontract &&
-                                                item.date == tuple.Item2
-                                                select item
-                                                ).First();
+                        currentOption = (from item in tbloptions
+                                         where 
+                                         name == item.optionname
+                                         select item).First();
                     }
                     catch (SqlException)
                     {
                         continue;
                     }
-                    catch (InvalidOperationException)
-                    {
-                        continue;
-                    }
+                    
+                    idoptionDictionary.Add(name, currentOption.idoption);
+                    optionList.Add(currentOption);
                 }
-                else
-                {
-                    continue;
-                }
-
-                dailyContractList.Add(currentDailyContract);
             }
-			}
-            dailyContractList = dailyContractList.OrderBy(item => item.idcontract).OrderBy(item => item.date).ToList();
-        }
-
-        void PullOptions(
-			out Dictionary<string, long> idoptionDictionary, 
-            out List<tbloption> optionList)
-        {
-            optionList = new List<tbloption>();
-
-			idoptionDictionary = new Dictionary<string, long>();
-
-            var tbloptions = Context.tbloptions;
-
-			tbloption currentOption;
-
-			int count = 1000;
-
-			if(checkBox1000.Checked)
-			{
-				 optionList = (from item in tbloptions
-                                select item).Take(count).ToList();
-			}
-            else if (rb_LocalDB.Checked || count >= (from item in tbloptions select item).Count())
-            {
-                optionList = (from item in tbloptions
-                                select item).ToList();
-            }
-            else
-            {
-				foreach (var name in OptionNameHashSet)
-				{
-					try
-					{
-						currentOption = (from item in tbloptions
-									  where 
-									  name == item.optionname
-									  select item
-									  ).First();
-					}
-					catch (SqlException)
-					{
-						continue;
-					}
-					
-					idoptionDictionary.Add(name, currentOption.idoption);
-					optionList.Add(currentOption);
-				}
-			}
-			optionList = optionList.OrderBy(item => item.idoption).ToList();
-
+            optionList = optionList.OrderBy(item => item.idoption).ToList();
         }
 
         void PullDailyOptions(
-			Dictionary<string, long> idoptionDictionary,
+            Dictionary<string, long> idoptionDictionary,
             out List<tbloptiondata> optionDataList)
         {
             optionDataList = new List<tbloptiondata>();
 
             var tbloptiondatas = Context.tbloptiondatas;
-			var tbloptions = Context.tbloptions;
+            var tbloptions = Context.tbloptions;
 
-			int count = 1000;
+            int count = 1000;
 
-			if(checkBox1000.Checked)
-			{
-				 optionDataList = (from item in tbloptiondatas
-                                select item).Take(count).ToList();
-			}
+            if (checkBox1000.Checked)
+            {
+                 optionDataList = (from item in tbloptiondatas
+                                   select item).Take(count).ToList();
+            }
             else if (rb_LocalDB.Checked || OptionDataList.Count == 0)
             {
                 optionDataList = (from item in tbloptiondatas
-                                select item).ToList();
+                                  select item).ToList();
             }
             else
             {
                 foreach (var tuple in OptionDataList)
                 {
-					long idoption;
-					bool isID = idoptionDictionary.TryGetValue(tuple.Item1, out idoption);
-					if (isID)
-					{
-						tbloptiondata currentOptionData;
+                    long idoption;
+                    bool isID = idoptionDictionary.TryGetValue(tuple.Item1, out idoption);
+                    if (isID)
+                    {
+                        tbloptiondata currentOptionData;
 
-						try
-						{
+                        try
+                        {
 
-								currentOptionData = (from item in tbloptiondatas
-													 where
-													 item.idoption == idoption &&
-													 item.datetime == tuple.Item2 &&
-													 item.price == tuple.Item3
-													 select item).First();
-						}
-						catch (SqlException)
-						{
-							continue;
-						}
+                                currentOptionData = (from item in tbloptiondatas
+                                                     where
+                                                     item.idoption == idoption &&
+                                                     item.datetime == tuple.Item2 &&
+                                                     item.price == tuple.Item3
+                                                     select item).First();
+                        }
+                        catch (SqlException)
+                        {
+                            continue;
+                        }
 
-						optionDataList.Add(currentOptionData);
-					}
-					else
-					{
-						continue;
-					}
+                        optionDataList.Add(currentOptionData);
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
-			}
+            }
             optionDataList = optionDataList.OrderBy(item => item.idoptiondata).ToList();
         }
 
@@ -300,7 +296,7 @@ namespace ICE_Import
             cts = new CancellationTokenSource();
 
             Dictionary<DateTime, long> idcontractDictionary = null;
-			Dictionary<string, long> idoptionDictionary = null;
+            Dictionary<string, long> idoptionDictionary = null;
             List<test_tblcontract> contractList = null;
             List<test_tbldailycontractsettlement> dailyContractList = null;
             List<test_tbloption> optionList = null;
@@ -362,13 +358,13 @@ namespace ICE_Import
 
             var tblcontracts = Context.test_tblcontracts;
 
-			int count = 1000;
+            int count = 1000;
 
-			if(checkBox1000.Checked)
-			{
-				contractList = (from item in tblcontracts
+            if (checkBox1000.Checked)
+            {
+                contractList = (from item in tblcontracts
                                 select item).Take(count).ToList();
-			}
+            }
             else if (rb_LocalDB.Checked || count >= (from item in tblcontracts select item).Count())
             {
                 contractList = (from item in tblcontracts
@@ -376,31 +372,31 @@ namespace ICE_Import
             }
             else
             {
-				foreach (var stripName in StripNameHashSet)
-				{
-					test_tblcontract currentContract;
+                foreach (var stripName in StripNameHashSet)
+                {
+                    test_tblcontract currentContract;
 
-					try
-					{
-						currentContract = (from item in tblcontracts
-										   where item.monthint == stripName.Month &&
-										   item.year == stripName.Year &&
-										   item.idinstrument == IdInstrument
-										   select item
-										   ).First();
-					}
-					catch (SqlException)
-					{
-						continue;
-					}
-					catch (InvalidOperationException)
-					{
-						continue;
-					}
-        
-					idcontractDictionary.Add(stripName, currentContract.idcontract);
-					contractList.Add(currentContract);
-				}
+                    try
+                    {
+                        currentContract = (from item in tblcontracts
+                                           where item.monthint == stripName.Month &&
+                                           item.year == stripName.Year &&
+                                           item.idinstrument == IdInstrument
+                                           select item
+                                           ).First();
+                    }
+                    catch (SqlException)
+                    {
+                        continue;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        continue;
+                    }
+
+                    idcontractDictionary.Add(stripName, currentContract.idcontract);
+                    contractList.Add(currentContract);
+                }
             }
 
             contractList = contractList.OrderBy(item => item.idcontract).ToList();
@@ -414,161 +410,157 @@ namespace ICE_Import
 
             var tbldailycontractsettlements = Context.test_tbldailycontractsettlements;
 
-							
-			int count = 1000;
+            int count = 1000;
 
-			if(checkBox1000.Checked)
-			{
-				dailyContractList = (from item in tbldailycontractsettlements
-                                select item).Take(count).ToList();
-			}
+            if (checkBox1000.Checked)
+            {
+                dailyContractList = (from item in tbldailycontractsettlements
+                                     select item).Take(count).ToList();
+            }
             else if (rb_LocalDB.Checked || count >= (from item in tbldailycontractsettlements select item).Count())
             {
                 dailyContractList = (from item in tbldailycontractsettlements
-                                select item).ToList();
+                                     select item).ToList();
             }
             else
             {
+                foreach (var tuple in StripNameDateHashSet)
+                {
+                    test_tbldailycontractsettlement currentDailyContract;
+                
+                    long idcontract;
+                    bool isID = idcontractDictionary.TryGetValue(tuple.Item1, out idcontract);
+                    if (isID)
+                    {
+                        try
+                        {
+                            currentDailyContract = (from item in tbldailycontractsettlements
+                                                    where item.idcontract == idcontract &&
+                                                    item.date == tuple.Item2
+                                                    select item
+                                                    ).First();
+                        }
+                        catch (SqlException)
+                        {
+                            continue;
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
 
-            foreach (var tuple in StripNameDateHashSet)
+                    dailyContractList.Add(currentDailyContract);
+                }
+            }
+            dailyContractList = dailyContractList.OrderBy(item => item.idcontract).OrderBy(item => item.date).ToList();
+        }
+
+        void PullOptionsTest(
+            out Dictionary<string, long> idoptionDictionary, 
+            out List<test_tbloption> optionList)
+        {
+            optionList = new List<test_tbloption>();
+
+            idoptionDictionary = new Dictionary<string, long>();
+
+            var tbloptions = Context.test_tbloptions;
+
+            test_tbloption currentOption;
+
+            int count = 1000;
+
+            if (checkBox1000.Checked)
             {
-                test_tbldailycontractsettlement currentDailyContract;
-
-                long idcontract;
-                bool isID = idcontractDictionary.TryGetValue(tuple.Item1, out idcontract);
-                if (isID)
+                 optionList = (from item in tbloptions
+                               select item).Take(count).ToList();
+            }
+            else if (rb_LocalDB.Checked || count >= (from item in tbloptions select item).Count())
+            {
+                optionList = (from item in tbloptions
+                              select item).ToList();
+            }
+            else
+            {
+                foreach (var name in OptionNameHashSet)
                 {
                     try
                     {
-                        currentDailyContract = (from item in tbldailycontractsettlements
-                                                where item.idcontract == idcontract &&
-                                                item.date == tuple.Item2
-                                                select item
-                                                ).First();
+                        currentOption = (from item in tbloptions
+                                         where 
+                                         name == item.optionname
+                                         select item).First();
                     }
                     catch (SqlException)
                     {
                         continue;
                     }
-                    catch (InvalidOperationException)
-                    {
-                        continue;
-                    }
+                    
+                    idoptionDictionary.Add(name, currentOption.idoption);
+                    optionList.Add(currentOption);
                 }
-                else
-                {
-                    continue;
-                }
-
-                dailyContractList.Add(currentDailyContract);
             }
-			}
-            dailyContractList = dailyContractList.OrderBy(item => item.idcontract).OrderBy(item => item.date).ToList();
-        }
-
-        void PullOptionsTest(
-			out Dictionary<string, long> idoptionDictionary, 
-            out List<test_tbloption> optionList)
-        {
-            optionList = new List<test_tbloption>();
-
-			idoptionDictionary = new Dictionary<string, long>();
-
-            var tbloptions = Context.test_tbloptions;
-
-			test_tbloption currentOption;
-
-			int count = 1000;
-
-			if(checkBox1000.Checked)
-			{
-				 optionList = (from item in tbloptions
-                                select item).Take(count).ToList();
-			}
-            else if (rb_LocalDB.Checked || count >= (from item in tbloptions select item).Count())
-            {
-                optionList = (from item in tbloptions
-                                select item).ToList();
-            }
-            else
-            {
-				foreach (var name in OptionNameHashSet)
-				{
-					try
-					{
-						currentOption = (from item in tbloptions
-									  where 
-									  name == item.optionname
-									  select item
-									  ).First();
-					}
-					catch (SqlException)
-					{
-						continue;
-					}
-					
-					idoptionDictionary.Add(name, currentOption.idoption);
-					optionList.Add(currentOption);
-				}
-			}
-			optionList = optionList.OrderBy(item => item.idoption).ToList();
-
+            optionList = optionList.OrderBy(item => item.idoption).ToList();
         }
 
         void PullDailyOptions(
-			Dictionary<string, long> idoptionDictionary,
+            Dictionary<string, long> idoptionDictionary,
             out List<test_tbloptiondata> optionDataList)
         {
             optionDataList = new List<test_tbloptiondata>();
 
             var tbloptiondatas = Context.test_tbloptiondatas;
-			var tbloptions = Context.test_tbloptions;
+            var tbloptions = Context.test_tbloptions;
 
-			int count = 1000;
+            int count = 1000;
 
-			if(checkBox1000.Checked)
-			{
-				 optionDataList = (from item in tbloptiondatas
-                                select item).Take(count).ToList();
-			}
+            if (checkBox1000.Checked)
+            {
+                 optionDataList = (from item in tbloptiondatas
+                                   select item).Take(count).ToList();
+            }
             else if (rb_LocalDB.Checked || OptionDataList.Count == 0)
             {
                 optionDataList = (from item in tbloptiondatas
-                                select item).ToList();
+                                  select item).ToList();
             }
             else
             {
                 foreach (var tuple in OptionDataList)
                 {
-					long idoption;
-					bool isID = idoptionDictionary.TryGetValue(tuple.Item1, out idoption);
-					if (isID)
-					{
-						test_tbloptiondata currentOptionData;
+                    long idoption;
+                    bool isID = idoptionDictionary.TryGetValue(tuple.Item1, out idoption);
+                    if (isID)
+                    {
+                        test_tbloptiondata currentOptionData;
 
-						try
-						{
+                        try
+                        {
 
-								currentOptionData = (from item in tbloptiondatas
-													 where
-													 item.idoption == idoption &&
-													 item.datetime == tuple.Item2 &&
-													 item.price == tuple.Item3
-													 select item).First();
-						}
-						catch (SqlException)
-						{
-							continue;
-						}
+                                currentOptionData = (from item in tbloptiondatas
+                                                     where
+                                                     item.idoption == idoption &&
+                                                     item.datetime == tuple.Item2 &&
+                                                     item.price == tuple.Item3
+                                                     select item).First();
+                        }
+                        catch (SqlException)
+                        {
+                            continue;
+                        }
 
-						optionDataList.Add(currentOptionData);
-					}
-					else
-					{
-						continue;
-					}
+                        optionDataList.Add(currentOptionData);
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
-			}
+            }
             optionDataList = optionDataList.OrderBy(item => item.idoptiondata).ToList();
         }
 

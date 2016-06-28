@@ -85,8 +85,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AsyncTaskListener.cs" />
-    <Compile Include="StoredProcsHelper.cs" />
-    <Compile Include="StoredProcsAsyncHelper.cs" />
     <Compile Include="DataClassesTMLDB.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
