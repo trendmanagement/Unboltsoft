@@ -51,7 +51,7 @@ namespace ICE_Import
             return true;
         }
 
-        public bool GetRisk(ref double riskFreeInterestRate)
+        public bool GetRisk(ref List<tbloptioninputdata> riskFreeInterestRates)
         {
             AsyncTaskListener.LogMessage("Reading Risk Free Interest Rate from TMLDB...");
 
@@ -84,13 +84,12 @@ namespace ICE_Import
                 var idoptioninputsymbol2 = Context.tbloptioninputsymbols.Where(item2 =>
                     item2.idoptioninputtype == OPTION_INPUT_TYPE_RISK_FREE_RATE).First().idoptioninputsymbol;
 
-                riskFreeInterestRate = Context.tbloptioninputdatas.Where(item =>
-                    item.idoptioninputsymbol == idoptioninputsymbol2
-                        && item.optioninputdatetime == optioninputdatetime).First().optioninputclose;
+                riskFreeInterestRates = Context.tbloptioninputdatas.Where(item =>
+                    item.idoptioninputsymbol == idoptioninputsymbol2).ToList();
 
                 AsyncTaskListener.LogMessageFormat(
-                    "Risk Free Interest Rate = {0}",
-                    riskFreeInterestRate);
+                    "Count of RiskFreeInterestRates items = {0}",
+                    riskFreeInterestRates.Count);
 
                 return true;
             }
@@ -103,7 +102,6 @@ namespace ICE_Import
                 return false;
             }
         }
-
         public DateTime GetExpirationDate(
             string name,
             long idInstrument,
