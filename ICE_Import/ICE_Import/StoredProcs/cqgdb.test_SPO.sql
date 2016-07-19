@@ -3,7 +3,7 @@ CREATE PROCEDURE [cqgdb].[test_SPO]
     @optionmonth CHAR (1), 
     @optionmonthint INT, 
     @optionyear INT, 
-    @strikeprice FLOAT (53), 
+    @strikeprice DECIMAL (18,8), 
     @callorput CHAR (1), 
     @idinstrument BIGINT, 
     @expirationdate DATE,
