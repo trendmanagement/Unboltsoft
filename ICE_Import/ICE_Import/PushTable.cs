@@ -70,9 +70,9 @@ namespace ICE_Import
             tblDailyContract.Columns.Add("month", typeof(char));
             tblDailyContract.Columns.Add("year", typeof(int));
             tblDailyContract.Columns.Add("date", typeof(DateTime));
-            tblDailyContract.Columns.Add("price", typeof(float));
-            tblDailyContract.Columns.Add("volume", typeof(float));
-            tblDailyContract.Columns.Add("openinterest", typeof(float));
+            tblDailyContract.Columns.Add("price", typeof(double));
+            tblDailyContract.Columns.Add("volume", typeof(double));
+            tblDailyContract.Columns.Add("openinterest", typeof(double));
 
             foreach (EOD_Futures future in ParsedData.FutureRecords)
             {
@@ -164,9 +164,9 @@ namespace ICE_Import
             var tblOptionDatas = new DataTable();
             tblOptionDatas.Columns.Add("optionname", typeof(string));
             tblOptionDatas.Columns.Add("datetime", typeof(DateTime));
-            tblOptionDatas.Columns.Add("price", typeof(float));
-            tblOptionDatas.Columns.Add("impliedvol", typeof(float));
-            tblOptionDatas.Columns.Add("timetoexpinyears", typeof(float));
+            tblOptionDatas.Columns.Add("price", typeof(double));
+            tblOptionDatas.Columns.Add("impliedvol", typeof(double));
+            tblOptionDatas.Columns.Add("timetoexpinyears", typeof(double));
 
             string log = string.Empty;
             foreach (EOD_Options option in ParsedData.OptionRecords)
@@ -235,6 +235,12 @@ namespace ICE_Import
                         riskFreeInterestRate,
                         Utilities.NormalizePrice(option.SettlementPrice),
                         TickSize);
+
+                        if (object.ReferenceEquals(impliedvol, null) || double.IsNaN(impliedvol) || double.IsInfinity(impliedvol))
+                        {
+                            impliedvol = 0;
+                        }
+
                         #endregion
 
                         double futureYear = option.StripName.Year + option.StripName.Month / 12.0;
@@ -277,7 +283,6 @@ namespace ICE_Import
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
-
                 PushOneTable(tblOptions, "option", "SPOTable", connection);
                 PushOneTable(tblOptionDatas, "optiondata", "SPODTable", connection);
             }
