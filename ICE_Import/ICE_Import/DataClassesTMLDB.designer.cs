@@ -2125,7 +2125,7 @@ namespace ICE_Import
         
         private int _optionyear;
         
-        private decimal _strikeprice;
+        private double _strikeprice;
         
         private char _callorput;
         
@@ -2151,7 +2151,7 @@ namespace ICE_Import
     partial void OnoptionmonthintChanged();
     partial void OnoptionyearChanging(int value);
     partial void OnoptionyearChanged();
-    partial void OnstrikepriceChanging(decimal value);
+    partial void OnstrikepriceChanging(double value);
     partial void OnstrikepriceChanged();
     partial void OncallorputChanging(char value);
     partial void OncallorputChanged();
@@ -2271,7 +2271,7 @@ namespace ICE_Import
         }
         
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_strikeprice", DbType="Float NOT NULL")]
-        public decimal strikeprice
+        public double strikeprice
         {
             get
             {
@@ -3021,7 +3021,7 @@ namespace ICE_Import
         
         private int _optionyear;
         
-        private decimal _strikeprice;
+        private double _strikeprice;
         
         private char _callorput;
         
@@ -3047,7 +3047,7 @@ namespace ICE_Import
     partial void OnoptionmonthintChanged();
     partial void OnoptionyearChanging(int value);
     partial void OnoptionyearChanged();
-    partial void OnstrikepriceChanging(decimal value);
+    partial void OnstrikepriceChanging(double value);
     partial void OnstrikepriceChanged();
     partial void OncallorputChanging(char value);
     partial void OncallorputChanged();
@@ -3167,7 +3167,7 @@ namespace ICE_Import
         }
         
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_strikeprice", DbType="Float NOT NULL")]
-        public decimal strikeprice
+        public double strikeprice
         {
             get
             {

@@ -94,7 +94,7 @@
       <Column Name="optionmonth" Type="System.Char" DbType="Char(1) NOT NULL" CanBeNull="false" />
       <Column Name="optionmonthint" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="optionyear" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="strikeprice" Type="System.Decimal" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="strikeprice" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="callorput" Type="System.Char" DbType="Char(1) NOT NULL" CanBeNull="false" />
       <Column Name="idinstrument" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
       <Column Name="expirationdate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
@@ -141,7 +141,7 @@
       <Column Name="optionmonth" Type="System.Char" DbType="Char(1) NOT NULL" CanBeNull="false" />
       <Column Name="optionmonthint" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="optionyear" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="strikeprice" Type="System.Decimal" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="strikeprice" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="callorput" Type="System.Char" DbType="Char(1) NOT NULL" CanBeNull="false" />
       <Column Name="idinstrument" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
       <Column Name="expirationdate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />

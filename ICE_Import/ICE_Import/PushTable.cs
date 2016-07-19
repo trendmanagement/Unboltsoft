@@ -155,7 +155,7 @@ namespace ICE_Import
             tblOptions.Columns.Add("optionmonth", typeof(char));
             tblOptions.Columns.Add("optionmonthint", typeof(int));
             tblOptions.Columns.Add("optionyear", typeof(int));
-            tblOptions.Columns.Add("strikeprice", typeof(decimal));
+            tblOptions.Columns.Add("strikeprice", typeof(float));
             tblOptions.Columns.Add("callorput", typeof(char));
             tblOptions.Columns.Add("idinstrument", typeof(int));
             tblOptions.Columns.Add("expirationdate", typeof(DateTime));
@@ -185,7 +185,7 @@ namespace ICE_Import
                         CqgSymbol,
                         monthChar,
                         option.StripName.Year,
-                        (double)option.StrikePrice.GetValueOrDefault(),
+                        option.StrikePrice.GetValueOrDefault(),
                         0,
                         0,
                         IdInstrument);
