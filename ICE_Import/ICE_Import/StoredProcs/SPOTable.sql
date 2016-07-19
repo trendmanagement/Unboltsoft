@@ -9,7 +9,7 @@ CREATE TABLE temp
     optionmonth char,
     optionmonthint int,
     optionyear int,
-    strikeprice float,
+    strikeprice decimal,
     callorput char,
     idinstrument int,
     expirationdate date,
