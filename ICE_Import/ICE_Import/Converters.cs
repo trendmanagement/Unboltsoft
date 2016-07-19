@@ -124,6 +124,26 @@ namespace ICE_Import
         }
     }
 
+    class DecimalConverter : TrimmingConverter
+    {
+        NumberFormatInfo provider = new NumberFormatInfo();
+
+        public override object Parse(string from)
+        {
+            provider.NumberDecimalSeparator = ".";
+            try
+            {
+                return Convert.ToDecimal(from, provider);
+            }
+            catch (Exception)
+            {
+                // FormatException, OverflowException
+                ThrowConvertException(from, "Failed to convert to Decimal.");
+                return null;
+            }
+        }
+    }
+
     class DateTimeConverter : TrimmingConverter
     {
         string Format;

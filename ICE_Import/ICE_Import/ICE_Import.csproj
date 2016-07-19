@@ -71,6 +71,9 @@
     <Compile Include="ConnectionStrings.cs" />
     <Compile Include="EOD_Futures.cs" />
     <Compile Include="EOD_Options.cs" />
+    <Compile Include="PushTable.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="StoredProcsInstallator.cs" />
     <Compile Include="BgWorkerFutures.cs">
       <SubType>Form</SubType>
@@ -81,18 +84,7 @@
       <DependentUpon>PullDataFromDB.tt</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PushDataToDB.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PushDataToDB.tt</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PushDataToDBWithSPs.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="AsyncTaskListener.cs" />
-    <Compile Include="StoredProcsHelper.cs" />
-    <Compile Include="StoredProcsAsyncHelper.cs" />
     <Compile Include="DataClassesTMLDB.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -178,92 +170,60 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PullDataFromDB.cs</LastGenOutput>
     </Content>
-    <Content Include="PushDataToDB.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>PushDataToDB.cs</LastGenOutput>
-    </Content>
-    <Content Include="StoredProcs\cqgdb.SPDF.sql">
+    <Content Include="StoredProcs\SPDFTable.sql">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>cqgdb.SPDF.tt</DependentUpon>
+      <DependentUpon>SPDFTable.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="StoredProcs\cqgdb.SPDF.tt">
+    <Content Include="StoredProcs\SPDFTable.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>cqgdb.SPDF.sql</LastGenOutput>
+      <LastGenOutput>SPDFTable.sql</LastGenOutput>
     </Content>
-    <Content Include="StoredProcs\cqgdb.SPF.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>cqgdb.SPF.sql</LastGenOutput>
-    </Content>
-    <Content Include="StoredProcs\cqgdb.SPF.sql">
+    <Content Include="StoredProcs\SPFTable.sql">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>cqgdb.SPF.tt</DependentUpon>
+      <DependentUpon>SPFTable.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="StoredProcs\cqgdb.SPF_Mod.tt">
+    <Content Include="StoredProcs\SPFTable.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>cqgdb.SPF_Mod.sql</LastGenOutput>
+      <LastGenOutput>SPFTable.sql</LastGenOutput>
     </Content>
-    <Content Include="StoredProcs\cqgdb.SPF_Mod.sql">
+    <Content Include="StoredProcs\SPODTable.sql">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>cqgdb.SPF_Mod.tt</DependentUpon>
+      <DependentUpon>SPODTable.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="StoredProcs\cqgdb.SPO.tt">
+    <Content Include="StoredProcs\SPODTable.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>cqgdb.SPO.sql</LastGenOutput>
+      <LastGenOutput>SPODTable.sql</LastGenOutput>
     </Content>
-    <Content Include="StoredProcs\cqgdb.SPO.sql">
+    <Content Include="StoredProcs\SPOTable.sql">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>cqgdb.SPO.tt</DependentUpon>
+      <DependentUpon>SPOTable.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="StoredProcs\cqgdb.SPOD.tt">
+    <Content Include="StoredProcs\SPOTable.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>cqgdb.SPOD.sql</LastGenOutput>
+      <LastGenOutput>SPOTable.sql</LastGenOutput>
     </Content>
-    <Content Include="StoredProcs\cqgdb.SPOD.sql">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>cqgdb.SPOD.tt</DependentUpon>
+    <Content Include="StoredProcs\test_SPDFTable.sql">
+      <DependentUpon>SPDFTable.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="StoredProcs\cqgdb.SPO_Mod.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>cqgdb.SPO_Mod.sql</LastGenOutput>
-    </Content>
-    <Content Include="StoredProcs\cqgdb.SPO_Mod.sql">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>cqgdb.SPO_Mod.tt</DependentUpon>
+    <Content Include="StoredProcs\test_SPFTable.sql">
+      <DependentUpon>SPFTable.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="StoredProcs\cqgdb.test_SPDF.sql">
-      <DependentUpon>cqgdb.SPDF.tt</DependentUpon>
+    <Content Include="StoredProcs\test_SPODTable.sql">
+      <DependentUpon>SPODTable.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="StoredProcs\cqgdb.test_SPF.sql">
-      <DependentUpon>cqgdb.SPF.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="StoredProcs\cqgdb.test_SPF_Mod.sql">
-      <DependentUpon>cqgdb.SPF_Mod.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="StoredProcs\cqgdb.test_SPO.sql">
-      <DependentUpon>cqgdb.SPO.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="StoredProcs\cqgdb.test_SPOD.sql">
-      <DependentUpon>cqgdb.SPOD.tt</DependentUpon>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="StoredProcs\cqgdb.test_SPO_Mod.sql">
-      <DependentUpon>cqgdb.SPO_Mod.tt</DependentUpon>
+    <Content Include="StoredProcs\test_SPOTable.sql">
+      <DependentUpon>SPOTable.tt</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

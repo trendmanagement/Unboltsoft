@@ -1,0 +1,50 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ output extension=".sql" #>
+<#@ include file="MultipleOutputHelper.ttinclude" #>
+<# string content =
+@"CREATE PROCEDURE [cqgdb].[{0}SPFTable]
+    @contract ContractType READONLY
+AS
+
+SET NOCOUNT ON;    
+
+MERGE INTO cqgdb.{0}tblcontracts as tgt
+
+USING @contract AS src
+    ON tgt.month = src.month
+    AND tgt.year = src.year
+    AND tgt.idinstrument = src.idinstrument
+
+WHEN MATCHED THEN
+
+UPDATE
+    SET cqgsymbol = src.cqgsymbol
+    
+WHEN NOT MATCHED THEN
+
+    INSERT (contractname,
+            month,
+            monthint,
+            year,
+            idinstrument,
+            expirationdate,
+            cqgsymbol)
+    VALUES (src.contractname,
+            src.month,
+            src.monthint,
+            src.year,
+            src.idinstrument,
+            src.expirationdate,
+            src.cqgsymbol);
+
+SET NOCOUNT OFF;"; #>
+<# var manager = Manager.Create(Host, GenerationEnvironment); #>
+<# manager.StartNewFile("test_SPFTable.sql"); #>
+<# Write(string.Format(content, "test_")); #>
+<# manager.EndBlock(); #>
+<# manager.Process(true); #>
+<# manager.StartNewFile("SPFTable.sql"); #>
+<# Write(string.Format(content, string.Empty)); #>
+<# manager.EndBlock(); #>
+<# manager.Process(false); #>

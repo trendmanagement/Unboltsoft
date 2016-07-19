@@ -100,5 +100,10 @@ namespace ICE_Import
         {
             return price.GetValueOrDefault() / 1000.0;
         }
+
+        public static double NormalizePrice(decimal? price)
+        {
+            return (double)price.GetValueOrDefault() / 1000.0;
+        }
     }
 }

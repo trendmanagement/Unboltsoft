@@ -43,17 +43,17 @@
             this.dataGridViewOption = new System.Windows.Forms.DataGridView();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.buttonToCSV = new System.Windows.Forms.Button();
-            this.cb_StoredProcs = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.rb_TMLDB = new System.Windows.Forms.RadioButton();
             this.rb_TMLDBCopy = new System.Windows.Forms.RadioButton();
             this.rb_LocalDB = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkBox1000 = new System.Windows.Forms.CheckBox();
             this.cb_TestTables = new System.Windows.Forms.CheckBox();
-            this.cb_AsyncUpdate = new System.Windows.Forms.CheckBox();
             this.labelRPS1 = new System.Windows.Forms.Label();
             this.labelRPS2 = new System.Windows.Forms.Label();
             this.buttonCheckPushedData = new System.Windows.Forms.Button();
+            this.buttonDrop = new System.Windows.Forms.Button();
             this.tabPageDailyContract.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewDailyContract)).BeginInit();
             this.tabPageContract.SuspendLayout();
@@ -77,12 +77,12 @@
             this.richTextBoxLog.Name = "richTextBoxLog";
             this.richTextBoxLog.ReadOnly = true;
             this.richTextBoxLog.Size = new System.Drawing.Size(664, 90);
-            this.richTextBoxLog.TabIndex = 12;
+            this.richTextBoxLog.TabIndex = 13;
             this.richTextBoxLog.Text = "";
             // 
             // buttonPush
             // 
-            this.buttonPush.Location = new System.Drawing.Point(276, 257);
+            this.buttonPush.Location = new System.Drawing.Point(255, 257);
             this.buttonPush.Name = "buttonPush";
             this.buttonPush.Size = new System.Drawing.Size(85, 23);
             this.buttonPush.TabIndex = 4;
@@ -95,11 +95,11 @@
             this.progressBar.Location = new System.Drawing.Point(12, 358);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(640, 10);
-            this.progressBar.TabIndex = 11;
+            this.progressBar.TabIndex = 12;
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(276, 329);
+            this.buttonCancel.Location = new System.Drawing.Point(255, 329);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(85, 23);
             this.buttonCancel.TabIndex = 6;
@@ -109,7 +109,7 @@
             // 
             // buttonPull
             // 
-            this.buttonPull.Location = new System.Drawing.Point(276, 286);
+            this.buttonPull.Location = new System.Drawing.Point(255, 286);
             this.buttonPull.Name = "buttonPull";
             this.buttonPull.Size = new System.Drawing.Size(85, 23);
             this.buttonPull.TabIndex = 5;
@@ -214,23 +214,10 @@
             this.buttonToCSV.Location = new System.Drawing.Point(567, 257);
             this.buttonToCSV.Name = "buttonToCSV";
             this.buttonToCSV.Size = new System.Drawing.Size(85, 23);
-            this.buttonToCSV.TabIndex = 8;
+            this.buttonToCSV.TabIndex = 9;
             this.buttonToCSV.Text = "To CSV Form";
             this.buttonToCSV.UseVisualStyleBackColor = true;
             this.buttonToCSV.Click += new System.EventHandler(this.buttonToCSV_Click);
-            // 
-            // cb_StoredProcs
-            // 
-            this.cb_StoredProcs.AutoSize = true;
-            this.cb_StoredProcs.Checked = true;
-            this.cb_StoredProcs.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cb_StoredProcs.Location = new System.Drawing.Point(6, 44);
-            this.cb_StoredProcs.Name = "cb_StoredProcs";
-            this.cb_StoredProcs.Size = new System.Drawing.Size(136, 17);
-            this.cb_StoredProcs.TabIndex = 1;
-            this.cb_StoredProcs.Text = "Use Stored Procedures";
-            this.cb_StoredProcs.UseVisualStyleBackColor = true;
-            this.cb_StoredProcs.CheckedChanged += new System.EventHandler(this.cb_StoredProcs_CheckedChanged);
             // 
             // groupBox1
             // 
@@ -284,21 +271,28 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.checkBox1000);
             this.groupBox2.Controls.Add(this.cb_TestTables);
-            this.groupBox2.Controls.Add(this.cb_StoredProcs);
-            this.groupBox2.Controls.Add(this.cb_AsyncUpdate);
             this.groupBox2.Location = new System.Drawing.Point(122, 257);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(148, 95);
+            this.groupBox2.Size = new System.Drawing.Size(127, 95);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Options";
             // 
+            // checkBox1000
+            // 
+            this.checkBox1000.AutoSize = true;
+            this.checkBox1000.Location = new System.Drawing.Point(6, 44);
+            this.checkBox1000.Name = "checkBox1000";
+            this.checkBox1000.Size = new System.Drawing.Size(92, 17);
+            this.checkBox1000.TabIndex = 14;
+            this.checkBox1000.Text = "Pull First 1000";
+            this.checkBox1000.UseVisualStyleBackColor = true;
+            // 
             // cb_TestTables
             // 
             this.cb_TestTables.AutoSize = true;
-            this.cb_TestTables.Checked = true;
-            this.cb_TestTables.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cb_TestTables.Location = new System.Drawing.Point(6, 21);
             this.cb_TestTables.Name = "cb_TestTables";
             this.cb_TestTables.Size = new System.Drawing.Size(116, 17);
@@ -307,26 +301,13 @@
             this.cb_TestTables.UseVisualStyleBackColor = true;
             this.cb_TestTables.CheckedChanged += new System.EventHandler(this.cb_TestTables_CheckedChanged);
             // 
-            // cb_AsyncUpdate
-            // 
-            this.cb_AsyncUpdate.AutoSize = true;
-            this.cb_AsyncUpdate.Checked = true;
-            this.cb_AsyncUpdate.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cb_AsyncUpdate.Location = new System.Drawing.Point(6, 67);
-            this.cb_AsyncUpdate.Name = "cb_AsyncUpdate";
-            this.cb_AsyncUpdate.Size = new System.Drawing.Size(110, 17);
-            this.cb_AsyncUpdate.TabIndex = 2;
-            this.cb_AsyncUpdate.Text = "Do Async Update";
-            this.cb_AsyncUpdate.UseVisualStyleBackColor = true;
-            this.cb_AsyncUpdate.CheckedChanged += new System.EventHandler(this.cb_AsyncUpdate_CheckedChanged);
-            // 
             // labelRPS1
             // 
             this.labelRPS1.AutoSize = true;
             this.labelRPS1.Location = new System.Drawing.Point(577, 334);
             this.labelRPS1.Name = "labelRPS1";
             this.labelRPS1.Size = new System.Drawing.Size(32, 13);
-            this.labelRPS1.TabIndex = 9;
+            this.labelRPS1.TabIndex = 10;
             this.labelRPS1.Text = "RPS:";
             // 
             // labelRPS2
@@ -335,23 +316,34 @@
             this.labelRPS2.Location = new System.Drawing.Point(615, 334);
             this.labelRPS2.Name = "labelRPS2";
             this.labelRPS2.Size = new System.Drawing.Size(0, 13);
-            this.labelRPS2.TabIndex = 10;
+            this.labelRPS2.TabIndex = 11;
             // 
             // buttonCheckPushedData
             // 
-            this.buttonCheckPushedData.Location = new System.Drawing.Point(367, 257);
+            this.buttonCheckPushedData.Location = new System.Drawing.Point(392, 257);
             this.buttonCheckPushedData.Name = "buttonCheckPushedData";
-            this.buttonCheckPushedData.Size = new System.Drawing.Size(115, 23);
+            this.buttonCheckPushedData.Size = new System.Drawing.Size(123, 23);
             this.buttonCheckPushedData.TabIndex = 7;
             this.buttonCheckPushedData.Text = "Check Pushed Data";
             this.buttonCheckPushedData.UseVisualStyleBackColor = true;
             this.buttonCheckPushedData.Click += new System.EventHandler(this.buttonCheckPushedData_Click);
+            // 
+            // buttonDrop
+            // 
+            this.buttonDrop.Location = new System.Drawing.Point(392, 286);
+            this.buttonDrop.Name = "buttonDrop";
+            this.buttonDrop.Size = new System.Drawing.Size(123, 23);
+            this.buttonDrop.TabIndex = 8;
+            this.buttonDrop.Text = "Drop \"temp_\" Tables";
+            this.buttonDrop.UseVisualStyleBackColor = true;
+            this.buttonDrop.Click += new System.EventHandler(this.buttonDrop_Click);
             // 
             // FormDB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(664, 465);
+            this.Controls.Add(this.buttonDrop);
             this.Controls.Add(this.buttonCheckPushedData);
             this.Controls.Add(this.labelRPS1);
             this.Controls.Add(this.labelRPS2);
@@ -403,16 +395,16 @@
         private System.Windows.Forms.DataGridView dataGridViewOption;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.Button buttonToCSV;
-        private System.Windows.Forms.CheckBox cb_StoredProcs;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton rb_TMLDB;
         private System.Windows.Forms.RadioButton rb_TMLDBCopy;
         private System.Windows.Forms.RadioButton rb_LocalDB;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox cb_TestTables;
-        private System.Windows.Forms.CheckBox cb_AsyncUpdate;
         private System.Windows.Forms.Label labelRPS1;
         private System.Windows.Forms.Label labelRPS2;
         private System.Windows.Forms.Button buttonCheckPushedData;
+        private System.Windows.Forms.Button buttonDrop;
+        private System.Windows.Forms.CheckBox checkBox1000;
     }
 }

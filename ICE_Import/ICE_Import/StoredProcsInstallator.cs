@@ -7,6 +7,7 @@ namespace ICE_Import
 {
     static class StoredProcsInstallator
     {
+        static bool IsSPInstalled;
         const string storedProcsDir = "StoredProcs";
         const string storedProcFileExt = ".sql";
         const string testTablesPrefix = "test_";
@@ -20,6 +21,12 @@ namespace ICE_Import
             bool isTestTables,
             CancellationToken ct)
         {
+            if (IsSPInstalled)
+            {
+                AsyncTaskListener.LogMessage("Stored procedures were installed before");
+                return true;
+            }
+
             AsyncTaskListener.LogMessage("Started installing stored procedures...");
 
             // Get paths of all files in "StoredProcs" directory
@@ -55,9 +62,12 @@ namespace ICE_Import
                     try
                     {
                         createProcCommand.ExecuteNonQuery();
+                        IsSPInstalled = true;
                     }
-                    catch (SqlException)
+                    catch (SqlException ex)
                     {
+                        AsyncTaskListener.LogMessage(ex.Message);
+
                         // Remove the old stored procedure from DB
                         string procName = fileName.Substring(0, fileName.Length - storedProcFileExt.Length);
                         string dropProcCommandBody = string.Format(dropProcCommandPattern, procName);
@@ -67,9 +77,11 @@ namespace ICE_Import
                             {
                                 dropProcCommand.ExecuteNonQuery();
                             }
-                            catch (SqlException)
+                            catch (SqlException exc)
                             {
+                                AsyncTaskListener.LogMessage(exc.Message);
                                 AsyncTaskListener.LogMessage("    " + fileName + " - FAILED");
+                                IsSPInstalled = false;
                                 return false;
                             }
                         }

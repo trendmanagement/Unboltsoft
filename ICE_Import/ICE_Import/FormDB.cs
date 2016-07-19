@@ -19,10 +19,7 @@ namespace ICE_Import
         string TablesPrefix;
         bool IsTestTables;
 
-        bool IsStoredProcs;
         string StoredProcPrefix;
-
-        bool IsAsyncUpdate;
 
         ConnectionStrings ConnectionStrings = new ConnectionStrings();
 
@@ -37,8 +34,9 @@ namespace ICE_Import
         double TickSize = double.NaN;
 
         HashSet<DateTime> StripNameHashSet;
+        HashSet<string> OptionNameHashSet;
         HashSet<Tuple<DateTime, DateTime>> StripNameDateHashSet;
-        HashSet<long> IdOptionHashSet;
+        List<Tuple<string, DateTime, double>> OptionDataList;
 
         public FormDB()
         {
@@ -53,8 +51,6 @@ namespace ICE_Import
 
             rb_DB_CheckedChanged(rb_LocalDB, null);
             cb_TestTables_CheckedChanged(null, null);
-            cb_StoredProcs_CheckedChanged(null, null);
-            cb_AsyncUpdate_CheckedChanged(null, null);
 
             var contextTMLDB = new DataClassesTMLDBDataContext(ConnectionStrings.TMLDB);
             TMLDBReader = new TMLDBReader(contextTMLDB);
@@ -108,6 +104,11 @@ namespace ICE_Import
             {
                 X = buttonCheckPushedData.Location.X,
                 Y = this.Height - 247
+            };
+            buttonDrop.Location = new Point()
+            {
+                X = buttonDrop.Location.X,
+                Y = this.Height - 218
             };
             labelRPS1.Location = new Point()
             {
@@ -220,32 +221,16 @@ namespace ICE_Import
 
             try
             {
-                if (IsStoredProcs)
+                // Install stored procedures from SQL files into DB
+                bool success = await Task.Run(() =>
+                    StoredProcsInstallator.Install(ConnectionString, IsTestTables, cts.Token));
+                if (!success)
                 {
-                    // Install stored procedures from SQL files into DB
-                    bool success = await Task.Run(() =>
-                        StoredProcsInstallator.Install(ConnectionString, IsTestTables, cts.Token));
-                    if (!success)
-                    {
-                        EnableDisable(false);
-                        return;
-                    }
+                    EnableDisable(false);
+                    return;
+                }
 
-                    // Update either test or non-test tables,
-                    // either synchronously or asynchronously
-                    await PushDataToDBWithSPs(cts.Token);
-                }
-                else
-                {
-                    if (IsTestTables)
-                    {
-                        await PushDataToDBTest(cts.Token);
-                    }
-                    else
-                    {
-                        await PushDataToDB(cts.Token);
-                    }
-                }
+                await PushDataToDB(cts.Token);
             }
             catch (OperationCanceledException)
             {
@@ -256,7 +241,7 @@ namespace ICE_Import
             }
 
             // Update the data grid
-            buttonPull_Click(sender, e);
+            //buttonPull_Click(sender, e);
         }
 
         private void buttonPull_Click(object sender, EventArgs e)
@@ -308,8 +293,6 @@ namespace ICE_Import
             rb_TMLDBCopy.Enabled = !start;
             rb_TMLDB.Enabled = !start;
             cb_TestTables.Enabled = !start;
-            cb_StoredProcs.Enabled = !start;
-            cb_AsyncUpdate.Enabled = !start;
             if (start)
             {
                 buttonPush.Enabled = false;
@@ -325,6 +308,8 @@ namespace ICE_Import
             buttonPull.Enabled = !start;
             buttonCancel.Enabled = start;
             buttonToCSV.Enabled = !start;
+            buttonDrop.Enabled = !start;
+            checkBox1000.Enabled = !start;
             buttonCheckPushedData.Enabled = start ? false : (dataGridViewContract.DataSource != null);
             progressBar.Value = 0;
         }
@@ -371,11 +356,7 @@ namespace ICE_Import
                 Context = TMLDBReader.Context;
             }
 
-            if (IsStoredProcs)
-            {
-                // Switch stored procs helper
-                StoredProcsHelper.Switch(Context, IsTestTables, IsAsyncUpdate, ConnectionString);
-            }
+            Context.CommandTimeout = 0;
 
             LogMessage(string.Format("You selected {0} database", DatabaseName));
         }
@@ -407,51 +388,7 @@ namespace ICE_Import
 
             StoredProcPrefix = prefix;
 
-            if (IsStoredProcs)
-            {
-                // Switch stored procs helper
-                StoredProcsHelper.Switch(Context, IsTestTables, IsAsyncUpdate, ConnectionString);
-            }
-
             LogMessage(string.Format("You selected {0} tables", testNonTest));
-        }
-
-        private void cb_StoredProcs_CheckedChanged(object sender, EventArgs e)
-        {
-            IsStoredProcs = cb_StoredProcs.Checked;
-
-            cb_AsyncUpdate.Enabled = IsStoredProcs;
-
-            string storedCoded;
-            if (IsStoredProcs)
-            {
-                storedCoded = "STORED";
-            }
-            else
-            {
-                cb_AsyncUpdate.Checked = false;
-                IsAsyncUpdate = false;
-                storedCoded = "CODED";
-            }
-
-            if (IsStoredProcs)
-            {
-                // Switch stored procs helper
-                StoredProcsHelper.Switch(Context, IsTestTables, IsAsyncUpdate, ConnectionString);
-            }
-
-            LogMessage(string.Format("You selected {0} procedures", storedCoded));
-        }
-
-        private void cb_AsyncUpdate_CheckedChanged(object sender, EventArgs e)
-        {
-            IsAsyncUpdate = cb_AsyncUpdate.Checked;
-
-            // Switch stored procs helper
-            StoredProcsHelper.Switch(Context, IsTestTables, IsAsyncUpdate, ConnectionString);
-
-            string asyncSync = IsAsyncUpdate ? "ASYNCHRONOUS" : "SYNCHRONOUS";
-            LogMessage(string.Format("You selected {0} update", asyncSync));
         }
 
         private void AsyncTaskListener_Updated(
@@ -490,16 +427,7 @@ namespace ICE_Import
 
         private bool ValidateOptions(bool isPush = false)
         {
-            if (isPush && DatabaseName == "TMLDB" && IsTestTables && IsStoredProcs)
-            {
-                MessageBox.Show(
-                    "TMLDB does not have stored procedures for working with test tables.",
-                    Text,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-                return false;
-            }
-            else if (DatabaseName == "TMLDB_Copy" && IsTestTables)
+            if (DatabaseName == "TMLDB_Copy" && IsTestTables)
             {
                 MessageBox.Show(
                     "TMLDB_Copy does not have test tables.",
@@ -519,5 +447,9 @@ namespace ICE_Import
             LogMessage("Elapsed time: " + timeSpan);
         }
 
+        private void buttonDrop_Click(object sender, EventArgs e)
+        {
+            DropTempTables();
+        }
     }
 }
