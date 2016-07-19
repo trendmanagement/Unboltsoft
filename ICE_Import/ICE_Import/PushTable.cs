@@ -223,27 +223,37 @@ namespace ICE_Import
                     // currentOptionPrice               - option.SettlementPrice 
                     // tickSize                         - from table tblinstruments (secondaryoptionticksize or optionticksize)
 
-                    double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
+                    var riskFreeInterestRate = RiskFreeInterestRates.Find(item => item.optioninputdatetime == option.Date).optioninputclose;
+
+                    if (riskFreeInterestRate != double.NaN)
+                    {
+                        double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
                         option.OptionType,
                         1.56,
                         Utilities.NormalizePrice(option.StrikePrice),
                         0.5,
-                        RiskFreeInterestRate,
+                        riskFreeInterestRate,
                         Utilities.NormalizePrice(option.SettlementPrice),
                         TickSize);
-                    #endregion
+                        #endregion
 
-                    double futureYear = option.StripName.Year + option.StripName.Month / 12.0;
-                    double expirateYear = option.Date.Year + option.Date.Month / 12.0;
+                        double futureYear = option.StripName.Year + option.StripName.Month / 12.0;
+                        double expirateYear = option.Date.Year + option.Date.Month / 12.0;
 
-                    tblOptionDatas.Rows.Add(
-                        optionName,
-                        option.Date,
-                        option.SettlementPrice.GetValueOrDefault(),
-                        impliedvol,
-                        futureYear - expirateYear);
+                        tblOptionDatas.Rows.Add(
+                            optionName,
+                            option.Date,
+                            option.SettlementPrice.GetValueOrDefault(),
+                            impliedvol,
+                            futureYear - expirateYear);
 
-                    OptionDataList.Add(Tuple.Create(optionName, option.Date, option.SettlementPrice.GetValueOrDefault()));
+                        OptionDataList.Add(Tuple.Create(optionName, option.Date, option.SettlementPrice.GetValueOrDefault()));
+                    }
+                    else
+                    {
+                        int erc = globalCount - ParsedData.FutureRecords.Count - ParsedData.FutureRecords.Count;
+                        AsyncTaskListener.LogMessageFormat("Cant find riskFreeInterestRate for item #{0}", erc);
+                    }
                 }
                 catch (Exception ex)
                 {

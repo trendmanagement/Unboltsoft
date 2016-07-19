@@ -30,7 +30,7 @@ namespace ICE_Import
 
         long IdInstrument = -1;
         string CqgSymbol;
-        double RiskFreeInterestRate = double.NaN;
+        List<tbloptioninputdata> RiskFreeInterestRates = new List<tbloptioninputdata>();
         double TickSize = double.NaN;
 
         HashSet<DateTime> StripNameHashSet;
@@ -203,7 +203,7 @@ namespace ICE_Import
 
             bool isRiskFound = await Task.Run(
                 () => TMLDBReader.GetRisk(
-                    ref RiskFreeInterestRate));
+                    ref RiskFreeInterestRates));
 
             if (!areThreeParamsFound || !isRiskFound)
             {
