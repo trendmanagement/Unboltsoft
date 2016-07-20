@@ -15,6 +15,18 @@ namespace ICE_Import
         public static List<EOD_Options> OptionRecords;
         public static bool FuturesOnly;
 
+        static Dictionary<string, string> discrioptions = new Dictionary<string, string>
+        {
+            { "Cocoa Futures", "Cocoa" },
+            { "Cocoa Options", "Cocoa" },
+            { "Coffee \"C\" Futures", "Coffee" },
+            { "Coffee \"C\" Options", "Coffee" },
+            { "Cotton No. 2 Futures", "Cotton" },
+            { "Cotton No. 2 Options", "Cotton" },
+            { "Sugar No. 11 Futures", "Sugar" },
+            { "Sugar No. 11 Options", "Sugar" }
+        };
+
         private static bool IsConform;
 
         public static string ProductName;
@@ -58,9 +70,14 @@ namespace ICE_Import
                 return;
             }
 
-            ProductName = FutureRecords[0].ProductName;
-            int i = ProductName.IndexOf(" Futures");
-            ProductName = ProductName.Remove(i);
+            if (discrioptions.ContainsKey(FutureRecords[0].ProductName))
+            {
+                ProductName = discrioptions[FutureRecords[0].ProductName];
+            }
+            else
+            {
+                ProductName = GetParsedProductName(FutureRecords[0].ProductName);
+            }
 
             if (FuturesOnly || ConformityCheck())
             {
@@ -77,6 +94,24 @@ namespace ICE_Import
             }
         }
 
+        private static string GetParsedProductName(string productName)
+        {
+            var builderAnsver = new StringBuilder();
+            var input = productName.ToArray();
+            foreach (var item in input)
+            {
+                if(item != ' ')
+                {
+                    builderAnsver.Append(item);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return builderAnsver.ToString();
+        }
+
         private static bool ConformityCheck()
         {
             string formText = "ICE Import (DB Form)";
@@ -84,9 +119,17 @@ namespace ICE_Import
             if (FutureRecords.Count != 0 && OptionRecords.Count != 0)
             {
                 // Check conformity of ProductName
-                string optionProductName = OptionRecords[0].ProductName;
-                int i = optionProductName.IndexOf(" Options");
-                optionProductName = optionProductName.Remove(i);
+
+                string optionProductName = String.Empty;
+                if (discrioptions.ContainsKey(FutureRecords[0].ProductName))
+                {
+                    optionProductName = discrioptions[OptionRecords[0].ProductName];
+                }
+                else
+                {
+                    optionProductName = GetParsedProductName(OptionRecords[0].ProductName);
+                }
+
                 IsConform = ProductName == optionProductName;
                 if (!IsConform)
                 {
@@ -136,20 +179,5 @@ namespace ICE_Import
             return IsConform;
         }
 
-        /// <summary>
-        /// Given "ProductName" from ICE CSV file, get "description" key for [cqgdb].[tblinstruments] table.
-        /// </summary>
-        public static string GetDescription()
-        {
-            int idx = ProductName.IndexOf(' ');
-            if (idx == -1)
-            {
-                return ProductName;
-            }
-            else
-            {
-                return ProductName.Substring(0, idx);
-            }
-        }
     }
 }
