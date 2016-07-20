@@ -55,5 +55,16 @@ namespace ICE_Import.Properties {
                 return ((string)(this["TMLDBConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=h9ggwlagd1.database.windows.net;Initial Catalog=TMLDB;User ID=steve@h" +
+            "9ggwlagd1;Password=KYYAtv9P;Encrypt=False;TrustServerCertificate=True")]
+        public string TMLDBConnectionString1 {
+            get {
+                return ((string)(this["TMLDBConnectionString1"]));
+            }
+        }
     }
 }

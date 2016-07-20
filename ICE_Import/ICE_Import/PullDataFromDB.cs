@@ -250,8 +250,8 @@ namespace ICE_Import
                  optionDataList = (from item in tbloptiondatas
                                    select item).Take(count).ToList();
             }
-            else if (rb_LocalDB.Checked || OptionDataList.Count == 0)
-            {
+			else if (rb_LocalDB.Checked || count >= (from item in tbloptiondatas select item).Count())
+			            {
                 optionDataList = (from item in tbloptiondatas
                                   select item).ToList();
             }
@@ -523,8 +523,8 @@ namespace ICE_Import
                  optionDataList = (from item in tbloptiondatas
                                    select item).Take(count).ToList();
             }
-            else if (rb_LocalDB.Checked || OptionDataList.Count == 0)
-            {
+			else if (rb_LocalDB.Checked || count >= (from item in tbloptiondatas select item).Count())
+			            {
                 optionDataList = (from item in tbloptiondatas
                                   select item).ToList();
             }
