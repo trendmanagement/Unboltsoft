@@ -96,20 +96,20 @@ namespace ICE_Import
 
         private static string GetParsedProductName(string productName)
         {
-            var builderAnsver = new StringBuilder();
+            var builderAnswer = new StringBuilder();
             var input = productName.ToArray();
             foreach (var item in input)
             {
                 if(item != ' ')
                 {
-                    builderAnsver.Append(item);
+                    builderAnswer.Append(item);
                 }
                 else
                 {
                     break;
                 }
             }
-            return builderAnsver.ToString();
+            return builderAnswer.ToString();
         }
 
         private static bool ConformityCheck()
