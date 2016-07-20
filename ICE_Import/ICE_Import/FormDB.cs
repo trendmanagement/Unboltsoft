@@ -196,7 +196,7 @@ namespace ICE_Import
 
             bool areThreeParamsFound = await Task.Run(
                 () => TMLDBReader.GetThreeParams(
-                    ParsedData.GetDescription(),
+                    ParsedData.ProductName,
                     ref IdInstrument,
                     ref CqgSymbol,
                     ref TickSize));
