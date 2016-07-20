@@ -39,21 +39,21 @@ namespace ICE_Import
                     return null;
                 }
 
+                T[] newRecords;
                 try
                 {
-                    T[] newRecords = engine.ReadFile(filePaths[i]);
+                    newRecords = engine.ReadFile(filePaths[i]);
                     records.AddRange(newRecords);
-                    worker.ReportProgress(i + 1);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(
-                    ex.Message,
-                    "Cant parse value with error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                        ex.Message,
+                        "ICE Import (CSV Form)",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                 }
-
+                worker.ReportProgress(i + 1);
             }
 
             return records;

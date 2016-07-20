@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace ICE_Import
 {
@@ -30,8 +31,13 @@ namespace ICE_Import
             {
                 return false;
             }
-            catch (SqlException)
+            catch (SqlException e)
             {
+                MessageBox.Show(
+                    e.Message,
+                    "ICE Import (DB Form)",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
                 return false;
             }
 
