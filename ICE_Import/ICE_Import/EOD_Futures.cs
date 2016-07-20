@@ -50,8 +50,8 @@ namespace ICE_Import
         [FieldConverter(typeof(UInt64Converter))]
         public ulong? EFPVolume;
 
-        [FieldConverter(typeof(UInt64Converter))]
-        public ulong? EFSVolume;
+        [FieldConverter(typeof(Int64Converter))]
+        public long? EFSVolume;
 
         [FieldConverter(typeof(UInt64Converter))]
         public ulong? BlockVolume;

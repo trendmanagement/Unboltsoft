@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using FileHelpers;
+using System;
 
 namespace ICE_Import
 {
@@ -38,11 +39,21 @@ namespace ICE_Import
                     return null;
                 }
 
-                T[] newRecords = engine.ReadFile(filePaths[i]);
+                try
+                {
+                    T[] newRecords = engine.ReadFile(filePaths[i]);
+                    records.AddRange(newRecords);
+                    worker.ReportProgress(i + 1);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(
+                    ex.Message,
+                    "Cant parse value with error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                }
 
-                records.AddRange(newRecords);
-
-                worker.ReportProgress(i + 1);
             }
 
             return records;
