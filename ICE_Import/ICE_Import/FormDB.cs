@@ -173,6 +173,7 @@ namespace ICE_Import
 
         private async void buttonPush_Click(object sender, EventArgs e)
         {
+            useOldRFI = false;
             if (!ValidateOptions(true))
             {
                 return;

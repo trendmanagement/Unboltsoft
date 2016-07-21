@@ -10,6 +10,8 @@ namespace ICE_Import
 {
     public partial class FormDB : Form
     {
+        bool useOldRFI;
+        double oldRFI;
         async Task PushDataToDB(CancellationToken ct)
         {
             progressBar.Maximum = ParsedData.FutureRecords.Count;
@@ -223,7 +225,48 @@ namespace ICE_Import
                     // currentOptionPrice               - option.SettlementPrice 
                     // tickSize                         - from table tblinstruments (secondaryoptionticksize or optionticksize)
 
-                    var riskFreeInterestRate = RiskFreeInterestRates.Find(item => item.optioninputdatetime == option.Date).optioninputclose;
+                    double riskFreeInterestRate = double.NaN;
+
+                    try
+                    {
+                        riskFreeInterestRate = RiskFreeInterestRates.Find(item => item.optioninputdatetime == option.Date).optioninputclose;
+                        if (oldRFI != double.NaN)
+                        {
+                            oldRFI = riskFreeInterestRate;
+                        }
+                        else
+                        {
+                            oldRFI = 0;
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        if (!useOldRFI)
+                        {
+                            string formText = "Error";
+                            string message = string.Format(
+                                "\nCan't find risk free interest for {0} date value\n" +
+                                "\nDo you want use for this and next risk free interest values early date?\n\n", option.Date);
+                            DialogResult result = MessageBox.Show(
+                                message,
+                                formText,
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Warning);
+
+                            if (DialogResult.Yes == result)
+                            {
+                                useOldRFI = true;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            riskFreeInterestRate = oldRFI;
+                        }
+                    }
 
                     if (riskFreeInterestRate != double.NaN)
                     {
