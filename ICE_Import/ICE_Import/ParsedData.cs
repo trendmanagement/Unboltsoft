@@ -14,6 +14,8 @@ namespace ICE_Import
         public static List<EOD_Futures> FutureRecords;
         public static List<EOD_Options> OptionRecords;
         public static bool FuturesOnly;
+        public static string JsonString;
+        public static JsonConfig JsonConfig;
 
         static Dictionary<string, string> discrioptions = new Dictionary<string, string>
         {
@@ -41,7 +43,7 @@ namespace ICE_Import
                 }
                 else
                 {
-                    return OptionRecords != null && FutureRecords != null;
+                    return OptionRecords != null && FutureRecords != null && JsonConfig != null;
                 }
             }
         }
@@ -70,16 +72,9 @@ namespace ICE_Import
                 return;
             }
 
-            if (discrioptions.ContainsKey(FutureRecords[0].ProductName))
-            {
-                ProductName = discrioptions[FutureRecords[0].ProductName];
-            }
-            else
-            {
-                ProductName = GetParsedProductName(FutureRecords[0].ProductName);
-            }
+            ProductName = JsonConfig.ICE_Configuration.TMLDB_Description;
 
-            if (FuturesOnly || ConformityCheck())
+            if (FuturesOnly || ConformityCheck() && !String.IsNullOrEmpty(ProductName))
             {
                 Program.csvf.Hide();
                 Program.dbf.Show();
@@ -94,43 +89,14 @@ namespace ICE_Import
             }
         }
 
-        private static string GetParsedProductName(string productName)
-        {
-            var builderAnswer = new StringBuilder();
-            var input = productName.ToArray();
-            foreach (var item in input)
-            {
-                if(item != ' ')
-                {
-                    builderAnswer.Append(item);
-                }
-                else
-                {
-                    break;
-                }
-            }
-            return builderAnswer.ToString();
-        }
-
         private static bool ConformityCheck()
         {
             string formText = "ICE Import (DB Form)";
 
             if (FutureRecords.Count != 0 && OptionRecords.Count != 0)
             {
-                // Check conformity of ProductName
 
-                string optionProductName = String.Empty;
-                if (discrioptions.ContainsKey(FutureRecords[0].ProductName))
-                {
-                    optionProductName = discrioptions[OptionRecords[0].ProductName];
-                }
-                else
-                {
-                    optionProductName = GetParsedProductName(OptionRecords[0].ProductName);
-                }
-
-                IsConform = ProductName == optionProductName;
+                IsConform = ProductName != null;
                 if (!IsConform)
                 {
                     MessageBox.Show(
