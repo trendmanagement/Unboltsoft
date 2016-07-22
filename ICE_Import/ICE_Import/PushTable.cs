@@ -243,28 +243,11 @@ namespace ICE_Import
                             oldRFI = 0;
                         }
                     }
-                    catch(Exception ex)
+                    catch (Exception)
                     {
                         if (!useOldRFI)
                         {
-                            string formText = "Error";
-                            string message = string.Format(
-                                "\nCan't find risk free interest for {0} date value\n" +
-                                "\nDo you want use for this and next risk free interest values early date?\n\n", option.EOD_Option.Date);
-                            DialogResult result = MessageBox.Show(
-                                message,
-                                formText,
-                                MessageBoxButtons.YesNo,
-                                MessageBoxIcon.Warning);
-
-                            if (DialogResult.Yes == result)
-                            {
-                                useOldRFI = true;
-                            }
-                            else
-                            {
-                                break;
-                            }
+                            useOldRFI = true;
                         }
                         else
                         {
