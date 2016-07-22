@@ -45,6 +45,7 @@
             this.button_InputOption = new System.Windows.Forms.Button();
             this.checkBoxFuturesOnly = new System.Windows.Forms.CheckBox();
             this.buttonJson = new System.Windows.Forms.Button();
+            this.labelJson = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // backgroundWorker_ParsingOptions
@@ -206,11 +207,20 @@
             this.buttonJson.UseVisualStyleBackColor = true;
             this.buttonJson.Click += new System.EventHandler(this.buttonJson_Click);
             // 
+            // labelJson
+            // 
+            this.labelJson.AutoSize = true;
+            this.labelJson.Location = new System.Drawing.Point(210, 230);
+            this.labelJson.Name = "labelJson";
+            this.labelJson.Size = new System.Drawing.Size(0, 13);
+            this.labelJson.TabIndex = 15;
+            // 
             // FormCSV
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 261);
+            this.Controls.Add(this.labelJson);
             this.Controls.Add(this.buttonJson);
             this.Controls.Add(this.checkBoxFuturesOnly);
             this.Controls.Add(this.button_CancelOption);
@@ -255,6 +265,7 @@
         private System.Windows.Forms.Button button_InputOption;
         private System.Windows.Forms.CheckBox checkBoxFuturesOnly;
         private System.Windows.Forms.Button buttonJson;
+        private System.Windows.Forms.Label labelJson;
     }
 }
 

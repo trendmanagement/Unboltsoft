@@ -181,7 +181,7 @@ namespace ICE_Import
                             result = DialogResult.No;
                     }
                 }
-                buttonJson.Enabled = (ParsedData.JsonConfig != null) ? false : true;
+                labelJson.Text = (ParsedData.JsonConfig == null) ? string.Empty : dialog.SafeFileName;
                 ParsedData.OnParseComplete();
             }
         }
