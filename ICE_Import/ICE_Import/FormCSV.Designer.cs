@@ -33,14 +33,12 @@
             this.button_CancelFuture = new System.Windows.Forms.Button();
             this.progressBar_ParsingFuture = new System.Windows.Forms.ProgressBar();
             this.label_ParsedFuture = new System.Windows.Forms.Label();
-            this.button_ParseFuture = new System.Windows.Forms.Button();
             this.label_InputFuture = new System.Windows.Forms.Label();
             this.button_InputFuture = new System.Windows.Forms.Button();
             this.backgroundWorker_ParsingFutures = new System.ComponentModel.BackgroundWorker();
             this.button_CancelOption = new System.Windows.Forms.Button();
             this.progressBar_ParsingOption = new System.Windows.Forms.ProgressBar();
             this.label_ParsedOption = new System.Windows.Forms.Label();
-            this.button_ParseOption = new System.Windows.Forms.Button();
             this.label_InputOption = new System.Windows.Forms.Label();
             this.button_InputOption = new System.Windows.Forms.Button();
             this.checkBoxFuturesOnly = new System.Windows.Forms.CheckBox();
@@ -69,9 +67,9 @@
             // button_CancelFuture
             // 
             this.button_CancelFuture.Enabled = false;
-            this.button_CancelFuture.Location = new System.Drawing.Point(69, 41);
+            this.button_CancelFuture.Location = new System.Drawing.Point(12, 41);
             this.button_CancelFuture.Name = "button_CancelFuture";
-            this.button_CancelFuture.Size = new System.Drawing.Size(58, 23);
+            this.button_CancelFuture.Size = new System.Drawing.Size(115, 23);
             this.button_CancelFuture.TabIndex = 3;
             this.button_CancelFuture.Text = "Cancel";
             this.button_CancelFuture.UseVisualStyleBackColor = true;
@@ -91,17 +89,6 @@
             this.label_ParsedFuture.Name = "label_ParsedFuture";
             this.label_ParsedFuture.Size = new System.Drawing.Size(0, 13);
             this.label_ParsedFuture.TabIndex = 4;
-            // 
-            // button_ParseFuture
-            // 
-            this.button_ParseFuture.Enabled = false;
-            this.button_ParseFuture.Location = new System.Drawing.Point(12, 41);
-            this.button_ParseFuture.Name = "button_ParseFuture";
-            this.button_ParseFuture.Size = new System.Drawing.Size(51, 23);
-            this.button_ParseFuture.TabIndex = 2;
-            this.button_ParseFuture.Text = "Parse";
-            this.button_ParseFuture.UseVisualStyleBackColor = true;
-            this.button_ParseFuture.Click += new System.EventHandler(this.button_ParseFuture_Click);
             // 
             // label_InputFuture
             // 
@@ -133,9 +120,9 @@
             // button_CancelOption
             // 
             this.button_CancelOption.Enabled = false;
-            this.button_CancelOption.Location = new System.Drawing.Point(69, 151);
+            this.button_CancelOption.Location = new System.Drawing.Point(12, 151);
             this.button_CancelOption.Name = "button_CancelOption";
-            this.button_CancelOption.Size = new System.Drawing.Size(58, 23);
+            this.button_CancelOption.Size = new System.Drawing.Size(115, 23);
             this.button_CancelOption.TabIndex = 10;
             this.button_CancelOption.Text = "Cancel";
             this.button_CancelOption.UseVisualStyleBackColor = true;
@@ -155,17 +142,6 @@
             this.label_ParsedOption.Name = "label_ParsedOption";
             this.label_ParsedOption.Size = new System.Drawing.Size(0, 13);
             this.label_ParsedOption.TabIndex = 11;
-            // 
-            // button_ParseOption
-            // 
-            this.button_ParseOption.Enabled = false;
-            this.button_ParseOption.Location = new System.Drawing.Point(12, 151);
-            this.button_ParseOption.Name = "button_ParseOption";
-            this.button_ParseOption.Size = new System.Drawing.Size(51, 23);
-            this.button_ParseOption.TabIndex = 9;
-            this.button_ParseOption.Text = "Parse";
-            this.button_ParseOption.UseVisualStyleBackColor = true;
-            this.button_ParseOption.Click += new System.EventHandler(this.button_ParseOptions_Click);
             // 
             // label_InputOption
             // 
@@ -226,13 +202,11 @@
             this.Controls.Add(this.button_CancelOption);
             this.Controls.Add(this.progressBar_ParsingOption);
             this.Controls.Add(this.label_ParsedOption);
-            this.Controls.Add(this.button_ParseOption);
             this.Controls.Add(this.label_InputOption);
             this.Controls.Add(this.button_InputOption);
             this.Controls.Add(this.button_CancelFuture);
             this.Controls.Add(this.progressBar_ParsingFuture);
             this.Controls.Add(this.label_ParsedFuture);
-            this.Controls.Add(this.button_ParseFuture);
             this.Controls.Add(this.label_InputFuture);
             this.Controls.Add(this.button_InputFuture);
             this.Controls.Add(this.buttonToDB);
@@ -253,14 +227,12 @@
         private System.Windows.Forms.Button button_CancelFuture;
         private System.Windows.Forms.ProgressBar progressBar_ParsingFuture;
         private System.Windows.Forms.Label label_ParsedFuture;
-        private System.Windows.Forms.Button button_ParseFuture;
         private System.Windows.Forms.Label label_InputFuture;
         private System.Windows.Forms.Button button_InputFuture;
         private System.ComponentModel.BackgroundWorker backgroundWorker_ParsingFutures;
         private System.Windows.Forms.Button button_CancelOption;
         private System.Windows.Forms.ProgressBar progressBar_ParsingOption;
         private System.Windows.Forms.Label label_ParsedOption;
-        private System.Windows.Forms.Button button_ParseOption;
         private System.Windows.Forms.Label label_InputOption;
         private System.Windows.Forms.Button button_InputOption;
         private System.Windows.Forms.CheckBox checkBoxFuturesOnly;

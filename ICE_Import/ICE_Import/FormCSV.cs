@@ -22,8 +22,11 @@ namespace ICE_Import
             OptionFilePaths = SelectFiles(
                 "Options",
                 label_InputOption,
-                progressBar_ParsingOption,
-                button_ParseOption);
+                progressBar_ParsingOption);
+
+            // Parse the selected CSV files
+            EnableDisableOption(true);
+            backgroundWorker_ParsingOptions.RunWorkerAsync();
         }
 
         private void button_ParseOptions_Click(object sender, EventArgs e)
@@ -42,14 +45,12 @@ namespace ICE_Import
         private void EnableDisableOption(bool start)
         {
             button_InputOption.Enabled = !start;
-            button_ParseOption.Enabled = !start;
             button_CancelOption.Enabled = start;
         }
 
         private void EnableDisableFuture(bool start)
         {
             button_InputFuture.Enabled = !start;
-            button_ParseFuture.Enabled = !start;
             button_CancelFuture.Enabled = start;
         }
 
@@ -77,8 +78,11 @@ namespace ICE_Import
             FutureFilePaths = SelectFiles(
                 "Futures",
                 label_InputFuture,
-                progressBar_ParsingFuture,
-                button_ParseFuture);
+                progressBar_ParsingFuture);
+
+            // Parse the selected CSV files
+            EnableDisableFuture(true);
+            backgroundWorker_ParsingFutures.RunWorkerAsync();
         }
 
         private void button_ParseFuture_Click(object sender, EventArgs e)
@@ -97,11 +101,9 @@ namespace ICE_Import
         private string[] SelectFiles(
             string expSymbType,
             Label label,
-            ProgressBar progressBar,
-            Button button)
+            ProgressBar progressBar)
         {
             label.Text = "(not selected)";
-            button.Enabled = false;
 
             string[] filePaths;
 
@@ -132,7 +134,6 @@ namespace ICE_Import
 
             label.Text = (filePaths.Length == 1) ? filePaths[0] : "(multiple files)";
             progressBar.Maximum = filePaths.Length;
-            button.Enabled = true;
 
             return filePaths;
         }
@@ -142,7 +143,6 @@ namespace ICE_Import
             bool isChecked = checkBoxFuturesOnly.Checked;
             ParsedData.FuturesOnly = isChecked;
             button_InputOption.Visible = !isChecked;
-            button_ParseOption.Visible = !isChecked;
             button_CancelOption.Visible = !isChecked;
             progressBar_ParsingOption.Visible = !isChecked;
             label_ParsedOption.Visible = !isChecked;
