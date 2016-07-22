@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -13,19 +14,11 @@ namespace ICE_Import
         public static event ParseEventHandler ParseFailed;
         public static List<EOD_Futures> FutureRecords;
         public static List<EOD_Options> OptionRecords;
+        public static List<EOD_Options_Selected> OptionsRecordsSelected;
+        public static List<DateTime> JsonConfigDates;
         public static bool FuturesOnly;
-
-        static Dictionary<string, string> discrioptions = new Dictionary<string, string>
-        {
-            { "Cocoa Futures", "Cocoa" },
-            { "Cocoa Options", "Cocoa" },
-            { "Coffee \"C\" Futures", "Coffee" },
-            { "Coffee \"C\" Options", "Coffee" },
-            { "Cotton No. 2 Futures", "Cotton" },
-            { "Cotton No. 2 Options", "Cotton" },
-            { "Sugar No. 11 Futures", "Sugar" },
-            { "Sugar No. 11 Options", "Sugar" }
-        };
+        public static string JsonString;
+        public static JsonConfig JsonConfig;
 
         private static bool IsConform;
 
@@ -41,7 +34,7 @@ namespace ICE_Import
                 }
                 else
                 {
-                    return OptionRecords != null && FutureRecords != null;
+                    return OptionRecords != null && FutureRecords != null && JsonConfig != null;
                 }
             }
         }
@@ -70,16 +63,9 @@ namespace ICE_Import
                 return;
             }
 
-            if (discrioptions.ContainsKey(FutureRecords[0].ProductName))
-            {
-                ProductName = discrioptions[FutureRecords[0].ProductName];
-            }
-            else
-            {
-                ProductName = GetParsedProductName(FutureRecords[0].ProductName);
-            }
+            if (!FuturesOnly) ProductName = JsonConfig.ICE_Configuration.TMLDB_Description;
 
-            if (FuturesOnly || ConformityCheck())
+            if (FuturesOnly || ConformityCheck() && !string.IsNullOrEmpty(ProductName))
             {
                 Program.csvf.Hide();
                 Program.dbf.Show();
@@ -94,43 +80,17 @@ namespace ICE_Import
             }
         }
 
-        private static string GetParsedProductName(string productName)
-        {
-            var builderAnswer = new StringBuilder();
-            var input = productName.ToArray();
-            foreach (var item in input)
-            {
-                if(item != ' ')
-                {
-                    builderAnswer.Append(item);
-                }
-                else
-                {
-                    break;
-                }
-            }
-            return builderAnswer.ToString();
-        }
-
         private static bool ConformityCheck()
         {
+
+            ParsedData.ParseRegularOptions();
+
             string formText = "ICE Import (DB Form)";
 
             if (FutureRecords.Count != 0 && OptionRecords.Count != 0)
             {
-                // Check conformity of ProductName
 
-                string optionProductName = String.Empty;
-                if (discrioptions.ContainsKey(FutureRecords[0].ProductName))
-                {
-                    optionProductName = discrioptions[OptionRecords[0].ProductName];
-                }
-                else
-                {
-                    optionProductName = GetParsedProductName(OptionRecords[0].ProductName);
-                }
-
-                IsConform = ProductName == optionProductName;
+                IsConform = ProductName != null;
                 if (!IsConform)
                 {
                     MessageBox.Show(
@@ -144,19 +104,40 @@ namespace ICE_Import
 
             // Check conformity of StripName
             var futureStripNames = new HashSet<DateTime>(FutureRecords.Select(item => item.StripName));
-            var optionStripNames = new HashSet<DateTime>(OptionRecords.Select(item => item.StripName));
-            foreach (DateTime futureStripName in futureStripNames)
+            HashSet<DateTime> optionNotFound = new HashSet<DateTime>();
+            OptionsRecordsSelected = new List<EOD_Options_Selected>();
+            foreach (var option in OptionRecords)
             {
-                optionStripNames.Remove(futureStripName);
+                if (futureStripNames.Contains(option.StripName))
+                {
+                    OptionsRecordsSelected.Add(new EOD_Options_Selected
+                    {
+                        DateNameForFuture = option.StripName,
+                        EOD_Option = option
+                    });
+                }
+                else if(!JsonConfigDates.Contains(option.StripName))
+                {
+                    var stripName = futureStripNames.Where(item => item < option.StripName).First();
+                    OptionsRecordsSelected.Add(new EOD_Options_Selected
+                    {
+                        DateNameForFuture = stripName,
+                        EOD_Option = option
+                    });
+                }
+                else
+                {
+                    optionNotFound.Add(option.StripName);
+                }
             }
-            IsConform = optionStripNames.Count == 0;
+            IsConform = optionNotFound.Count == 0;
             if (!IsConform)
             {
                 var sb = new StringBuilder(
                     "The selected Future CSV Files(s) and Option CSV File(s) do not conform to each other.\n\n" +
                     "Options with the following values of StripName do not have corresponding futures " +
                     "(only the first 10 values are shown):\n\n");
-                foreach (DateTime optionStripName in optionStripNames)
+                foreach (DateTime optionStripName in optionNotFound)
                 {
                     sb.Append(optionStripName.ToString("MMMyy") + "\n");
                     var items = OptionRecords.Where(option => option.StripName == optionStripName).ToList();
@@ -177,6 +158,24 @@ namespace ICE_Import
             }
 
             return IsConform;
+        }
+
+        public static void ParseRegularOptions()
+        {
+            if(ParsedData.FutureRecords != null)
+            {
+                JsonConfigDates = new List<DateTime>();
+                HashSet<int> years = new HashSet<int>(FutureRecords.Select(item => item.StripName.Year));
+                foreach (var date in JsonConfig.ICE_Configuration.Regular_Options)
+                {
+                    foreach(var year in years)
+                    {
+                        CultureInfo culture = new CultureInfo("en-En");
+                        string dateConv = string.Format(date + year);
+                        JsonConfigDates.Add(Convert.ToDateTime(dateConv));
+                    }
+                }
+            }
         }
 
     }

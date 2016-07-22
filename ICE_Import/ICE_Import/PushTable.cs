@@ -153,6 +153,8 @@ namespace ICE_Import
 
             // Create tables
             var tblOptions = new DataTable();
+            tblOptions.Columns.Add("monthforfuture", typeof(int));
+            tblOptions.Columns.Add("yearforfuture", typeof(int));
             tblOptions.Columns.Add("optionname", typeof(string));
             tblOptions.Columns.Add("optionmonth", typeof(char));
             tblOptions.Columns.Add("optionmonthint", typeof(int));
@@ -171,7 +173,7 @@ namespace ICE_Import
             tblOptionDatas.Columns.Add("timetoexpinyears", typeof(double));
 
             string log = string.Empty;
-            foreach (EOD_Options option in ParsedData.OptionRecords)
+            foreach (var option in ParsedData.OptionsRecordsSelected)
             {
                 if (ct.IsCancellationRequested)
                 {
@@ -180,14 +182,14 @@ namespace ICE_Import
 
                 try
                 {
-                    char monthChar = Utilities.MonthToMonthCode(option.StripName.Month);
+                    char monthChar = Utilities.MonthToMonthCode(option.EOD_Option.StripName.Month);
 
                     string optionName = Utilities.GenerateOptionCQGSymbolFromSpan(
-                        option.OptionType,
+                        option.EOD_Option.OptionType,
                         CqgSymbol,
                         monthChar,
-                        option.StripName.Year,
-                        (double)option.StrikePrice.GetValueOrDefault(),
+                        option.EOD_Option.StripName.Year,
+                        (double)option.EOD_Option.StrikePrice.GetValueOrDefault(),
                         0,
                         0,
                         IdInstrument);
@@ -199,16 +201,18 @@ namespace ICE_Import
                         DateTime expirationDate = TMLDBReader.GetExpirationDate(
                             "option",
                             IdInstrument,
-                            option.StripName,
+                            option.EOD_Option.StripName,
                             ref log);
 
                         tblOptions.Rows.Add(
+                            option.DateNameForFuture.Month,
+                            option.DateNameForFuture.Year,
                             optionName,
                             monthChar,
-                            option.StripName.Month,
-                            option.StripName.Year,
-                            option.StrikePrice.GetValueOrDefault(),
-                            option.OptionType,
+                            option.EOD_Option.StripName.Month,
+                            option.EOD_Option.StripName.Year,
+                            option.EOD_Option.StrikePrice.GetValueOrDefault(),
+                            option.EOD_Option.OptionType,
                             IdInstrument,
                             expirationDate,
                             optionName);
@@ -229,7 +233,7 @@ namespace ICE_Import
 
                     try
                     {
-                        riskFreeInterestRate = RiskFreeInterestRates.Find(item => item.optioninputdatetime == option.Date).optioninputclose;
+                        riskFreeInterestRate = RiskFreeInterestRates.Find(item => item.optioninputdatetime == option.EOD_Option.Date).optioninputclose;
                         if (oldRFI != double.NaN)
                         {
                             oldRFI = riskFreeInterestRate;
@@ -246,7 +250,7 @@ namespace ICE_Import
                             string formText = "Error";
                             string message = string.Format(
                                 "\nCan't find risk free interest for {0} date value\n" +
-                                "\nDo you want use for this and next risk free interest values early date?\n\n", option.Date);
+                                "\nDo you want use for this and next risk free interest values early date?\n\n", option.EOD_Option.Date);
                             DialogResult result = MessageBox.Show(
                                 message,
                                 formText,
@@ -271,12 +275,12 @@ namespace ICE_Import
                     if (riskFreeInterestRate != double.NaN)
                     {
                         double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
-                        option.OptionType,
+                        option.EOD_Option.OptionType,
                         1.56,
-                        Utilities.NormalizePrice(option.StrikePrice),
+                        Utilities.NormalizePrice(option.EOD_Option.StrikePrice),
                         0.5,
                         riskFreeInterestRate,
-                        Utilities.NormalizePrice(option.SettlementPrice),
+                        Utilities.NormalizePrice(option.EOD_Option.SettlementPrice),
                         TickSize);
 
                         if (object.ReferenceEquals(impliedvol, null) || double.IsNaN(impliedvol) || double.IsInfinity(impliedvol))
@@ -286,17 +290,17 @@ namespace ICE_Import
 
                         #endregion
 
-                        double futureYear = option.StripName.Year + option.StripName.Month / 12.0;
-                        double expirateYear = option.Date.Year + option.Date.Month / 12.0;
+                        double futureYear = option.EOD_Option.StripName.Year + option.EOD_Option.StripName.Month / 12.0;
+                        double expirateYear = option.EOD_Option.Date.Year + option.EOD_Option.Date.Month / 12.0;
 
                         tblOptionDatas.Rows.Add(
                             optionName,
-                            option.Date,
-                            option.SettlementPrice.GetValueOrDefault(),
+                            option.EOD_Option.Date,
+                            option.EOD_Option.SettlementPrice.GetValueOrDefault(),
                             impliedvol,
                             futureYear - expirateYear);
 
-                        OptionDataList.Add(Tuple.Create(optionName, option.Date, option.SettlementPrice.GetValueOrDefault()));
+                        OptionDataList.Add(Tuple.Create(optionName, option.EOD_Option.Date, option.EOD_Option.SettlementPrice.GetValueOrDefault()));
                     }
                     else
                     {

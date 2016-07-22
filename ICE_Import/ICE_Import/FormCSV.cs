@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Windows.Forms;
 
@@ -8,7 +9,6 @@ namespace ICE_Import
     {
         string[] OptionFilePaths;
         string[] FutureFilePaths;
-
         public FormCSV()
         {
             InitializeComponent();
@@ -147,6 +147,7 @@ namespace ICE_Import
             progressBar_ParsingOption.Visible = !isChecked;
             label_ParsedOption.Visible = !isChecked;
             label_InputOption.Visible = !isChecked;
+            buttonJson.Visible = !isChecked;
 
             if (isChecked)
             {
@@ -154,6 +155,40 @@ namespace ICE_Import
             }
 
             ParsedData.OnParseComplete();
+        }
+
+        private void buttonJson_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new OpenFileDialog())
+            {
+                dialog.Filter = "Data file|*.json";
+                dialog.Title = "Select data file(s)";
+                dialog.Multiselect = true;
+                DialogResult result = dialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    try
+                    {
+                        ParsedData.JsonString = File.ReadAllText(dialog.FileName);
+                        ParsedData.JsonConfig = JsonConvert.DeserializeObject<JsonConfig>(ParsedData.JsonString);
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(ex.Message,
+                            "Parse json error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                            result = DialogResult.No;
+                    }
+                }
+                labelJson.Text = (ParsedData.JsonConfig == null) ? string.Empty : dialog.SafeFileName;
+                ParsedData.OnParseComplete();
+            }
+        }
+
+        private void FormCSV_Load(object sender, EventArgs e)
+        {
+            buttonJson.Enabled = true;
         }
     }
 }

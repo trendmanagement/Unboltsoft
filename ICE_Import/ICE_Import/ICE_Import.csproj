@@ -52,6 +52,10 @@
       <HintPath>..\packages\FileHelpers.3.1.5\lib\net45\FileHelpers.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -70,7 +74,9 @@
     <Compile Include="BgWorkerCommon.cs" />
     <Compile Include="ConnectionStrings.cs" />
     <Compile Include="EOD_Futures.cs" />
+    <Compile Include="EOD_Options_Selected.cs" />
     <Compile Include="EOD_Options.cs" />
+    <Compile Include="JsonConfig.cs" />
     <Compile Include="PushTable.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -140,6 +146,9 @@
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>DataClassesTMLDB.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </None>
+    <None Include="JSON\Cocoa.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

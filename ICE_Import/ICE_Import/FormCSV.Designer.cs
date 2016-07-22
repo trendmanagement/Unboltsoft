@@ -44,6 +44,8 @@
             this.label_InputOption = new System.Windows.Forms.Label();
             this.button_InputOption = new System.Windows.Forms.Button();
             this.checkBoxFuturesOnly = new System.Windows.Forms.CheckBox();
+            this.buttonJson = new System.Windows.Forms.Button();
+            this.labelJson = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // backgroundWorker_ParsingOptions
@@ -195,11 +197,31 @@
             this.checkBoxFuturesOnly.UseVisualStyleBackColor = true;
             this.checkBoxFuturesOnly.CheckedChanged += new System.EventHandler(this.checkBoxFuturesOnly_CheckedChanged);
             // 
+            // buttonJson
+            // 
+            this.buttonJson.Location = new System.Drawing.Point(137, 225);
+            this.buttonJson.Name = "buttonJson";
+            this.buttonJson.Size = new System.Drawing.Size(67, 23);
+            this.buttonJson.TabIndex = 14;
+            this.buttonJson.Text = "Get JSON";
+            this.buttonJson.UseVisualStyleBackColor = true;
+            this.buttonJson.Click += new System.EventHandler(this.buttonJson_Click);
+            // 
+            // labelJson
+            // 
+            this.labelJson.AutoSize = true;
+            this.labelJson.Location = new System.Drawing.Point(210, 230);
+            this.labelJson.Name = "labelJson";
+            this.labelJson.Size = new System.Drawing.Size(0, 13);
+            this.labelJson.TabIndex = 15;
+            // 
             // FormCSV
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 261);
+            this.Controls.Add(this.labelJson);
+            this.Controls.Add(this.buttonJson);
             this.Controls.Add(this.checkBoxFuturesOnly);
             this.Controls.Add(this.button_CancelOption);
             this.Controls.Add(this.progressBar_ParsingOption);
@@ -218,6 +240,7 @@
             this.Name = "FormCSV";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ICE Import (CSV Form)";
+            this.Load += new System.EventHandler(this.FormCSV_Load);
             this.SizeChanged += new System.EventHandler(this.FormCSV_SizeChanged);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -241,6 +264,8 @@
         private System.Windows.Forms.Label label_InputOption;
         private System.Windows.Forms.Button button_InputOption;
         private System.Windows.Forms.CheckBox checkBoxFuturesOnly;
+        private System.Windows.Forms.Button buttonJson;
+        private System.Windows.Forms.Label labelJson;
     }
 }
 

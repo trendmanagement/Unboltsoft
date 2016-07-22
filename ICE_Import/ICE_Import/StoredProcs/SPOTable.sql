@@ -4,6 +4,8 @@ AS
 
 CREATE TABLE temp
 (
+	monthforfuture int,
+	yearforfuture int,
     idcontract int,
     optionname varchar(45),
     optionmonth char,
@@ -18,6 +20,8 @@ CREATE TABLE temp
 
 INSERT INTO temp
 (
+	monthforfuture,
+	yearforfuture,
     optionname,
     optionmonth,
     optionmonthint,
@@ -29,6 +33,8 @@ INSERT INTO temp
     cqgsymbol
 )
 SELECT
+	monthforfuture,
+	yearforfuture,
     optionname,
     optionmonth,
     optionmonthint,
@@ -42,8 +48,8 @@ FROM @option
 
 UPDATE temp set temp.idcontract = tblcontracts.idcontract from tblcontracts INNER JOIN temp ON
 tblcontracts.idinstrument = temp.idinstrument AND
-tblcontracts.month = temp.optionmonth AND
-tblcontracts.year= temp.optionyear
+tblcontracts.monthint = temp.monthforfuture AND
+tblcontracts.year= temp.yearforfuture
 
 MERGE INTO cqgdb.tbloptions as tgt
 USING temp AS src
