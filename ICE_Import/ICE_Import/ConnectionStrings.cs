@@ -11,10 +11,14 @@ namespace ICE_Import
         public ConnectionStrings()
         {
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            ConnectionStringsSection csSection = config.ConnectionStrings;
-            Local = csSection.ConnectionStrings[1].ConnectionString;
-            TMLDB_Copy = csSection.ConnectionStrings[2].ConnectionString;
-            TMLDB = csSection.ConnectionStrings[3].ConnectionString;
+            var connectionStrings = config.ConnectionStrings.ConnectionStrings;
+
+            // The first several connection strings in the collection are defined by the environment.
+            // Only the last three ones are defined by our program.
+            int n = connectionStrings.Count;
+            Local = connectionStrings[n - 3].ConnectionString;
+            TMLDB_Copy = connectionStrings[n - 2].ConnectionString;
+            TMLDB = connectionStrings[n - 1].ConnectionString;
         }
     }
 }
