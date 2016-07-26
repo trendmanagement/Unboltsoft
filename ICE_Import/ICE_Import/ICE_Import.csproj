@@ -148,6 +148,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="JSON\Cocoa%284 params%29.json" />
+    <None Include="JSON\Cocoa%285 params%29.json" />
     <None Include="JSON\Cocoa.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

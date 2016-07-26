@@ -33,7 +33,7 @@ namespace ICE_Import
         long IdInstrument = -1;
         string CqgSymbol;
         List<tbloptioninputdata> RiskFreeInterestRates = new List<tbloptioninputdata>();
-        double TickSize = double.NaN;
+        double? TickSize = double.NaN;
         public double? OptionStrikeIncrement = double.NaN;
         public double? OptionStrikeDisplay = double.NaN;
         #endregion
@@ -461,9 +461,15 @@ namespace ICE_Import
 
         private void CheckInputParameters()
         {
+            TickSize = ParsedData.JsonConfig.ICE_Configuration.OptionTickSize;
             OptionStrikeIncrement = ParsedData.JsonConfig.ICE_Configuration.OptionStrikeIncrement;
             OptionStrikeDisplay = ParsedData.JsonConfig.ICE_Configuration.OptionStrikeDisplay;
-            if(OptionStrikeIncrement == null)
+
+            if(TickSize != null)
+            {
+                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for TickSize", TickSize);
+            }
+            if (OptionStrikeIncrement == null)
             {
                 OptionStrikeIncrement = 0;
                 AsyncTaskListener.LogMessageFormat("Used default value: {0} for OptionStrikeIncrement", OptionStrikeIncrement);

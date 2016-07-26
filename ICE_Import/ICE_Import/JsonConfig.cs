@@ -12,6 +12,7 @@ namespace ICE_Import
 
         public class ICEConfiguration
         {
+            public double? OptionTickSize;
             public double? OptionStrikeIncrement;
             public double? OptionStrikeDisplay;
             public string TMLDB_Description;

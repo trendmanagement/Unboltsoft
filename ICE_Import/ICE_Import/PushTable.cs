@@ -265,7 +265,7 @@ namespace ICE_Import
                         0.5,
                         riskFreeInterestRate,
                         Utilities.NormalizePrice(option.EOD_Option.SettlementPrice),
-                        TickSize);
+                        (double)TickSize);
 
                         if (object.ReferenceEquals(impliedvol, null) || double.IsNaN(impliedvol) || double.IsInfinity(impliedvol))
                         {
