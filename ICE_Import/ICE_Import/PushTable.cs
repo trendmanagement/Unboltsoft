@@ -12,6 +12,7 @@ namespace ICE_Import
     {
         bool useOldRFI;
         double oldRFI;
+
         async Task PushDataToDB(CancellationToken ct)
         {
             progressBar.Maximum = ParsedData.FutureRecords.Count;
@@ -190,8 +191,8 @@ namespace ICE_Import
                         monthChar,
                         option.EOD_Option.StripName.Year,
                         (double)option.EOD_Option.StrikePrice.GetValueOrDefault(),
-                        0,
-                        0,
+                        (double)OptionStrikeIncrement,
+                        (double)OptionStrikeDisplay,
                         IdInstrument);
 
                     newOption = !OptionNameHashSet.Contains(optionName);

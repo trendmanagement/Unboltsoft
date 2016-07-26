@@ -29,10 +29,14 @@ namespace ICE_Import
 
         TMLDBReader TMLDBReader;
 
+        #region Input parameters
         long IdInstrument = -1;
         string CqgSymbol;
         List<tbloptioninputdata> RiskFreeInterestRates = new List<tbloptioninputdata>();
         double TickSize = double.NaN;
+        public double? OptionStrikeIncrement = double.NaN;
+        public double? OptionStrikeDisplay = double.NaN;
+        #endregion
 
         HashSet<DateTime> StripNameHashSet;
         HashSet<string> OptionNameHashSet;
@@ -136,11 +140,12 @@ namespace ICE_Import
 
         private void FormDB_Load(object sender, EventArgs e)
         {
+
             buttonCancel.Enabled = false;
             buttonCheckPushedData.Enabled = false;
 
             FormDB_Resize(sender, e);
-
+        
             if (!ParsedData.IsReady)
             {
                 ParsedData_ParseFailed();
@@ -163,7 +168,7 @@ namespace ICE_Import
                     ParsedData.OptionRecords.Count);
                 LogMessage(msg);
             }
-
+            CheckInputParameters();
             buttonPush.Enabled = true;
         }
 
@@ -453,5 +458,31 @@ namespace ICE_Import
         {
             DropTempTables();
         }
+
+        private void CheckInputParameters()
+        {
+            OptionStrikeIncrement = ParsedData.JsonConfig.ICE_Configuration.OptionStrikeIncrement;
+            OptionStrikeDisplay = ParsedData.JsonConfig.ICE_Configuration.OptionStrikeDisplay;
+            if(OptionStrikeIncrement == null)
+            {
+                OptionStrikeIncrement = 0;
+                AsyncTaskListener.LogMessageFormat("Used default value: {0} for OptionStrikeIncrement", OptionStrikeIncrement);
+            }
+            else
+            {
+                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for OptionStrikeIncrement", OptionStrikeIncrement);
+            }
+            if (OptionStrikeDisplay == null)
+            {
+                OptionStrikeDisplay = 0;
+                AsyncTaskListener.LogMessageFormat("Used default value: {0} for OptionStrikeDisplay", OptionStrikeDisplay);
+            }
+            else
+            {
+                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for OptionStrikeDisplay", OptionStrikeDisplay);
+            }
+
+        }
+
     }
 }

@@ -12,6 +12,8 @@ namespace ICE_Import
 
         public class ICEConfiguration
         {
+            public double? OptionStrikeIncrement;
+            public double? OptionStrikeDisplay;
             public string TMLDB_Description;
             public string[] Regular_Options;
         }

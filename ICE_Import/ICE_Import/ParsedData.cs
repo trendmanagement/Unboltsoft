@@ -63,6 +63,7 @@ namespace ICE_Import
                 return;
             }
 
+
             if (!FuturesOnly) ProductName = JsonConfig.ICE_Configuration.TMLDB_Description;
 
             if (FuturesOnly || ConformityCheck() && !string.IsNullOrEmpty(ProductName))

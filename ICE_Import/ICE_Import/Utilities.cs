@@ -79,8 +79,8 @@ namespace ICE_Import
             cqgSymbol.Append(ConversionAndFormatting.convertToStrikeForCQGSymbol(
                                     optionStrikePrice,
                                     optionStrikeIncrement,
-                                    optionStrikeDisplay, instrumentId));
-
+                                    optionStrikeDisplay, 
+                                    instrumentId));
             return cqgSymbol.ToString();
         }
 
