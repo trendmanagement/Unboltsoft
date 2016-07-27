@@ -1,13 +1,15 @@
 using System;
+using System.Collections.Generic;
 
 namespace ICE_Import
 {
     // TODO: you guys will probably come up with a much cleaner architecture than this
     //       we should probably just have a switch that has a separate formatting algo for each instrument
 
-
     class ConversionAndFormatting
     {
+        static HashSet<long> hardcoresIDforCQG = new HashSet<long>() { 39, 40, 1, 360 }; //GLE or HE
+        static HashSet<long> hardcoresIDforSpanData = new HashSet<long>() { 1, 360 }; //USA = 1 ULA = 360
 
         public static double convertToStrikeForCQGSymbol(
             double barVal,
@@ -15,80 +17,54 @@ namespace ICE_Import
             double tickDisplay,
             long idInstrument)
         {
-            if (idInstrument == 39 || idInstrument == 40) //GLE or HE
+            if (hardcoresIDforCQG.Contains(idInstrument))
             {
                 return barVal * tickDisplay;
             }
-            else if (idInstrument == 1 || idInstrument == 360)
-            {
-                return barVal * tickDisplay;
-            }
-            //else if (idInstrument == 101) //GLE or HE
-            //{
-            //    return convertToTickMovesDouble(barVal, tickIncrement, tickDisplay) / 100;
-            //}
             else
             {
                 return convertToTickMovesDouble(barVal, tickIncrement, tickDisplay);
             }
         }
 
-        public static double convertToTickMovesDouble(double barVal, double tickIncrement, double tickDisplay)
+        public static double convertToTickMovesDouble(
+            double barVal, 
+            double tickIncrement, 
+            double tickDisplay)
         {
             if (tickDisplay == 0)
                 return barVal;
 
-            double fuzzyZero = tickIncrement / (int)ParsedData.NormalizeConst;
+            double fuzzyZero = (barVal < 0)? -tickIncrement / (int)ParsedData.NormalizeConst : tickIncrement / (int)ParsedData.NormalizeConst;
             double positiveFuzzyZero = tickIncrement / (int)ParsedData.NormalizeConst;
-
-            if (barVal < 0)
-                fuzzyZero = -tickIncrement / (int)ParsedData.NormalizeConst;
 
             int nTicksInUnit = (int)(1 / tickIncrement + positiveFuzzyZero);
 
             if (nTicksInUnit == 0)
                 return barVal / tickIncrement * tickDisplay;
 
-            //nTicksInUnit = 1;
-
             int intPart = (int)(barVal + fuzzyZero);
             int nTicks = (int)((barVal + fuzzyZero) / tickIncrement + fuzzyZero);
-            //Debug.WriteLine(barVal + "  " + tickIncrement + "  " + fuzzyZero + "  " + nTicks + "  ");
 
             int decPart = (int)((nTicks % nTicksInUnit) * tickDisplay + fuzzyZero);
-            double fractPart = 0;
-
-            // a hack for Eurodollar
-            if (tickDisplay < 1)
-                fractPart = (nTicks % nTicksInUnit) * tickDisplay - decPart;
+            double fractPart = (tickDisplay < 1) ? (nTicks % nTicksInUnit) * tickDisplay - decPart : 0;
 
             int decimalBase = 1;
-
-            //if (tickDisplay/tickIncrement > 1)
-            //    decimalBase = (int)tickDisplay;
-            //else
-
-
 
             while (((nTicksInUnit - 1) * tickDisplay / decimalBase) >= 1)
                 decimalBase *= 10;
 
-
-            //if (decimalBase == 1 && tickDisplay > 0 && tickIncrement > 0 && tickDisplay > tickIncrement)
-            //{
-            //    decimalBase = (int)(tickDisplay / tickIncrement);
-            //}
-
-
             return intPart * decimalBase + decPart + fractPart;
-
-
         }
 
-        public static double convertToStrikeFromSpanData(String barVal, double tickIncrement, double tickDisplay,
-            int idInstrument, DateTime currentFileDate)
+        public static double convertToStrikeFromSpanData(
+            string barVal, 
+            double tickIncrement, 
+            double tickDisplay,
+            int idInstrument, 
+            DateTime currentFileDate)
         {
-            if (idInstrument == 1 || idInstrument == 360) //USA=1 ULA=360
+            if (hardcoresIDforSpanData.Contains(idInstrument)) 
             {
                 if (currentFileDate.CompareTo(new DateTime(2016, 3, 7)) >= 0)
                 {
@@ -99,17 +75,16 @@ namespace ICE_Import
                     return convertToTickMovesDoubleSpan(barVal, tickIncrement, 0);
                 }
             }
-            //else if (idInstrument == 101) //GLE or HE
-            //{
-            //    return convertToTickMovesDouble(barVal, tickIncrement, tickDisplay) / 100;
-            //}
             else
             {
                 return convertToTickMovesDoubleSpan(barVal, tickIncrement, tickDisplay);
             }
         }
 
-        public static double convertToTickMovesDoubleSpan(String barVal, double tickIncrement, double tickDisplay)
+        public static double convertToTickMovesDoubleSpan(
+            string barVal, 
+            double tickIncrement, 
+            double tickDisplay)
         {
             if (tickDisplay == 0)
                 return Convert.ToDouble(barVal);
@@ -130,10 +105,6 @@ namespace ICE_Import
                 maxFractUnits = (nTicksInUnit - 1) * tickDisplay;
             }
 
-
-
-
-
             int decimalBase = 1;
             while ((maxFractUnits + positiveFuzzyZero) / decimalBase >= 1)
                 decimalBase *= 10;
@@ -153,19 +124,7 @@ namespace ICE_Import
             if (incrementFixTest != 0)
                 incrementFix = ((tickIncrement * decimalBase) - incrementFixTest) / decimalBase;
 
-
-
-            //double fractPart = 0;
-
-            // a hack for Eurodollar
-            //if ( tickDisplay < 1 )
-            //    fractPart = (nTicks % nTicksInUnit) * tickDisplay - decPart;
-
-
             return intPart + decPart + incrementFix;
-
-            
         }
-
     }
 }
