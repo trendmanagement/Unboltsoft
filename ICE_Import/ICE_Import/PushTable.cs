@@ -98,7 +98,7 @@ namespace ICE_Import
                 {
                     DateTime expirationDate = TMLDBReader.GetExpirationDate(
                         "future",
-                        IdInstrument,
+                        (long)IdInstrument,
                         future.StripName,
                         ref log);
 
@@ -193,7 +193,7 @@ namespace ICE_Import
                         (double)option.EOD_Option.StrikePrice.GetValueOrDefault(),
                         (double)OptionStrikeIncrement,
                         (double)OptionStrikeDisplay,
-                        IdInstrument);
+                        (long)IdInstrument);
 
                     newOption = !OptionNameHashSet.Contains(optionName);
 
@@ -201,7 +201,7 @@ namespace ICE_Import
                     {
                         DateTime expirationDate = TMLDBReader.GetExpirationDate(
                             "option",
-                            IdInstrument,
+                            (long)IdInstrument,
                             option.EOD_Option.StripName,
                             ref log);
 

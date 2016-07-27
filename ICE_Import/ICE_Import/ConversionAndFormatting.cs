@@ -38,11 +38,11 @@ namespace ICE_Import
             if (tickDisplay == 0)
                 return barVal;
 
-            double fuzzyZero = tickIncrement / 1000;
-            double positiveFuzzyZero = tickIncrement / 1000;
+            double fuzzyZero = tickIncrement / (int)ParsedData.NormalizeConst;
+            double positiveFuzzyZero = tickIncrement / (int)ParsedData.NormalizeConst;
 
             if (barVal < 0)
-                fuzzyZero = -tickIncrement / 1000;
+                fuzzyZero = -tickIncrement / (int)ParsedData.NormalizeConst;
 
             int nTicksInUnit = (int)(1 / tickIncrement + positiveFuzzyZero);
 
@@ -114,8 +114,8 @@ namespace ICE_Import
             if (tickDisplay == 0)
                 return Convert.ToDouble(barVal);
 
-            double fuzzyZero = tickIncrement / 1000;
-            double positiveFuzzyZero = tickIncrement / 1000;
+            double fuzzyZero = tickIncrement / (int)ParsedData.NormalizeConst;
+            double positiveFuzzyZero = tickIncrement / (int)ParsedData.NormalizeConst;
 
             int nTicksInUnit = (int)(1 / tickIncrement + positiveFuzzyZero);
 
@@ -141,7 +141,7 @@ namespace ICE_Import
             double displayVal = Convert.ToDouble(barVal);
 
             if (displayVal < 0)
-                fuzzyZero = -tickIncrement / 1000;
+                fuzzyZero = -tickIncrement / (int)ParsedData.NormalizeConst;
 
             int intPart = (int)((displayVal + fuzzyZero) / decimalBase + fuzzyZero);
             double decPart = (displayVal - intPart * decimalBase) / tickDisplay * tickIncrement;

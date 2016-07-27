@@ -30,7 +30,7 @@ namespace ICE_Import
         TMLDBReader TMLDBReader;
 
         #region Input parameters
-        long IdInstrument = -1;
+        long? IdInstrument = -1;
         string CqgSymbol;
         List<tbloptioninputdata> RiskFreeInterestRates = new List<tbloptioninputdata>();
         double? TickSize = double.NaN;
@@ -201,16 +201,32 @@ namespace ICE_Import
 
             EnableDisable(true);
 
-            bool areThreeParamsFound = await Task.Run(
-                () => TMLDBReader.GetThreeParams(
-                    ParsedData.ProductName,
-                    ref IdInstrument,
-                    ref CqgSymbol,
-                    ref TickSize));
+            bool areThreeParamsFound = false;
+            if (IdInstrument == null || CqgSymbol == null || TickSize == null)
+            {
+                areThreeParamsFound = await Task.Run(() => 
+                    TMLDBReader.GetThreeParams(
+                                                ParsedData.ProductName,
+                                                ref IdInstrument,
+                                                ref CqgSymbol,
+                                                ref TickSize));
+            }
+            else
+            {
+                areThreeParamsFound = true;
+            }
 
-            bool isRiskFound = await Task.Run(
-                () => TMLDBReader.GetRisk(
-                    ref RiskFreeInterestRates));
+
+            bool isRiskFound = false;
+            if(RiskFreeInterestRates.Count == 0)
+            {
+                isRiskFound = await Task.Run(() => 
+                    TMLDBReader.GetRisk(ref RiskFreeInterestRates));
+            }
+            else
+            {
+                isRiskFound = true;
+            }
 
             if (!areThreeParamsFound || !isRiskFound)
             {
@@ -464,29 +480,72 @@ namespace ICE_Import
             TickSize = ParsedData.JsonConfig.ICE_Configuration.OptionTickSize;
             OptionStrikeIncrement = ParsedData.JsonConfig.ICE_Configuration.OptionStrikeIncrement;
             OptionStrikeDisplay = ParsedData.JsonConfig.ICE_Configuration.OptionStrikeDisplay;
-
-            if(TickSize != null)
+            CqgSymbol = ParsedData.JsonConfig.ICE_Configuration.CQGSymbol;
+            ParsedData.NormalizeConst = ParsedData.JsonConfig.ICE_Configuration.NormlizeConstant;
+            IdInstrument = ParsedData.JsonConfig.ICE_Configuration.IdInstrument;
+            ParsedData.OptionTickSize = ParsedData.JsonConfig.ICE_Configuration.OptionTickSize;
+            if(ParsedData.JsonConfig.ICE_Configuration.RiskFreeInterestRates != null)
             {
-                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for TickSize", TickSize);
+                foreach (var item in ParsedData.JsonConfig.ICE_Configuration.RiskFreeInterestRates)
+                {
+                    RiskFreeInterestRates.Add( new tbloptioninputdata
+                    {
+                       optioninputdatetime = item.Date,
+                       optioninputclose = item.Risk
+                    });
+                }
             }
+
+            if (TickSize != null)
+            {
+                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for TickSize", TickSize.ToString());
+            }
+
             if (OptionStrikeIncrement == null)
             {
                 OptionStrikeIncrement = 0;
-                AsyncTaskListener.LogMessageFormat("Used default value: {0} for OptionStrikeIncrement", OptionStrikeIncrement);
+                AsyncTaskListener.LogMessageFormat("Used default value: {0} for OptionStrikeIncrement", OptionStrikeIncrement.ToString());
             }
             else
             {
-                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for OptionStrikeIncrement", OptionStrikeIncrement);
+                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for OptionStrikeIncrement", OptionStrikeIncrement.ToString());
             }
+
             if (OptionStrikeDisplay == null)
             {
                 OptionStrikeDisplay = 0;
-                AsyncTaskListener.LogMessageFormat("Used default value: {0} for OptionStrikeDisplay", OptionStrikeDisplay);
+                AsyncTaskListener.LogMessageFormat("Used default value: {0} for OptionStrikeDisplay", OptionStrikeDisplay.ToString());
             }
             else
             {
-                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for OptionStrikeDisplay", OptionStrikeDisplay);
+                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for OptionStrikeDisplay", OptionStrikeDisplay.ToString());
             }
+
+            if (CqgSymbol != null)
+            {
+                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for CqgSymbol", CqgSymbol);
+            }
+
+            if (ParsedData.NormalizeConst == null)
+            {
+                ParsedData.NormalizeConst = 1000;
+                AsyncTaskListener.LogMessageFormat("Used default value: {0} for NormalizeConst", ParsedData.NormalizeConst.ToString());
+            }
+            else
+            {
+                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for NormalizeConst", ParsedData.NormalizeConst.ToString());
+            }
+
+            if (IdInstrument != null)
+            {
+                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for IdInstrument", IdInstrument.ToString());
+            }
+
+            if (RiskFreeInterestRates.Count != 0)
+            {
+                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for RiskFreeInterestRates", RiskFreeInterestRates.Count.ToString());
+            }
+
 
         }
 

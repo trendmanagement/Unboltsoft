@@ -18,7 +18,7 @@ namespace ICE_Import
             this.IdInstrAndStripNameToExpDate = new Dictionary<Tuple<long, DateTime>, DateTime>();
         }
 
-        public bool GetThreeParams(string productName, ref long idInstrument, ref string cqgSymbol, ref double? tickSize)
+        public bool GetThreeParams(string productName, ref long? idInstrument, ref string cqgSymbol, ref double? tickSize)
         {
             AsyncTaskListener.LogMessage("Reading ID Instrument, CQG Symbol and Tick Size from TMLDB...");
 
@@ -41,11 +41,17 @@ namespace ICE_Import
                 return false;
             }
 
-            idInstrument = record.idinstrument;
+            if (idInstrument == null)
+            {
+                idInstrument = record.idinstrument;
+            }
 
-            cqgSymbol = record.cqgsymbol;
+            if(cqgSymbol == null)
+            {
+                cqgSymbol = record.cqgsymbol;
+            }
 
-            if(tickSize == null)
+            if (tickSize == null)
             {
                 double secondaryoptionticksize = record.secondaryoptionticksize;
                 tickSize = (secondaryoptionticksize > 0) ? secondaryoptionticksize : record.optionticksize;
