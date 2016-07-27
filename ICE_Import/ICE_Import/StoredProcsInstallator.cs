@@ -85,9 +85,16 @@ namespace ICE_Import
                                 return false;
                             }
                         }
-
                         // Try again
-                        createProcCommand.ExecuteNonQuery();
+                        Thread.Sleep(2000);
+                        try
+                        {
+                            createProcCommand.ExecuteNonQuery();
+                        }
+                        catch (SqlException)
+                        {
+
+                        }
                     }
 
                     AsyncTaskListener.LogMessage("    " + fileName + " - done");

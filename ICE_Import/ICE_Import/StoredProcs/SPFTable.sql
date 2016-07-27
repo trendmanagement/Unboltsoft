@@ -14,7 +14,8 @@ USING @contract AS src
 WHEN MATCHED THEN
 
 UPDATE
-    SET cqgsymbol = src.cqgsymbol
+    SET cqgsymbol = src.cqgsymbol,
+	expirationdate = src.expirationdate
     
 WHEN NOT MATCHED THEN
 

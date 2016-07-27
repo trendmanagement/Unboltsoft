@@ -12,11 +12,21 @@ namespace ICE_Import
 
         public class ICEConfiguration
         {
+            public RiskFreeInterestRate[] RiskFreeInterestRates;
+            public int? NormlizeConstant;
+            public long? IdInstrument;
+            public string CQGSymbol;
+            public double? OptionTickSize;
             public double? OptionStrikeIncrement;
             public double? OptionStrikeDisplay;
             public string TMLDB_Description;
             public string[] Regular_Options;
         }
+    }
 
+    public class RiskFreeInterestRate
+    {
+        public DateTime Date;
+        public double Risk;
     }
 }

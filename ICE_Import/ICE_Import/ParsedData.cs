@@ -19,6 +19,8 @@ namespace ICE_Import
         public static bool FuturesOnly;
         public static string JsonString;
         public static JsonConfig JsonConfig;
+        public static int? NormalizeConst;
+        public static double? OptionTickSize;
 
         private static bool IsConform;
 
