@@ -27,6 +27,34 @@ namespace ICE_Import
             }
         }
 
+        public static double ConvertToDouble(double barValue)
+        {
+            if(barValue > 1)
+            {
+                int factor = NormalizeLg(barValue);
+                double normalizePriseConst = Math.Pow(10, factor);
+                return barValue / normalizePriseConst;
+            }
+            else
+            {
+                return barValue;
+            }
+        }
+
+        public static int NormalizeLg(double price)
+        {
+            double lg = Math.Log10(price);
+            int normalize = (int)Math.Ceiling(lg);
+            if(normalize/lg == 1)
+            {
+                return normalize;
+            }
+            else
+            {
+                return normalize - 1;
+            }
+        }
+
         public static double convertToTickMovesDouble(
             double barVal, 
             double tickIncrement, 
@@ -57,7 +85,7 @@ namespace ICE_Import
             return intPart * decimalBase + decPart + fractPart;
         }
 
-        public static double convertToStrikeFromSpanData(
+        public static double convertToTickMovesDouble(
             string barVal, 
             double tickIncrement, 
             double tickDisplay,

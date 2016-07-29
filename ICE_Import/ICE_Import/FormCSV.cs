@@ -183,6 +183,7 @@ namespace ICE_Import
                             result = DialogResult.No;
                     }
                 }
+                ParsedData.jsonPath = dialog.FileName;
                 labelJson.Text = (ParsedData.JsonConfig == null) ? string.Empty : dialog.SafeFileName;
                 ParsedData.OnParseComplete();
             }
@@ -191,6 +192,23 @@ namespace ICE_Import
         private void FormCSV_Load(object sender, EventArgs e)
         {
             buttonJson.Enabled = true;
+            List<double> list = new List<double>();
+            List<int> intList = new List<int>();
+            List<double> doublelist = new List<double>() { 1.05, 1.1, 1.5, 1.4999999999999999, 1.78, 1.9999, 0.99999999999999999 };
+            foreach(var item in doublelist)
+            {
+                intList.Add((int)item);
+            }
+            for (double i = 0.01; i <= 1; i += 0.01)
+            {
+                list.Add(i);
+            }
+            for(int i = 0; i < doublelist.Count; i++ )
+            {
+                //string message = string.Format("lg({0}) - {1}", item, Math.Log10(item));
+                string message = string.Format("int({0}) - double({1}) - string({2})", (int)doublelist[i], doublelist[i], doublelist[i].ToString("r"));
+                Console.WriteLine(message);
+            }
         }
     }
 }

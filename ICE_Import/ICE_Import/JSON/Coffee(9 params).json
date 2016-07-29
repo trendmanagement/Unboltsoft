@@ -1,0 +1,22 @@
+{
+    "ICE_Configuration": {
+        "riskfreeinterestrates": [
+            {
+                "Date": "01.01.2015",
+                "Risk": 1.5
+            },
+            {
+                "Date": "01.01.2010",
+                "Risk": 0.7
+            }
+        ],
+        "normliseconstant": 1000,
+        "idinstrument": 37,
+        "cqgsymbol": "KCE",
+        "optionticksize": 0,
+        "optionstrikeincrement": 0,
+        "optionstrikedisplay": 0,
+        "TMLDB_Description": "Coffee",
+        "Regular_Options": [ "Mar", "May", "Jul", "Sep", "Dec" ]
+    }
+}
