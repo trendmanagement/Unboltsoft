@@ -21,6 +21,7 @@ namespace ICE_Import
         public static JsonConfig JsonConfig;
         public static int? NormalizeConst;
         public static double? OptionTickSize;
+        public static string jsonPath;
 
         private static bool IsConform;
 

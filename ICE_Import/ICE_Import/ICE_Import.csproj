@@ -153,6 +153,9 @@
     <None Include="JSON\Cocoa.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="JSON\Coffee%289 params%29.json" />
+    <None Include="JSON\Cotton%289 params%29.json" />
+    <None Include="JSON\Sugar%289 params%29.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

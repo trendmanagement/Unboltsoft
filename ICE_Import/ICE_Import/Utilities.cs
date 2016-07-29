@@ -57,10 +57,7 @@ namespace ICE_Import
             string underlyingSymbol,
             char month,
             int year, 
-            double optionStrikePrice,
-            double optionStrikeIncrement,
-            double optionStrikeDisplay,
-            long instrumentId)
+            double strikeToCQG)
         {
             Debug.Assert(ContractTypes.Contains(contractType));
 
@@ -76,11 +73,8 @@ namespace ICE_Import
 
             cqgSymbol.Append(year % 100);
 
-            cqgSymbol.Append(ConversionAndFormatting.convertToStrikeForCQGSymbol(
-                                    optionStrikePrice,
-                                    optionStrikeIncrement,
-                                    optionStrikeDisplay, 
-                                    instrumentId));
+            cqgSymbol.Append(strikeToCQG);
+
             return cqgSymbol.ToString();
         }
 

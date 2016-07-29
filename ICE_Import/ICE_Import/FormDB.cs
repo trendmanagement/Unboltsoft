@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -529,10 +532,12 @@ namespace ICE_Import
             if (ParsedData.NormalizeConst == null)
             {
                 ParsedData.NormalizeConst = 1000;
+                ValidateNormalizeConst(ParsedData.OptionRecords.Select(item => item.StrikePrice), (int)ParsedData.NormalizeConst);
                 AsyncTaskListener.LogMessageFormat("Used default value: {0} for NormalizeConst", ParsedData.NormalizeConst.ToString());
             }
             else
             {
+                ValidateNormalizeConst(ParsedData.OptionRecords.Select(item => item.StrikePrice), (int)ParsedData.NormalizeConst);
                 AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for NormalizeConst", ParsedData.NormalizeConst.ToString());
             }
 
@@ -545,9 +550,37 @@ namespace ICE_Import
             {
                 AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for RiskFreeInterestRates", RiskFreeInterestRates.Count.ToString());
             }
-
-
         }
 
+        private void ValidateNormalizeConst(IEnumerable<decimal?> prices, int normConstant)
+        {
+            HashSet<int> pows = new HashSet<int>();
+            foreach(var price in prices)
+            {
+                pows.Add(BitConverter.GetBytes(decimal.GetBits((decimal)price)[3])[2]);
+            }
+            int pow = pows.Max();
+            if(Math.Log10(normConstant) != pow)
+            {
+                ParsedData.NormalizeConst = (int)Math.Pow(10, pow);
+                SetNormalConstToJSON((int)ParsedData.NormalizeConst);
+            }
+        }
+
+        private void SetNormalConstToJSON(int normalizeConst)
+        {
+            ParsedData.JsonConfig.ICE_Configuration.NormlizeConstant = normalizeConst;
+            string json = JsonConvert.SerializeObject(ParsedData.JsonConfig);
+            if (File.Exists(ParsedData.jsonPath))
+            {
+                File.Delete(ParsedData.jsonPath);
+            }
+
+            using (FileStream fs = File.Create(ParsedData.jsonPath))
+            {
+                byte[] info = new UTF8Encoding(true).GetBytes(json);
+                fs.Write(info, 0, info.Length);
+            }
+        }
     }
 }

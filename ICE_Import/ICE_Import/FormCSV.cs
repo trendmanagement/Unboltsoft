@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Schema;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
@@ -181,6 +183,7 @@ namespace ICE_Import
                             result = DialogResult.No;
                     }
                 }
+                ParsedData.jsonPath = dialog.FileName;
                 labelJson.Text = (ParsedData.JsonConfig == null) ? string.Empty : dialog.SafeFileName;
                 ParsedData.OnParseComplete();
             }

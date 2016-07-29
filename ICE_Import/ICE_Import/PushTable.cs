@@ -190,10 +190,7 @@ namespace ICE_Import
                         CqgSymbol,
                         monthChar,
                         option.EOD_Option.StripName.Year,
-                        (double)option.EOD_Option.StrikePrice.GetValueOrDefault(),
-                        (double)OptionStrikeIncrement,
-                        (double)OptionStrikeDisplay,
-                        (long)IdInstrument);
+                        (double)option.EOD_Option.StrikePrice.GetValueOrDefault() * (double)ParsedData.NormalizeConst);
 
                     newOption = !OptionNameHashSet.Contains(optionName);
 
