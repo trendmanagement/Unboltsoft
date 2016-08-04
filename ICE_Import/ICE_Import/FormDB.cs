@@ -484,7 +484,7 @@ namespace ICE_Import
             OptionStrikeIncrement = ParsedData.JsonConfig.ICE_Configuration.OptionStrikeIncrement;
             OptionStrikeDisplay = ParsedData.JsonConfig.ICE_Configuration.OptionStrikeDisplay;
             CqgSymbol = ParsedData.JsonConfig.ICE_Configuration.CQGSymbol;
-            ParsedData.NormalizeConst = ParsedData.JsonConfig.ICE_Configuration.NormlizeConstant;
+            ParsedData.NormalizeConst = ParsedData.JsonConfig.ICE_Configuration.NormalizeConstant;
             IdInstrument = ParsedData.JsonConfig.ICE_Configuration.IdInstrument;
             ParsedData.OptionTickSize = ParsedData.JsonConfig.ICE_Configuration.OptionTickSize;
             if(ParsedData.JsonConfig.ICE_Configuration.RiskFreeInterestRates != null)
@@ -596,7 +596,7 @@ namespace ICE_Import
 
         private void SetNormalConstToJSON(int normalizeConst)
         {
-            ParsedData.JsonConfig.ICE_Configuration.NormlizeConstant = normalizeConst;
+            ParsedData.JsonConfig.ICE_Configuration.NormalizeConstant = normalizeConst;
             string json = JsonConvert.SerializeObject(ParsedData.JsonConfig);
             if (File.Exists(ParsedData.jsonPath))
             {
