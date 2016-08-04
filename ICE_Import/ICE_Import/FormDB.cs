@@ -557,7 +557,34 @@ namespace ICE_Import
             HashSet<int> pows = new HashSet<int>();
             foreach(var price in prices)
             {
-                pows.Add(BitConverter.GetBytes(decimal.GetBits((decimal)price)[3])[2]);
+                var item = price;
+                if (price.ToString().Contains("."))
+                {
+                    var chars = price.ToString().ToList<char>();
+                    for (int i = chars.Count - 1; i >= 0; i--)
+                    {
+                        if (chars[i] == '0')
+                        {
+                            chars.RemoveAt(i);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    if (chars[chars.Count -1] == '.')
+                    {
+                        chars.RemoveAt(chars.Count - 1);
+                    }
+                    string str = string.Empty;
+                    foreach (char ch in chars)
+                    {
+                        str += ch;
+                    }
+                    item = Convert.ToDecimal(str);
+                }
+
+                pows.Add(BitConverter.GetBytes(decimal.GetBits((decimal)item)[3])[2]);
             }
             int pow = pows.Max();
             if(Math.Log10(normConstant) != pow)
