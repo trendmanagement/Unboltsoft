@@ -13,7 +13,7 @@ namespace ICE_Import
         public class ICEConfiguration
         {
             public RiskFreeInterestRate[] RiskFreeInterestRates;
-            public int? NormlizeConstant;
+            public int? NormalizeConstant;
             public long? IdInstrument;
             public string CQGSymbol;
             public double? OptionTickSize;

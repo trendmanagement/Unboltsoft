@@ -10,7 +10,7 @@
                 "Risk": 0.7
             }
         ],
-        "normliseconstant": 1000,
+        "normaliseconstant": 1000,
         "idinstrument": 36,
         "cqgsymbol": "CCE",
         "optionticksize": 0,
