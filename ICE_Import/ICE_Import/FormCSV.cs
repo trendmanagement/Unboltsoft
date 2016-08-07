@@ -1,9 +1,7 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Schema;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace ICE_Import
 {
@@ -26,9 +24,12 @@ namespace ICE_Import
                 label_InputOption,
                 progressBar_ParsingOption);
 
-            // Parse the selected CSV files
-            EnableDisableOption(true);
-            backgroundWorker_ParsingOptions.RunWorkerAsync();
+            if (OptionFilePaths != null)
+            {
+                // Parse the selected CSV files
+                EnableDisableOption(true);
+                backgroundWorker_ParsingOptions.RunWorkerAsync();
+            }
         }
 
         private void button_ParseOptions_Click(object sender, EventArgs e)
@@ -82,9 +83,12 @@ namespace ICE_Import
                 label_InputFuture,
                 progressBar_ParsingFuture);
 
-            // Parse the selected CSV files
-            EnableDisableFuture(true);
-            backgroundWorker_ParsingFutures.RunWorkerAsync();
+            if (FutureFilePaths != null)
+            {
+                // Parse the selected CSV files
+                EnableDisableFuture(true);
+                backgroundWorker_ParsingFutures.RunWorkerAsync();
+            }
         }
 
         private void button_ParseFuture_Click(object sender, EventArgs e)
