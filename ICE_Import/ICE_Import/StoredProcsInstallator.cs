@@ -7,7 +7,7 @@ namespace ICE_Import
 {
     static class StoredProcsInstallator
     {
-        static bool IsSPInstalled;
+        static bool[] isSPInstalled = new bool[2];  // 0 - non-test SPs, 1 - test SPs
         const string storedProcsDir = "StoredProcs";
         const string storedProcFileExt = ".sql";
         const string testTablesPrefix = "test_";
@@ -21,7 +21,9 @@ namespace ICE_Import
             bool isTestTables,
             CancellationToken ct)
         {
-            if (IsSPInstalled)
+            int spBunchIdx = isTestTables ? 1 : 0;
+
+            if (isSPInstalled[spBunchIdx])
             {
                 AsyncTaskListener.LogMessage("Stored procedures were installed before");
                 return true;
@@ -62,7 +64,7 @@ namespace ICE_Import
                     try
                     {
                         createProcCommand.ExecuteNonQuery();
-                        IsSPInstalled = true;
+                        isSPInstalled[spBunchIdx] = true;
                     }
                     catch (SqlException ex)
                     {
@@ -81,7 +83,7 @@ namespace ICE_Import
                             {
                                 AsyncTaskListener.LogMessage(exc.Message);
                                 AsyncTaskListener.LogMessage("    " + fileName + " - FAILED");
-                                IsSPInstalled = false;
+                                isSPInstalled[spBunchIdx] = false;
                                 return false;
                             }
                         }

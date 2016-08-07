@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ICE_Import
 {
@@ -12,7 +8,6 @@ namespace ICE_Import
 
         public class ICEConfiguration
         {
-            public RiskFreeInterestRate[] RiskFreeInterestRates;
             public int? NormalizeConstant;
             public long? IdInstrument;
             public string CQGSymbol;
@@ -22,11 +17,5 @@ namespace ICE_Import
             public string TMLDB_Description;
             public string[] Regular_Options;
         }
-    }
-
-    public class RiskFreeInterestRate
-    {
-        public DateTime Date;
-        public double Risk;
     }
 }

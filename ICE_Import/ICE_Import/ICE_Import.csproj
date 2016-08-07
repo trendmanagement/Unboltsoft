@@ -147,15 +147,27 @@
       <LastGenOutput>DataClassesTMLDB.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
-    <None Include="JSON\Cocoa%284 params%29.json" />
-    <None Include="JSON\Cocoa%285 params%29.json" />
-    <None Include="JSON\Cocoa%289 params%29.json" />
+    <None Include="JSON\Cocoa%284 params%29.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="JSON\Cocoa%285 params%29.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="JSON\Cocoa%288 params%29.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="JSON\Cocoa.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="JSON\Coffee%289 params%29.json" />
-    <None Include="JSON\Cotton%289 params%29.json" />
-    <None Include="JSON\Sugar%289 params%29.json" />
+    <None Include="JSON\Coffee%288 params%29.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="JSON\Cotton%288 params%29.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="JSON\Sugar%288 params%29.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

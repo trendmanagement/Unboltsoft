@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -8,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace ICE_Import
 {
@@ -487,17 +487,6 @@ namespace ICE_Import
             ParsedData.NormalizeConst = ParsedData.JsonConfig.ICE_Configuration.NormalizeConstant;
             IdInstrument = ParsedData.JsonConfig.ICE_Configuration.IdInstrument;
             ParsedData.OptionTickSize = ParsedData.JsonConfig.ICE_Configuration.OptionTickSize;
-            if(ParsedData.JsonConfig.ICE_Configuration.RiskFreeInterestRates != null)
-            {
-                foreach (var item in ParsedData.JsonConfig.ICE_Configuration.RiskFreeInterestRates)
-                {
-                    RiskFreeInterestRates.Add( new tbloptioninputdata
-                    {
-                       optioninputdatetime = item.Date,
-                       optioninputclose = item.Risk
-                    });
-                }
-            }
 
             if (TickSize != null)
             {
