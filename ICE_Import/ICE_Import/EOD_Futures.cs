@@ -8,7 +8,7 @@ namespace ICE_Import
 {
     [IgnoreFirst]
     [DelimitedRecord(",")]
-    class EOD_Futures
+    class EOD_Futures_CSV
     {
         [FieldConverter(typeof(DateTimeConverter), "dd-MMM-yyyy")]
         public DateTime Date;
@@ -81,5 +81,28 @@ namespace ICE_Import
         [FieldOptional]
         [FieldConverter(typeof(Int64Converter))]
         public long? OpenInterestChange;
+    }
+
+    /// <summary>
+    /// A reduced version of the class EOD_Futures_CSV that contains only the data we actually use
+    /// </summary>
+    class EOD_Futures
+    {
+        public DateTime Date;
+        public string ProductName;
+        public DateTime StripName;
+        public double? SettlementPrice;
+        public ulong? Volume;
+        public ulong? OpenInterest;
+
+        public EOD_Futures(EOD_Futures_CSV csvRow)
+        {
+            Date            = csvRow.Date;
+            ProductName     = csvRow.ProductName;
+            StripName       = csvRow.StripName;
+            SettlementPrice = csvRow.SettlementPrice;
+            Volume          = csvRow.Volume;
+            OpenInterest    = csvRow.OpenInterest;
+        }
     }
 }

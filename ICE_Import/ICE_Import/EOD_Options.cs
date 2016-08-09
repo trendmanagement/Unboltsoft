@@ -8,7 +8,7 @@ namespace ICE_Import
 {
     [IgnoreFirst]
     [DelimitedRecord(",")]
-    class EOD_Options
+    class EOD_Options_CSV
     {
         [FieldConverter(typeof(DateTimeConverter), "dd-MMM-yyyy")]
         public DateTime Date;
@@ -98,5 +98,28 @@ namespace ICE_Import
         [FieldOptional]
         [FieldConverter(typeof(Int64Converter))]
         public long? OpenInterestChange;
+    }
+
+    /// <summary>
+    /// A reduced version of the class EOD_Options_CSV that contains only the data we actually use
+    /// </summary>
+    class EOD_Options
+    {
+        public DateTime Date;
+        public char OptionType;
+        public decimal? StrikePrice;
+        public string ProductName;
+        public DateTime StripName;
+        public double? SettlementPrice;
+
+        public EOD_Options(EOD_Options_CSV csvRow)
+        {
+            Date            = csvRow.Date;
+            OptionType      = csvRow.OptionType;
+            StrikePrice     = csvRow.StrikePrice;
+            ProductName     = csvRow.ProductName;
+            StripName       = csvRow.StripName;
+            SettlementPrice = csvRow.SettlementPrice;
+        }
     }
 }

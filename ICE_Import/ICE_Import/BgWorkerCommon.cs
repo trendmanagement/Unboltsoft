@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using FileHelpers;
-using System;
 
 namespace ICE_Import
 {
@@ -22,15 +24,14 @@ namespace ICE_Import
             progressBar.Value = fileIdx;
         }
 
-        public static List<T> Parse<T>(
+        public static List<T2> Parse<T1, T2>(
             BackgroundWorker worker,
             string[] filePaths)
-            where T : class
+            where T1 : class
         {
             worker.ReportProgress(0);
 
-            var engine = new FileHelperEngine<T>();
-            var records = new List<T>();
+            var records = new List<T2>();
 
             for (int i = 0; i < filePaths.Length; i++)
             {
@@ -39,11 +40,18 @@ namespace ICE_Import
                     return null;
                 }
 
-                T[] newRecords;
                 try
                 {
-                    newRecords = engine.ReadFile(filePaths[i]);
-                    records.AddRange(newRecords);
+                    using (TextReader textReader = new StreamReader(filePaths[i]))
+                    {
+                        var engine = new FileHelperAsyncEngine<T1>();
+                        using (engine.BeginReadStream(textReader))
+                        {
+                            IEnumerable<T1> csvRows = engine.AsEnumerable<T1>();
+                            IEnumerable<T2> filteredRows = FilterRows((dynamic)csvRows);
+                            records.AddRange(filteredRows);
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -57,6 +65,16 @@ namespace ICE_Import
             }
 
             return records;
+        }
+
+        private static IEnumerable<EOD_Futures> FilterRows(IEnumerable<EOD_Futures_CSV> csvRows)
+        {
+            return csvRows.Select(item => new EOD_Futures(item));
+        }
+
+        private static IEnumerable<EOD_Options> FilterRows(IEnumerable<EOD_Options_CSV> csvRows)
+        {
+            return csvRows.Select(item => new EOD_Options(item));
         }
 
         public delegate void EnableDisableDelegate(bool start);

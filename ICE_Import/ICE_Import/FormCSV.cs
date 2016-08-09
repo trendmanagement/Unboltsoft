@@ -169,7 +169,6 @@ namespace ICE_Import
             {
                 dialog.Filter = "Data file|*.json";
                 dialog.Title = "Select data file(s)";
-                dialog.Multiselect = true;
                 DialogResult result = dialog.ShowDialog();
                 if (result == DialogResult.OK)
                 {
