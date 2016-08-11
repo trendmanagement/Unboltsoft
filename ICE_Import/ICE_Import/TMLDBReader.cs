@@ -18,14 +18,14 @@ namespace ICE_Import
             this.IdInstrAndStripNameToExpDate = new Dictionary<Tuple<long, DateTime>, DateTime>();
         }
 
-        public bool GetThreeParams(string productName, ref long? idInstrument, ref string cqgSymbol, ref double? tickSize)
+        public bool GetThreeParams(string description, ref long? idInstrument, ref string cqgSymbol, ref double? tickSize)
         {
             AsyncTaskListener.LogMessage("Reading ID Instrument, CQG Symbol and Tick Size from TMLDB...");
 
             tblinstrument record;
             try
             {
-                record = Context.tblinstruments.Where(item => item.description == productName).First();
+                record = Context.tblinstruments.Where(item => item.description == description).First();
             }
             catch (InvalidOperationException)
             {

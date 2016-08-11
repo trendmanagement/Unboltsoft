@@ -10,7 +10,11 @@ namespace ICE_Import
         {
             var worker = (BackgroundWorker)sender;
 
-            ParsedData.OptionRecords = BgWorkerCommon.Parse<EOD_Option_CSV, EOD_Option>(worker, OptionFilePaths);
+            BgWorkerCommon.Parse<EOD_Option_CSV, EOD_Option>(
+                worker,
+                OptionFilePaths,
+                out ParsedData.OptionProductName,
+                out ParsedData.OptionRecords);
 
             e.Result = worker.CancellationPending;
         }
@@ -26,7 +30,6 @@ namespace ICE_Import
                 e,
                 "options",
                 ref ParsedData.OptionRecords,
-                ParsedData.OptionRecords.Select(item => item.ProductName),
                 this,
                 label_ParsedOption,
                 progressBar_ParsingOption,

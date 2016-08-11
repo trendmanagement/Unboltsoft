@@ -108,7 +108,6 @@ namespace ICE_Import
         public DateTime Date;
         public char OptionType;
         public decimal? StrikePrice;
-        public string ProductName;
         public DateTime StripName;
         public double? SettlementPrice;
 
@@ -117,7 +116,6 @@ namespace ICE_Import
             Date            = csvRow.Date;
             OptionType      = csvRow.OptionType;
             StrikePrice     = csvRow.StrikePrice;
-            ProductName     = csvRow.ProductName;
             StripName       = csvRow.StripName;
             SettlementPrice = csvRow.SettlementPrice;
         }

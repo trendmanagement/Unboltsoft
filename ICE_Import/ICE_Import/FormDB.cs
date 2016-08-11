@@ -207,12 +207,13 @@ namespace ICE_Import
             bool areThreeParamsFound = false;
             if (IdInstrument == null || CqgSymbol == null || TickSize == null)
             {
-                areThreeParamsFound = await Task.Run(() => 
+                areThreeParamsFound = await Task.Run(
+                    () => 
                     TMLDBReader.GetThreeParams(
-                                                ParsedData.ProductName,
-                                                ref IdInstrument,
-                                                ref CqgSymbol,
-                                                ref TickSize));
+                        ParsedData.Description,
+                        ref IdInstrument,
+                        ref CqgSymbol,
+                        ref TickSize));
             }
             else
             {
@@ -587,12 +588,12 @@ namespace ICE_Import
         {
             ParsedData.JsonConfig.ICE_Configuration.NormalizeConstant = normalizeConst;
             string json = JsonConvert.SerializeObject(ParsedData.JsonConfig);
-            if (File.Exists(ParsedData.jsonPath))
+            if (File.Exists(ParsedData.JsonPath))
             {
-                File.Delete(ParsedData.jsonPath);
+                File.Delete(ParsedData.JsonPath);
             }
 
-            using (FileStream fs = File.Create(ParsedData.jsonPath))
+            using (FileStream fs = File.Create(ParsedData.JsonPath))
             {
                 byte[] info = new UTF8Encoding(true).GetBytes(json);
                 fs.Write(info, 0, info.Length);

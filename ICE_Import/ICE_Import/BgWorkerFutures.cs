@@ -10,7 +10,11 @@ namespace ICE_Import
         {
             var worker = (BackgroundWorker)sender;
 
-            ParsedData.FutureRecords = BgWorkerCommon.Parse<EOD_Future_CSV, EOD_Future>(worker, FutureFilePaths);
+            BgWorkerCommon.Parse<EOD_Future_CSV, EOD_Future>(
+                worker,
+                FutureFilePaths,
+                out ParsedData.FutureProductName,
+                out ParsedData.FutureRecords);
 
             e.Result = worker.CancellationPending;
         }
@@ -26,7 +30,6 @@ namespace ICE_Import
                 e,
                 "futures",
                 ref ParsedData.FutureRecords,
-                ParsedData.FutureRecords.Select(item => item.ProductName),
                 this,
                 label_ParsedFuture,
                 progressBar_ParsingFuture,

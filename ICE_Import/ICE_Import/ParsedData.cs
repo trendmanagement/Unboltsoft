@@ -16,15 +16,16 @@ namespace ICE_Import
         public static List<EOD_Option> OptionRecords;
         public static List<EOD_Option_Selected> OptionsRecordsSelected;
         public static bool FuturesOnly;
-        public static string JsonString;
+        public static string FutureProductName;
+        public static string OptionProductName;
+
+        public static string JsonPath;
         public static JsonConfig JsonConfig;
+        public static string Description;
         public static int? NormalizeConst;
         public static double? OptionTickSize;
-        public static string jsonPath;
 
         private static bool IsConform;
-
-        public static string ProductName;
 
         public static bool IsParsed
         {
@@ -66,9 +67,9 @@ namespace ICE_Import
             }
 
 
-            if (!FuturesOnly) ProductName = JsonConfig.ICE_Configuration.TMLDB_Description;
+            if (!FuturesOnly) Description = JsonConfig.ICE_Configuration.TMLDB_Description;
 
-            if (FuturesOnly || ConformityCheck() && !string.IsNullOrEmpty(ProductName))
+            if (FuturesOnly || ConformityCheck() && !string.IsNullOrEmpty(Description))
             {
                 Program.csvf.Hide();
                 Program.dbf.Show();
@@ -87,11 +88,13 @@ namespace ICE_Import
         {
             List<DateTime> jsonConfigDates = ParsedData.ParseRegularOptions();
 
-            string formText = "ICE Import (DB Form)";
+            string formText = "ICE Import (CSV Form)";
 
             if (FutureRecords.Count != 0 && OptionRecords.Count != 0)
             {
-                IsConform = ProductName != null;
+                string futureProductName = ParsedData.FutureProductName.Replace(" Futures", string.Empty);
+                string optionProductName = ParsedData.OptionProductName.Replace(" Options", string.Empty);
+                IsConform = (futureProductName == optionProductName);
                 if (!IsConform)
                 {
                     MessageBox.Show(

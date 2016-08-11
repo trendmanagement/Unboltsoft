@@ -174,8 +174,8 @@ namespace ICE_Import
                 {
                     try
                     {
-                        ParsedData.JsonString = File.ReadAllText(dialog.FileName);
-                        ParsedData.JsonConfig = JsonConvert.DeserializeObject<JsonConfig>(ParsedData.JsonString);
+                        string text = File.ReadAllText(dialog.FileName);
+                        ParsedData.JsonConfig = JsonConvert.DeserializeObject<JsonConfig>(text);
                     }
                     catch(Exception ex)
                     {
@@ -186,7 +186,7 @@ namespace ICE_Import
                             result = DialogResult.No;
                     }
                 }
-                ParsedData.jsonPath = dialog.FileName;
+                ParsedData.JsonPath = dialog.FileName;
                 labelJson.Text = (ParsedData.JsonConfig == null) ? string.Empty : dialog.SafeFileName;
                 ParsedData.OnParseComplete();
             }

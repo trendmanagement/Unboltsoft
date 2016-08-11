@@ -89,7 +89,6 @@ namespace ICE_Import
     class EOD_Future
     {
         public DateTime Date;
-        public string ProductName;
         public DateTime StripName;
         public double? SettlementPrice;
         public ulong? Volume;
@@ -98,7 +97,6 @@ namespace ICE_Import
         public EOD_Future(EOD_Future_CSV csvRow)
         {
             Date            = csvRow.Date;
-            ProductName     = csvRow.ProductName;
             StripName       = csvRow.StripName;
             SettlementPrice = csvRow.SettlementPrice;
             Volume          = csvRow.Volume;
