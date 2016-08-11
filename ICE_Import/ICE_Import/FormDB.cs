@@ -221,7 +221,7 @@ namespace ICE_Import
 
 
             bool isRiskFound = false;
-            if(RiskFreeInterestRates.Count == 0)
+            if (RiskFreeInterestRates.Count == 0)
             {
                 isRiskFound = await Task.Run(() => 
                     TMLDBReader.GetRisk(ref RiskFreeInterestRates));
@@ -490,7 +490,7 @@ namespace ICE_Import
 
             if (TickSize != null)
             {
-                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for TickSize", TickSize.ToString());
+                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for TickSize", TickSize.ToString());
             }
 
             if (OptionStrikeIncrement == null)
@@ -500,7 +500,7 @@ namespace ICE_Import
             }
             else
             {
-                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for OptionStrikeIncrement", OptionStrikeIncrement.ToString());
+                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for OptionStrikeIncrement", OptionStrikeIncrement.ToString());
             }
 
             if (OptionStrikeDisplay == null)
@@ -510,12 +510,12 @@ namespace ICE_Import
             }
             else
             {
-                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for OptionStrikeDisplay", OptionStrikeDisplay.ToString());
+                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for OptionStrikeDisplay", OptionStrikeDisplay.ToString());
             }
 
             if (CqgSymbol != null)
             {
-                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for CqgSymbol", CqgSymbol);
+                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for CqgSymbol", CqgSymbol);
             }
 
             if (ParsedData.NormalizeConst == null)
@@ -527,24 +527,24 @@ namespace ICE_Import
             else
             {
                 ValidateNormalizeConst(ParsedData.OptionRecords.Select(item => item.StrikePrice), (int)ParsedData.NormalizeConst);
-                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for NormalizeConst", ParsedData.NormalizeConst.ToString());
+                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for NormalizeConst", ParsedData.NormalizeConst.ToString());
             }
 
             if (IdInstrument != null)
             {
-                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for IdInstrument", IdInstrument.ToString());
+                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for IdInstrument", IdInstrument.ToString());
             }
 
             if (RiskFreeInterestRates.Count != 0)
             {
-                AsyncTaskListener.LogMessageFormat("Used parsed json value: {0} for RiskFreeInterestRates", RiskFreeInterestRates.Count.ToString());
+                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for RiskFreeInterestRates", RiskFreeInterestRates.Count.ToString());
             }
         }
 
         private void ValidateNormalizeConst(IEnumerable<decimal?> prices, int normConstant)
         {
             HashSet<int> pows = new HashSet<int>();
-            foreach(var price in prices)
+            foreach (var price in prices)
             {
                 var item = price;
                 if (price.ToString().Contains("."))
@@ -576,7 +576,7 @@ namespace ICE_Import
                 pows.Add(BitConverter.GetBytes(decimal.GetBits((decimal)item)[3])[2]);
             }
             int pow = pows.Max();
-            if(Math.Log10(normConstant) != pow)
+            if (Math.Log10(normConstant) != pow)
             {
                 ParsedData.NormalizeConst = (int)Math.Pow(10, pow);
                 SetNormalConstToJSON((int)ParsedData.NormalizeConst);

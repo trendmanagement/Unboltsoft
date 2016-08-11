@@ -8,7 +8,7 @@ namespace ICE_Import
 {
     [IgnoreFirst]
     [DelimitedRecord(",")]
-    class EOD_Futures_CSV
+    class EOD_Future_CSV
     {
         [FieldConverter(typeof(DateTimeConverter), "dd-MMM-yyyy")]
         public DateTime Date;
@@ -86,7 +86,7 @@ namespace ICE_Import
     /// <summary>
     /// A reduced version of the class EOD_Futures_CSV that contains only the data we actually use
     /// </summary>
-    class EOD_Futures
+    class EOD_Future
     {
         public DateTime Date;
         public string ProductName;
@@ -95,7 +95,7 @@ namespace ICE_Import
         public ulong? Volume;
         public ulong? OpenInterest;
 
-        public EOD_Futures(EOD_Futures_CSV csvRow)
+        public EOD_Future(EOD_Future_CSV csvRow)
         {
             Date            = csvRow.Date;
             ProductName     = csvRow.ProductName;

@@ -29,7 +29,7 @@ namespace ICE_Import
 
         public static double ConvertToDouble(double barValue)
         {
-            if(barValue > 1)
+            if (barValue > 1)
             {
                 int factor = NormalizeLg(barValue);
                 double normalizePriseConst = Math.Pow(10, factor);
@@ -45,7 +45,7 @@ namespace ICE_Import
         {
             double lg = Math.Log10(price);
             int normalize = (int)Math.Ceiling(lg);
-            if(normalize/lg == 1)
+            if (normalize/lg == 1)
             {
                 return normalize;
             }

@@ -65,7 +65,7 @@ class Manager {
             files.Reverse();
             if (!footer.IncludeInDefault)
                 template.Remove(footer.Start, footer.Length);
-            foreach(Block block in files) {
+            foreach (Block block in files) {
                 String fileName = Path.Combine(outputPath, block.Name);
                 String content = headerText + template.ToString(block.Start, block.Length) + footerText;
                 generatedFileNames.Add(fileName);
@@ -167,7 +167,7 @@ class Manager {
                     pair.Value.Delete();
 
             // Add missing files to the project
-            foreach(String fileName in keepFileNameSet)
+            foreach (String fileName in keepFileNameSet)
                 if (!projectFiles.ContainsKey(fileName))
                     templateProjectItem.ProjectItems.AddFromFile(fileName);
         }

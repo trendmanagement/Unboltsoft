@@ -67,14 +67,14 @@ namespace ICE_Import
             return records;
         }
 
-        private static IEnumerable<EOD_Futures> FilterRows(IEnumerable<EOD_Futures_CSV> csvRows)
+        private static IEnumerable<EOD_Future> FilterRows(IEnumerable<EOD_Future_CSV> csvRows)
         {
-            return csvRows.Select(item => new EOD_Futures(item));
+            return csvRows.Select(item => new EOD_Future(item));
         }
 
-        private static IEnumerable<EOD_Options> FilterRows(IEnumerable<EOD_Options_CSV> csvRows)
+        private static IEnumerable<EOD_Option> FilterRows(IEnumerable<EOD_Option_CSV> csvRows)
         {
-            return csvRows.Select(item => new EOD_Options(item));
+            return csvRows.Select(item => new EOD_Option(item));
         }
 
         public delegate void EnableDisableDelegate(bool start);

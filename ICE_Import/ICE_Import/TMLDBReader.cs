@@ -46,7 +46,7 @@ namespace ICE_Import
                 idInstrument = record.idinstrument;
             }
 
-            if(cqgSymbol == null)
+            if (cqgSymbol == null)
             {
                 cqgSymbol = record.cqgsymbol;
             }

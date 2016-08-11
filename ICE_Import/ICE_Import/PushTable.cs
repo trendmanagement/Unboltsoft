@@ -77,7 +77,7 @@ namespace ICE_Import
             tblDailyContract.Columns.Add("volume", typeof(double));
             tblDailyContract.Columns.Add("openinterest", typeof(double));
 
-            foreach (EOD_Futures future in ParsedData.FutureRecords)
+            foreach (EOD_Future future in ParsedData.FutureRecords)
             {
                 if (ct.IsCancellationRequested)
                 {
@@ -183,14 +183,14 @@ namespace ICE_Import
 
                 try
                 {
-                    char monthChar = Utilities.MonthToMonthCode(option.EOD_Option.StripName.Month);
+                    char monthChar = Utilities.MonthToMonthCode(option.Option.StripName.Month);
 
                     string optionName = Utilities.GenerateOptionCQGSymbolFromSpan(
-                        option.EOD_Option.OptionType,
+                        option.Option.OptionType,
                         CqgSymbol,
                         monthChar,
-                        option.EOD_Option.StripName.Year,
-                        (double)option.EOD_Option.StrikePrice.GetValueOrDefault() * (double)ParsedData.NormalizeConst);
+                        option.Option.StripName.Year,
+                        (double)option.Option.StrikePrice.GetValueOrDefault() * (double)ParsedData.NormalizeConst);
 
                     newOption = !OptionNameHashSet.Contains(optionName);
 
@@ -199,18 +199,18 @@ namespace ICE_Import
                         DateTime expirationDate = TMLDBReader.GetExpirationDate(
                             "option",
                             (long)IdInstrument,
-                            option.EOD_Option.StripName,
+                            option.Option.StripName,
                             ref log);
 
                         tblOptions.Rows.Add(
-                            option.DateNameForFuture.Month,
-                            option.DateNameForFuture.Year,
+                            option.FutureStripName.Month,
+                            option.FutureStripName.Year,
                             optionName,
                             monthChar,
-                            option.EOD_Option.StripName.Month,
-                            option.EOD_Option.StripName.Year,
-                            option.EOD_Option.StrikePrice.GetValueOrDefault(),
-                            option.EOD_Option.OptionType,
+                            option.Option.StripName.Month,
+                            option.Option.StripName.Year,
+                            option.Option.StrikePrice.GetValueOrDefault(),
+                            option.Option.OptionType,
                             IdInstrument,
                             expirationDate,
                             optionName);
@@ -231,7 +231,7 @@ namespace ICE_Import
 
                     try
                     {
-                        riskFreeInterestRate = RiskFreeInterestRates.Find(item => item.optioninputdatetime == option.EOD_Option.Date).optioninputclose;
+                        riskFreeInterestRate = RiskFreeInterestRates.Find(item => item.optioninputdatetime == option.Option.Date).optioninputclose;
                         if (oldRFI != double.NaN)
                         {
                             oldRFI = riskFreeInterestRate;
@@ -256,12 +256,12 @@ namespace ICE_Import
                     if (riskFreeInterestRate != double.NaN)
                     {
                         double impliedvol = OptionCalcs.CalculateOptionVolatilityNR(
-                        option.EOD_Option.OptionType,
+                        option.Option.OptionType,
                         1.56,
-                        Utilities.NormalizePrice(option.EOD_Option.StrikePrice),
+                        Utilities.NormalizePrice(option.Option.StrikePrice),
                         0.5,
                         riskFreeInterestRate,
-                        Utilities.NormalizePrice(option.EOD_Option.SettlementPrice),
+                        Utilities.NormalizePrice(option.Option.SettlementPrice),
                         (double)TickSize);
 
                         if (object.ReferenceEquals(impliedvol, null) || double.IsNaN(impliedvol) || double.IsInfinity(impliedvol))
@@ -271,17 +271,17 @@ namespace ICE_Import
 
                         #endregion
 
-                        double futureYear = option.EOD_Option.StripName.Year + option.EOD_Option.StripName.Month / 12.0;
-                        double expirateYear = option.EOD_Option.Date.Year + option.EOD_Option.Date.Month / 12.0;
+                        double futureYear = option.Option.StripName.Year + option.Option.StripName.Month / 12.0;
+                        double expirateYear = option.Option.Date.Year + option.Option.Date.Month / 12.0;
 
                         tblOptionDatas.Rows.Add(
                             optionName,
-                            option.EOD_Option.Date,
-                            option.EOD_Option.SettlementPrice.GetValueOrDefault(),
+                            option.Option.Date,
+                            option.Option.SettlementPrice.GetValueOrDefault(),
                             impliedvol,
                             futureYear - expirateYear);
 
-                        OptionDataList.Add(Tuple.Create(optionName, option.EOD_Option.Date, option.EOD_Option.SettlementPrice.GetValueOrDefault()));
+                        OptionDataList.Add(Tuple.Create(optionName, option.Option.Date, option.Option.SettlementPrice.GetValueOrDefault()));
                     }
                     else
                     {
