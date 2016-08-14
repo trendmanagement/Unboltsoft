@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json;
 
 namespace ICE_Import
 {
@@ -33,12 +30,10 @@ namespace ICE_Import
         TMLDBReader TMLDBReader;
 
         #region Input parameters
-        long? IdInstrument = -1;
+        long? IdInstrument;
         string CqgSymbol;
+        double? TickSize;
         List<tbloptioninputdata> RiskFreeInterestRates = new List<tbloptioninputdata>();
-        double? TickSize = double.NaN;
-        public double? OptionStrikeIncrement = double.NaN;
-        public double? OptionStrikeDisplay = double.NaN;
         #endregion
 
         HashSet<DateTime> StripNameHashSet;
@@ -170,8 +165,12 @@ namespace ICE_Import
                     "EOD_Options",
                     ParsedData.OptionRecords.Count);
                 LogMessage(msg);
+
+                // Choose StrikePriceToCQGSymbolFactor value
+                ParsedData.StrikePriceToCQGSymbolFactor = GetStrikePriceToCQGSymbolFactor(
+                    ParsedData.OptionRecords.Select(item => item.StrikePrice));
+                AsyncTaskListener.LogMessageFormat("Chosen StrikePriceToCQGSymbolFactor value: {0}", ParsedData.StrikePriceToCQGSymbolFactor);
             }
-            CheckInputParameters();
             buttonPush.Enabled = true;
         }
 
@@ -210,7 +209,7 @@ namespace ICE_Import
                 areThreeParamsFound = await Task.Run(
                     () => 
                     TMLDBReader.GetThreeParams(
-                        ParsedData.Description,
+                        ParsedData.JsonConfig.TMLDB_Description,
                         ref IdInstrument,
                         ref CqgSymbol,
                         ref TickSize));
@@ -479,125 +478,25 @@ namespace ICE_Import
             DropTempTables();
         }
 
-        private void CheckInputParameters()
+        /// <summary>
+        /// Choose the factor for strike price used in CQG symbol (e.g. 1, 10, 100 etc.)
+        /// </summary>
+        private int GetStrikePriceToCQGSymbolFactor(IEnumerable<decimal?> strikePrices)
         {
-            TickSize = ParsedData.JsonConfig.ICE_Configuration.OptionTickSize;
-            OptionStrikeIncrement = ParsedData.JsonConfig.ICE_Configuration.OptionStrikeIncrement;
-            OptionStrikeDisplay = ParsedData.JsonConfig.ICE_Configuration.OptionStrikeDisplay;
-            CqgSymbol = ParsedData.JsonConfig.ICE_Configuration.CQGSymbol;
-            ParsedData.NormalizeConst = ParsedData.JsonConfig.ICE_Configuration.NormalizeConstant;
-            IdInstrument = ParsedData.JsonConfig.ICE_Configuration.IdInstrument;
-            ParsedData.OptionTickSize = ParsedData.JsonConfig.ICE_Configuration.OptionTickSize;
+            int maxPow = int.MinValue;
 
-            if (TickSize != null)
+            foreach (decimal? strikePrice in strikePrices)
             {
-                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for TickSize", TickSize.ToString());
-            }
-
-            if (OptionStrikeIncrement == null)
-            {
-                OptionStrikeIncrement = 0;
-                AsyncTaskListener.LogMessageFormat("Used default value: {0} for OptionStrikeIncrement", OptionStrikeIncrement.ToString());
-            }
-            else
-            {
-                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for OptionStrikeIncrement", OptionStrikeIncrement.ToString());
-            }
-
-            if (OptionStrikeDisplay == null)
-            {
-                OptionStrikeDisplay = 0;
-                AsyncTaskListener.LogMessageFormat("Used default value: {0} for OptionStrikeDisplay", OptionStrikeDisplay.ToString());
-            }
-            else
-            {
-                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for OptionStrikeDisplay", OptionStrikeDisplay.ToString());
-            }
-
-            if (CqgSymbol != null)
-            {
-                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for CqgSymbol", CqgSymbol);
-            }
-
-            if (ParsedData.NormalizeConst == null)
-            {
-                ParsedData.NormalizeConst = 1000;
-                ValidateNormalizeConst(ParsedData.OptionRecords.Select(item => item.StrikePrice), (int)ParsedData.NormalizeConst);
-                AsyncTaskListener.LogMessageFormat("Used default value: {0} for NormalizeConst", ParsedData.NormalizeConst.ToString());
-            }
-            else
-            {
-                ValidateNormalizeConst(ParsedData.OptionRecords.Select(item => item.StrikePrice), (int)ParsedData.NormalizeConst);
-                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for NormalizeConst", ParsedData.NormalizeConst.ToString());
-            }
-
-            if (IdInstrument != null)
-            {
-                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for IdInstrument", IdInstrument.ToString());
-            }
-
-            if (RiskFreeInterestRates.Count != 0)
-            {
-                AsyncTaskListener.LogMessageFormat("Used parsed JSON value: {0} for RiskFreeInterestRates", RiskFreeInterestRates.Count.ToString());
-            }
-        }
-
-        private void ValidateNormalizeConst(IEnumerable<decimal?> prices, int normConstant)
-        {
-            HashSet<int> pows = new HashSet<int>();
-            foreach (var price in prices)
-            {
-                var item = price;
-                if (price.ToString().Contains("."))
+                int[] bits = decimal.GetBits(strikePrice.GetValueOrDefault());
+                byte[] bytes = BitConverter.GetBytes(bits[3]);
+                int pow = bytes[2];
+                if (pow > maxPow)
                 {
-                    var chars = price.ToString().ToList<char>();
-                    for (int i = chars.Count - 1; i >= 0; i--)
-                    {
-                        if (chars[i] == '0')
-                        {
-                            chars.RemoveAt(i);
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    if (chars[chars.Count -1] == '.')
-                    {
-                        chars.RemoveAt(chars.Count - 1);
-                    }
-                    string str = string.Empty;
-                    foreach (char ch in chars)
-                    {
-                        str += ch;
-                    }
-                    item = Convert.ToDecimal(str);
+                    maxPow = pow;
                 }
-
-                pows.Add(BitConverter.GetBytes(decimal.GetBits((decimal)item)[3])[2]);
-            }
-            int pow = pows.Max();
-            if (Math.Log10(normConstant) != pow)
-            {
-                ParsedData.NormalizeConst = (int)Math.Pow(10, pow);
-                SetNormalConstToJSON((int)ParsedData.NormalizeConst);
-            }
-        }
-
-        private void SetNormalConstToJSON(int normalizeConst)
-        {
-            ParsedData.JsonConfig.ICE_Configuration.NormalizeConstant = normalizeConst;
-            string json = JsonConvert.SerializeObject(ParsedData.JsonConfig);
-            if (File.Exists(ParsedData.JsonPath))
-            {
-                File.Delete(ParsedData.JsonPath);
             }
 
-            using (FileStream fs = File.Create(ParsedData.JsonPath))
-            {
-                byte[] info = new UTF8Encoding(true).GetBytes(json);
-                fs.Write(info, 0, info.Length);
-            }
+            return (int)Math.Pow(10, maxPow);
         }
     }
 }

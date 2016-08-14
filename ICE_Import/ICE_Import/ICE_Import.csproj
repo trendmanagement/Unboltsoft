@@ -100,7 +100,6 @@
     <Compile Include="BgWorkerOptions.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConversionAndFormatting.cs" />
     <Compile Include="Converters.cs" />
     <Compile Include="FormDB.cs">
       <SubType>Form</SubType>
@@ -147,25 +146,16 @@
       <LastGenOutput>DataClassesTMLDB.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
-    <None Include="JSON\Cocoa%284 params%29.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="JSON\Cocoa%285 params%29.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="JSON\Cocoa%288 params%29.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="JSON\Cocoa.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="JSON\Coffee%288 params%29.json">
+    <None Include="JSON\Coffee.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="JSON\Cotton%288 params%29.json">
+    <None Include="JSON\Cotton.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="JSON\Sugar%288 params%29.json">
+    <None Include="JSON\Sugar.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

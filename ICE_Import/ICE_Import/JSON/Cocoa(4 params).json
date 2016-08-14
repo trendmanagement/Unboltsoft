@@ -1,8 +1,0 @@
-{
-    "ICE_Configuration": {
-        "optionstrikeincrement_test": 0,
-        "optionstrikedisplay": 0,
-        "TMLDB_Description": "Cocoa",
-        "Regular_Options": [ "Mar", "May", "Jul", "Sep", "Dec" ]
-    }
-}

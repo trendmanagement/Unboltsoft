@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -13,6 +14,9 @@ namespace ICE_Import
             BgWorkerCommon.Parse<EOD_Future_CSV, EOD_Future>(
                 worker,
                 FutureFilePaths,
+                "Futures",
+                FilterRowAndGetProductName,
+                FilterRows,
                 out ParsedData.FutureProductName,
                 out ParsedData.FutureRecords);
 
@@ -28,13 +32,24 @@ namespace ICE_Import
         {
             BgWorkerCommon.RunWorkerCompleted(
                 e,
-                "futures",
+                "Futures",
                 ref ParsedData.FutureRecords,
                 this,
                 label_ParsedFuture,
                 progressBar_ParsingFuture,
                 EnableDisableFuture,
                 FutureFilePaths.Length);
+        }
+
+        static EOD_Future FilterRowAndGetProductName(EOD_Future_CSV csvRow, out string productName)
+        {
+            productName = csvRow.ProductName;
+            return new EOD_Future(csvRow);
+        }
+
+        static IEnumerable<EOD_Future> FilterRows(IEnumerable<EOD_Future_CSV> csvRows)
+        {
+            return csvRows.Select(item => new EOD_Future(item));
         }
     }
 }

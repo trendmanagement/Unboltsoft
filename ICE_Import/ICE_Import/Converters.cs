@@ -23,7 +23,7 @@ namespace ICE_Import
     {
         public override object Parse(string from)
         {
-            return from;
+            return from.Replace("\"\"", "\"");
         }
     }
 
@@ -126,14 +126,27 @@ namespace ICE_Import
 
     class DecimalConverter : TrimmingConverter
     {
-        NumberFormatInfo provider = new NumberFormatInfo();
+        NumberFormatInfo Provider = new NumberFormatInfo();
+        bool TrimTrailingZeros;
+
+        public DecimalConverter(bool trimTrailingZeros)
+        {
+            Provider.NumberDecimalSeparator = ".";
+            this.TrimTrailingZeros = trimTrailingZeros;
+        }
 
         public override object Parse(string from)
         {
-            provider.NumberDecimalSeparator = ".";
+            if (TrimTrailingZeros && from.Contains(Provider.NumberDecimalSeparator))
+            {
+                // Remove trailing zeros from StrikePrice string before conversion to decimal,
+                // so that method GetStrikePriceToCQGSymbolFactor can determine the factor correctly 
+                from = from.TrimEnd('0');
+            }
+
             try
             {
-                return Convert.ToDecimal(from, provider);
+                return Convert.ToDecimal(from, Provider);
             }
             catch (Exception)
             {

@@ -42,8 +42,8 @@
             this.label_InputOption = new System.Windows.Forms.Label();
             this.button_InputOption = new System.Windows.Forms.Button();
             this.checkBoxFuturesOnly = new System.Windows.Forms.CheckBox();
-            this.buttonJson = new System.Windows.Forms.Button();
-            this.labelJson = new System.Windows.Forms.Label();
+            this.button_InputJson = new System.Windows.Forms.Button();
+            this.label_InputJson = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // backgroundWorker_ParsingOptions
@@ -56,7 +56,7 @@
             // 
             // buttonToDB
             // 
-            this.buttonToDB.Location = new System.Drawing.Point(12, 226);
+            this.buttonToDB.Location = new System.Drawing.Point(12, 238);
             this.buttonToDB.Name = "buttonToDB";
             this.buttonToDB.Size = new System.Drawing.Size(115, 23);
             this.buttonToDB.TabIndex = 13;
@@ -70,7 +70,7 @@
             this.button_CancelFuture.Location = new System.Drawing.Point(12, 41);
             this.button_CancelFuture.Name = "button_CancelFuture";
             this.button_CancelFuture.Size = new System.Drawing.Size(115, 23);
-            this.button_CancelFuture.TabIndex = 3;
+            this.button_CancelFuture.TabIndex = 2;
             this.button_CancelFuture.Text = "Cancel";
             this.button_CancelFuture.UseVisualStyleBackColor = true;
             this.button_CancelFuture.Click += new System.EventHandler(this.button_CancelFuture_Click);
@@ -80,7 +80,7 @@
             this.progressBar_ParsingFuture.Location = new System.Drawing.Point(12, 70);
             this.progressBar_ParsingFuture.Name = "progressBar_ParsingFuture";
             this.progressBar_ParsingFuture.Size = new System.Drawing.Size(560, 23);
-            this.progressBar_ParsingFuture.TabIndex = 5;
+            this.progressBar_ParsingFuture.TabIndex = 4;
             // 
             // label_ParsedFuture
             // 
@@ -88,7 +88,7 @@
             this.label_ParsedFuture.Location = new System.Drawing.Point(134, 46);
             this.label_ParsedFuture.Name = "label_ParsedFuture";
             this.label_ParsedFuture.Size = new System.Drawing.Size(0, 13);
-            this.label_ParsedFuture.TabIndex = 4;
+            this.label_ParsedFuture.TabIndex = 3;
             // 
             // label_InputFuture
             // 
@@ -105,7 +105,7 @@
             this.button_InputFuture.Name = "button_InputFuture";
             this.button_InputFuture.Size = new System.Drawing.Size(115, 23);
             this.button_InputFuture.TabIndex = 0;
-            this.button_InputFuture.Text = "Future CSV File(s)";
+            this.button_InputFuture.Text = "Futures CSV File(s)";
             this.button_InputFuture.UseVisualStyleBackColor = true;
             this.button_InputFuture.Click += new System.EventHandler(this.button_InputFuture_Click);
             // 
@@ -123,7 +123,7 @@
             this.button_CancelOption.Location = new System.Drawing.Point(12, 151);
             this.button_CancelOption.Name = "button_CancelOption";
             this.button_CancelOption.Size = new System.Drawing.Size(115, 23);
-            this.button_CancelOption.TabIndex = 10;
+            this.button_CancelOption.TabIndex = 8;
             this.button_CancelOption.Text = "Cancel";
             this.button_CancelOption.UseVisualStyleBackColor = true;
             this.button_CancelOption.Click += new System.EventHandler(this.button_CancelOption_Click);
@@ -133,7 +133,7 @@
             this.progressBar_ParsingOption.Location = new System.Drawing.Point(12, 180);
             this.progressBar_ParsingOption.Name = "progressBar_ParsingOption";
             this.progressBar_ParsingOption.Size = new System.Drawing.Size(560, 23);
-            this.progressBar_ParsingOption.TabIndex = 12;
+            this.progressBar_ParsingOption.TabIndex = 10;
             // 
             // label_ParsedOption
             // 
@@ -141,7 +141,7 @@
             this.label_ParsedOption.Location = new System.Drawing.Point(133, 156);
             this.label_ParsedOption.Name = "label_ParsedOption";
             this.label_ParsedOption.Size = new System.Drawing.Size(0, 13);
-            this.label_ParsedOption.TabIndex = 11;
+            this.label_ParsedOption.TabIndex = 9;
             // 
             // label_InputOption
             // 
@@ -149,7 +149,7 @@
             this.label_InputOption.Location = new System.Drawing.Point(133, 127);
             this.label_InputOption.Name = "label_InputOption";
             this.label_InputOption.Size = new System.Drawing.Size(71, 13);
-            this.label_InputOption.TabIndex = 8;
+            this.label_InputOption.TabIndex = 7;
             this.label_InputOption.Text = "(not selected)";
             // 
             // button_InputOption
@@ -157,8 +157,8 @@
             this.button_InputOption.Location = new System.Drawing.Point(12, 122);
             this.button_InputOption.Name = "button_InputOption";
             this.button_InputOption.Size = new System.Drawing.Size(115, 23);
-            this.button_InputOption.TabIndex = 7;
-            this.button_InputOption.Text = "Option CSV File(s)";
+            this.button_InputOption.TabIndex = 6;
+            this.button_InputOption.Text = "Options CSV File(s)";
             this.button_InputOption.UseVisualStyleBackColor = true;
             this.button_InputOption.Click += new System.EventHandler(this.button_InputOption_Click);
             // 
@@ -168,36 +168,37 @@
             this.checkBoxFuturesOnly.Location = new System.Drawing.Point(12, 99);
             this.checkBoxFuturesOnly.Name = "checkBoxFuturesOnly";
             this.checkBoxFuturesOnly.Size = new System.Drawing.Size(85, 17);
-            this.checkBoxFuturesOnly.TabIndex = 6;
+            this.checkBoxFuturesOnly.TabIndex = 5;
             this.checkBoxFuturesOnly.Text = "Futures Only";
             this.checkBoxFuturesOnly.UseVisualStyleBackColor = true;
             this.checkBoxFuturesOnly.CheckedChanged += new System.EventHandler(this.checkBoxFuturesOnly_CheckedChanged);
             // 
-            // buttonJson
+            // button_InputJson
             // 
-            this.buttonJson.Location = new System.Drawing.Point(137, 225);
-            this.buttonJson.Name = "buttonJson";
-            this.buttonJson.Size = new System.Drawing.Size(67, 23);
-            this.buttonJson.TabIndex = 14;
-            this.buttonJson.Text = "Get JSON";
-            this.buttonJson.UseVisualStyleBackColor = true;
-            this.buttonJson.Click += new System.EventHandler(this.buttonJson_Click);
+            this.button_InputJson.Location = new System.Drawing.Point(12, 209);
+            this.button_InputJson.Name = "button_InputJson";
+            this.button_InputJson.Size = new System.Drawing.Size(115, 23);
+            this.button_InputJson.TabIndex = 11;
+            this.button_InputJson.Text = "JSON File";
+            this.button_InputJson.UseVisualStyleBackColor = true;
+            this.button_InputJson.Click += new System.EventHandler(this.button_InputJson_Click);
             // 
-            // labelJson
+            // label_InputJson
             // 
-            this.labelJson.AutoSize = true;
-            this.labelJson.Location = new System.Drawing.Point(210, 230);
-            this.labelJson.Name = "labelJson";
-            this.labelJson.Size = new System.Drawing.Size(0, 13);
-            this.labelJson.TabIndex = 15;
+            this.label_InputJson.AutoSize = true;
+            this.label_InputJson.Location = new System.Drawing.Point(133, 214);
+            this.label_InputJson.Name = "label_InputJson";
+            this.label_InputJson.Size = new System.Drawing.Size(71, 13);
+            this.label_InputJson.TabIndex = 12;
+            this.label_InputJson.Text = "(not selected)";
             // 
             // FormCSV
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 261);
-            this.Controls.Add(this.labelJson);
-            this.Controls.Add(this.buttonJson);
+            this.ClientSize = new System.Drawing.Size(584, 273);
+            this.Controls.Add(this.label_InputJson);
+            this.Controls.Add(this.button_InputJson);
             this.Controls.Add(this.checkBoxFuturesOnly);
             this.Controls.Add(this.button_CancelOption);
             this.Controls.Add(this.progressBar_ParsingOption);
@@ -236,8 +237,8 @@
         private System.Windows.Forms.Label label_InputOption;
         private System.Windows.Forms.Button button_InputOption;
         private System.Windows.Forms.CheckBox checkBoxFuturesOnly;
-        private System.Windows.Forms.Button buttonJson;
-        private System.Windows.Forms.Label labelJson;
+        private System.Windows.Forms.Button button_InputJson;
+        private System.Windows.Forms.Label label_InputJson;
     }
 }
 

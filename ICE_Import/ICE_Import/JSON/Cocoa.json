@@ -1,6 +1,5 @@
 {
-    "ICE_Configuration": {
-        "TMLDB_Description": "Cocoa",
-        "Regular_Options": [ "Mar", "May", "Jul", "Sep", "Dec" ]
-    }
+    "ICE_ProductName": "Cocoa",
+    "TMLDB_Description": "Cocoa",
+    "Regular_Options": [ "Mar", "May", "Jul", "Sep", "Dec" ]
 }

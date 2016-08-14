@@ -190,7 +190,7 @@ namespace ICE_Import
                         CqgSymbol,
                         monthChar,
                         option.Option.StripName.Year,
-                        (double)option.Option.StrikePrice.GetValueOrDefault() * (double)ParsedData.NormalizeConst);
+                        (double)option.Option.StrikePrice.GetValueOrDefault() * (double)ParsedData.StrikePriceToCQGSymbolFactor);
 
                     newOption = !OptionNameHashSet.Contains(optionName);
 
@@ -286,7 +286,7 @@ namespace ICE_Import
                     else
                     {
                         int erc = globalCount - ParsedData.FutureRecords.Count - ParsedData.FutureRecords.Count;
-                        AsyncTaskListener.LogMessageFormat("Cant find riskFreeInterestRate for item #{0}", erc);
+                        AsyncTaskListener.LogMessageFormat("Can't find riskFreeInterestRate for item #{0}", erc);
                     }
                 }
                 catch (Exception ex)
@@ -343,9 +343,9 @@ namespace ICE_Import
 
         void DropTempTables()
         {
-            string exeption2 = "Cannot drop the table 'tempOptionData', because it does not exist or you do not have permission.";
-            string exeption3 = "Cannot drop the table 'temp', because it does not exist or you do not have permission.";
-            string exeption1 = exeption3 + "\r\n" + exeption2;
+            string exception2 = "Cannot drop the table 'tempOptionData', because it does not exist or you do not have permission.";
+            string exception3 = "Cannot drop the table 'temp', because it does not exist or you do not have permission.";
+            string exception1 = exception3 + "\r\n" + exception2;
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -362,15 +362,15 @@ namespace ICE_Import
                     }
                     catch (SqlException ex)
                     {
-                        if (ex.Message == exeption1)
+                        if (ex.Message == exception1)
                         {
                             AsyncTaskListener.LogMessage("No tables to drop");
                         }
-                        else if (ex.Message == exeption2)
+                        else if (ex.Message == exception2)
                         {
                             AsyncTaskListener.LogMessage("Dropped 'temp' table");
                         }
-                        else if (ex.Message == exeption3)
+                        else if (ex.Message == exception3)
                         {
                             AsyncTaskListener.LogMessage("Dropped 'tempOptionData' table");
                         }

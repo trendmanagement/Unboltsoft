@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -13,6 +14,9 @@ namespace ICE_Import
             BgWorkerCommon.Parse<EOD_Option_CSV, EOD_Option>(
                 worker,
                 OptionFilePaths,
+                "Options",
+                FilterRowAndGetProductName,
+                FilterRows,
                 out ParsedData.OptionProductName,
                 out ParsedData.OptionRecords);
 
@@ -28,13 +32,24 @@ namespace ICE_Import
         {
             BgWorkerCommon.RunWorkerCompleted(
                 e,
-                "options",
+                "Options",
                 ref ParsedData.OptionRecords,
                 this,
                 label_ParsedOption,
                 progressBar_ParsingOption,
                 EnableDisableOption,
                 OptionFilePaths.Length);
+        }
+
+        static EOD_Option FilterRowAndGetProductName(EOD_Option_CSV csvRow, out string productName)
+        {
+            productName = csvRow.ProductName;
+            return new EOD_Option(csvRow);
+        }
+
+        static IEnumerable<EOD_Option> FilterRows(IEnumerable<EOD_Option_CSV> csvRows)
+        {
+            return csvRows.Select(item => new EOD_Option(item));
         }
     }
 }

@@ -7,8 +7,11 @@ namespace ICE_Import
 {
     public partial class FormCSV : Form
     {
+        const string NotSelected = "(not selected)";
+
         string[] OptionFilePaths;
         string[] FutureFilePaths;
+
         public FormCSV()
         {
             InitializeComponent();
@@ -109,7 +112,7 @@ namespace ICE_Import
             Label label,
             ProgressBar progressBar)
         {
-            label.Text = "(not selected)";
+            label.Text = NotSelected;
 
             string[] filePaths;
 
@@ -148,53 +151,67 @@ namespace ICE_Import
         {
             bool isChecked = checkBoxFuturesOnly.Checked;
             ParsedData.FuturesOnly = isChecked;
-            button_InputOption.Visible = !isChecked;
-            button_CancelOption.Visible = !isChecked;
-            progressBar_ParsingOption.Visible = !isChecked;
-            label_ParsedOption.Visible = !isChecked;
-            label_InputOption.Visible = !isChecked;
-            buttonJson.Visible = !isChecked;
 
-            if (isChecked)
-            {
-                ParsedData.OptionRecords = null;
-            }
+            button_InputOption.Visible = !isChecked;
+            label_InputOption.Visible = !isChecked;
+            button_CancelOption.Visible = !isChecked;
+            label_ParsedOption.Visible = !isChecked;
+            progressBar_ParsingOption.Visible = !isChecked;
 
             ParsedData.OnParseComplete();
         }
 
-        private void buttonJson_Click(object sender, EventArgs e)
+        private void button_InputJson_Click(object sender, EventArgs e)
         {
+            label_InputJson.Text = NotSelected;
+            ParsedData.JsonConfig = null;
+
             using (var dialog = new OpenFileDialog())
             {
                 dialog.Filter = "Data file|*.json";
                 dialog.Title = "Select data file(s)";
                 DialogResult result = dialog.ShowDialog();
-                if (result == DialogResult.OK)
+                if (result == DialogResult.Cancel)
                 {
-                    try
-                    {
-                        string text = File.ReadAllText(dialog.FileName);
-                        ParsedData.JsonConfig = JsonConvert.DeserializeObject<JsonConfig>(text);
-                    }
-                    catch(Exception ex)
-                    {
-                        MessageBox.Show(ex.Message,
-                            "Parse json error",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning);
-                            result = DialogResult.No;
-                    }
+                    return;
                 }
-                ParsedData.JsonPath = dialog.FileName;
-                labelJson.Text = (ParsedData.JsonConfig == null) ? string.Empty : dialog.SafeFileName;
+
+                try
+                {
+                    string text = File.ReadAllText(dialog.FileName);
+                    ParsedData.JsonConfig = JsonConvert.DeserializeObject<JsonConfig>(text);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        Text,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+                }
+
+                string msg = ParsedData.JsonConfig.Validate(ParsedData.FuturesOnly);
+                if (msg != null)
+                {
+                    MessageBox.Show(
+                        msg,
+                        Text,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    ParsedData.JsonConfig = null;
+                    return;
+                }
+
+                label_InputJson.Text = dialog.FileName;
+
                 ParsedData.OnParseComplete();
             }
         }
 
         private void FormCSV_Load(object sender, EventArgs e)
         {
-            buttonJson.Enabled = true;
+            button_InputJson.Enabled = true;
         }
     }
 }

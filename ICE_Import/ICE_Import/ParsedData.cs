@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -9,67 +8,31 @@ namespace ICE_Import
 {
     internal static class ParsedData
     {
+        private const string FormText = "ICE Import (CSV Form)";
+
         public delegate void ParseEventHandler();
+
         public static event ParseEventHandler ParseSucceeded;
         public static event ParseEventHandler ParseFailed;
+
         public static List<EOD_Future> FutureRecords;
         public static List<EOD_Option> OptionRecords;
+        public static JsonConfig JsonConfig;
+
         public static List<EOD_Option_Selected> OptionsRecordsSelected;
         public static bool FuturesOnly;
         public static string FutureProductName;
         public static string OptionProductName;
 
-        public static string JsonPath;
-        public static JsonConfig JsonConfig;
-        public static string Description;
-        public static int? NormalizeConst;
-        public static double? OptionTickSize;
+        public static int? StrikePriceToCQGSymbolFactor;
 
         private static bool IsConform;
 
-        public static bool IsParsed
-        {
-            get
-            {
-                if (FuturesOnly)
-                {
-                    return FutureRecords != null;
-                }
-                else
-                {
-                    return OptionRecords != null && FutureRecords != null && JsonConfig != null;
-                }
-            }
-        }
-
-        public static bool IsReady
-        {
-            get
-            {
-                if (FuturesOnly)
-                {
-                    return FutureRecords != null;
-                }
-                else
-                {
-                    return OptionRecords != null && FutureRecords != null && IsConform;
-                }
-            }
-        }
-
         public static void OnParseComplete()
         {
-            if (!IsParsed)
-            {
-                // Raise event
-                ParseFailed();
-                return;
-            }
+            bool isReady = AreCsvParsed && CsvCsvJsonConformityCheck();
 
-
-            if (!FuturesOnly) Description = JsonConfig.ICE_Configuration.TMLDB_Description;
-
-            if (FuturesOnly || ConformityCheck() && !string.IsNullOrEmpty(Description))
+            if (isReady)
             {
                 Program.csvf.Hide();
                 Program.dbf.Show();
@@ -84,27 +47,77 @@ namespace ICE_Import
             }
         }
 
-        private static bool ConformityCheck()
+        public static bool IsReady
         {
-            List<DateTime> jsonConfigDates = ParsedData.ParseRegularOptions();
-
-            string formText = "ICE Import (CSV Form)";
-
-            if (FutureRecords.Count != 0 && OptionRecords.Count != 0)
+            get
             {
-                string futureProductName = ParsedData.FutureProductName.Replace(" Futures", string.Empty);
+                return AreCsvParsed && IsConform;
+            }
+        }
+
+        /// <summary>
+        /// Check conformity between future CSV file(s), option CSV file(s) and JSON file.
+        /// Also, initialize IsConform data member to skip double checks.
+        /// </summary>
+        private static bool CsvCsvJsonConformityCheck()
+        {
+            IsConform = false;
+
+            // We already checked that FutureRecords (and OptionRecords) are not empty
+
+            string futureProductName = ParsedData.FutureProductName.Replace(" Futures", string.Empty);
+            if (!FuturesOnly)
+            {
+                // Check conformity of ProductName between futures and options
                 string optionProductName = ParsedData.OptionProductName.Replace(" Options", string.Empty);
-                IsConform = (futureProductName == optionProductName);
-                if (!IsConform)
+                if (futureProductName != optionProductName)
                 {
                     MessageBox.Show(
-                        "The selected Future CSV Files(s) and Option CSV File(s) do not conform to each other by \"ProductName\" column.",
-                        formText,
+                        "The selected Futures CSV File(s) and Options CSV File(s) do not conform to each other by \"ProductName\" column.",
+                        FormText,
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
-                    return false;
+                    return IsConform;
                 }
             }
+
+            if (!IsJsonParsed)
+            {
+                return IsConform;
+            }
+            else
+            {
+                // Check JSON
+                string msg = JsonConfig.Validate(FuturesOnly);
+                if (msg != null)
+                {
+                    MessageBox.Show(
+                        msg,
+                        FormText,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return IsConform;
+                }
+            }
+
+            // Check conformity of ProductName between CSV and JSON
+            if (futureProductName != JsonConfig.ICE_ProductName)
+            {
+                MessageBox.Show(
+                    "The selected CSV File(s) do not conform to the JSON File by the product name.",
+                    FormText,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return IsConform;
+            }
+
+            if (FuturesOnly)
+            {
+                IsConform = true;
+                return IsConform;
+            }
+
+            List<DateTime> jsonConfigDates = ParsedData.ParseRegularOptions();
 
             // Check conformity of StripName
             var futureStripNames = new HashSet<DateTime>(FutureRecords.Select(item => item.StripName));
@@ -126,11 +139,12 @@ namespace ICE_Import
                     optionNotFound.Add(option.StripName);
                 }
             }
+
             IsConform = optionNotFound.Count == 0;
             if (!IsConform)
             {
                 var sb = new StringBuilder(
-                    "The selected Future CSV Files(s) and Option CSV File(s) do not conform to each other.\n\n" +
+                    "The selected Futures CSV File(s) and Options CSV File(s) do not conform to each other.\n\n" +
                     "Options with the following values of StripName do not have corresponding futures " +
                     "(only the first 10 values are shown):\n\n");
                 int i = 0;
@@ -148,10 +162,10 @@ namespace ICE_Import
                     "(If you select \"Yes\", the extra options will not be pushed to database.)");
                 DialogResult result = MessageBox.Show(
                     sb.ToString(),
-                    formText,
+                    FormText,
                     MessageBoxButtons.YesNoCancel,
                     MessageBoxIcon.Warning);
-                IsConform = result == DialogResult.Yes;
+                IsConform = (result == DialogResult.Yes);
             }
 
             return IsConform;
@@ -164,7 +178,7 @@ namespace ICE_Import
             {
                 HashSet<int> intYears = new HashSet<int>(FutureRecords.Select(item => item.StripName.Year));
                 List<string> years = intYears.Select(year => year.ToString()).ToList();
-                foreach (string month in JsonConfig.ICE_Configuration.Regular_Options)
+                foreach (string month in JsonConfig.Regular_Options)
                 {
                     foreach (string year in years)
                     {
@@ -176,5 +190,27 @@ namespace ICE_Import
             return jsonConfigDates;
         }
 
+        private static bool AreCsvParsed
+        {
+            get
+            {
+                if (FuturesOnly)
+                {
+                    return FutureRecords != null;
+                }
+                else
+                {
+                    return OptionRecords != null && FutureRecords != null;
+                }
+            }
+        }
+
+        private static bool IsJsonParsed
+        {
+            get
+            {
+                return JsonConfig != null;
+            }
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace ICE_Import
         [FieldConverter(typeof(CharConverter), true)]
         public char OptionType;
 
-        [FieldConverter(typeof(DecimalConverter))]
+        [FieldConverter(typeof(DecimalConverter), true)]
         public decimal? StrikePrice;
 
         [FieldConverter(typeof(StringConverter))]

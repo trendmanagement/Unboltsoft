@@ -41,21 +41,12 @@ namespace ICE_Import
                 return false;
             }
 
-            if (idInstrument == null)
-            {
-                idInstrument = record.idinstrument;
-            }
+            idInstrument = record.idinstrument;
 
-            if (cqgSymbol == null)
-            {
-                cqgSymbol = record.cqgsymbol;
-            }
+            cqgSymbol = record.cqgsymbol;
 
-            if (tickSize == null)
-            {
-                double secondaryoptionticksize = record.secondaryoptionticksize;
-                tickSize = (secondaryoptionticksize > 0) ? secondaryoptionticksize : record.optionticksize;
-            }
+            double secondaryoptionticksize = record.secondaryoptionticksize;
+            tickSize = (secondaryoptionticksize > 0) ? secondaryoptionticksize : record.optionticksize;
 
             AsyncTaskListener.LogMessageFormat(
                 "ID Instrument = {0}\nCQG Symbol = {1}\nTick Size = {2}",
